@@ -1,0 +1,12 @@
+linyong@tak /lab/solexa_page/linyong$ cat lsf-samtools-sort 
+#
+ls /lab/solexa_page/mtharp/EGA_microglia/rawdata_bam/*/*bam | while read ll
+do
+ ls -lh "$ll"
+ pre=`echo "$ll" | sed 's#.*/##'  | sed 's/\.bam//' `
+ echo $pre
+ ### samtools sort -n -@ 6 -o $outputDir-name.sort.bam "$outputDir"Aligned.out.bam
+ samtools sort -n -@ 6 -o $pre.name.bam "$ll"
+ echo
+done
+
