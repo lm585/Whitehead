@@ -1,3 +1,5 @@
+41 samples
+
 linyong@tak /lab/solexa_page/linyong$ cat lsf-samtools-sort 
 #
 ls /lab/solexa_page/mtharp/EGA_microglia/rawdata_bam/*/*bam | while read ll
@@ -10,3 +12,16 @@ do
  echo
 done
 
+linyong@tak /lab/solexa_page/linyong$ cat lsf-genecount
+#
+ls *bam > file-list
+cat file-list | while read f
+do
+ pre=`echo "$f" | sed 's/.name.bam//' `
+ echo $pre.counts_gene
+ ls -lh ../Homo_sapiens.GRCh38.90.gtf
+ htseq-count  --mode=union --stranded=no --idattr=gene_id --format=bam --additional-attr=gene_name --order=name --type=exon  "$f" ../Homo_sapiens.GRCh38.90.gtf  > $pre.counts_gene
+
+done
+
+####Public License v3. Part of the 'HTSeq' framework, version 0.11.0.
