@@ -25,3 +25,18 @@ do
 done
 
 ####Public License v3. Part of the 'HTSeq' framework, version 0.11.0.
+
+linyong@tak /lab/solexa_page/linyong$ cat ./script-genecount-merge
+#
+
+cat  dir-list | while read d
+do
+  cd "$d"
+  ls  *.counts_gene | while read s
+  do
+    id=`echo "$s" | sed 's/.counts_gene//'`
+    echo "geneID	name	$id" > temp-$s
+    cat $s >> temp-$s
+  done
+  cd ..
+done
