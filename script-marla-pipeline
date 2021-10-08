@@ -89,3 +89,9 @@ head -58303 temp.2.txt > microglia-41-samples.genecount.txt
 
 $ awk '{print NF}'  microglia-41-samples.genecount.txt | uniq -c
   58303 43
+
+rm  temp.2.txt
+
+$ head temp.txt > microglia-41-samples.featuresummary.txt
+$ tail temp.txt >> microglia-41-samples.featuresummary.txt
+$ rm temp.txt 
