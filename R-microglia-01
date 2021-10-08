@@ -1,0 +1,9 @@
+t <- read.delim("microglia-41-samples.genecount.txt", header = T, row.names = 1)
+rawCount <- t[,2:42]
+> dim(rawCount)
+[1] 58302    41
+group <- factor(rep(1, 41))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+write.table(y$samples, "microglia-lib-norm-factor", quote = F, sep = "\t")
+mds <- plotMDS(y, top=98765)
