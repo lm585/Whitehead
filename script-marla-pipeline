@@ -64,3 +64,28 @@ $ bash script-check-gene-order | uniq -c
      14 __too_low_aQual
      14 __not_aligned
      14 __alignment_not_unique
+
+$ cat script-sel-colum-for-geneCount-table 
+#
+
+cat temp.txt | awk '
+BEGIN {
+  FS = "\t";
+  ORS = "";
+      }
+ {
+  print $1 "\t" $2 "\t";
+  for(i = 3; i <= NF - 1 ; i=i+3)
+  {
+   print $i "\t";
+  }
+  print $NF "\n"
+ }
+'
+
+bash script-sel-colum-for-geneCount-table > temp.2.txt
+
+head -58303 temp.2.txt > microglia-41-samples.genecount.txt
+
+$ awk '{print NF}'  microglia-41-samples.genecount.txt | uniq -c
+  58303 43
