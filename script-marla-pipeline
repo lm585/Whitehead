@@ -40,3 +40,27 @@ do
   done
   cd ..
 done
+
+paste dir-*/temp-*.counts_gene  > temp.txt
+
+$ cat script-check-gene-order
+#
+
+cat temp.txt | awk '
+{
+ for(i = 1; i <= NF; i = i + 3)
+ {
+  if($1 != $i)
+  {
+   print $1;
+  }
+ }
+}
+ '
+
+$ bash script-check-gene-order | uniq -c
+     14 __no_feature
+     14 __ambiguous
+     14 __too_low_aQual
+     14 __not_aligned
+     14 __alignment_not_unique
