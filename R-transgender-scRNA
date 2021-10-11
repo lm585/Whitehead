@@ -1,0 +1,16 @@
+testoster <- read.delim("testoinput.txt")
+wilcox <- wilcox.test(testoster[,1], testoster[,2], paired=F, exact=F, conf.int = T)
+wilcox$p.value
+
+sink("temp-res.txt")
+
+for(i in 1:dim(testoster)[2]) {
+ for(j in 1:dim(testoster)[2]) {
+wilcox <- wilcox.test(testoster[,i], testoster[,j], paired=F, exact=F, conf.int = T)
+str <- paste(colnames(testoster)[i], colnames(testoster)[j], wilcox$p.value, sep = "\t" )
+cat(str)
+cat("\n")
+ }
+}
+
+sink()
