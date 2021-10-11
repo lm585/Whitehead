@@ -14,3 +14,25 @@ cat("\n")
 }
 
 sink()
+
+% cat       testoinput.txt
+
+Cis F	Trans F	Trans M	Cis M
+1.03	1	2.32	2.58
+1.34	2.15	2.5	2.71
+1	1	2.51	2.73
+1.26	1.44	2.41	2.57
+1	2.64	2.43	2.65
+1	2.39	2.47	2.63
+1.66	NA	2.56	2.58
+1	NA	2.46	2.42
+NA	NA	1.82	2.63
+NA	NA	2.67	NA
+NA	NA	2.56	NA
+NA	NA	2.87	NA
+NA	NA	2.82	NA
+NA	NA	2.54	NA
+NA	NA	2.36	NA
+
+% cat temp-res.txt | cut -f 3 | awk '
+BEGIN {OFS = ""; ORS = ""} {print $1 "\t"; if(NR % 4 == 0) print "\n";}' > temp-res.2.txt 
