@@ -1,0 +1,17 @@
+#
+cat temp.1.txt | sed 's/#VALUE!/1.00/' > temp.2.txt
+####Trans M has most number of donors to avoid paste effect
+echo "Trans M" > temp-1st-colum
+grep "^Trans M	" temp.1.txt | cut -f 5 >> temp-1st-colum
+
+cut -f 1 temp.2.txt | uniq | while read g
+do
+ echo "$g" > temp
+ grep "^$g	" temp.2.txt | cut -f 5 >> temp
+ paste temp-1st-colum temp > temp-combine
+ mv temp-combine temp-1st-colum
+done
+
+mv temp-1st-colum temp.xls
+cat temp.xls
+
