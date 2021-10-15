@@ -44,6 +44,9 @@ design <- model.matrix(~sampleinfo$controTumor + sampleinfo$age)
 16           1                           0             35
 17           1                           1             72
 
-> y <- estimateDisp(y,design)
-> fit <- glmQLFit(y, design)
-> qlf <- glmQLFTest(fit) 
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+
