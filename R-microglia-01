@@ -16,13 +16,18 @@ linyongmao@Linyong-Mao-MBP16-2019 microglia % cut -f 1,6,10,11,16,17,18,19,23,24
 mv -i microglia-41-samples.male17samp.genecount.txt microglia-41-samples.male22samp.genecount.txt
 
 rawCount <- read.delim("microglia-41-samples.female17samp.genecount.txt", header = T, row.names = 1)
-group <- factor(rep(1, 17))
+sampleinfo <- read.delim("microglia-41-samples.female17samp.sampInfo.txt", row.names=1)
+group <- factor(sampleinfo$controTumor)
+
 y <- DGEList(counts=rawCount,group=group)
 y <- calcNormFactors(y)
-mds <- plotMDS(y, top=98765)
-df <- data.frame(colnames(y), mds$x, mds$y)
+###mds <- plotMDS(y, top=98765)
+###df <- data.frame(colnames(y), mds$x, mds$y)
+keep <-rowSums(cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+[1] 16850    17
 
-sampleinfo <- read.delim("microglia-41-samples.female17samp.sampInfo.txt", row.names=1)
 design <- model.matrix(~sampleinfo$controTumor + sampleinfo$age)
 > design
    (Intercept) sampleinfo$controTumorTumor sampleinfo$age
