@@ -36,3 +36,9 @@ NA	NA	2.36	NA
 
 % cat temp-res.txt | cut -f 3 | awk '
 BEGIN {OFS = ""; ORS = ""} {print $1 "\t"; if(NR % 4 == 0) print "\n";}' > temp-res.2.txt 
+
+##boxplot
+hr <- read.delim("boxplot-ip-hormone-ratio-etc.txt")
+hr$Group <- factor(hr$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
+boxplot(hr$T.E ~ hr$Group)
+boxplot(hr$T.E ~ hr$Group, xlab = "", ylab = "T/E ratio")
