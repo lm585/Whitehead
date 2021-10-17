@@ -42,3 +42,5 @@ hr <- read.delim("boxplot-ip-hormone-ratio-etc.txt")
 hr$Group <- factor(hr$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
 boxplot(hr$T.E ~ hr$Group)
 boxplot(hr$T.E ~ hr$Group, xlab = "", ylab = "T/E ratio")
+boxplot(hr$T.E ~ hr$Group, xlab = "", ylab = "T/E ratio", outline = FALSE)
+beeswarm(hr$T.E ~ hr$Group,  pch = 20, col = 1, cex = 2, add = T) ###pch symbol type, filled circle; cex symbol size, 200%; black color
