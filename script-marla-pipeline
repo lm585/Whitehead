@@ -95,3 +95,15 @@ rm  temp.2.txt
 $ head temp.txt > microglia-41-samples.featuresummary.txt
 $ tail temp.txt >> microglia-41-samples.featuresummary.txt
 $ rm temp.txt 
+
+grep -w gene  Homo_sapiens.GRCh38.90.gtf     | awk '$1 == "Y"' | cut -f 9 > temp.txt
+tested 45 chrY protein_coding genes; they are not in the female-diff2-1-filtgenesFirst.txt because they were filtered out before DEG testing
+in the file "microglia-41-samples.female17samp.genecount.txt"
+ENSG00000198692       1       0       1       0       0       0       0       0       1       0       1       0      10
+ENSG00000198692       0       0       0       1
+cpm = 0.413281786 (MGB_085); 10 read mapped
+ENSG00000198692  EIF1AY protein_coding
+
+
+
+
