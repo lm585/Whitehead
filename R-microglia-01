@@ -55,3 +55,6 @@ qlf <- glmQLFTest(fit, coef=2)
 top2v1 <- topTags(qlf, n = 91234)
 write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
 
+rawCount <- read.delim("microglia-41-samples.male22samp.genecount.txt", header = T, row.names = 1)
+sampleinfo <- read.delim("microglia-41-samples.male22samp.sampInfo.txt", row.names=1)
+sampleinfo
