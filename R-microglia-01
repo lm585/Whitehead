@@ -62,3 +62,7 @@ group <- factor(sampleinfo$controTumor)
 y <- DGEList(counts=rawCount,group=group)
 y <- calcNormFactors(y)
 y
+keep <-rowSums(cpm(y)>=1) >= 5
+y<-y[keep,]
+dim(y)
+###[1] 16246    22
