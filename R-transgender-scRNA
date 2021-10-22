@@ -44,3 +44,19 @@ boxplot(hr$T.E ~ hr$Group)
 boxplot(hr$T.E ~ hr$Group, xlab = "", ylab = "T/E ratio")
 boxplot(hr$T.E ~ hr$Group, xlab = "", ylab = "T/E ratio", outline = FALSE)
 beeswarm(hr$T.E ~ hr$Group,  pch = 20, col = 1, cex = 2, add = T) ###pch symbol type, filled circle; cex symbol size, 200%; black color
+
+t2e.age <- read.delim("t2eratio-age-bmi-37samples.txt", row.names=1)
+t2e.age$Group <- factor(t2e.age$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
+x <- t2e.age[t2e.age$Group == "Trans F (XY)", ]
+x2 <- x[, c("T.E", "Age", "BMI")]
+opar <- par(no.readonly=T)
+par(opar)
+
+plot( x2$Age, x2$T.E, ylab="T2Eratio", cex = 1.5 )
+abline(lm(x2$T.E ~ x2$Age))
+plot( x2$BMI, x2$T.E, ylab="T2Eratio", cex = 1.5 )
+abline(lm(x2$T.E ~ x2$BMI))
+plot( x2$Age,x2$BMI,cex = 1.5 )
+abline(lm(x2$BMI ~ x2$Age))
+
+
