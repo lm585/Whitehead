@@ -183,3 +183,8 @@ res <- cor.test(x.t$Age, x.t$T.E)
 title(main=paste("Trans F (XY) + Cis M\n","r= ",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
 
 #################################################################
+
+t2e.age$chr <- t2e.age$GTC.ID
+t2e.age[t2e.age$Group == "Cis F" | t2e.age$Group == "Trans M (XX)",]$chr <- "XX"
+t2e.age[t2e.age$Group == "Cis M" | t2e.age$Group == "Trans F (XY)",]$chr <- "XY"
+boxplot(t2e.age$T.E ~ t2e.age$chr, xlab = "", ylab = "T2Eratio")
