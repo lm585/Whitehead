@@ -189,3 +189,6 @@ t2e.age[t2e.age$Group == "Cis F" | t2e.age$Group == "Trans M (XX)",]$chr <- "XX"
 t2e.age[t2e.age$Group == "Cis M" | t2e.age$Group == "Trans F (XY)",]$chr <- "XY"
 boxplot(t2e.age$T.E ~ t2e.age$chr, xlab = "", ylab = "T2Eratio")
 beeswarm(t2e.age$T.E ~ t2e.age$chr, pch = 20, col = 1, cex = 2, add = T)
+a <- t2e.age[t2e.age$chr == "XX",]$T.E
+b <- t2e.age[t2e.age$chr == "XY",]$T.E
+wilcox.test(a,b, paired=F, exact=F, conf.int = T)
