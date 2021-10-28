@@ -192,3 +192,23 @@ beeswarm(t2e.age$T.E ~ t2e.age$chr, pch = 20, col = 1, cex = 2, add = T)
 a <- t2e.age[t2e.age$chr == "XX",]$T.E
 b <- t2e.age[t2e.age$chr == "XY",]$T.E
 wilcox.test(a,b, paired=F, exact=F, conf.int = T)
+
+##################################################################
+list pairwise testing
+########################
+sink("temp-res.txt")
+f <- t2e.age[t2e.age$Group == "Cis F",]$BMI
+m <- t2e.age[t2e.age$Group == "Cis M",]$BMI
+tf <- t2e.age[t2e.age$Group == "Trans F (XY)",]$BMI
+tm <- t2e.age[t2e.age$Group == "Trans M (XX)",]$BMI
+
+ll <- list(cisF=f,cisM=m,transF_XY=tf,transM_XX=tm)
+for(i in 1:length(ll)) {
+ for(j in 1:length(ll)) {
+wilcox <- wilcox.test(ll[[i]], ll[[j]], paired=F, exact=F, conf.int = T)
+str <- paste(names(ll)[i], names(ll)[j], wilcox$p.value, sep = "\t" )
+cat(str)
+cat("\n")
+ }
+}
+sink()
