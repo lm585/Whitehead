@@ -8,3 +8,10 @@ s$coefficients[,4] ##p-values for variable-s
 > s$coefficients[,4][ "d$Weight.kg" ]
  d$Weight.kg 
 2.194786e-06 
+
+install.packages("car")
+> library(car)
+Loading required package: carData
+> vif(res)
+            d$X.Fat         d$Weight.kg          d$Activity d$X.Fat:d$Weight.kg 
+          14.931555           33.948375            1.053005           75.059251 
