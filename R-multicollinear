@@ -1,0 +1,10 @@
+d <- read.csv("/Users/linyongmao/Downloads/MulticollinearityExample.csv")
+res <- lm(d$Femoral.Neck ~ d$X.Fat + d$Weight.kg + d$Activity + d$X.Fat : d$Weight.kg )
+s <- summary(res)
+s$coefficients[,4] ##p-values for variable-s
+> s$coefficients[,4][3]
+ d$Weight.kg 
+2.194786e-06 
+> s$coefficients[,4][ "d$Weight.kg" ]
+ d$Weight.kg 
+2.194786e-06 
