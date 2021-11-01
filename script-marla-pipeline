@@ -128,7 +128,7 @@ paste   temp1  out | awk '$1 == $2' | cut -f 7 > temp.txt
 create male-diff2-1-filtgenesFirst.cpm.cls file
 sed 's/^M//' male-diff2-1-filtgenesFirst.cpm.gct > temp
 mv temp male-diff2-1-filtgenesFirst.cpm.gct
-
+bash script-gct-plus-0d01 > male-diff2-1-filtgenesFirst.cpm.plus0d01.gct
 
 ##39 samples in CPM.txt
 cat CPM.txt | awk '
