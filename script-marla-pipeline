@@ -105,5 +105,20 @@ cpm = 0.413281786 (MGB_085); 10 read mapped
 ENSG00000198692  EIF1AY protein_coding
 
 
+create temp.txt file cpm for ~60k genes of female samples
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  female-diff2-1-filtgenesFirst.txt temp.txt  out
+grep -i   notApplicable out | wc
+out includes "expressed" genes
+cat  out | cut -f 1,2,4-20 > temp.xls
+vi temp.xls
+mv -i temp.xls microglia-41-samples.female17samp.cpm.gct
+head microglia-41-samples.female17samp.cpm.gct
+#1.2
+16850	17
+NAME	Description	MGB_016	MGB_024	MGB_025	MGB_038	MGB_039	MGB_040	MGB_042	MGB_054	MGB_055	MGB_061	MGB_064	MGB_073	MGB_085	MGB_087	MGB_134	MGB_139	MGB_141
+ENSG00000152766	ANKRD22	23.55969489	22.03722349	38.05050739	3.101816011	83.34652956	61.4083813	102.6263907	5.810318823	215.4827281	70.95259835	43.76047155	8.00326978	3.926176968	7.000928234	20.16011042	2.414180046	34.99104332
+ENSG00000163814	CDCP1
+vi microglia-41-samples.female17samp.cls 
+
 
 
