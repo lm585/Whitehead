@@ -1,0 +1,31 @@
+#
+# NAME	SIZE	NES	NOM p-val	FDR q-val
+
+cat "$1" | cut -f 1,4,6,7,8 | awk '
+BEGIN{FS = "\t";
+ OFS = "";
+ ORS = "";
+}
+{
+ if(NR == 1)
+ {
+  print $0 "\t" "signed_log10FDR" "\n";
+ }
+ else
+ {
+ print $0;
+ if($3 > 0) ##NES > 0
+ {
+  sp = -log($5 + 0.0001)/log(10);
+ }
+ else
+ {
+  sp = log($5 + 0.0001)/log(10);
+ }
+ if($5 + 0.0001 > 1)
+ {
+  sp = -sp;
+ }
+ print "\t" sp "\n";
+ }
+}'  
