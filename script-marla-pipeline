@@ -174,5 +174,16 @@ BEGIN {
 }
 '
 
+###########################################################
+# pathways; ranks of LEGs in a pathway in female dataset vs. male dataset
+vi hall-paths-f-m-diff
+cat hall-paths-f-m-diff| while read ll
+do
+ bash script-f-m-rank-compare  "$ll"
+done
+
+ls temp-*f-m-ranks.txt  > temp-paths
+Rscript R-f-m-ranks-ttest
+cat temp-res.txt | sed 's/temp-//' | sed 's/-f-m-ranks.txt//' > temp-res-2.txt
 
 
