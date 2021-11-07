@@ -1,0 +1,19 @@
+#
+sink("temp-res.txt")
+
+str <- paste("pathway", "female-rank-mean", "male-rank-mean", "mean diff (f-m)", "numOfUnionDEGS", "t-test p-value", sep = "\t" )
+cat(str)
+cat("\n")
+
+paths <- read.delim("temp-paths", header = F) ##a list of files
+for(i in 1:dim(paths)[1]) {
+ rks <- read.delim(file=paths[i,1]) ###read each pathway file
+ res <- t.test(rks$rank1, rks$rank2)
+ m1 <- mean(rks$rank1, na.rm=T)
+ m2 <- mean(rks$rank2, na.rm=T)
+ str <- paste(paths[i,1],m1,m2,m1-m2,dim(rks)[1], res$p.value, sep = "\t" )
+ cat(str)
+ cat("\n")
+}
+
+sink()
