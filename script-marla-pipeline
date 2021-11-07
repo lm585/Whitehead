@@ -182,6 +182,17 @@ do
  bash script-f-m-rank-compare  "$ll"
 done
 
+ % cat temp-HALLMARK_INTERFERON_GAMMA_RESPONSE-f-m-ranks.txt
+%ranks in percentile, 'NA', unioned LEGs in female and male datasets for the pathway
+%not part of the file
+Female	rank1	Male	rank2
+APOL6	19.81	APOL6	63.8207
+ARID5B	2.4586	ARID5B	9.8785
+ARL4A	13.9684	ARL4A	6.49102
+......
+CXCL10	1.10412	CXCL10	38.266
+CXCL11	0.449352	CXCL11	NA
+
 ls temp-*f-m-ranks.txt  > temp-paths
 Rscript R-f-m-ranks-ttest
 cat temp-res.txt | sed 's/temp-//' | sed 's/-f-m-ranks.txt//' > temp-res-2.txt
