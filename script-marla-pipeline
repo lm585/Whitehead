@@ -197,4 +197,15 @@ ls temp-*f-m-ranks.txt  > temp-paths
 Rscript R-f-m-ranks-ttest
 cat temp-res.txt | sed 's/temp-//' | sed 's/-f-m-ranks.txt//' > temp-res-2.txt
 
-
+cat female-diff2-1-filtgenesFirst.symbol.txt  | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $8,$1,$2,$3,$4,$5,$6}' > temp-symb-logfc
+###oncogene compiled by Marla
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine temp-onc temp-symb-logfc out
+grep -i notapplica out | cut -f 1-10 | awk '{print $1}' | while read g
+do
+grep -i $g female-diff2-1-filtgenesFirst.symbol.txt
+done
+grep -i notapplica out | cut -f 1-10 | awk '{print $1}'
+FGFR4
+BCL11B
+DCAF12L2
+paste temp-onc  out > temp.txt
