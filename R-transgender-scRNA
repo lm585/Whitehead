@@ -221,8 +221,8 @@ paste t2eratio-age-bmi-37samples.txt out > t2eratio-age-bmi-shbg-37samples.txt
 cat temp | cut -f 1,8 | sed 's/<10/10/' > temp-bch-shbg
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine t2eratio-age-bmi-shbg-37samples.txt temp-bch-shbg out
 paste t2eratio-age-bmi-shbg-37samples.txt out > t2eratio-age-bmi-shbg-testorone-37samples.txt
-% cat R-list-pairwisetest
 
+% cat R-list-pairwisetest
 setwd("/Users/linyongmao/Documents/transgender-scRNA")
 t2e.age <- read.delim("t2eratio-age-bmi-shbg-testorone-37samples.txt", row.names=1)
 f <-   100 * t2e.age[t2e.age$Group == "Cis F",]$Testosterone..ng.dl. * 0.03467 / t2e.age[t2e.age$Group == "Cis F",]$SHBG..nmol.L.
@@ -240,3 +240,10 @@ cat("\n")
  }
 }
 sink()
+
+
+t2e.age$FreeAndrogenIndex <- 100 * t2e.age$Testosterone..ng.dl. * 0.03467 / t2e.age$SHBG..nmol.L.
+t2e.age$Group <- factor(t2e.age$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
+boxplot(t2e.age$FreeAndrogenIndex ~ t2e.age$Group, xlab = "")
+beeswarm(t2e.age$FreeAndrogenIndex ~ t2e.age$Group,  pch = 20, col = 1, cex = 2, add = T) ###pch symbol type, filled circle; cex symbol size, 200%; black color
+lin
