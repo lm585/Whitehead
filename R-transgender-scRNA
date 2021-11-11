@@ -216,3 +216,6 @@ sink()
 cat temp | cut -f 1,10 > temp-bch-shbg
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    t2eratio-age-bmi-37samples.txt temp-bch-shbg out
 paste t2eratio-age-bmi-37samples.txt out > t2eratio-age-bmi-shbg-37samples.txt
+cat temp | cut -f 1,8 | sed 's/<10/10/' > temp-bch-shbg
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine t2eratio-age-bmi-shbg-37samples.txt temp-bch-shbg out
+paste t2eratio-age-bmi-shbg-37samples.txt out > t2eratio-age-bmi-shbg-testorone-37samples.txt
