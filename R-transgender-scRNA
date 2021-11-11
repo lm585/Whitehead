@@ -213,9 +213,30 @@ cat("\n")
 }
 sink()
 
+############################################
+fai Free Androgen Index compare
 cat temp | cut -f 1,10 > temp-bch-shbg
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    t2eratio-age-bmi-37samples.txt temp-bch-shbg out
 paste t2eratio-age-bmi-37samples.txt out > t2eratio-age-bmi-shbg-37samples.txt
 cat temp | cut -f 1,8 | sed 's/<10/10/' > temp-bch-shbg
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine t2eratio-age-bmi-shbg-37samples.txt temp-bch-shbg out
 paste t2eratio-age-bmi-shbg-37samples.txt out > t2eratio-age-bmi-shbg-testorone-37samples.txt
+% cat R-list-pairwisetest
+
+setwd("/Users/linyongmao/Documents/transgender-scRNA")
+t2e.age <- read.delim("t2eratio-age-bmi-shbg-testorone-37samples.txt", row.names=1)
+f <-   100 * t2e.age[t2e.age$Group == "Cis F",]$Testosterone..ng.dl. * 0.03467 / t2e.age[t2e.age$Group == "Cis F",]$SHBG..nmol.L.
+m <-   100 * t2e.age[t2e.age$Group == "Cis M",]$Testosterone..ng.dl. * 0.03467 / t2e.age[t2e.age$Group == "Cis M",]$SHBG..nmol.L.
+tf <-  100 * t2e.age[t2e.age$Group == "Trans F (XY)",]$Testosterone..ng.dl. * 0.03467 / t2e.age[t2e.age$Group == "Trans F (XY)",]$SHBG..nmol.L.
+tm <-  100 * t2e.age[t2e.age$Group == "Trans M (XX)",]$Testosterone..ng.dl. * 0.03467 / t2e.age[t2e.age$Group == "Trans M (XX)",]$SHBG..nmol.L.
+sink("temp-res.txt")
+ll <- list(cisF=f,cisM=m,transF_XY=tf,transM_XX=tm)
+for(i in 1:length(ll)) {
+ for(j in 1:length(ll)) {
+wilcox <- wilcox.test(ll[[i]], ll[[j]], paired=F, exact=F, conf.int = T)
+str <- paste(names(ll)[i], names(ll)[j], wilcox$p.value, sep = "\t" )
+cat(str)
+cat("\n")
+ }
+}
+sink()
