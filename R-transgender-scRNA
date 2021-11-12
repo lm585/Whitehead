@@ -246,4 +246,33 @@ t2e.age$FreeAndrogenIndex <- 100 * t2e.age$Testosterone..ng.dl. * 0.03467 / t2e.
 t2e.age$Group <- factor(t2e.age$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
 boxplot(t2e.age$FreeAndrogenIndex ~ t2e.age$Group, xlab = "")
 beeswarm(t2e.age$FreeAndrogenIndex ~ t2e.age$Group,  pch = 20, col = 1, cex = 2, add = T) ###pch symbol type, filled circle; cex symbol size, 200%; black color
-lin
+
+cat t2eratio-age-bmi-shbg-testorone-37samples.txt | cut -f 2 | while read ll
+do
+grep $ll census.txt | wc -l
+done | uniq -c
+   1        1
+   1        0
+  36        1
+
+cat census.txt | cut -f 1 | sed 's/_S.*//' | while read ll
+do
+grep $ll t2eratio-age-bmi-shbg-testorone-37samples.txt   | wc -l
+done | uniq -c
+   2        1
+   1        0
+  35        1
+
+wc -l  t2eratio-age-bmi-shbg-testorone-37samples.txt  census.txt 
+      38 t2eratio-age-bmi-shbg-testorone-37samples.txt (37 samples, 1 header, C005	L16_2584_S9 in hormone sample sheet, NOT in scRNA freq table)
+      38 census.txt (37 samples, L16_2577_S2 ONLY in scRNA freq table)
+
+cp t2eratio-age-bmi-shbg-testorone-37samples.txt  temp1
+###remove L16_2584_S9 line
+vi temp1  
+cat temp1 | cut -f 2 | while read ll
+do
+grep $ll census.txt
+done  > temp2
+paste temp1   temp2 > t2eratio-age-bmi-shbg-testorone-37samples.celltypes.txt  ###36 samples with cell type freq & hormone
+
