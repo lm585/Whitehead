@@ -276,3 +276,7 @@ grep $ll census.txt
 done  > temp2
 paste temp1   temp2 > t2eratio-age-bmi-shbg-testorone-37samples.celltypes.txt  ###36 samples with cell type freq & hormone
 
+type <- read.delim("t2eratio-age-bmi-shbg-testorone-37samples.celltypes.txt", row.names=1)
+type$Group <- factor(type$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
+boxplot(type$"CD4..T.naive" ~ type$Group, xlab = "")
+beeswarm(type$"CD4..T.naive" ~ type$Group,  pch = 20, col = 1, cex = 2, add = T) ###pch symbol type, filled circle; cex symbol size, 200%; black color
