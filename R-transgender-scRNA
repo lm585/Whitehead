@@ -280,3 +280,15 @@ type <- read.delim("t2eratio-age-bmi-shbg-testorone-37samples.celltypes.txt", ro
 type$Group <- factor(type$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
 boxplot(type$"CD4..T.naive" ~ type$Group, xlab = "")
 beeswarm(type$"CD4..T.naive" ~ type$Group,  pch = 20, col = 1, cex = 2, add = T) ###pch symbol type, filled circle; cex symbol size, 200%; black color
+
+################################################
+####3x3 cell type freq
+type <- read.delim("t2eratio-age-bmi-shbg-testorone-37samples.celltypes.txt", row.names=1)
+type$Group <- factor(type$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
+layout(matrix(1:9, 3, 3, byrow=T) )
+
+for(i in 13:21) {
+ boxplot(type[,i] ~ type$Group, xlab = "", ylab = colnames(type)[i] );
+ beeswarm(type[,i]  ~ type$Group,  pch = 1, col = 1, cex = 1, add = T)
+ title(main=colnames(type)[i])
+}
