@@ -318,3 +318,7 @@ res <- lm(type$CD4..T.naive ~ (type$FreeAndrogenIndex ) + type$BMI +type$chr)
 summary(res)
 res <- lm(type$CD4..T.naive ~ (type$Testosterone..ng.dl. ) + type$BMI +type$chr)
 summary(res)
+
+xx <- type[type$Group == "Cis F", ]
+xy <- type[type$Group == "Cis M", ]
+wilcox.test( xx$CD4..T.naive, xy$CD4..T.naive, paired=F, exact=F, conf.int = T)
