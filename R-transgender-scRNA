@@ -292,3 +292,29 @@ for(i in 13:21) {
  beeswarm(type[,i]  ~ type$Group,  pch = 1, col = 1, cex = 1, add = T)
  title(main=colnames(type)[i])
 }
+
+###################################################
+#####linear regression
+type <- read.delim("t2eratio-age-bmi-shbg-testorone-37samples.celltypes.txt", row.names=1)
+type$FreeAndrogenIndex <- 100 * type$Testosterone..ng.dl. * 0.03467 / type$SHBG..nmol.L.
+typeXX <- type[type$Group == "Cis F" | type$Group == "Trans M (XX)",]
+res <- lm(typeXX$CD4..T.naive ~ typeXX$FreeAndrogenIndex + typeXX$BMI)
+type$chr <- type$GTC.ID
+type[type$Group == "Cis F" | type$Group == "Trans M (XX)",]$chr <- "XX"
+type[type$Group == "Cis M" | type$Group == "Trans F (XY)",]$chr <- "XY"
+
+res <- lm(type$CD4..T.naive ~ log10(type$Testosterone..ng.dl. ) + type$BMI)
+res <- lm(type$CD4..T.naive ~ log10(type$Testosterone..ng.dl. ) + type$BMI +type$chr)
+res <- lm(type$CD4..T.naive ~ log10(type$Testosterone..ng.dl. ) + type$BMI +type$chr + log10(type$Testosterone..ng.dl. ) : type$chr)
+res <- lm(type$CD4..T.naive ~ log10(type$T.E ) + type$BMI +type$chr)
+summary(res)
+res <- lm(type$CD4..T.naive ~ log10(type$FreeAndrogenIndex ) + type$BMI +type$chr)
+summary(res)
+res <- lm(type$CD4..T.naive ~ log10(type$Testosterone..ng.dl. ) + type$BMI +type$chr)
+summary(res)
+res <- lm(type$CD4..T.naive ~ (type$T.E ) + type$BMI +type$chr)
+summary(res)
+res <- lm(type$CD4..T.naive ~ (type$FreeAndrogenIndex ) + type$BMI +type$chr)
+summary(res)
+res <- lm(type$CD4..T.naive ~ (type$Testosterone..ng.dl. ) + type$BMI +type$chr)
+summary(res)
