@@ -124,3 +124,9 @@ data:  y
 p-value = 0.1367
 alternative hypothesis: two.sided
 
+setwd("/Users/linyongmao/Documents/microglia")
+f <- read.delim("temp-HALLMARK_INTERFERON_GAMMA_RESPONSE-f-m-ranks.txt")
+boxplot(f$rank1, f$rank2, xlab = "", ylab = "logFC based gene ranks in percentile")
+beeswarm(data.frame(f$rank1, f$rank2),  pch = 1, col = 1, cex = 1, add = T)
+axis(1, at = 1:2, labels=c("F", "M"))
+title(main="HALLMARK_INTERFERON_GAMMA_RESPONSE \n p = 3.09E-06 (t test, 193 genes)")
