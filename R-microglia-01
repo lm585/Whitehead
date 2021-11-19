@@ -173,7 +173,7 @@ ha <- HeatmapAnnotation(group=sampleinfo$controTumor)
 fc <- read.delim("/Users/linyongmao/gsea_home/output/microgliaSex/templogratioPlus0d01usMedian.Gsea.1635801846691/ranked_gene_list_Tumor_versus_Control_1635801846691.tsv", row.names=1)
 length(fc[ rownames(mat) ,]$SCORE)
 dim(mat)
-col_fun = colorRamp2(c(-2,0,2), c("blue", "white",  "red"))
+col_fun = colorRamp2(c(-1,0,1), c("blue", "white",  "red"))
 ca <- HeatmapAnnotation(logFC=fc[ rownames(mat) ,]$SCORE, which="row", col=list(logFC = col_fun))
 Heatmap(matrix = mat,
                 top_annotation = ha,
