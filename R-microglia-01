@@ -227,3 +227,13 @@ Heatmap(matrix = mat,
                 top_annotation = ha,
         name = "mRNA", row_names_gp = gpar(fontsize = 8), clustering_distance_columns="euclidean", clustering_method_columns="complete", column_split=sampleinfo$controTumor, right_annotation=ca, row_split= c("log2FC < 0.5", "log2FC > 0.5")[1+(fc[ rownames(mat) ,]$SCORE > 0.5)])
 
+
+#########################
+t1 <- fc[ rownames(mat) ,]
+names0.5 <- rownames(t1[ t1$SCORE > 0.5, ])
+df1 <- as.data.frame(mat[,1])
+df1$split = "geneset1"
+df1[ names0.5, ]$split = "geneset2"
+Heatmap(matrix = mat,
+                top_annotation = ha,
+        name = "mRNA", row_names_gp = gpar(fontsize = 8), clustering_distance_columns="euclidean", clustering_method_columns="complete", column_split=sampleinfo$controTumor, right_annotation=ca, row_split=df1$split)
