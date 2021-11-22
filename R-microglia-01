@@ -164,6 +164,9 @@ cut -f 1-2 out | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $2, $1}' > temp-filt-
 bash script-female-specific-genes
 vi temp-female-only
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    temp-female-only temp-filt-geneID.2.name-ID.txt out
+cut -f 1-2 out | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $2, $1}' > out-2
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  out-2 geneID-name-type-chr out-3
+mv -i out-3 femaleOnlyLEGs-HALLMARK_INTERFERON_GAMMA_RESPONSE.txt
 
 genes <- read.delim("out")
 mat <- as.matrix(a[genes$geneID,])
