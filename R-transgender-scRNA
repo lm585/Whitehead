@@ -322,3 +322,14 @@ summary(res)
 xx <- type[type$Group == "Cis F", ]
 xy <- type[type$Group == "Cis M", ]
 wilcox.test( xx$CD4..T.naive, xy$CD4..T.naive, paired=F, exact=F, conf.int = T)
+
+sink("temp-res.txt")
+for(i in 13:26) {
+res <- lm(type[,i] ~ log10(type$FreeAndrogenIndex ) + type$BMI +type$chr)
+r <- summary(res)
+r1 <- r$coefficients
+str <- paste(colnames(type)[i], r1[2:4,4], sep = "\t")
+cat(str)
+cat("\n")
+}
+sink()
