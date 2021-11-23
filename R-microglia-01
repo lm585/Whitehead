@@ -276,4 +276,8 @@ points(x.info[ info$XX == "XY" & info$Tumor == "Tumor", ]$V2, x.info[ info$XX ==
 points(x.info[ info$XX == "XY" & info$Tumor == "Control", ]$V2, x.info[ info$XX == "XY" & info$Tumor == "Control", ]$V3, col = "green", pch = 17 , cex = 1.6)
 legend("topleft", inset = 0.05, c("XX control", "XX tumor", "XY control", "XY tumor"), pch=c(16,16,17,17), col = c("green", "red", "green", "red" ))
 
+###boxplot per four groups
+x.info$group <- paste(info$XX, info$Tumor)
+boxplot(as.numeric( x.info$V3) ~ x.info$group, xlab="", ylab = "PC2")
+beeswarm(as.numeric( x.info$V3) ~ x.info$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
 
