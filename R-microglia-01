@@ -240,3 +240,40 @@ df1[ names0.5, ]$split = "geneset2"
 Heatmap(matrix = mat,
                 top_annotation = ha,
         name = "mRNA", row_names_gp = gpar(fontsize = 8), clustering_distance_columns="euclidean", clustering_method_columns="complete", column_split=sampleinfo$controTumor, right_annotation=ca, row_split=df1$split)
+
+#############################################################################
+####PCA plot of39 samples
+cut -f 1,6,10,11,16,17,18,19,23,24,27,29,32,33,35,41,42,43,3,4,7,8,9,12,13,14,15,20,21,22,25,26,28,30,34,36,37,38,39,40 microglia-41-samples.genecount.txt > temp.txt
+t <- read.delim("temp.txt", header = T, row.names = 1)
+dim(t)
+##[1] 58302    39
+rawCount <- t
+group <- factor(rep(1, 39))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+y<-y[med$logic,]
+dim(y)
+###[1] 14170    39
+mds <- plotMDS(y, top=98765)
+x <- cbind( colnames(y$counts), mds$x, mds$y)
+write.table(x, "temp.txt", quote = F, sep = "\t")
+x <- as.data.frame(x)
+info <- read.delim("microglia-39-sample-sampInfo.txt", row.names=1)
+rownames(x) <- colnames(y$counts)
+##x.info and info should now have the same gene order
+x.info <- x[rownames(info),]
+plot(x.info$V2, x.info$V3, cex=0.05, xlab="PC1 (19%)", ylab = "PC2 (14%)")
+###text(as.numeric(x.info$V2), as.numeric(x.info$V3), paste(info$XX, info$Tumor))
+points(x.info[ info$XX == "XX" & info$Tumor == "Tumor", ]$V2, x.info[ info$XX == "XX" & info$Tumor == "Tumor", ]$V3, col = "red", pch = 16 , cex = 1.6)
+points(x.info[ info$XX == "XX" & info$Tumor == "Control", ]$V2, x.info[ info$XX == "XX" & info$Tumor == "Control", ]$V3, col = "green", pch = 16 , cex = 1.6)
+points(x.info[ info$XX == "XY" & info$Tumor == "Tumor", ]$V2, x.info[ info$XX == "XY" & info$Tumor == "Tumor", ]$V3, col = "red", pch = 17 , cex = 1.6)
+points(x.info[ info$XX == "XY" & info$Tumor == "Control", ]$V2, x.info[ info$XX == "XY" & info$Tumor == "Control", ]$V3, col = "green", pch = 17 , cex = 1.6)
+legend("topleft", inset = 0.05, c("XX control", "XX tumor", "XY control", "XY tumor"), pch=c(16,16,17,17), col = c("green", "red", "green", "red" ))
+
+
