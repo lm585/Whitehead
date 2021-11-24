@@ -131,6 +131,11 @@ beeswarm(data.frame(f$rank1, f$rank2),  pch = 1, col = 1, cex = 1, add = T)
 axis(1, at = 1:2, labels=c("F", "M"))
 title(main="HALLMARK_INTERFERON_GAMMA_RESPONSE \n p = 3.09E-06 (t test, 193 genes)")
 
+f <- read.delim("temp-HALLMARK_E2F_TARGETS-f-m-ranks.txt")
+boxplot(f$rank1, f$rank2, xlab = "", ylab = "logFC based gene ranks in percentile")
+beeswarm(data.frame(f$rank1, f$rank2),  pch = 1, col = 1, cex = 1, add = T)
+title(main="HALLMARK_E2F_TARGETS \n p = 0.00721 (t test, 198 genes)")
+
 ####################################################################
 ###heatmap LEGs in female in HALLMARK_INTERFERON_GAMMA_RESPONSE
 library(ComplexHeatmap)
