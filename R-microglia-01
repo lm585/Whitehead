@@ -188,6 +188,13 @@ Heatmap(matrix = mat,
                 top_annotation = ha,
         name = "mRNA", row_names_gp = gpar(fontsize = 8), clustering_distance_columns="euclidean", clustering_method_columns="complete", column_split=sampleinfo$controTumor, right_annotation=ca)
 
+col_fun2 = colorRamp2(c(-4,0,4), c("blue", "white",  "red"))
+ha <- HeatmapAnnotation(group=sampleinfo$controTumor, col = list(group = c("Control" = "green", "Tumor" = "red")))
+Heatmap(matrix = mat,
+                top_annotation = ha,
+        name = "mRNA", row_names_gp = gpar(fontsize = 8), clustering_distance_columns="euclidean", clustering_method_columns="complete", 
+	column_split=sampleinfo$controTumor, 
+	right_annotation=ca, row_split= c("log2FC < 0.5", "log2FC > 0.5")[1+(fc[ rownames(mat) ,]$SCORE > 0.5)], col = col_fun2)
 ####################################################################
 ###heatmap selected genes in male in HALLMARK_INTERFERON_GAMMA_RESPONSE
 library(ComplexHeatmap)
