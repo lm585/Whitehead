@@ -229,6 +229,19 @@ bash script-female-specific-genes
 vi temp-female-only
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    temp-female-only temp-filt-geneID.2.name-ID.txt out
 
+fc="/Users/linyongmao/gsea_home/output/microgliaSex/tempMale_logratioPlus0d01usMedian.Gsea.1635809488219/ranked_gene_list_Tumor_versus_Control_1635809488219.tsv"
+cat maleOnlyLEGs-HALLMARK_E2F_TARGETS.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $2, $1}' > temp-name-id
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp-name-id $fc out
+cat out | grep -vw notApplicable > out2
+pc="/Users/linyongmao/gsea_home/output/microgliaSex/microglia_male_prerank_p.GseaPreranked.1635699117040/ranked_gene_list_na_pos_versus_na_neg_1635699117040.tsv"
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine out2 $pc out3
+cat out3 | awk '{print $1 "\t" $2}' > out4
+paste out2 out4 > out5
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  out5 temp-name-id out6
+paste  out5  out6 | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $1 != $5' | wc -l
+paste  out5  out6 | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $1 != $7' | wc -l
+paste  out5  out6  > maleOnlyLEGs-HALLMARK_E2F_TARGETS.fc.p-value.txt
+
 genes <- read.delim("out")
 mat <- as.matrix(a[genes$geneID,])
 rownames(mat) <- genes$name
