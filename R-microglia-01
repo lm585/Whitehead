@@ -190,16 +190,16 @@ rownames(mat) <- a.df.g$V1
 
 ha <- HeatmapAnnotation(group=sampleinfo$controTumor, col = list(group = c("Control" = "green", "Tumor" = "red")))
 dim(mat)
-col_fun = colorRamp2(c(-1,0,1), c("blue", "white",  "red"))
-col_fun_2 = colorRamp2(c(-2,log10(0.25),0), c("blue", "white",  "red"))
+
+col_fun = colorRamp2(c(-1,0,1), c("green", "white",  "magenta"))
+col_fun_2 = colorRamp2(c(-2,log10(0.25),0), c("green", "white",  "magenta"))
 ca <- HeatmapAnnotation(log2FC= a.df.g$V3, log10Pval = -abs(a.df.g$V6), which="row", col=list(log2FC = col_fun, log10Pval = col_fun_2))
 col_fun_3 = colorRamp2(c(-4,0,4), c("blue", "white",  "red"))
 Heatmap(matrix = mat,
                 top_annotation = ha,
-        name = "mRNA", row_names_gp = gpar(fontsize = 8), clustering_distance_columns="euclidean", clustering_method_columns="complete", 
-	column_split=sampleinfo$controTumor, 
-	 col = col_fun_3, right_annotation=ca, row_order=order(a.df.g$V3), column_order=order(colMeans(mat) + 4*(sampleinfo$controTumor == "Tumor")))
-	 
+        name = "mRNA", row_names_gp = gpar(fontsize = 8), clustering_distance_columns="euclidean", clustering_method_columns="complete",
+        column_split=sampleinfo$controTumor,
+         col = col_fun_3, right_annotation=ca, row_order=order(a.df.g$V3), column_order=order(colMeans(mat) + 4*(sampleinfo$controTumor == "Tumor")))	 
 Heatmap(matrix = mat,
                 top_annotation = ha,
         name = "mRNA", row_names_gp = gpar(fontsize = 8), clustering_distance_columns="euclidean", clustering_method_columns="complete", column_split=sampleinfo$controTumor, right_annotation=ca)
