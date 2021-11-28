@@ -198,7 +198,7 @@ Heatmap(matrix = mat,
                 top_annotation = ha,
         name = "mRNA", row_names_gp = gpar(fontsize = 8), clustering_distance_columns="euclidean", clustering_method_columns="complete", 
 	column_split=sampleinfo$controTumor, 
-	 col = col_fun_3, right_annotation=ca, row_order=order(a.df.g$V3))
+	 col = col_fun_3, right_annotation=ca, row_order=order(a.df.g$V3), column_order=order(colMeans(mat) + 4*(sampleinfo$controTumor == "Tumor")))
 	 
 Heatmap(matrix = mat,
                 top_annotation = ha,
