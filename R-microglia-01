@@ -276,7 +276,10 @@ ha <- HeatmapAnnotation(group=sampleinfo$controTumor, col = list(group = c("Cont
 col_fun = colorRamp2(c(-1,0,1), c("green", "white",  "magenta"))
 col_fun_2 = colorRamp2(c(-2,log10(0.25),0), c("green", "white",  "magenta"))
 ca <- HeatmapAnnotation(log2FC= a.df.g$V3.x, log10Pval = -abs(a.df.g$V6.x), which="row", col=list(log2FC = col_fun, log10Pval = col_fun_2))
-col_fun_3 = colorRamp2(c(-4,0,4), c("blue", "white",  "red"))
+col_fun_3 = colorRamp2(c(-3,0,3), c("blue", "white",  "red"))
+ha <- HeatmapAnnotation(group=sampleinfo$controTumor, colAvg = colMeans(mat),  
+      col = list(group = c("Control" = "green", "Tumor" = "red"), colAvg = col_fun_3))
+
 for(i in 1:length(a.df.g$V3.y))
 { if(is.na(a.df.g$V3.y[i]))
      a.df.g$V3.y[i] = 0
