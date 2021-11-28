@@ -185,7 +185,7 @@ paste  out5  out6  > maleOnlyLEGs-HALLMARK_E2F_TARGETS.female.fc.p-value.txt
 a.df <- as.data.frame(a)
 a.df$id <- rownames(a.df)
 a.df.g <- merge(a.df, g, by.x="id", by.y="V8")
-mat <- as.matrix(a.df.g[,2:23])
+mat <- as.matrix(a.df.g[,2:18])
 rownames(mat) <- a.df.g$V1
 
 ha <- HeatmapAnnotation(group=sampleinfo$controTumor, col = list(group = c("Control" = "green", "Tumor" = "red")))
