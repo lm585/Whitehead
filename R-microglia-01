@@ -188,13 +188,14 @@ a.df.g <- merge(a.df, g, by.x="id", by.y="V8")
 mat <- as.matrix(a.df.g[,2:18])
 rownames(mat) <- a.df.g$V1
 
-ha <- HeatmapAnnotation(group=sampleinfo$controTumor, col = list(group = c("Control" = "green", "Tumor" = "red")))
 dim(mat)
 
 col_fun = colorRamp2(c(-1,0,1), c("green", "white",  "magenta"))
 col_fun_2 = colorRamp2(c(-2,log10(0.25),0), c("green", "white",  "magenta"))
 ca <- HeatmapAnnotation(log2FC= a.df.g$V3, log10Pval = -abs(a.df.g$V6), which="row", col=list(log2FC = col_fun, log10Pval = col_fun_2))
-col_fun_3 = colorRamp2(c(-4,0,4), c("blue", "white",  "red"))
+col_fun_3 = colorRamp2(c(-3,0,3), c("blue", "white",  "red"))
+ha <- HeatmapAnnotation(group=sampleinfo$controTumor, colAvg = colMeans(mat),  
+      col = list(group = c("Control" = "green", "Tumor" = "red"), colAvg = col_fun_3))
 Heatmap(matrix = mat,
                 top_annotation = ha,
         name = "mRNA", row_names_gp = gpar(fontsize = 8), clustering_distance_columns="euclidean", clustering_method_columns="complete",
