@@ -229,6 +229,17 @@ cat("\n")
 }
 sink()
 
+t2e.age <- read.delim("t2eratio-age-bmi-newsamples.txt")
+t2e.age$Group <- factor(t2e.age$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
+t2e.age[47,]$black <- "green"
+t2e.age[40,]$black <- "green"
+t2e.age[38,]$black <- "yellow"
+t2e.age[50,]$black <- "yellow"
+boxplot(t2e.age$BMI ~ t2e.age$Group, xlab="", ylab = "BMI")
+beeswarm(t2e.age$BMI ~ t2e.age$Group, pch = 20, pwcol=t2e.age$black , cex = 2, add=T)
+boxplot(t2e.age$Age ~ t2e.age$Group, xlab="", ylab = "Age")
+beeswarm(t2e.age$Age ~ t2e.age$Group, pch = 20, pwcol=t2e.age$black , cex = 2, add=T)
+
 ############################################
 fai Free Androgen Index compare
 cat temp | cut -f 1,10 > temp-bch-shbg
