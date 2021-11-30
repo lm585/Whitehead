@@ -1,0 +1,19 @@
+fp="/Users/linyongmao/gsea_home/output/microgliaSex/templogratioPlus0d01usMedian.Gsea.1635801846691/$1.tsv"
+mp="/Users/linyongmao/gsea_home/output/microgliaSex/tempMale_logratioPlus0d01usMedian.Gsea.1635809488219/$1.tsv"
+mrank="/Users/linyongmao/gsea_home/output/microgliaSex/microglia_male_prerank_p.GseaPreranked.1635699117040/$1.tsv"
+frank="/Users/linyongmao/gsea_home/output/microgliaSex/microglia_female_prerank_p.GseaPreranked.1635699072273/$1.tsv"
+
+cat "$frank" "$fp"  | grep -w Yes | cut -f 2 | sort | uniq -d  | grep -vw SYMBOL > temp-female-LEGs-rank-and-perm
+wc -l temp-female-LEGs-rank-and-perm
+cat "$mrank" "$mp"  | grep -w Yes | cut -f 2 | sort | uniq -d  | grep -vw SYMBOL > temp-male-LEGs-rank-and-perm
+wc -l temp-male-LEGs-rank-and-perm
+cat  temp-female-LEGs-rank-and-perm temp-male-LEGs-rank-and-perm | sort | uniq -d > temp-common-M-F
+cat  temp-female-LEGs-rank-and-perm temp-common-M-F | sort | uniq -u > temp-female-only
+echo name > "femaleOnlyLEGs-$1.txt"
+cat temp-female-only >> "femaleOnlyLEGs-$1.txt"
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    "femaleOnlyLEGs-$1.txt"  temp-filt-geneID.2.name-ID.txt out
+cut -f 1-2 out | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $2, $1}' > out-2
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  out-2 geneID-name-type-chr out-3
+mv  out-3  "femaleOnlyLEGs-$1.txt"
+wc -l "femaleOnlyLEGs-$1.txt"
+#rm temp-female-LEGs-rank-and-perm temp-male-LEGs-rank-and-perm temp-common-M-F 
