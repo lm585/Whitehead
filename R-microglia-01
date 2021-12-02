@@ -20,7 +20,7 @@ head -1 microglia-41-samples.genecount.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} 
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    temp-control temp-sample-columNum out
 paste  temp-control  out  | cut -f 1-7 > microglia-41-samples.control-F-M.16samp.sampInfo.txt
 paste  temp-control  out  | cut -f 9 |awk 'BEGIN {FS = "\t"; OFS = ""; ORS =""} {print $1 ","} '
-cut -f 1,2,9,10,16,20,23,26,30,32,33,34,35,36,37,38,39,42 microglia-41-samples.genecount.txt > microglia-41-samples.control-F-M.16samp.genecount.txt
+cut -f 1,9,10,16,20,23,26,30,32,33,34,35,36,37,38,39,42 microglia-41-samples.genecount.txt > microglia-41-samples.control-F-M.16samp.genecount.txt
 
 rawCount <- read.delim("microglia-41-samples.female17samp.genecount.txt", header = T, row.names = 1)
 sampleinfo <- read.delim("microglia-41-samples.female17samp.sampInfo.txt", row.names=1)
