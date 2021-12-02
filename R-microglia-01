@@ -96,6 +96,36 @@ ENSG00000130844  1.715600  6.8048595 23.16679 7.145985e-05 0.2602094
 ENSG00000047634  1.525419  4.1331532 21.98299 9.767113e-05 0.2602094
 ENSG00000140534  8.539626 -0.3918492 26.88397 1.030518e-04 0.2602094
 
+rawCount <- read.delim("microglia-41-samples.control-F-M.16samp.genecount.txt", header = T, row.names = 1)
+sampleinfo <- read.delim("microglia-41-samples.control-F-M.16samp.sampInfo.txt", row.names=1)
+mean(colnames(rawCount) == rownames(sampleinfo))
+###[1] 1
+y <- DGEList(counts=rawCount)
+y <- calcNormFactors(y)
+###mds <- plotMDS(y, top=98765)
+###df <- data.frame(colnames(y), mds$x, mds$y)
+keep <-rowSums(cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+###[1] 16366    16
+design <- model.matrix(~sampleinfo$XX + sampleinfo$age)
+> design
+   (Intercept) sampleinfo$XXXY sampleinfo$age
+1            1               1             60
+2            1               0             73
+3            1               0             64
+4            1               1             48
+
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+mv -i diff2-1.txt control-F-M-diff2-1.txt
+vi control-F-M-diff2-1.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  control-F-M-diff2-1.txt         geneID-name-type-chr out
+paste  control-F-M-diff2-1.txt out > control-F-M-diff2-1.name-type-chr.txt
+
 #############################################
 ###fisher multi row test
 > a <- scan()
