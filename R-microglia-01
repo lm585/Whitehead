@@ -129,6 +129,12 @@ paste  control-F-M-diff2-1.txt out > control-F-M-diff2-1.name-type-chr.txt
 cat geneID-name-type-chr | cut -f 2-4 > temp-2
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    control-F-M-diff2-1.rnk temp-2 out
 paste   control-F-M-diff2-1.rnk out > control-F-M-diff2-1.rnk.type.chr.txt
+###"temp.txt" cpm(y)
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  control-F-M-diff2-1.name-type-chr.txt temp.txt out
+paste  control-F-M-diff2-1.name-type-chr.txt  out >  control-F-M-diff2-1.name-type-chr.cpm
+cat control-F-M-diff2-1.name-type-chr.cpm | cut -f 1,8,12-200 > temp-2
+bash   script-gct-plus-0d01 > control-F-M-diff2-1.16366genes.cpm.plus0d01.gct
+vi control-F-M-diff2-1.cls
 
 #############################################
 ###fisher multi row test
