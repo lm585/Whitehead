@@ -212,3 +212,9 @@ paste temp-onc  out > temp.txt
 cat temp-onco-genes | sort | uniq |awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""; } {print "\t" $1} END {print "\n";} ' > onco-supp-genes-glio.gmt
 
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   onco-supp-genes-glio.gmt  -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk female-diff2-1-filtgenesFirst.rnk  -rpt_label   "female-oncogene-supp-set"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500 -set_min 6 -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+cat list-of-pathway-LEGs-file | while read ll
+do
+cut -f 2 $ll > $ll-list.txt
+done
+./make-table-pathway-contain-genes list-of-pathway-LEGs-file list-of-pathway-recurr-genes out
