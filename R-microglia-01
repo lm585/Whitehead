@@ -413,3 +413,11 @@ cat(str)
 cat("\n")
  } }
 
+#############################################################################
+###recurrent LEGs in female-biased pathways
+g <- read.delim("out", row.names=1)
+mat <- as.matrix(g)
+col_fun = colorRamp2(c(0,1), c("white",  "magenta"))
+Heatmap(matrix = mat,
+        name = "LEGs", row_names_gp = gpar(fontsize = 8), column_names_gp = gpar(fontsize = 7), clustering_distance_columns="pearson", clustering_method_columns="complete", column_names_side ="top", clustering_distance_rows="pearson" , cell_fun = function(j, i, x, y, width, height, fill) {grid.rect(x = x, y = y, width = width, height = height,
+            gp = gpar(col = "grey", fill = NA)) }, col = col_fun)
