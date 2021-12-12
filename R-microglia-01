@@ -136,6 +136,21 @@ cat control-F-M-diff2-1.name-type-chr.cpm | cut -f 1,8,12-200 > temp-2
 bash   script-gct-plus-0d01 > control-F-M-diff2-1.16366genes.cpm.plus0d01.gct
 vi control-F-M-diff2-1.cls
 
+rawCount <- read.delim("microglia-41-samples.female13samp.noCereb.noOcci.genecount.txt", header = T, row.names = 1)
+sampleinfo <- read.delim("microglia-41-samples.female13samp.noCereb.noOcci.sampInfo.txt", row.names=1)
+group <- factor(sampleinfo$controTumor)
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+keep <-rowSums(cpm(y)>=1) >= 3
+y<-y[keep,]
+dim(y)
+##[1] 17319    13
+vi microglia-41-samples.female13samp.noCereb.noOcci.cpm.txt
+vi temp
+mv temp temp-2
+bash script-gct-plus-0d01 > microglia-41-samples.female13samp.noCereb.noOcci.cpm.plus0.01.gct
+vi microglia-41-samples.female13samp.noCereb.noOcci.cls
+
 #############################################
 ###fisher multi row test
 > a <- scan()
