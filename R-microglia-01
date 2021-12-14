@@ -227,6 +227,11 @@ beeswarm(data.frame(f$rank1, f$rank2),  pch = 1, col = 1, cex = 1, add = T)
 title(main="HALLMARK_E2F_TARGETS \n p = 0.00721 (t test, 198 genes)")
 axis(1, at = 1:2, labels=c("F", "M"))
 
+head -1 microglia-41-samples.male20samp.noCereb.noOcci.genecount.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print i, $i}'  > temp-1
+paste temp-1 microglia-41-samples.male20samp.noCereb.noOcci.sampInfo.txt | awk '$2 != $3'
+head -1 microglia-41-samples.female13samp.noCereb.noOcci.genecount.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print i, $i}'  > temp-1
+paste temp-1 microglia-41-samples.female13samp.noCereb.noOcci.sampInfo.txt | awk '$2 != $3'
+
 ####################################################################
 ###heatmap LEGs in female in HALLMARK_INTERFERON_GAMMA_RESPONSE
 library(ComplexHeatmap)
