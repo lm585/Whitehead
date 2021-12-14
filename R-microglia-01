@@ -151,6 +151,34 @@ mv temp temp-2
 bash script-gct-plus-0d01 > microglia-41-samples.female13samp.noCereb.noOcci.cpm.plus0.01.gct
 vi microglia-41-samples.female13samp.noCereb.noOcci.cls
 
+head -1 microglia-39-sample-sampInfo.txt > microglia-41-samples.male20samp.noCereb.noOcci.sampInfo.txt
+cat microglia-39-sample-sampInfo.txt | grep -w XY | grep -iwv Cerebellum | grep -iwv occipital >>  microglia-41-samples.male20samp.noCereb.noOcci.sampInfo.txt
+vi microglia-41-samples.male20samp.noCereb.noOcci.sampInfo.txt
+cat microglia-41-samples.male20samp.noCereb.noOcci.sampInfo.txt | cut -f 1 | awk 'NR > 1' >  temp-1
+head -1 microglia-41-samples.genecount.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i, i}' > temp-2
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp-1 temp-2 out
+cat out | cut -f 2 | awk 'BEGIN {FS = "\t"; OFS = ""; ORS =""} {print $1 ","} '
+cut -f 1,3,4,7,8,9,12,13,14,15,20,21,22,25,28,30,34,37,38,39,40 microglia-41-samples.genecount.txt  > microglia-41-samples.male20samp.noCereb.noOcci.genecount.txt
+
+rawCount <- read.delim("microglia-41-samples.male20samp.noCereb.noOcci.genecount.txt", header = T, row.names = 1)
+sampleinfo <- read.delim("microglia-41-samples.male20samp.noCereb.noOcci.sampInfo.txt", row.names=1)
+group <- factor(sampleinfo$Tumor)
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+keep <-rowSums(cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+#[1] 16609    20
+d <- cpm(y)
+write.table(d, "temp.txt", quote=F, sep = "\t")
+vi temp.txt ###add geneID is first line first field
+mv temp.txt  microglia-41-samples.female13samp.noCereb.noOcci.cpm.txt
+mv microglia-41-samples.female13samp.noCereb.noOcci.cpm.txt microglia-41-samples.male20samp.noCereb.noOcci.cpm.txt
+cp  microglia-41-samples.male20samp.noCereb.noOcci.cpm.txt temp-2
+vi temp-2
+bash script-gct-plus-0d01 > microglia-41-samples.male20samp.noCereb.noOcci.cpm.plus0.01.gct
+vi microglia-41-samples.male20samp.noCereb.noOcci.cpm.cls  
+
 #############################################
 ###fisher multi row test
 > a <- scan()
