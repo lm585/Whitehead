@@ -1,0 +1,91 @@
+> x
+   ContTum   age expression
+1  control   old         12
+2  control   old         14
+3  control   old         16
+4  control young          1
+5  control young          2
+6  control young          3
+7  control young          4
+8  control young          5
+9  control young          6
+10 control young          7
+11   tumor   old         11
+12   tumor   old         12
+13   tumor   old         13
+14   tumor   old         14
+15   tumor   old         15
+16   tumor   old         16
+17   tumor   old         17
+18   tumor young          2
+19   tumor young          4
+20   tumor young          6
+
+
+
+x <- read.delim("test-permutation-confound-factor.txt", row.names=1)
+sink("temp-res.txt")
+set.seed(1234)
+cat("O_A\t")
+cat(1:10)
+cat("\t")
+cat("O_B\t")
+cat(11:20)
+cat("\t")
+m1 <- median(x[1:10,]$expression)
+m2 <- median(x[11:20,]$expression)
+str <- paste(m1, m2, m2/m1, sep = "\t")
+cat(str)
+cat("\n")
+for(i in 1:1000) {
+k <- sample(1:20, size = 10, replace=FALSE)
+s1 <- x[ rownames(x) %in% k, ]
+s2 <- x[ !(rownames(x) %in% k), ]
+cat("G_A\t")
+cat(sort(as.numeric(rownames(s1))))
+cat("\t")
+cat("G_B\t")
+cat(sort(as.numeric(rownames(s2))))
+cat("\t")
+m1 <- median(s1$expression)
+m2 <- median(s2$expression)
+str <- paste(m1, m2, m2/m1, sep = "\t")
+cat(str)
+cat("\n")
+}
+sink()
+
+x <- read.delim("test-permutation-confound-factor.txt", row.names=1)
+sink("temp-res.txt")
+set.seed(1234)
+cat("O_A\t")
+cat(1:10)
+cat("\t")
+cat("O_B\t")
+cat(11:20)
+cat("\t")
+m1 <- median(x[1:10,]$expression)
+m2 <- median(x[11:20,]$expression)
+str <- paste(m1, m2, m2/m1, sep = "\t")
+cat(str)
+cat("\n")
+for(i in 1:1000) {
+k1 <- sample(c(1:3, 11:17), size = 3, replace=FALSE)
+k2 <- sample(c(4:10, 18:20), size = 7, replace=FALSE)
+k <- c(k1,k2)
+s1 <- x[ rownames(x) %in% k, ]
+s2 <- x[ !(rownames(x) %in% k), ]
+cat("G_A\t")
+cat(sort(as.numeric(rownames(s1))))
+cat("\t")
+cat("G_B\t")
+cat(sort(as.numeric(rownames(s2))))
+cat("\t")
+m1 <- median(s1$expression)
+m2 <- median(s2$expression)
+str <- paste(m1, m2, m2/m1, sep = "\t")
+cat(str)
+cat("\n")
+}
+sink()
+
