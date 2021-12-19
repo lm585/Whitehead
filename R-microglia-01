@@ -463,6 +463,26 @@ cat(str)
 cat("\n")
  } }
 
+boxplot(as.numeric( pca.info$V2) ~ pca.info$group, xlab="", ylab = "PC1")
+beeswarm(as.numeric( pca.info$V2) ~ pca.info$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+xxco <- pca.info[ pca.info$group == "XX Control",]$V2
+xxtu <- pca.info[ pca.info$group == "XX Tumor",]$V2
+xyco <- pca.info[ pca.info$group == "XY Control",]$V2
+xytu <- pca.info[ pca.info$group == "XY Tumor",]$V2
+ll <- list(xxco = xxco, xxtu = xxtu, xyco = xyco, xytu = xytu )
+for(i in 1:length(ll)) {
+ for(j in 1:length(ll)) {
+wilcox <- wilcox.test(as.numeric( ll[[i]]),as.numeric( ll[[j]]), paired=F, exact=F, conf.int = T)
+str <- paste(names(ll)[i], names(ll)[j], wilcox$p.value, sep = "\t" )
+cat(str)
+cat("\n")
+ } }
+
+boxplot(as.numeric( pca.info$V2) ~ pca.info$XX, xlab="", ylab = "PC1")
+beeswarm(as.numeric( pca.info$V2) ~ pca.info$XX, pch = c(16,17), col = c("green", "green"), cex = 2, add = T)
+xx <- pca.info[ pca.info$XX == "XX",]$V2
+xy <- pca.info[ pca.info$XX == "XY",]$V2
+wilcox.test(as.numeric(xx), as.numeric(xy), paired=F, exact=F, conf.int = T)
 
 #############################################################################
 ###recurrent LEGs in female-biased pathways
