@@ -434,14 +434,15 @@ write.table(x, "temp.txt", quote = F, sep = "\t")
 x <- as.data.frame(x)
 info <- read.delim("microglia-39-sample-sampInfo.txt", row.names=1)
 rownames(x) <- colnames(y$counts)
-##x.info and info should now have the same gene order
-x.info <- x[rownames(info),]
-plot(x.info$V2, x.info$V3, cex=0.05, xlab="PC1 (19%)", ylab = "PC2 (14%)")
+info$id <- rownames(info)
+pca.info <- merge(x, info, by.x="V1", by.y="id")
+
+plot(pca.info$V2, pca.info$V3, cex=0.05, xlab="PC1 (19%)", ylab = "PC2 (14%)")
 ###text(as.numeric(x.info$V2), as.numeric(x.info$V3), paste(info$XX, info$Tumor))
-points(x.info[ info$XX == "XX" & info$Tumor == "Tumor", ]$V2, x.info[ info$XX == "XX" & info$Tumor == "Tumor", ]$V3, col = "red", pch = 16 , cex = 1.6)
-points(x.info[ info$XX == "XX" & info$Tumor == "Control", ]$V2, x.info[ info$XX == "XX" & info$Tumor == "Control", ]$V3, col = "green", pch = 16 , cex = 1.6)
-points(x.info[ info$XX == "XY" & info$Tumor == "Tumor", ]$V2, x.info[ info$XX == "XY" & info$Tumor == "Tumor", ]$V3, col = "red", pch = 17 , cex = 1.6)
-points(x.info[ info$XX == "XY" & info$Tumor == "Control", ]$V2, x.info[ info$XX == "XY" & info$Tumor == "Control", ]$V3, col = "green", pch = 17 , cex = 1.6)
+points(pca.info[ pca.info$XX == "XX" & pca.info$Tumor == "Tumor", ]$V2, pca.info[ pca.info$XX == "XX" & pca.info$Tumor == "Tumor", ]$V3, col = "red", pch = 16 , cex = 1.6)
+points(pca.info[ pca.info$XX == "XX" & pca.info$Tumor == "Control", ]$V2, pca.info[ pca.info$XX == "XX" & pca.info$Tumor == "Control", ]$V3, col = "green", pch = 16 , cex = 1.6)
+points(pca.info[ pca.info$XX == "XY" & pca.info$Tumor == "Tumor", ]$V2, pca.info[ pca.info$XX == "XY" & pca.info$Tumor == "Tumor", ]$V3, col = "red", pch = 17 , cex = 1.6)
+points(pca.info[ pca.info$XX == "XY" & pca.info$Tumor == "Control", ]$V2, pca.info[ pca.info$XX == "XY" & pca.info$Tumor == "Control", ]$V3, col = "green", pch = 17 , cex = 1.6)
 legend("topleft", inset = 0.05, c("XX control", "XX tumor", "XY control", "XY tumor"), pch=c(16,16,17,17), col = c("green", "red", "green", "red" ))
 
 ###boxplot per four groups
