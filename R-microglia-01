@@ -446,13 +446,14 @@ points(pca.info[ pca.info$XX == "XY" & pca.info$Tumor == "Control", ]$V2, pca.in
 legend("topleft", inset = 0.05, c("XX control", "XX tumor", "XY control", "XY tumor"), pch=c(16,16,17,17), col = c("green", "red", "green", "red" ))
 
 ###boxplot per four groups
-x.info$group <- paste(info$XX, info$Tumor)
-boxplot(as.numeric( x.info$V3) ~ x.info$group, xlab="", ylab = "PC2")
-beeswarm(as.numeric( x.info$V3) ~ x.info$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
-xxco <- x.info[ x.info$group == "XX Control",]$V3
-xxtu <- x.info[ x.info$group == "XX Tumor",]$V3
-xyco <- x.info[ x.info$group == "XY Control",]$V3
-xytu <- x.info[ x.info$group == "XY Tumor",]$V3
+pca.info$group <- paste(pca.info$XX, pca.info$Tumor)
+boxplot(as.numeric( pca.info$V3) ~ pca.info$group, xlab="", ylab = "PC2")
+beeswarm(as.numeric( pca.info$V3) ~ pca.info$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+
+xxco <- pca.info[ pca.info$group == "XX Control",]$V3
+xxtu <- pca.info[ pca.info$group == "XX Tumor",]$V3
+xyco <- pca.info[ pca.info$group == "XY Control",]$V3
+xytu <- pca.info[ pca.info$group == "XY Tumor",]$V3
 ll <- list(xxco = xxco, xxtu = xxtu, xyco = xyco, xytu = xytu )
 for(i in 1:length(ll)) {
  for(j in 1:length(ll)) {
@@ -461,6 +462,7 @@ str <- paste(names(ll)[i], names(ll)[j], wilcox$p.value, sep = "\t" )
 cat(str)
 cat("\n")
  } }
+
 
 #############################################################################
 ###recurrent LEGs in female-biased pathways
