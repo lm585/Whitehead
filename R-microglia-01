@@ -515,3 +515,57 @@ boxplot( log2(as.numeric( cpm.g.t.info[4:42,i])+1) ~ cpm.g.t.info[4:42,]$group, 
 beeswarm(log2(as.numeric( cpm.g.t.info[4:42,i])+1) ~ cpm.g.t.info[4:42,]$group, pch = c(1,1,2,2), col = c("green", "red", "green", "red" ), cex = 1, add = T)
 title(main= cpm.g.t.info[43,i] )
 }
+
+#############################################################################
+#######whole pathway level z-score boxplot
+d = cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+g <- read.delim("geneID-name")
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, g, by.x="id", by.y="geneID")
+dim(a.df.g)
+###[1] 14170    41
+grep -i via_nfkb h.all* | awk '
+BEGIN {FS = "\t"; OFS = ""}
+{
+ for(i = 3; i <= NF; i++)
+ {
+  if($i != "")
+    print $i;
+ }
+}
+' > temp-path.genes
+p <- read.delim("temp-path.genes", header=F)
+p.exp <- a.df.g[ a.df.g$name %in% p$V1, ]
+length(p.exp$name)
+###[1] 185
+mat <- as.matrix(p.exp[, 2:40])
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+> res
+             id        mean
+MGB_009 MGB_009  0.16357008
+MGB_011 MGB_011  0.04620055
+MGB_016 MGB_016  1.47960440
+MGB_018 MGB_018  0.40593726
+MGB_022 MGB_022  0.49574590
+MGB_023 MGB_023 -0.42584137
+
+res.info <- merge(res, info, by.x="id", by.y="id1")
+res.info$group <- paste(res.info$XX, res.info$Tumor)
+boxplot(res.info$mean ~ res.info$group, xlab = "", ylab = "z-score avg of all genes")
+title(main="HALLMARK_TNFA_SIGNALING_VIA_NFKB")
+beeswarm(res.info$mean ~ res.info$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+
+xxco <- res.info[ res.info$group == "XX Control",]$mean
+xxtu <- res.info[ res.info$group == "XX Tumor",]$mean
+xyco <- res.info[ res.info$group == "XY Control",]$mean
+xytu <- res.info[ res.info$group == "XY Tumor",]$mean
+
