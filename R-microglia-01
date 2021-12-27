@@ -504,6 +504,30 @@ axis(side = 1,
      labels=c(b[2], b[1], b[4], b[3], b[5:7]) , at = 1:7, las =2)
 beeswarm(as.numeric(pca.info$V3) ~ pca.info$grape3 ,add =T,pch = c(16,16,16,16,17,17,17), col=c("green", "red","red","red", "green", "red", "red"))
 
+t1 <- pca.info[ pca.info$grape3 == "XY Low grade resection",  ]$V3
+t2 <- pca.info[ pca.info$XX == "XX" & pca.info$Tumor == "Tumor",  ]$V3
+t3 <- pca.info[ pca.info$grape3 == "XX Tumor resection",  ]$V3
+t4 <- pca.info[ pca.info$grape3 == "XY Tumor resection",  ]$V3
+
+cx <- pca.info[ pca.info$XX == "XX" & pca.info$Tumor == "Control",  ]$V3
+cy <- pca.info[ pca.info$XX == "XY" & pca.info$Tumor == "Control",  ]$V3
+tx <- pca.info[ pca.info$XX == "XX" & pca.info$Tumor == "Tumor",  ]$V3
+ty <- pca.info[ pca.info$XX == "XY" & pca.info$Tumor == "Tumor",  ]$V3
+
+
+d <- mean(as.numeric(cy)) - mean(as.numeric(cx))
+> d
+[1] 0.02690553
+
+t.test(as.numeric(t3),as.numeric(t4))
+wilcox.test(as.numeric(t3),as.numeric(t4))
+
+t.test(as.numeric(t1) - mean(as.numeric(cy)),as.numeric(t3) - mean(as.numeric(cx)))
+t.test(as.numeric(t4) - mean(as.numeric(cy)),as.numeric(t3) - mean(as.numeric(cx)))
+
+t.test(as.numeric(tx),as.numeric(ty))
+t.test(as.numeric(tx) - mean(as.numeric(cx)),as.numeric(ty) - mean(as.numeric(cy)))
+
 #############################################################################
 ###recurrent LEGs in female-biased pathways
 g <- read.delim("out", row.names=1)
