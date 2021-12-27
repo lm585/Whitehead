@@ -589,3 +589,56 @@ xxtu <- res.info[ res.info$group == "XX Tumor",]$mean
 xyco <- res.info[ res.info$group == "XY Control",]$mean
 xytu <- res.info[ res.info$group == "XY Tumor",]$mean
 
+
+#######################################################################
+#######15 pathways, 7 groups, pathway-level z-score of all genes,
+#######[1] "XX Benign resection"    "XX Control"             "XX Met resection"       "XX Tumor resection"    
+#######[5] "XY Control"             "XY Low grade resection" "XY Tumor resection"    
+
+cat list-of-pathways | while read ll
+do
+  grep -i "$ll"  h.all.v7.4.symbols.gmt | awk '
+BEGIN {FS = "\t"; OFS = ""}
+{
+ for(i = 3; i <= NF; i++)
+ {
+  if($i != "")
+    print $i;
+ }
+}
+' > "$ll".temp.genes
+done
+
+ls  *.temp.genes > temp-files
+.......dim(a.df.g)
+###[1] 14170    41
+
+layout(matrix(1:6, 2, 3, byrow=T) )
+file <- read.delim("temp-files", header=F)
+for(index in 1:6) {
+ p <- read.delim(file[index,1], header=F)
+ p.exp <- a.df.g[ a.df.g$name %in% p$V1, ]
+ length(p.exp$name)
+ ###[1] 185
+ mat <- as.matrix(p.exp[, 2:40])
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+ ###> res
+ ###             id        mean
+ ###MGB_009 MGB_009  0.16357008
+ ###MGB_011 MGB_011  0.04620055
+
+ res.info <- merge(res, info, by.x="id", by.y="id1")
+ res.info$grape2 <- res.info$grade
+ for(i in 1:dim(res.info)[1]) {
+  if(res.info$Tumor[i] == "Control")
+   { res.info$grape2[i] = "Control"
+   }
+ }
+ res.info$grape3 <- paste(res.info$XX, res.info$grape2)
+ b <- sort(unique(paste(res.info$XX, res.info$grape2) ))
+ res.info$grape3 <- factor( res.info$grape3, levels=c(b[2], b[1], b[4], b[3], b[5:7]), labels=c("XXco", "XXBe", "XXTu", "XXme", "XYco", "XYlo", "XYTu") )
+ par(cex = 0.4)
+ boxplot(as.numeric(res.info$mean) ~ res.info$grape3 ,  ylab = "z-score avg of all genes", xlab = "")
+ beeswarm(as.numeric(res.info$mean) ~ res.info$grape3 ,add =T,pch = c(16,16,16,16,17,17,17), col=c("green", "red","red","red", "green", "red", "red"), cex = 1.5)
+ title(main = file[index,1])
+ }
