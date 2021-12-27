@@ -484,6 +484,26 @@ xx <- pca.info[ pca.info$XX == "XX",]$V2
 xy <- pca.info[ pca.info$XX == "XY",]$V2
 wilcox.test(as.numeric(xx), as.numeric(xy), paired=F, exact=F, conf.int = T)
 
+########multiple groups, [1] "XX Control"             "XX Benign resection"    "XX Tumor resection"     "XX Met resection"      
+########[5] "XY Control"             "XY Low grade resection" "XY Tumor resection"   
+pca.info$grape2 <- pca.info$grade
+for(i in 1:dim(pca.info)[1]) {
+ if(pca.info$Tumor[i] == "Control")
+  { pca.info$grape2[i] = "Control"
+  }
+}
+pca.info$grape3 <- paste(pca.info$XX, pca.info$grape2)
+b <- sort(unique(paste(pca.info$XX, pca.info$grape2) ))
+pca.info$grape3 <- factor( pca.info$grape3, levels=c(b[2], b[1], b[4], b[3], b[5:7]) )
+####4in wide, 3 in high
+par(pin=c(4,3))
+boxplot(as.numeric(pca.info$V3) ~ pca.info$grape3 , xaxt = "n", ylab = "PC2", xlab = "")
+#####las = 2 perpendicular,
+axis(side = 1, 
+     ## Rotate the labels.
+     labels=c(b[2], b[1], b[4], b[3], b[5:7]) , at = 1:7, las =2)
+beeswarm(as.numeric(pca.info$V3) ~ pca.info$grape3 ,add =T,pch = c(16,16,16,16,17,17,17), col=c("green", "red","red","red", "green", "red", "red"))
+
 #############################################################################
 ###recurrent LEGs in female-biased pathways
 g <- read.delim("out", row.names=1)
