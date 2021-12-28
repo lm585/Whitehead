@@ -613,6 +613,30 @@ xxtu <- res.info[ res.info$group == "XX Tumor",]$mean
 xyco <- res.info[ res.info$group == "XY Control",]$mean
 xytu <- res.info[ res.info$group == "XY Tumor",]$mean
 
+#############################################################################
+##########whole pathway level z-score boxplot; loop
+layout(matrix(1:6, 2, 3, byrow=T) )
+file <- read.delim("temp-files", header=F)
+for(index in 1:6) {
+ p <- read.delim(file[index,1], header=F)
+ p.exp <- a.df.g[ a.df.g$name %in% p$V1, ]
+ length(p.exp$name)
+ ###[1] 185
+ mat <- as.matrix(p.exp[, 2:40])
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+ ###> res        
+ ###             id        mean
+ ###MGB_009 MGB_009  0.16357008
+ ###MGB_011 MGB_011  0.04620055
+ 
+ res.info <- merge(res, info, by.x="id", by.y="id1")
+ res.info$grape3 <- paste(res.info$XX, res.info$Tumor)
+ par(cex = 0.4)
+ boxplot(as.numeric(res.info$mean) ~ res.info$grape3 ,  ylab = "z-score avg of all genes", xlab = "")
+ beeswarm(as.numeric(res.info$mean) ~ res.info$grape3 ,add =T,pch = c(16,16,17,17), col=c("green", "red", "green", "red"), cex = 1.5)
+ title(main = file[index,1])
+ }
+
 
 #######################################################################
 #######15 pathways, 7 groups, pathway-level z-score of all genes,
