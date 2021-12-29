@@ -449,6 +449,8 @@ legend("topleft", inset = 0.05, c("XX control", "XX tumor", "XY control", "XY tu
 pca.info$group <- paste(pca.info$XX, pca.info$Tumor)
 boxplot(as.numeric( pca.info$V3) ~ pca.info$group, xlab="", ylab = "PC2")
 beeswarm(as.numeric( pca.info$V3) ~ pca.info$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+###add horizon grid line
+> abline(h = seq(20,80,10), lty = 5, lwd = 0.5, col = "gray")
 
 xxco <- pca.info[ pca.info$group == "XX Control",]$V3
 xxtu <- pca.info[ pca.info$group == "XX Tumor",]$V3
