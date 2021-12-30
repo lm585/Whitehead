@@ -530,6 +530,35 @@ t.test(as.numeric(t4) - mean(as.numeric(cy)),as.numeric(t3) - mean(as.numeric(cx
 t.test(as.numeric(tx),as.numeric(ty))
 t.test(as.numeric(tx) - mean(as.numeric(cx)),as.numeric(ty) - mean(as.numeric(cy)))
 
+##############################################################################
+#####lm(), PC2 ~ multivariables
+res <- lm(-as.numeric(pca.info$V3) ~ pca.info$XX + pca.info$location + pca.info$age + pca.info$Tumor)
+r <- summary(res)
+r
+
+res <- lm(-as.numeric(pca.info$V3) ~  pca.info$Tumor)
+r <- summary(res)
+
+a <- pca.info[pca.info$Tumor == "Tumor", ]
+res <- lm(-as.numeric(a$V3) ~ a$XX + a$location + a$age )
+r <- summary(res)
+
+a <- pca.info[pca.info$Tumor == "Control", ]
+res <- lm(-as.numeric(a$V3) ~ a$XX + a$location + a$age )
+r <- summary(res)
+
+pca.info$group <- paste(pca.info$XX, pca.info$Tumor)
+boxplot(as.numeric( pca.info$V3) ~ pca.info$group, xlab="", ylab = "PC2")
+beeswarm(as.numeric( pca.info$V3) ~ pca.info$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+###add horizon grid
+abline(h = seq(-0.8, 1.1, 0.1), lty = 5, lwd = 0.5, col = "gray")
+b <- sort(unique(pca.info$group))
+text(1, as.numeric(pca.info[ pca.info$location == "Temporal" & pca.info$group == b[1],]$V3),"Tempor", cex = 1)
+text(2, as.numeric(pca.info[ pca.info$location == "Temporal" & pca.info$group == b[2],]$V3),"Tempor", cex = 1)
+text(3, as.numeric(pca.info[ pca.info$location == "Temporal" & pca.info$group == b[3],]$V3),"Tempor", cex = 1)
+text(4, as.numeric(pca.info[ pca.info$location == "Temporal" & pca.info$group == b[4],]$V3),"Tempor", cex = 1)
+
+
 #############################################################################
 ###recurrent LEGs in female-biased pathways
 g <- read.delim("out", row.names=1)
