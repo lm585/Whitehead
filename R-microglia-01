@@ -557,7 +557,10 @@ text(1, as.numeric(pca.info[ pca.info$location == "Temporal" & pca.info$group ==
 text(2, as.numeric(pca.info[ pca.info$location == "Temporal" & pca.info$group == b[2],]$V3),"Tempor", cex = 1)
 text(3, as.numeric(pca.info[ pca.info$location == "Temporal" & pca.info$group == b[3],]$V3),"Tempor", cex = 1)
 text(4, as.numeric(pca.info[ pca.info$location == "Temporal" & pca.info$group == b[4],]$V3),"Tempor", cex = 1)
-
+text(1, as.numeric(pca.info[ pca.info$location == "Cerebellum" & pca.info$group == b[1],]$V3),"cere", cex = 1)
+text(2, as.numeric(pca.info[ pca.info$location == "Cerebellum" & pca.info$group == b[2],]$V3),"cere", cex = 1)
+text(3, as.numeric(pca.info[ pca.info$location == "Cerebellum" & pca.info$group == b[3],]$V3),"cere", cex = 1)
+text(4, as.numeric(pca.info[ pca.info$location == "Cerebellum" & pca.info$group == b[4],]$V3),"cere", cex = 1)
 
 #############################################################################
 ###recurrent LEGs in female-biased pathways
