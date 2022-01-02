@@ -1,0 +1,127 @@
+library(ComplexHeatmap)
+library(beeswarm)
+library(edgeR)
+library("circlize")
+
+setwd("/Users/linyongmao/Documents/microglia")
+
+t <- read.delim("temp.txt", header = T, row.names = 1)
+dim(t)
+##[1] 58302    39
+rawCount <- t
+group <- factor(rep(1, 39))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+y<-y[med$logic,]
+dim(y)
+###[1] 14170    39
+
+d = cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+g <- read.delim("geneID-name")
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, g, by.x="id", by.y="geneID")
+dim(a.df.g)
+###[1] 14170    41
+
+
+sink("temp-lm-XX-XY-Tumor-Control.txt")
+cat("pathway\tXXControl-XXTumor-coeff\tXXControl-XXTumor-p")
+cat("\tXYControl-XYTumor-coeff\tXYControl-XYTumor-p")
+cat("\tXXControl-XYControl-coeff\tXXControl-XYControl-p")
+cat("\tXXTumor-XYTumor-coeff\tXXTumor-XYTumor-p")
+#######xxtumor vs xycontrol
+cat("\tXYControl-XXTumor-coeff\tXYControl-XXTumor-p")
+cat("\tXXControl-XYTumor-coeff\tXXControl-XYTumor-p")
+cat("\n")
+
+file <- read.delim("temp-files", header=F)
+for(index in 1:dim(file)[1]) {
+
+ p <- read.delim(file[index,1], header=F)
+ p.exp <- a.df.g[ a.df.g$name %in% p$V1, ]
+ length(p.exp$name)
+ ###[1] 185
+ mat <- as.matrix(p.exp[, 2:40])
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+ res.info <- merge(res, info, by.x="id", by.y="id1")
+ res.info$grape3 <- paste(res.info$XX, res.info$Tumor)
+
+a <- res.info[ res.info$XX == "XX", ]
+res <- lm( a$mean ~ a$location + a$Tumor + a$age )
+r <- summary(res)
+r.df <-as.data.frame(r$coefficients)
+cat(file[index,1])
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$TumorTumor", ]$"Estimate")
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$TumorTumor", ]$"Pr(>|t|)")
+
+
+a <- res.info[ res.info$XX == "XY", ]
+res <- lm( a$mean ~ a$location + a$Tumor + a$age )
+r <- summary(res)
+r.df <-as.data.frame(r$coefficients)
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$TumorTumor", ]$"Estimate")
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$TumorTumor", ]$"Pr(>|t|)")
+
+
+####xxcont vs xycontrol
+a <- res.info[ res.info$Tumor == "Control", ]
+res <- lm( a$mean ~ a$location + a$XX + a$age )
+r <- summary(res)
+r.df <-as.data.frame(r$coefficients)
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$XXXY", ]$"Estimate")
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$XXXY", ]$"Pr(>|t|)")
+
+####xxTumor vs xyTumor
+a <- res.info[ res.info$Tumor == "Tumor", ]
+res <- lm( a$mean ~ a$location + a$XX + a$age )
+r <- summary(res)
+r.df <-as.data.frame(r$coefficients)
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$XXXY", ]$"Estimate")
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$XXXY", ]$"Pr(>|t|)")
+
+#######xxtumor vs xycontrol
+a <- res.info[ res.info$grape3 == "XX Tumor" | res.info$grape3 == "XY Control", ] 
+res <- lm( a$mean ~ a$location + a$Tumor + a$age )
+r <- summary(res)
+r.df <-as.data.frame(r$coefficients)
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$TumorTumor", ]$"Estimate")
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$TumorTumor", ]$"Pr(>|t|)")
+
+########xy tumor vs. xx control
+a <- res.info[ res.info$grape3 == "XY Tumor" | res.info$grape3 == "XX Control", ]
+res <- lm( a$mean ~ a$location + a$Tumor + a$age )
+r <- summary(res)
+r.df <-as.data.frame(r$coefficients)
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$TumorTumor", ]$"Estimate")
+cat("\t")
+cat(r.df[ rownames(r.df) == "a$TumorTumor", ]$"Pr(>|t|)")
+
+}
+sink()
+
