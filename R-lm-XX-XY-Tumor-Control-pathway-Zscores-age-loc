@@ -122,6 +122,7 @@ cat(r.df[ rownames(r.df) == "a$TumorTumor", ]$"Estimate")
 cat("\t")
 cat(r.df[ rownames(r.df) == "a$TumorTumor", ]$"Pr(>|t|)")
 
+cat("\n")
 }
 sink()
 
