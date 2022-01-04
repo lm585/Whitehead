@@ -671,6 +671,45 @@ for(index in 1:6) {
  title(main = file[index,1])
  }
 
+#############################################################################
+###pathway level z-score avg per group
+###cp from R-lm-XX-XY-Tumor-Control-pathway-Zscores-age-loc
+###a.df.g && info
+sink("temp-2.txt")
+
+file <- read.delim("temp-files", header=F)
+for(index in 1:dim(file)[1]) {
+ p <- read.delim(file[index,1], header=F)
+ p.exp <- a.df.g[ a.df.g$name %in% p$V1, ]
+ length(p.exp$name)
+ ###[1] 185
+ mat <- as.matrix(p.exp[, 2:40])
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+ res.info <- merge(res, info, by.x="id", by.y="id1")
+ res.info$grape3 <- paste(res.info$XX, res.info$Tumor)
+ 
+####header printed multiple times
+cat("pathway")
+cat("\t")
+a <- sort(unique(res.info$grape3))
+for(kk in 1:4) {
+cat(a[kk])
+cat("\t")
+}
+###pathway      XX Control   XX Tumor        XY Control      XY Tumor
+cat("\n")
+
+ cat(file[index,1])
+ cat("\t")
+
+ for(kk in 1:4) {
+ cat(mean(res.info[ res.info$grape3 == a[kk] , ]$mean))
+ cat("\t")
+}
+cat("\n")
+}
+
+sink()
 
 #######################################################################
 #######15 pathways, 7 groups, pathway-level z-score of all genes,
