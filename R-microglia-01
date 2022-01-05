@@ -135,6 +135,15 @@ paste  control-F-M-diff2-1.name-type-chr.txt  out >  control-F-M-diff2-1.name-ty
 cat control-F-M-diff2-1.name-type-chr.cpm | cut -f 1,8,12-200 > temp-2
 bash   script-gct-plus-0d01 > control-F-M-diff2-1.16366genes.cpm.plus0d01.gct
 vi control-F-M-diff2-1.cls
+###GSEA resuly files control only
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/ControlOnlyMalevsFemale_prerank_p.GseaPreranked.1638567040071/gsea_report_for_na_pos_1638567040071.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/ControlOnlyMalevsFemale_prerank_p.GseaPreranked.1638567040071/gsea_report_for_na_neg_1638567040071.tsv"
+cat $f1 $f2 |cut -f 1,4,6,7,8 | sort | uniq > temp-1.txt
+f3="/Users/linyongmao/gsea_home/output/microgliaSex/logRatioUseMedianControlOnlyMalevsFemale.Gsea.1638558369585/gsea_report_for_XY_1638558369585.tsv"
+f4="/Users/linyongmao/gsea_home/output/microgliaSex/logRatioUseMedianControlOnlyMalevsFemale.Gsea.1638558369585/gsea_report_for_XX_1638558369585.tsv"
+cat $f3 $f4 |cut -f 1,4,6,7,8 | sort | uniq > temp-2.txt
+paste temp-[12].txt | awk '$1 != $6'
+paste temp-[12].txt > temp-3.txt  
 
 rawCount <- read.delim("microglia-41-samples.female13samp.noCereb.noOcci.genecount.txt", header = T, row.names = 1)
 sampleinfo <- read.delim("microglia-41-samples.female13samp.noCereb.noOcci.sampInfo.txt", row.names=1)
