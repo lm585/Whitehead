@@ -159,6 +159,32 @@ vi temp
 mv temp temp-2
 bash script-gct-plus-0d01 > microglia-41-samples.female13samp.noCereb.noOcci.cpm.plus0.01.gct
 vi microglia-41-samples.female13samp.noCereb.noOcci.cls
+#multivariable edgeR
+> design <- model.matrix(~sampleinfo$controTumor + sampleinfo$age + sampleinfo$anatomy)
+> design
+   (Intercept) sampleinfo$controTumorTumor sampleinfo$age sampleinfo$anatomyParietal sampleinfo$anatomyTemporal
+1            1                           1             64                          1                          0
+2            1                           0             73                          0                          0
+3            1                           1             67                          0                          0
+4            1                           0             64                          0                          0
+5            1                           1             30                          0                          0
+6            1                           1             20                          0                          1
+7            1                           0             60                          1                          0
+> y <- estimateDisp(y,design)
+> fit <- glmQLFit(y, design)
+> qlf <- glmQLFTest(fit, coef=2)
+> top2v1 <- topTags(qlf, n = 91234)
+> write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+mv -i diff2-1.txt female-noCereb.noOcci-diff2-1.txt
+> topTags(qlf, n = 9)
+Coefficient:  sampleinfo$controTumorTumor
+                    logFC      logCPM         F       PValue       FDR
+ENSG00000184860  7.238206 -0.06334246  37.92130 3.536935e-05 0.4160104
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  female-noCereb.noOcci-diff2-1.txt         geneID-name-type-chr out
+paste  female-noCereb.noOcci-diff2-1.txt out > female-noCereb.noOcci-diff2-1.name-type-chr.txt
+./make-rnk-genesymble                female-noCereb.noOcci-diff2-1.name-type-chr.txt  female-noCereb.noOcci-diff2-1.rnk
+
 
 head -1 microglia-39-sample-sampInfo.txt > microglia-41-samples.male20samp.noCereb.noOcci.sampInfo.txt
 cat microglia-39-sample-sampInfo.txt | grep -w XY | grep -iwv Cerebellum | grep -iwv occipital >>  microglia-41-samples.male20samp.noCereb.noOcci.sampInfo.txt
