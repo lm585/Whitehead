@@ -188,6 +188,95 @@ vi temp-2
 bash script-gct-plus-0d01 > microglia-41-samples.male20samp.noCereb.noOcci.cpm.plus0.01.gct
 vi microglia-41-samples.male20samp.noCereb.noOcci.cpm.cls  
 
+> info <- read.delim("microglia-39-sample-sampInfo.txt")
+> info$group <- paste(info$XX, info$Tumor )
+> info.2 <- info[ info$location != "Cerebellum" & info$location != "Occipital", ]
+> dim(info.2)
+##[1] 33  8
+> boxplot(info.2$age ~ info.2$group, xlab = "", ylab = "age" )
+> beeswarm(info.2$age ~ info.2$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T )
+> abline(h = seq(20,80,5), lty = 5, lwd = 0.5, col = "gray")
+> xxco <- info.2[ info.2$group == "XX Control", ]$age
+> xxtu <- info.2[ info.2$group == "XX Tumor", ]$age
+> xytu <- info.2[ info.2$group == "XY Tumor", ]$age
+> xyco <- info.2[ info.2$group == "XY Control", ]$age
+cat microglia-39-sample-sampInfo.txt  | grep -iwv Cerebellum | grep -iwv occipital | cut -f 1 > temp-nocere-sampids
+head -1 microglia-41-samples.genecount.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i, i}' > temp-1
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine temp-nocere-sampids temp-1 out
+paste temp-nocere-sampids out | cut -f 3 | awk 'BEGIN {FS = "\t"; ORS = ""} {print $1 ","}'
+cut -f 1,3,4,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23,25,27,28,30,32,33,34,35,37,38,39,40,41,42 microglia-41-samples.genecount.txt > temp
+mv temp microglia-41-samples.F-M-33samps.noCereb.noOcci.genecount.txt
+> rawCount <- read.delim("microglia-41-samples.F-M-33samps.noCereb.noOcci.genecount.txt", header = T, row.names = 1)
+> dim(rawCount)
+##[1] 58302    33
+group <- factor(rep(1, 33))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+y<-y[med$logic,]
+dim(y)
+#[1] 14204    33
+mds <- plotMDS(y, top=98765)
+x <- cbind( colnames(y$counts), mds$x, mds$y)
+x <- as.data.frame(x)
+info <- read.delim("microglia-39-sample-sampInfo.txt", row.names=1)
+info$id <- rownames(info)
+pca.info <- merge(x, info, by.x="V1", by.y="id")
+plot(pca.info$V2, pca.info$V3, cex=0.05, xlab="PC1 (20%)", ylab = "PC2 (14%)")
+....graph
+res <- lm(as.numeric(pca.info$V2) ~ pca.info$XX + pca.info$location + pca.info$age + pca.info$Tumor)
+r <- summary(res)
+r
+
+px <- pca.info[ pca.info$XX == "XX", ]
+res <- lm(as.numeric(px$V2) ~  px$location + px$age + px$Tumor)
+r <- summary(res)
+r
+
+px <- pca.info[ pca.info$XX == "XY", ]
+res <- lm(as.numeric(px$V2) ~  px$location + px$age + px$Tumor)
+r <- summary(res)
+r
+
+res <- lm(as.numeric(pca.info$V3) ~ pca.info$XX + pca.info$location + pca.info$age + pca.info$Tumor)
+r <- summary(res)
+r
+
+px <- pca.info[ pca.info$Tumor == "Control", ] 
+res <- lm(-as.numeric(px$V3) ~  px$location + px$age + px$XX)
+r <- summary(res)
+r
+
+px <- pca.info[ pca.info$Tumor == "Tumor", ]
+res <- lm(-as.numeric(px$V3) ~  px$location + px$age + px$XX)
+r <- summary(res)
+r
+
+px <- pca.info[ pca.info$XX == "XX", ]
+res <- lm(-as.numeric(px$V3) ~  px$location + px$age + px$Tumor)
+r <- summary(res)
+r
+
+px <- pca.info[ pca.info$XX == "XX", ]
+res <- lm(-as.numeric(px$V3) ~   px$Tumor)
+r <- summary(res)
+r
+
+px <- pca.info[ pca.info$XX == "XY", ]
+res <- lm(-as.numeric(px$V3) ~  px$location + px$age + px$Tumor)
+r <- summary(res)
+r
+
+px <- pca.info[ pca.info$XX == "XY", ]
+res <- lm(-as.numeric(px$V3) ~   px$Tumor)
+r <- summary(res)
+r
+
 #############################################
 ###fisher multi row test
 > a <- scan()
