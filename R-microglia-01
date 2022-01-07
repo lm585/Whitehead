@@ -188,18 +188,7 @@ vi temp-2
 bash script-gct-plus-0d01 > microglia-41-samples.male20samp.noCereb.noOcci.cpm.plus0.01.gct
 vi microglia-41-samples.male20samp.noCereb.noOcci.cpm.cls  
 
-> info <- read.delim("microglia-39-sample-sampInfo.txt")
-> info$group <- paste(info$XX, info$Tumor )
-> info.2 <- info[ info$location != "Cerebellum" & info$location != "Occipital", ]
-> dim(info.2)
-##[1] 33  8
-> boxplot(info.2$age ~ info.2$group, xlab = "", ylab = "age" )
-> beeswarm(info.2$age ~ info.2$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T )
-> abline(h = seq(20,80,5), lty = 5, lwd = 0.5, col = "gray")
-> xxco <- info.2[ info.2$group == "XX Control", ]$age
-> xxtu <- info.2[ info.2$group == "XX Tumor", ]$age
-> xytu <- info.2[ info.2$group == "XY Tumor", ]$age
-> xyco <- info.2[ info.2$group == "XY Control", ]$age
+
 cat microglia-39-sample-sampInfo.txt  | grep -iwv Cerebellum | grep -iwv occipital | cut -f 1 > temp-nocere-sampids
 head -1 microglia-41-samples.genecount.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i, i}' > temp-1
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine temp-nocere-sampids temp-1 out
