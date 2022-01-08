@@ -213,7 +213,16 @@ cp  microglia-41-samples.male20samp.noCereb.noOcci.cpm.txt temp-2
 vi temp-2
 bash script-gct-plus-0d01 > microglia-41-samples.male20samp.noCereb.noOcci.cpm.plus0.01.gct
 vi microglia-41-samples.male20samp.noCereb.noOcci.cpm.cls  
-
+#DEG testing
+> design <- model.matrix(~sampleinfo$Tumor + sampleinfo$age + sampleinfo$location)
+> design
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+topTags(qlf, n = 9)
+mv -i diff2-1.txt male-noCereb.noOcci-diff2-1.txt
 
 cat microglia-39-sample-sampInfo.txt  | grep -iwv Cerebellum | grep -iwv occipital | cut -f 1 > temp-nocere-sampids
 head -1 microglia-41-samples.genecount.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i, i}' > temp-1
