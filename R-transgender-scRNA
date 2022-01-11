@@ -301,6 +301,11 @@ abline(lm( t2e.m$fai ~ log2( t2e.m$Testosterone..ng.dl..y / t2e.m$Estradiol..pg.
 res <- cor.test(t2e.m$fai , log2( t2e.m$Testosterone..ng.dl..y / t2e.m$Estradiol..pg.ml. ))
 title(main=paste("r= ",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
 
+plot(  log2( t2e.m$Testosterone..ng.dl..y / t2e.m$Estradiol..pg.ml. ), log10(t2e.m$fai), xlab = "log2(T/E)", ylab = "log_Fai", cex= 1 )
+abline(lm( log10(t2e.m$fai) ~ log2( t2e.m$Testosterone..ng.dl..y / t2e.m$Estradiol..pg.ml. ) ))
+res <- cor.test(log10(t2e.m$fai) , log2( t2e.m$Testosterone..ng.dl..y / t2e.m$Estradiol..pg.ml. ))
+title(main=paste("r= ",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
+
 cat t2eratio-age-bmi-shbg-testorone-37samples.txt | cut -f 2 | while read ll
 do
 grep $ll census.txt | wc -l
