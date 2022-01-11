@@ -274,6 +274,33 @@ t2e.age$Group <- factor(t2e.age$Group, levels = c("Cis F", "Trans M (XX)", "Tran
 boxplot(t2e.age$FreeAndrogenIndex ~ t2e.age$Group, xlab = "")
 beeswarm(t2e.age$FreeAndrogenIndex ~ t2e.age$Group,  pch = 20, col = 1, cex = 2, add = T) ###pch symbol type, filled circle; cex symbol size, 200%; black color
 
+###Fai ~ testoster, estradiol
+layout(matrix(1:4, 2, 2, byrow=T))  
+t2e.estra <- read.delim("age-hormone-table-input.txt")
+t2e.age <- read.delim("t2eratio-age-bmi-shbg-testorone-37samples.txt")
+t2e.m <- merge(t2e.age, t2e.estra, by.x="BCH.ID", by.y="BCH.ID")
+###f <-   100 * t2e.age[t2e.age$Group == "Cis F",]$Testosterone..ng.dl. * 0.03467 / t2e.age[t2e.age$Group == "Cis F",]$SHBG..nmol.L.
+t2e.m$fai <- 100 * t2e.m$Testosterone..ng.dl..x * 0.03467 / t2e.m$SHBG..nmol.L.
+plot(  t2e.m$log_E, t2e.m$fai, xlab = "log_Estradiol", ylab = "Fai", cex= 1 )
+abline(lm( t2e.m$fai ~ t2e.m$log_E ))
+res <- cor.test(t2e.m$fai , t2e.m$log_E)
+title(main=paste("r= ",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
+
+plot(  t2e.m$log_T, t2e.m$fai, xlab = "log_testo", ylab = "Fai", cex= 1 )
+abline(lm( t2e.m$fai ~ t2e.m$log_T ))
+res <- cor.test(t2e.m$fai , t2e.m$log_T)
+title(main=paste("r= ",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
+
+plot(  t2e.m$log_T / t2e.m$log_E, t2e.m$fai, xlab = "log_testo/log_E", ylab = "Fai", cex= 1 )
+abline(lm( t2e.m$fai ~ t2e.m$log_T / t2e.m$log_E ))
+res <- cor.test(t2e.m$fai , t2e.m$log_T / t2e.m$log_E )
+title(main=paste("r= ",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
+
+plot(  log2( t2e.m$Testosterone..ng.dl..y / t2e.m$Estradiol..pg.ml. ), t2e.m$fai, xlab = "log2(T/E)", ylab = "Fai", cex= 1 )
+abline(lm( t2e.m$fai ~ log2( t2e.m$Testosterone..ng.dl..y / t2e.m$Estradiol..pg.ml. ) ))
+res <- cor.test(t2e.m$fai , log2( t2e.m$Testosterone..ng.dl..y / t2e.m$Estradiol..pg.ml. ))
+title(main=paste("r= ",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
+
 cat t2eratio-age-bmi-shbg-testorone-37samples.txt | cut -f 2 | while read ll
 do
 grep $ll census.txt | wc -l
