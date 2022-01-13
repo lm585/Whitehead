@@ -224,6 +224,16 @@ write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
 topTags(qlf, n = 9)
 mv -i diff2-1.txt male-noCereb.noOcci-diff2-1.txt
 
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/male_noCereb.noOcci.TAM_prerank_p.GseaPreranked.1641623359768/gsea_report_for_na_pos_1641623359768.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/male_noCereb.noOcci.TAM_prerank_p.GseaPreranked.1641623359768/gsea_report_for_na_neg_1641623359768.tsv"
+cat $f1 $f2 |cut -f 1,4,6,7,8 | sort | uniq > temp-1.txt
+f3="/Users/linyongmao/gsea_home/output/microgliaSex/female_noCereb.noOcci.TAM_prerank_p.GseaPreranked.1641587017060/gsea_report_for_na_pos_1641587017060.tsv"
+f4="/Users/linyongmao/gsea_home/output/microgliaSex/female_noCereb.noOcci.TAM_prerank_p.GseaPreranked.1641587017060/gsea_report_for_na_neg_1641587017060.tsv"
+cat $f3 $f4 |cut -f 1,4,6,7,8 | sort | uniq > temp-2.txt
+paste temp-[12].txt | awk '$1 != $6'
+paste temp-[12].txt > temp-3.txt  
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp-paths      ../transgender-scRNA/temp-3.txt out
+
 cat microglia-39-sample-sampInfo.txt  | grep -iwv Cerebellum | grep -iwv occipital | cut -f 1 > temp-nocere-sampids
 head -1 microglia-41-samples.genecount.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i, i}' > temp-1
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine temp-nocere-sampids temp-1 out
