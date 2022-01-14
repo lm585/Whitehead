@@ -311,6 +311,28 @@ res <- lm(-as.numeric(px$V3) ~   px$Tumor)
 r <- summary(res)
 r
 
+#############################################################################
+#Only keeping tumor resection samples (excluding benign,  low grade, metastatic samples)
+info <- read.delim("microglia-39-sample-sampInfo.txt", row.names=1)
+info.2 <- info[ info$Tumor == "Control" | info$grade == "Tumor resection", ]
+dim(info.2)
+##[1] 31  6
+> a <- scan()
+> m <- matrix(a, 5, 4, byrow=T)
+> y <- m[, c(1,2)]
+> y
+> fisher.test(y)
+
+cx <- info.2[ info.2$XX == "XX" & info.2$Tumor == "Control",  ]$age
+cy <- info.2[ info.2$XX == "XY" & info.2$Tumor == "Control",  ]$age
+tx <- info.2[ info.2$XX == "XX" & info.2$Tumor == "Tumor",  ]$age
+ty <- info.2[ info.2$XX == "XY" & info.2$Tumor == "Tumor",  ]$age
+> t.test(cx, tx)
+info.2$grape3 <- paste(info.2$XX, info.2$Tumor)
+boxplot( info.2$age ~ info.2$grape3, xlab = "", ylab = "age" )
+beeswarm( info.2$age ~ info.2$grape3, add =T,pch = c(16,16,17,17), col=c("green", "red", "green", "red"), cex = 1.5)
+
+
 #############################################
 ###fisher multi row test
 > a <- scan()
