@@ -332,6 +332,37 @@ info.2$grape3 <- paste(info.2$XX, info.2$Tumor)
 boxplot( info.2$age ~ info.2$grape3, xlab = "", ylab = "age" )
 beeswarm( info.2$age ~ info.2$grape3, add =T,pch = c(16,16,17,17), col=c("green", "red", "green", "red"), cex = 1.5)
 
+cat microglia-39-sample-sampInfo.txt   | grep -iw control | cut -f 1 > temp-1
+cat microglia-39-sample-sampInfo.txt   | grep -iw "Tumor resection" | cut -f 1 >> temp-1
+sort temp-1 | uniq > temp-sampids       
+head -1 microglia-41-samples.genecount.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i, i}' > temp-1
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine temp-sampids temp-1 out
+paste temp-sampids out | cut -f 3 | awk 'BEGIN {FS = "\t"; ORS = ""} {print $1 ","}'
+cut -f 1,3,6,8,9,10,11,12,13,14,16,17,19,20,21,23,25,26,27,28,30,32,33,34,35,36,37,38,39,41,42,43 microglia-41-samples.genecount.txt > temp
+mv temp microglia-41-samples.F-M-31samps.tumResecOnly.genecount.txt
+> rawCount <- read.delim("microglia-41-samples.F-M-31samps.tumResecOnly.genecount.txt", header = T, row.names = 1)
+> dim(rawCount)
+[1] 58302    31
+group <- factor(rep(1, 31))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+y<-y[med$logic,]
+dim(y)
+#[1] 14140    31
+mds <- plotMDS(y, top=98765)
+x <- cbind( colnames(y$counts), mds$x, mds$y)
+x <- as.data.frame(x)
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+pca.info <- merge(x, info, by.x="V1", by.y="id1")
+plot(pca.info$V2, pca.info$V3, cex=0.05, xlab="PC1 (17%)", ylab = "PC2 (14%)")
+...graph
+...legend("bottomright", 
 
 #############################################
 ###fisher multi row test
