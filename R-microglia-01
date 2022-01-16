@@ -364,6 +364,34 @@ plot(pca.info$V2, pca.info$V3, cex=0.05, xlab="PC1 (17%)", ylab = "PC2 (14%)")
 ...graph
 ...legend("bottomright", 
 
+rawCount <- read.delim("microglia-41-samples.F-14samps.tumResecOnly.genecount.txt", header = T, row.names = 1)
+sampleinfo <- read.delim("microglia-41-samples.F-14samps.tumResecOnly.sampInfo.txt", row.names=1)
+group <- factor(sampleinfo$Tumor)
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+###mds <- plotMDS(y, top=98765)
+###df <- data.frame(colnames(y), mds$x, mds$y)
+keep <-rowSums(cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+#[1] 16546    14
+design <- model.matrix(~sampleinfo$Tumor + sampleinfo$age)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+mv -i diff2-1.txt female-14samps.tumResecOnly.diff2-1.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  female-14samps.tumResecOnly.diff2-1.txt         geneID-name-type-chr out
+paste  female-14samps.tumResecOnly.diff2-1.txt out > female-14samps.tumResecOnly.name-type-chr.txt
+./make-rnk-genesymble                female-14samps.tumResecOnly.name-type-chr.txt  female-14samps.tumResecOnly.rnk
+
+mv temp.txt female-14samps.tumResecOnly.cpm.txt
+cp female-14samps.tumResecOnly.cpm.txt temp-2
+vi temp-2
+bash script-gct-plus-0d01 > female-14samps.tumResecOnly.cpm.plus0.01.gct
+vi female-14samps.tumResecOnly.cpm.cls
+
 #############################################
 ###fisher multi row test
 > a <- scan()
