@@ -392,6 +392,24 @@ vi temp-2
 bash script-gct-plus-0d01 > female-14samps.tumResecOnly.cpm.plus0.01.gct
 vi female-14samps.tumResecOnly.cpm.cls
 
+###male, TAM vs control, tumor resection only
+rawCount <- read.delim("microglia-41-samples.M-17samps.tumResecOnly.genecount.txt", header = T, row.names = 1) 
+sampleinfo <- read.delim("microglia-41-samples.M-17samps.tumResecOnly.sampInfo.txt", row.names=1)
+group <- factor(sampleinfo$Tumor)
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+keep <-rowSums(cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+#[1] 15998    17
+d <- cpm(y)
+write.table(d, "temp.txt", quote=F, sep = "\t")
+mv -i temp.txt M-17samps.tumResecOnly.cpm.txt
+cp   M-17samps.tumResecOnly.cpm.txt temp-2
+vi temp-2
+bash script-gct-plus-0d01 > M-17samps.tumResecOnly.cpm.plus0.01.gct
+vi M-17samps.tumResecOnly.cpm.cls
+
 #############################################
 ###fisher multi row test
 > a <- scan()
