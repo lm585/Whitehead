@@ -410,6 +410,11 @@ vi temp-2
 bash script-gct-plus-0d01 > M-17samps.tumResecOnly.cpm.plus0.01.gct
 vi M-17samps.tumResecOnly.cpm.cls
 
+mv -i diff2-1.txt M-17samps.tumResecOnly.diff2-1.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  M-17samps.tumResecOnly.diff2-1.txt         geneID-name-type-chr out
+paste  M-17samps.tumResecOnly.diff2-1.txt out > M-17samps.tumResecOnly.name-type-chr.txt
+./make-rnk-genesymble                M-17samps.tumResecOnly.name-type-chr.txt  M-17samps.tumResecOnly.rnk
+
 #############################################
 ###fisher multi row test
 > a <- scan()
