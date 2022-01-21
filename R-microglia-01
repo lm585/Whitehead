@@ -1002,6 +1002,7 @@ for(index in 1:6) {
 
 #############################################################################
 ####all pathway genes ranks avg diff (F-M) vs. NES difference
+cp -i "temp-39samp-lm.txt" te-39samp-lm.txt
 a <- read.delim("temp-39samp-lm.txt")
 plot(a$NES.2 - a$NES, a$mean.diff..f.m. )
 abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
@@ -1034,6 +1035,7 @@ points( a1.p$NES.2 - a1.p$NES, a1.p$mean.diff..f.m., col = "red", pch = 16, cex 
 legend("topleft", inset = 0.02, c("sig. sex-biased pathways"), pch=16, col = "red")
 
 ###vs NES difference (sample permuttation based
+cp -i "temp-39samp-lm.txt" te-39samp-lm.txt
 a <- read.delim("temp-39samp-lm.txt")
 plot(a$NES.2 - a$NES, a$mean.diff..f.m. )
 abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
