@@ -1032,3 +1032,35 @@ dim(a1.p)
 ##14 pathways if ONLY a$NES * a$NES.2 > 0
 points( a1.p$NES.2 - a1.p$NES, a1.p$mean.diff..f.m., col = "red", pch = 16, cex = 1.1 )
 legend("topleft", inset = 0.02, c("sig. sex-biased pathways"), pch=16, col = "red")
+
+###vs NES difference (sample permuttation based
+a <- read.delim("temp-39samp-lm.txt")
+plot(a$NES.2 - a$NES, a$mean.diff..f.m. )
+abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+
+a1 <- a[ a$NES * a$NES.1 > 0 & a$NES.2 * a$NES.3 > 0 & a$NES * a$NES.2 > 0, ]
+dim(a1)
+###same NES direction between prerank & sample perm methods; same NES direction between F & M
+###[1] 39pathways-out-of-hallmark 34fields
+###a1 <- a[ a$NES * a$NES.2 > 0, ]
+dim(a1)
+##45 pathways
+plot(a1$NES.3 - a1$NES.1, a1$mean.diff..f.m., xlab = "samp.perm.NES (M - F)", ylab = "allPathwayGenesRanks.average (F - M)" )
+b <- a1$NES.3 - a1$NES.1
+abline(lm(a1$mean.diff..f.m. ~ b ), lwd = 2 )
+abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
+abline(h = 0, lty = 5, lwd = 0.8, col = "black")
+abline(v = 0, lty = 5, lwd = 0.8, col = "black")
+res <- cor.test(a1$mean.diff..f.m.  , b)
+title(main=paste("hallmark pathways\n","r= ",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
+p <- read.delim("temp.paths")
+###pathway as header
+###14 pathways from PPT slide
+a1.p <- merge(a1, p, by.x="NAME", by.y="pathway")
+dim(a1.p)
+##13 pathways, because for M, NES direction between prerank & sample perm method are opposite
+##14 pathways if ONLY a$NES * a$NES.2 > 0
+points( a1.p$NES.3 - a1.p$NES.1, a1.p$mean.diff..f.m., col = "red", pch = 16, cex = 1.1 )
+legend("topleft", inset = 0.02, c("sig. sex-biased pathways"), pch=16, col = "red")
