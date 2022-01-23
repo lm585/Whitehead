@@ -1,0 +1,37 @@
+head -1 UterusCountMatrix.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i,i}' | sed 's/^M//' > temp-1/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine temp-1 uterusMeta_20220119.lm.txt out
+mv -i out UterusCountMatrix.sampInfo.txt
+###sample order in the countMatrix is identical as the order in sampleinfo
+rawCount <- read.delim("UterusCountMatrix.txt", header = T, row.names = 1)
+sampleinfo <- read.delim("UterusCountMatrix.sampInfo.txt", row.names=1)
+group <- factor(rep(1, 96))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+###45 is min of # of samples in pre-menopause/post-meno groups
+> keep <-rowSums(cpm(y)>=1) >= 45/2 
+> y<-y[keep,]
+> dim(y)
+### before filtering, 42802 genes
+###[1] 17002    96
+> design <- model.matrix(~sampleinfo$MENO_STATUS + sampleinfo$COHORT + sampleinfo$AGE + sampleinfo$BMI)
+> design
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+##mv -i "diff2-1.txt" Uterus.96samp.diff2-1.txt
+head(top2v1)
+##Coefficient:  sampleinfo$MENO_STATUSUterus_premeno
+##pre vs postmeno; positive fold change  mean increase in premeno
+###logFC        logCPM  F       PValue  FDR  
+###ENSG00000115523.16   -1.36119021391037       2.34492350226467        22.6057393844487        7.120473425107e-06      0.0783126987673573
+###ENSG00000143195.12   1.36765066581156        0.26009568384003        21.9938957562379        9.21217489323107e-06    0.0783126987673573
+###ENSG00000179542.15   1.27248073044285        0.804107971399043       20.7331129936199        1.57431229324469e-05    0.0842250740241055
+
+
+###put "geneID", get rid of .12 following geneID
+vi  Uterus.96samp.diff2-1.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   Uterus.96samp.diff2-1.txt  ../microglia/geneID-name-type-chr out 
+paste Uterus.96samp.diff2-1.txt out > Uterus.96samp.diff2-1.name-type-chr.txt
+cat Uterus.96samp.diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t";} NF == 10' > Uterus.96samp.diff2-1.name-type-chr.2.txt
+../microglia/make-rnk-genesymble     Uterus.96samp.diff2-1.name-type-chr.2.txt Uterus.96samp.diff2-1.name-type-chr.2.rnk 
