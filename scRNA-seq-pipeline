@@ -1,0 +1,38 @@
+vi refdata-cellranger-GRCh38-3.0.0/star/genomeParameters.txt
+### STAR   --runMode genomeGenerate   --runThreadN 1   --genomeDir /mnt/yard2/pat/cr/new-refs/reference_buildscripts2/GRCh38/star   --genomeFastaFiles /mnt/yard2/pat/cr/new-refs/reference_buildscripts2/GRCh38/fasta/genome.fa      --genomeSAindexNbases 14   --genomeChrBinNbits 18   --genomeSAsparseD 3   --limitGenomeGenerateRAM 17179869184   --sjdbGTFfile /mnt/yard2/pat/cr/new-refs/reference_buildscripts2/GRCh38/genes/genes.gtf
+versionGenome   20201
+genomeFastaFiles        /mnt/yard2/pat/cr/new-refs/reference_buildscripts2/GRCh38/fasta/genome.fa
+genomeSAindexNbases     14  
+genomeChrBinNbits       18  
+genomeSAsparseD 3
+sjdbOverhang    100 
+sjdbFileChrStartEnd     -   
+sjdbGTFfile     /mnt/yard2/pat/cr/new-refs/reference_buildscripts2/GRCh38/genes/genes.gtf
+sjdbGTFchrPrefix        -   
+sjdbGTFfeatureExon      exon
+sjdbGTFtagExonParentTranscript  transcript_id
+sjdbGTFtagExonParentGene        gene_id
+sjdbInsertSave  Basic
+
+cellranger6 count --id=run_count_1kpbmcs --fastqs=/lab/solexa_page/linyong/run_cellranger_count/pbmc_1k_v3_fastqs --sample=pbmc_1k_v3 --transcriptome=/lab/solexa_page/linyong/run_cellranger_count/refdata-cellranger-GRCh38-3.0.0
+
+### Step 1:
+### You had fastq files for each scRNA library. To generate single cell feature (gene) counts for a single library, run cellranger count. You can set the parameter --expect-cells=10000 and the option –nosecondary when running the count command.
+### 
+### Run cellranger count for each library. If you have 10 libraries, you need to run 10 times with 10 outputs. Often, one sample (or one donor) is one library.
+### 
+### Please note that, by default, --include-introns option is turned off, meaning that intronic reads were excluded from the UMI counting.
+### 
+### Step 2:
+### Step1 will generate filtered_feature_bc_matrix directory, among other outputs, for each library. Then use an R package Seurat. The following web site gives a nice documentation to merge multiple library outputs from cellranger into a single Seurat object. ### 
+### https://satijalab.org/seurat/archive/v3.1/merge_vignette.html
+### 
+### 
+### 
+### With the single Seurat object generated, you can continue the downstream traditional analysis with scRNA-seq data.
+
+ls run_count_1kpbmcs/outs/filter*matrix/ -lh
+total 12M
+-rw-r--r-- 1 linyong input 6.9K Jan 22 21:03 barcodes.tsv.gz
+-rw-r--r-- 1 linyong input 298K Jan 22 21:03 features.tsv.gz
+-rw-r--r-- 1 linyong input 9.0M Jan 22 21:03 matrix.mtx.gz
