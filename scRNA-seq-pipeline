@@ -98,3 +98,7 @@ pbmc <- RunUMAP(pbmc, dims = 1:10)
 DimPlot(pbmc, reduction = "umap")
 DimPlot(pbmc, reduction = "umap", label=T)
 saveRDS(pbmc, file = "../output/pbmc_tutorial.rds")
+
+> install.packages("https://seurat.nygenome.org/src/contrib/ifnb.SeuratData_3.0.0.tar.gz", repos = NULL, type = "source")
+> library(ifnb.SeuratData)
+> LoadData("ifnb")
