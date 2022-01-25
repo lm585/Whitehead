@@ -392,3 +392,13 @@ cat(str)
 cat("\n")
 }
 sink()
+
+#############################################################################
+##cell type freq compare; freq
+cell <- read.delim("cell-type-compare.txt")
+plot(cell$orig.assign.freq, cell$Azimuth.assign.1, xlab="orig.assign.celltype.freq", ylab="Azimuth.filtered.celltype.freq" )
+abline(a = 0, b = 1, )
+abline(h = seq(0,80,0.05), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(0,80,0.05), lty = 5, lwd = 0.5, col = "gray")
+temp <- cell[abs(cell$diff) > 0.02, ]
+text( temp$orig.assign.freq, temp$Azimuth.assign.1, temp$Assig..Orig. , pos=4)
