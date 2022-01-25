@@ -102,3 +102,30 @@ saveRDS(pbmc, file = "../output/pbmc_tutorial.rds")
 > install.packages("https://seurat.nygenome.org/src/contrib/ifnb.SeuratData_3.0.0.tar.gz", repos = NULL, type = "source")
 > library(ifnb.SeuratData)
 > LoadData("ifnb")
+
+## Not run:
+if (requireNamespace(Seurat, quietly = TRUE)) {
+  url <- 'https://www.dropbox.com/s/79q6dttg8yl20zg/immune_alignment_expression_matrices.zip?dl=1'
+  dl.name <- gsub(pattern = '\\?dl=1', replacement = '', x = basename(path = url))
+  curl::curl_download(url = url, destfile = dl.name)
+  unzip(zipfile = dl.name, exdir = tools::file_path_sans_ext(x = dl.name))
+  ctrl.data <- read.table(file = file.path(tools::file_path_sans_ext(x = dl.name), 'immune_control_expression_matrix.txt.gz'), sep = '\t')
+  stim.data <- read.table(file = file.path(tools::file_path_sans_ext(x = dl.name), 'immune_stimulated_expression_matrix.txt.gz'), sep = '\t')
+  ctrl <- Seurat::CreateSeuratObject(counts = ctrl.data, project = 'IMMUNE_CTRL', min.cells = 5)
+  ctrl$stim <- 'CTRL'
+  ctrl <- subset(x = ctrl, subset = nFeature_RNA > 500)   
+  stim <- Seurat::CreateSeuratObject(counts = stim.data, project = 'IMMUNE_STIM', min.cells = 5)
+  stim$stim <- 'STIM'
+  stim <- subset(x = stim, subset = nFeature_RNA > 500)
+  ifnb <- merge(x = ctrl, y = stim) 
+  Seurat::Project(object = ifnb) <- 'ifnb'
+  # Annotations come from Seurat's stimulated/control guided clustering without the Mono/Mk doublets
+  # https://satijalab.org/seurat/v3.0/immune_alignment.html
+  annotations <- readRDS(file = system.file('extdata/annotations/annotations.Rds', package = 'ifnb.SeuratData'))
+  ifnb <- Seurat::AddMetaData(object = ifnb, metadata = annotations)
+  # Clean up downlaoded files
+  file.remove(dl.name)
+  unlink(x = tools::file_path_sans_ext(x = dl.name), recursive = TRUE)
+}
+
+## End(Not run)
