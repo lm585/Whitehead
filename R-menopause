@@ -33,5 +33,21 @@ head(top2v1)
 vi  Uterus.96samp.diff2-1.txt
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   Uterus.96samp.diff2-1.txt  ../microglia/geneID-name-type-chr out 
 paste Uterus.96samp.diff2-1.txt out > Uterus.96samp.diff2-1.name-type-chr.txt
+
+> dim(y)
+[1] 17002    96
+> design <- model.matrix(~sampleinfo$MENO_STATUS )
+> head(top2v1)
+Coefficient:  sampleinfo$MENO_STATUSUterus_premeno
+                        logFC    logCPM        F       PValue          FDR
+ENSG00000091536.16 -1.1290646 3.1045919 38.31797 1.425143e-08 0.0001525999
+ENSG00000203814.6  -1.9011207 2.5230311 37.68385 1.800343e-08 0.0001525999
+ENSG00000157350.12  0.4421619 5.5537093 36.26323 3.052300e-08 0.0001525999
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   Uterus.96samp.onlyMenoVariable.diff2-1.txt  ../microglia/geneID-name-type-chr out
+paste Uterus.96samp.onlyMenoVariable.diff2-1.txt out > Uterus.96samp.onlyMenoVariable.diff2-1.name-type-chr.txt
+cat Uterus.96samp.onlyMenoVariable.diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t";} NF == 10' > Uterus.96samp.onlyMenoVariable.diff2-1.name-type-chr.2.txt
+../microglia/make-rnk-genesymble     Uterus.96samp.onlyMenoVariable.diff2-1.name-type-chr.2.txt Uterus.96samp.onlyMenoVariable.diff2-1.name-type-chr.2.rnk
+
 cat Uterus.96samp.diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t";} NF == 10' > Uterus.96samp.diff2-1.name-type-chr.2.txt
 ../microglia/make-rnk-genesymble     Uterus.96samp.diff2-1.name-type-chr.2.txt Uterus.96samp.diff2-1.name-type-chr.2.rnk 
