@@ -51,3 +51,23 @@ cat Uterus.96samp.onlyMenoVariable.diff2-1.name-type-chr.txt | awk 'BEGIN {FS = 
 
 cat Uterus.96samp.diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t";} NF == 10' > Uterus.96samp.diff2-1.name-type-chr.2.txt
 ../microglia/make-rnk-genesymble     Uterus.96samp.diff2-1.name-type-chr.2.txt Uterus.96samp.diff2-1.name-type-chr.2.rnk 
+
+#############################################################################
+###filter genes; median in either of two groups >= 1;
+rawCount <- read.delim("UterusCountMatrix.txt", header = T, row.names = 1)
+sampleinfo <- read.delim("UterusCountMatrix.sampInfo.txt", row.names=1)
+group <- factor(rep(1, 96))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+d <- cpm(y)
+sel <- sampleinfo$MENO_STATUS == "Uterus_postmeno"
+med <- data.frame(d[,1])
+med$logic <- FALSE
+for(i in 1:dim(d)[1]) {
+ if(median(d[i,sel]) >= 1 | median(d[i,!sel]) >= 1 )
+   med$logic[i] = TRUE
+}
+d1 <- d[med$logic, ]
+dim(d1)
+##[1] 16076    96
+write.table(d1+0.01, "temp.txt", quote=F, sep="\t")
