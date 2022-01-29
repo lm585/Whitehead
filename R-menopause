@@ -71,3 +71,11 @@ d1 <- d[med$logic, ]
 dim(d1)
 ##[1] 16076    96
 write.table(d1+0.01, "temp.txt", quote=F, sep="\t")
+
+### [1] "FC<-4"   "FC<-3.5" "FC<-3"   "FC<-2.5" "FC<-2"   "FC<-1.5" "FC<-1"   "FC<1.5"  "FC<2"    "FC<2.5"  "FC<3"    "FC<3.5" 
+bash script-group-FC > temp.txt
+a <- read.delim("temp.txt")
+lev <- sort(unique(a$FCgroup))
+a$FCgroup <- factor(a$FCgroup, levels=lev[c(7:1, 8:14)])
+boxplot(log10(a$PValue) ~ a$FCgroup)
+abline(h = seq(-10, 10, 1), lty = 5, lwd = 0.5, col = "gray")
