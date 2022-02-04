@@ -28,11 +28,21 @@ head(top2v1)
 ###ENSG00000143195.12   1.36765066581156        0.26009568384003        21.9938957562379        9.21217489323107e-06    0.0783126987673573
 ###ENSG00000179542.15   1.27248073044285        0.804107971399043       20.7331129936199        1.57431229324469e-05    0.0842250740241055
 
-
 ###put "geneID", get rid of .12 following geneID
 vi  Uterus.96samp.diff2-1.txt
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   Uterus.96samp.diff2-1.txt  ../microglia/geneID-name-type-chr out 
 paste Uterus.96samp.diff2-1.txt out > Uterus.96samp.diff2-1.name-type-chr.txt
+
+> sampleinfo <- read.delim("UterusCountMatrix.sampInfo.txt", row.names=1)
+> boxplot(sampleinfo$AGE ~ sampleinfo$MENO_STATUS )
+> beeswarm (sampleinfo$AGE ~ sampleinfo$MENO_STATUS, add=T )
+> abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+> t1 <- sampleinfo[ sampleinfo$MENO_STATUS == "Uterus_postmeno",  ]$AGE
+> t2 <- sampleinfo[ sampleinfo$MENO_STATUS == "Uterus_premeno",  ]$AGE
+> t.test(t1, t2)
+> res <- t.test(t1, t2)
+> title(main=paste("t.test p-value= ", format(res$p.value, digits=3), sep =""))
+
 
 > dim(y)
 [1] 17002    96
