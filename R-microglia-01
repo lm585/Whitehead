@@ -1122,3 +1122,56 @@ points(m5$NES.1.x - m5$NES.x, m5$mean.diff..f.m..x, col = "red")
 m6 <- m5[ m5$NAME == "HALLMARK_E2F_TARGETS", ]
 text(m6$NES.1.x - m6$NES.x, m6$mean.diff..f.m..x, "E2F", pos=2, cex = 0.8)
 legend("topleft", inset = 0.02, c("sig. sex-biased pathways"), pch=1, col = "red")
+
+#####################all pathway genes logFC ranks avg diff (F-M) ~ preRank.NES (M - F) for all 39 samples
+###but sig. sex-biased pathways highlighted in the plot are using samples without Cerebellum and occipital
+a <- read.delim("te-39samp-lm.txt")
+plot(a$NES.2 - a$NES, a$mean.diff..f.m. )
+abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+
+a1 <- a[ a$NES * a$NES.2 > 0, ]
+dim(a1)
+###[1] 45 34
+....make scatter plot and linear regression using all 39 samples
+atemp <- a1
+dim(atemp)
+###[1] 45 34
+a <- read.delim("noCereb.noOcci.NES.geneRankMean.diff.txt")
+a2 <- a[ a$FDR.q.val < 0.05 & a$t.test.p.value < 0.05 & a$mean.diff..f.m. < 0, ]
+dim(a2)
+##1] 12 17
+a3 <- merge(a2, atemp, by.x="NAME", by.y="NAME" )
+dim(a3)
+##1] 12 50
+nocereb <- read.delim("tumResecOnly.NES.geneRankMean.diff.txt")
+a4 <- merge(a3, nocereb, by.x="NAME", by.y = "female.NAME")
+dim(a4)
+##1] 12 81
+a5 <- a4[ a4$FDR.q.val.1.y < 0.25 , ]  ###10 pathways 
+dim(a5)
+##[1] 10 81
+points(a5$NES.2.x - a5$NES.y, a5$mean.diff..f.m..y, col = "red") ###, pch = 16, cex = 1.1 )
+a6 <- a5[ a5$NAME == "HALLMARK_ALLOGRAFT_REJECTION", ]
+text(a6$NES.2.x - a6$NES.y, a6$mean.diff..f.m..y, "allograft", pos=2, cex = 0.8)
+a6 <- a5[ a5$NAME == "HALLMARK_COMPLEMENT", ]
+text(a6$NES.2.x - a6$NES.y, a6$mean.diff..f.m..y, "complement", pos=4, cex = 0.8)
+a6 <- a5[ a5$NAME == "HALLMARK_IL2_STAT5_SIGNALING", ]
+text(a6$NES.2.x - a6$NES.y, a6$mean.diff..f.m..y, "IL2_STAT5", pos=4, cex = 0.8)
+a6 <- a5[ a5$NAME == "HALLMARK_IL6_JAK_STAT3_SIGNALING", ]
+text(a6$NES.2.x - a6$NES.y, a6$mean.diff..f.m..y, "IL6_STAT3", pos=4, cex = 0.8)
+a6 <- a5[ a5$NAME == "HALLMARK_INFLAMMATORY_RESPONSE", ]
+text(a6$NES.2.x - a6$NES.y, a6$mean.diff..f.m..y, "inflam", pos=4, cex = 0.8)
+a6 <- a5[ a5$NAME == "HALLMARK_TNFA_SIGNALING_VIA_NFKB", ]
+text(a6$NES.2.x - a6$NES.y, a6$mean.diff..f.m..y, "TNFA_NFKB", pos=4, cex = 0.8)
+### Male biased
+m2 <- a[ a$FDR.q.val.1 < 0.05 & a$t.test.p.value < 0.05 & a$mean.diff..f.m. > 0, ]
+dim(m2)
+###[1]  6 17
+m3 <- merge(m2, atemp, by.x="NAME", by.y="NAME" )
+nocereb <- read.delim("tumResecOnly.NES.geneRankMean.diff.txt")
+m4 <- merge(m3, nocereb, by.x="NAME", by.y = "female.NAME")
+m5 <-  m4[ m4$FDR.q.val.3.x < 0.25 & m4$FDR.q.val.3.y < 0.25, ]
+points(m5$NES.2.x - m5$NES.y, m5$mean.diff..f.m..y, col = "red")
+m6 <- m5[ m5$NAME == "HALLMARK_E2F_TARGETS", ]
+text(m6$NES.2.x - m6$NES.y, m6$mean.diff..f.m..y, "E2F", pos=1, cex = 0.8)
