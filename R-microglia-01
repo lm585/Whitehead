@@ -1121,7 +1121,9 @@ m5 <-  m4[ m4$FDR.q.val.3.x < 0.25 & m4$FDR.q.val.3.y < 0.25, ]
 points(m5$NES.1.x - m5$NES.x, m5$mean.diff..f.m..x, col = "red")
 m6 <- m5[ m5$NAME == "HALLMARK_E2F_TARGETS", ]
 text(m6$NES.1.x - m6$NES.x, m6$mean.diff..f.m..x, "E2F", pos=2, cex = 0.8)
-legend("topleft", inset = 0.02, c("sig. sex-biased pathways"), pch=1, col = "red")
+##legend("topleft", inset = 0.02, c("sig. sex-biased pathways"), pch=1, col = "red")
+legend("topleft", inset = 0.02, c("sig. sex-biased pathways in samples \nwithout Cerebellum/occipital
+"), pch=1, col = "red", cex=0.8)
 
 #####################all pathway genes logFC ranks avg diff (F-M) ~ preRank.NES (M - F) for all 39 samples
 ###but sig. sex-biased pathways highlighted in the plot are using samples without Cerebellum and occipital
