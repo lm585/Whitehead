@@ -1135,7 +1135,18 @@ abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
 a1 <- a[ a$NES * a$NES.2 > 0, ]
 dim(a1)
 ###[1] 45 34
-....make scatter plot and linear regression using all 39 samples
+#....make scatter plot and linear regression using all 39 samples
+#....make scatter plot and linear regression using tumor resection ONLY sample
+plot(a1$NES.2 - a1$NES, a1$mean.diff..f.m., xlab = "prerank.NES (M - F)", ylab = "allPathwayGenesRanks.average (F - M)" )
+b <- a1$NES.2 - a1$NES
+abline(lm(a1$mean.diff..f.m. ~ b ), lwd = 2 )
+abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
+abline(h = 0, lty = 5, lwd = 0.8, col = "black")
+abline(v = 0, lty = 5, lwd = 0.8, col = "black")
+res <- cor.test(a1$mean.diff..f.m.  , b)
+title(main=paste("hallmark pathways\n","r= ",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
+
 atemp <- a1
 dim(atemp)
 ###[1] 45 34
