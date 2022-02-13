@@ -2,6 +2,9 @@ library(ComplexHeatmap)
 library(beeswarm)
 library(edgeR)
 library("circlize")
+library(dplyr)
+library(Seurat)
+library(patchwork)
 
 setwd("/Users/linyongmao/Documents/microglia")
 
