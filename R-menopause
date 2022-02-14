@@ -89,3 +89,38 @@ lev <- sort(unique(a$FCgroup))
 a$FCgroup <- factor(a$FCgroup, levels=lev[c(7:1, 8:14)])
 boxplot(log10(a$PValue) ~ a$FCgroup)
 abline(h = seq(-10, 10, 1), lty = 5, lwd = 0.5, col = "gray")
+
+############################################PCA plot####
+setwd("/Users/linyongmao/Documents/menopause")
+rawCount <- read.delim("UterusCountMatrix.txt", header = T, row.names = 1)
+sampleinfo <- read.delim("UterusCountMatrix.sampInfo.txt", row.names=1)
+group <- factor(rep(1, 96))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+y<-y[med$logic,]
+dim(y)
+#[1] 15819    96
+mds <- plotMDS(y, top=98765)
+x <- cbind( colnames(y$counts), mds$x, mds$y)
+x <- as.data.frame(x)
+
+###GTEX-1117F-2426-SM-5EGGH  -> GTEX.1117F.2426.SM.5EGGH
+write.table( t(sampleinfo), "temp.txt", quote=F, sep = "\t")
+samp2 <- read.delim("temp.txt")
+info <- sampleinfo
+info$id <- colnames(samp2)
+pca.info <- merge(x, info, by.x="V1", by.y="id")
+plot(pca.info$V2, pca.info$V3, cex=0.05, xlab="PC1 (17%)", ylab = "PC2 (11%)")
+points(pca.info[ pca.info$MENO_STATUS == "Uterus_premeno" , ]$V2, pca.info[ pca.info$MENO_STATUS == "Uterus_premeno", ]$V3, col = "red", pch = 16 , cex = 1)
+points(pca.info[ pca.info$MENO_STATUS == "Uterus_postmeno" , ]$V2, pca.info[ pca.info$MENO_STATUS == "Uterus_postmeno", ]$V3, col = "green", pch = 16 , cex = 1)
+legend("topleft", inset = 0.05, c("Uterus_premeno", "Uterus_postmeno" ), pch=c(16,16), col = c( "red", "green" ))
+
+
+
