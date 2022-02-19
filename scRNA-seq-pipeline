@@ -129,3 +129,31 @@ if (requireNamespace(Seurat, quietly = TRUE)) {
 }
 
 ## End(Not run)
+
+> cluster5.markers <- FindMarkers(pbmc, ident.1 = 0, ident.2 = c(2), min.pct = 0.25)
+  |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=00s
+> head(cluster5.markers, n = 20)
+                p_val avg_log2FC pct.1 pct.2    p_val_adj
+S100A4   1.090806e-47 -1.0891751 0.700 0.929 1.495931e-43
+MALAT1   2.781540e-37  0.5023381 1.000 1.000 3.814604e-33
+B2M      9.190424e-32 -0.3039140 1.000 1.000 1.260375e-27
+RPL32    1.601655e-29  0.3089689 0.999 1.000 2.196510e-25
+VIM      4.413449e-28 -0.6620801 0.810 0.944 6.052605e-24
+ACTB     3.144174e-27 -0.5397110 0.984 1.000 4.311920e-23
+S100A11  2.612274e-25 -0.8518047 0.289 0.621 3.582473e-21
+
+write.table( Idents(pbmc), "temp.txt", quote=F, sep="\t")
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp.txt      pbmc3k.azimuth.anno.txt  out
+paste  temp.txt    out | cut -f 3,12,13 > temp.2.txt
+
+> azh <- read.delim("temp.2.txt")
+> pbmc$cell.azh <- azh$cell
+> pbmc$azh.annot <- azh$predicted.celltype.l2
+> pbmc$azh.annot.score <- azh$predicted.celltype.l2.score
+> t <- data.frame(pbmc$nCount_RNA, pbmc$cell.azh)
+> i = 2700
+> rownames(t)[i] == t$pbmc.cell.azh[i]
+[1] TRUE
+> DimPlot(pbmc, reduction = "umap", label = F, pt.size = 0.5, group.by="azh.annot", cols=c(rep("gray", 5), "red", "green", "orange", "blue",  rep("gray", 15)))
+> cluster5.markers <- FindMarkers(pbmc, ident.1 = "CD4 Naive", ident.2 = "CD4 TCM", group.by="azh.annot", min.pct = 0.25)
+> write.table(cluster5.markers, "temp.3.txt", quote=F, sep="\t")
