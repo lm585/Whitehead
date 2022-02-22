@@ -1,0 +1,107 @@
+library(ComplexHeatmap)
+library(beeswarm)
+library(edgeR)
+library("circlize")
+
+setwd("/Users/linyongmao/Documents/microglia")
+
+
+#############################################################################
+sink("temp-2.txt")
+#############################################################################
+> write.table(res.info, paste("temp-z-score-", file[index,1], sep=""), quote=F, sep="\t")
+
+t <- read.delim("temp.txt", header = T, row.names = 1)
+dim(t)
+##[1] 58302    39
+rawCount <- t
+group <- factor(rep(1, 39))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+dim(y)
+###[1] 14170    39
+d = cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+g <- read.delim("geneID-name")
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, g, by.x="id", by.y="geneID")
+dim(a.df.g)
+###[1] 14170    41
+file <- read.delim("temp-files", header=F)
+index = 5
+file[index,1]
+###[1] "HALLMARK_INFLAMMATORY_RESPONSE.temp.genes"
+p <- read.delim(file[index,1], header=F)
+p.exp <- a.df.g[ a.df.g$name %in% p$V1, ]
+length(p.exp$name)
+###[1] 200 pathway genes -> 166 with median >= 1 over 39 samples
+mat <- as.matrix(p.exp[, 2:40])
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+res.info <- merge(res, info, by.x="id", by.y="id1")
+res.info$grape3 <- paste(res.info$XX, res.info$Tumor)
+res.info.path <- res.info
+
+t <- read.delim("temp.txt", header = T, row.names = 1)
+dim(t)
+##[1] 58302    39
+rawCount <- t
+group <- factor(rep(1, 39))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+keep <-rowSums(cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+##39 samples; [1] 18488    39
+d = cpm(y)
+a <- log2(d+1)
+###a is log2(cpm+1)
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+g <- read.delim("geneID-name")
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, g, by.x="id", by.y="geneID")
+dim(a.df.g)
+##[1] 18488    41
+querygene <- "XIST"
+p.exp <- a.df.g[ a.df.g$name == querygene, ]
+length(p.exp$name)
+##[1] 1
+mat <- as.matrix(p.exp[, 2:40])
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+res.info <- merge(res, info, by.x="id", by.y="id1")
+res.info$grape3 <- paste(res.info$XX, res.info$Tumor)
+boxplot(as.numeric(res.info$mean) ~ res.info$grape3 ,  ylab = "log2(cpm+1)", xlab = "", cex=0.1)
+beeswarm(as.numeric(res.info$mean) ~ res.info$grape3 ,add =T,pch = c(16,16,17,17), col=c("green", "red", "green", "red"), cex = 1)
+title(main = querygene)
+abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+res.info.xgene <- res.info
+
+res.info.g.p <- merge(res.info.path, res.info.xgene, by.x="id", by.y="id")
+res.info.g.p.fem <- res.info.g.p[ res.info.g.p$XX.x == "XX", ]
+res.info.g.p.male <- res.info.g.p[ res.info.g.p$XX.x == "XY", ]
+cor.test(res.info.g.p$mean.x, res.info.g.p$mean.y)
+cor.test(res.info.g.p.fem$mean.x, res.info.g.p.fem$mean.y)
+cor.test(res.info.g.p.male$mean.x, res.info.g.p.male$mean.y)
+
+
+
+sink()
+
+Helen&2020
+
