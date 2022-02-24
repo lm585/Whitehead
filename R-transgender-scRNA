@@ -402,3 +402,53 @@ abline(h = seq(0,80,0.05), lty = 5, lwd = 0.5, col = "gray")
 abline(v = seq(0,80,0.05), lty = 5, lwd = 0.5, col = "gray")
 temp <- cell[abs(cell$diff) > 0.02, ]
 text( temp$orig.assign.freq, temp$Azimuth.assign.1, temp$Assig..Orig. , pos=4)
+
+############################################################
+### with additional 27 new samples potentially to be sequenced, 37 old samples + 27 potential new samples
+#####transgender scRNA
+t2e.age <- read.delim("t2eratio-age-bmi-37samples.txt")
+dim(t2e.age)
+##[1] 37  8
+t3 <- t2e.age[, c(1,7,8,3)]
+head(t3)
+#  BCH.ID Age      BMI Group
+#1   C005  28 20.48283 Cis F
+t4 <- read.delim("potential-new-samples.2-22-2022.txt")
+t4
+#            Sex Age      BMI        Group
+#1             M  15 21.00000        Cis M
+colnames(t4) <- colnames(t3)
+t5 <- rbind(t3,t4)
+t5$color = "black"
+t5[38:64,]$color = "red"
+t5$Group <- factor(t5$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
+beeswarm(t5$Age ~ t5$Group, pch = 20, pwcol=t5$color , cex = 2, add=T)
+legend(2,30, c("potential new samples"), pch=c(20), col = c( "red" ))
+abline(h = seq(0,80,1), lty = 5, lwd = 0.5, col = "gray")
+
+sink("temp-res.txt")
+f <- t5[t5$Group == "Cis F",]$Age
+m <- t5[t5$Group == "Cis M",]$Age
+tf <- t5[t5$Group == "Trans F (XY)",]$Age
+tm <- t5[t5$Group == "Trans M (XX)",]$Age
+
+ll <- list(cisF=f,cisM=m,transF_XY=tf,transM_XX=tm)
+for(i in 1:length(ll)) {
+ for(j in 1:length(ll)) {
+wilcox <- wilcox.test(ll[[i]], ll[[j]], paired=F, exact=F, conf.int = T)
+str <- paste(names(ll)[i], names(ll)[j], wilcox$p.value, sep = "\t" )
+cat(str)
+cat("\n")
+ }
+}
+
+for(i in 1:length(ll)) {
+ for(j in 1:length(ll)) {
+wilcox <- wilcox.test(ll[[i]], ll[[j]], paired=F, exact=F, conf.int = T)
+str <- paste(wilcox$p.value, "", sep = "\t" )
+cat(str)
+ }
+cat("\n")
+}
+
+sink()
