@@ -1,0 +1,36 @@
+#
+cut -f 1 temp.txt | sort | uniq > c1
+cut -f 2 temp.txt | sort | uniq > c2
+
+echo -n "cell-type"
+cat c1 | awk '
+BEGIN {FS = "\t";
+       OFS = "";
+       ORS = "";}
+{
+ print "\t" $1;
+}
+'
+echo
+###cell-type	B	CD14+ Mono	CD8 T	DC	FCGR3A+ Mono	Memory CD4 T	NK	Naive CD4 T
+#B
+#CD4 T
+#CD8 T
+#DC
+#Mono
+#NK
+#other
+#other T
+
+cat c2 | while read ll
+do
+ echo -n "$ll"
+ cat c1 | while read mm
+ do
+  nn=`grep "^$mm	$ll$" temp.txt | wc -l | awk '{print $1}' `
+  echo -n "	$nn"
+ done
+ echo
+done
+rm c1 c2
+
