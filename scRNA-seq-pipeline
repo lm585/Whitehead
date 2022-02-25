@@ -130,6 +130,36 @@ if (requireNamespace(Seurat, quietly = TRUE)) {
 
 ## End(Not run)
 
+library(SeuratData)
+InstallData('pbmc3k')
+  ..@ meta.data   :'data.frame':        2700 obs. of  4 variables:
+  .. ..$ orig.ident        : Factor w/ 1 level "pbmc3k": 1 1 1 1 1 1 1 1 1 1 ...
+  .. ..$ nCount_RNA        : num [1:2700] 2419 4903 3147 2639 980 ...
+  .. ..$ nFeature_RNA      : int [1:2700] 779 1352 1129 960 521 781 782 790 532 550 ...
+  .. ..$ seurat_annotations: Factor w/ 9 levels "Naive CD4 T",..: 2 4 2 3 7 2 5 5 1 6 ...
+pbmc <- pbmc3k
+# The [[ operator can add columns to object metadata. This is a great place to stash QC stats
+pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT-")
+pbmc <- NormalizeData(pbmc, normalization.method = "LogNormalize", scale.factor = 10000)
+pbmc <- FindVariableFeatures(pbmc, selection.method = "vst", nfeatures = 2000)
+all.genes <- rownames(pbmc)
+pbmc <- ScaleData(pbmc, features = all.genes)
+pbmc <- RunPCA(pbmc, features = VariableFeatures(object = pbmc))
+ElbowPlot(pbmc)
+pbmc <- FindNeighbors(pbmc, dims = 1:10)
+pbmc <- FindClusters(pbmc, resolution = 0.5)
+# If you haven't installed UMAP, you can do so via reticulate::py_install(packages =
+# 'umap-learn')
+pbmc <- RunUMAP(pbmc, dims = 1:10)
+# note that you can set `label = TRUE` or use the LabelClusters function to help label
+# individual clusters
+DimPlot(pbmc, reduction = "umap")
+new.cluster.ids <- c("Naive CD4 T", "CD14+ Mono", "Memory CD4 T", "B", "CD8 T", "FCGR3A+ Mono",
+    "NK", "DC", "Platelet")
+names(new.cluster.ids) <- levels(pbmc)
+pbmc <- RenameIdents(pbmc, new.cluster.ids)
+DimPlot(pbmc, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
+
 > cluster5.markers <- FindMarkers(pbmc, ident.1 = 0, ident.2 = c(2), min.pct = 0.25)
   |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=00s
 > head(cluster5.markers, n = 20)
