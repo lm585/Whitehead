@@ -1246,3 +1246,11 @@ m5 <-  m4[ m4$FDR.q.val.3.x < 0.25 & m4$FDR.q.val.3.y < 0.25, ]
 points(m5$NES.2.y - m5$NES, m5$mean.diff..f.m., col = "red", pch=16)
 m6 <- m5[ m5$NAME == "HALLMARK_E2F_TARGETS", ]
 text(m6$NES.2.y - m6$NES, m6$mean.diff..f.m., "E2F", pos=4, cex = 0.7)
+
+########################################################################
+cat  microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt | awk  '$13 == "X"'  | wc -l
+     609
+0.05 / 609
+[1] 8.210181e-05
+cat  microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt | awk '$5 < 8.210181e-05 && $13 == "X"'  | wc -l
+       8
