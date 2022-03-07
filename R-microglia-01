@@ -1254,3 +1254,40 @@ cat  microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt | awk  '$
 [1] 8.210181e-05
 cat  microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt | awk '$5 < 8.210181e-05 && $13 == "X"'  | wc -l
        8
+
+#########################################################################
+###gene level expression 39 samples boxplot
+t <- read.delim("temp.txt", header = T, row.names = 1)
+dim(t)
+##[1] 58302    39
+rawCount <- t
+group <- factor(rep(1, 39))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+keep <-rowSums(cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+##39 samples; [1] 18488    39
+d = cpm(y)
+a <- log2(d+1)
+###a is log2(cpm+1)
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+g <- read.delim("geneID-name")
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, g, by.x="id", by.y="geneID")
+dim(a.df.g)
+##[1] 18488    41
+p.exp <- a.df.g[ a.df.g$name == "ITGAM", ]
+###p.exp <- a.df.g[ a.df.g$name == "MPP1", ]
+geneName = p.exp$name
+length(p.exp$name)
+##[1] 1
+mat <- as.matrix(p.exp[, 2:40])
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+res.info <- merge(res, info, by.x="id", by.y="id1")
+res.info$grape3 <- paste(res.info$XX, res.info$Tumor)
+   boxplot(as.numeric(res.info$mean) ~ res.info$grape3 ,  ylab = "log2(cpm+1)", xlab = "", cex=0.1)
+   beeswarm(as.numeric(res.info$mean) ~ res.info$grape3 ,add =T,pch = c(16,16,17,17), col=c("green", "red", "green", "red"), cex = 1)
+   title(main = geneName)
+   abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
