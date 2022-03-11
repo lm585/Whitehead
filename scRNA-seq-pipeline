@@ -188,3 +188,39 @@ paste  temp.txt    out | cut -f 3,12,13 > temp.2.txt
 > DimPlot(pbmc, reduction = "umap", label = F, pt.size = 0.5, group.by="azh.annot", cols=c(rep("gray", 5), "red", "green", "orange", "blue",  rep("gray", 15)))
 > cluster5.markers <- FindMarkers(pbmc, ident.1 = "CD4 Naive", ident.2 = "CD4 TCM", group.by="azh.annot", min.pct = 0.25)
 > write.table(cluster5.markers, "temp.3.txt", quote=F, sep="\t")
+
+#############################################################################
+###SingleR
+> library(celldex)
+> ref.data <- MonacoImmuneData()
+> unique(ref.data$label.main)
+ [1] "CD8+ T cells"    "T cells"         "CD4+ T cells"    "Progenitors"     "B cells"         "Monocytes"
+ [7] "NK cells"        "Dendritic cells" "Neutrophils"     "Basophils"
+> unique(ref.data$label.fine)
+ [1] "Naive CD8 T cells"             "Central memory CD8 T cells"    "Effector memory CD8 T cells"
+ [4] "Terminal effector CD8 T cells" "MAIT cells"                    "Vd2 gd T cells"
+ [7] "Non-Vd2 gd T cells"            "Follicular helper T cells"     "T regulatory cells"
+[10] "Th1 cells"                     "Th1/Th17 cells"                "Th17 cells"
+[13] "Th2 cells"                     "Naive CD4 T cells"             "Progenitor cells"
+[16] "Naive B cells"                 "Non-switched memory B cells"   "Exhausted B cells"
+[19] "Switched memory B cells"       "Plasmablasts"                  "Classical monocytes"
+[22] "Intermediate monocytes"        "Non classical monocytes"       "Natural killer cells"
+[25] "Plasmacytoid dendritic cells"  "Myeloid dendritic cells"       "Low-density neutrophils"
+[28] "Low-density basophils"         "Terminal effector CD4 T cells"
+
+library(SingleR)
+library(SeuratData)
+InstallData('pbmc3k')
+pbmc <- pbmc3k
+m <- as.matrix(pbmc@assays$RNA@counts)
+summary(m[,1:12])
+ref.data <- celldex::HumanPrimaryCellAtlasData()
+ref.data
+# class: SummarizedExperiment
+# dim: 19363 713
+pred <- SingleR(test = m , ref = ref.data,  labels =  ref.data$label.fine, assay.type.test=1)
+write.table(data.frame(cell=colnames(m), label= pred$labels), "temp2", quote=F, sep = "\t")
+vi temp2
+cut -f 2,3 temp2 > temp2.2
+mv -i temp2.2 pbmc3k.CellAtlas.singleR.annot.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine         pbmc3k.clustering.annot.txt pbmc3k.CellAtlas.singleR.annot.txt out
