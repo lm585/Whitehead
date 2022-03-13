@@ -224,3 +224,29 @@ vi temp2
 cut -f 2,3 temp2 > temp2.2
 mv -i temp2.2 pbmc3k.CellAtlas.singleR.annot.txt
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine         pbmc3k.clustering.annot.txt pbmc3k.CellAtlas.singleR.annot.txt out
+
+pbmc.avg.exp <- AverageExpression(pbmc, group.by="ident", slot="data", verbose=T)
+dim(pbmc.avg.exp$RNA)
+###[1] 13714-RNA-features     9-clusters
+summary(pbmc.avg.exp$RNA)
+       0                  1                  2                   3                   4                  5
+ Min.   :  0.0000   Min.   :  0.0000   Min.   :  0.00000   Min.   :  0.00000   Min.   :  0.0000   Min.   :  0.0000
+ 1st Qu.:  0.0179   1st Qu.:  0.0154   1st Qu.:  0.01832   1st Qu.:  0.01731   1st Qu.:  0.0165   1st Qu.:  0.0142
+ Median :  0.0740   Median :  0.0686   Median :  0.07907   Median :  0.08325   Median :  0.0865   Median :  0.0678
+ Mean   :  0.7292   Mean   :  0.7292   Mean   :  0.72918   Mean   :  0.72918   Mean   :  0.7292   Mean   :  0.7292
+10000/13714
+####[1] 0.7291819
+ref.data <- MonacoImmuneData()
+pred <- SingleR(test = pbmc.avg.exp$RNA , ref = ref.data,  labels =  ref.data$label.fine, assay.type.test=1)
+> data.frame(pred$first.labels, pred$labels, pred$pruned.labels)
+        pred.first.labels             pred.labels      pred.pruned.labels
+1       Naive CD4 T cells               Th1 cells               Th1 cells
+2     Classical monocytes     Classical monocytes     Classical monocytes
+3               Th2 cells          Th1/Th17 cells          Th1/Th17 cells
+4           Naive B cells           Naive B cells           Naive B cells
+5          Vd2 gd T cells          Vd2 gd T cells          Vd2 gd T cells
+6  Intermediate monocytes  Intermediate monocytes  Intermediate monocytes
+7    Natural killer cells    Natural killer cells    Natural killer cells
+8 Myeloid dendritic cells Myeloid dendritic cells Myeloid dendritic cells
+9  Intermediate monocytes        Progenitor cells        Progenitor cells
+
