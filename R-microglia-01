@@ -1291,3 +1291,20 @@ res.info$grape3 <- paste(res.info$XX, res.info$Tumor)
    beeswarm(as.numeric(res.info$mean) ~ res.info$grape3 ,add =T,pch = c(16,16,17,17), col=c("green", "red", "green", "red"), cex = 1)
    title(main = geneName)
    abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+
+#############################################################################
+###pathway ~ pathway correlation
+res.info.inflam <- res.info
+res.info.ddx3x <- res.info
+ me <- merge(res.info.ddx3x, res.info.inflam, by.x="id", by.y="id")
+me.f <- me[ me$XX.x == "XX", ]
+me.m <- me[ me$XX.x == "XY", ]
+plot( me$mean.x, me$mean.y , xlab = "DDX3X targets", ylab = "inflammatory", cex = 0.05)
+abline(lm( me$mean.y ~ me$mean.x ), lwd = 2 )
+ points(me[ me$grape3.x == "XX Tumor", ]$mean.x, me[ me$grape3.x == "XX Tumor", ]$mean.y, col = "red", pch = 16 , cex = 1.6)
+points(me[ me$grape3.x == "XX Control", ]$mean.x, me[ me$grape3.x == "XX Control", ]$mean.y, col = "green", pch = 16 , cex = 1.6)
+points(me[ me$grape3.x == "XY Tumor", ]$mean.x, me[ me$grape3.x == "XY Tumor", ]$mean.y, col = "red", pch = 17 , cex = 1.6)
+points(me[ me$grape3.x == "XY Control", ]$mean.x, me[ me$grape3.x == "XY Control", ]$mean.y, col = "green", pch = 17 , cex = 1.6)
+legend("topleft", inset = 0.05, c("XX control", "XX tumor", "XY control", "XY tumor"), pch=c(16,16,17,17), col = c("green", "red", "green", "red" ))
+abline(h = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
