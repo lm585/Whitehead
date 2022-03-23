@@ -1311,7 +1311,6 @@ abline(v = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
 
 .....a <- d ####no log2
 comb <- merge(ddx3X, ddx3y, by.x="id", by.y="id" )
-> comb$cpm <- (comb$mean.x / 8928 + comb$mean.y / 5738) * 10000
 > comb$cpm <- log2((comb$mean.x / 8928 + comb$mean.y / 5738) * 10000 + 1)
 > boxplot( comb$cpm ~ comb$grape3.x, ylab = "DDX3X + DDX3Y (cpm normalized by gene length. log2 scale)", xlab = "", cex = 0.5 )
 beeswarm( comb$cpm ~ comb$grape3.x,add =T,pch = c(16,16,17,17), col=c("green", "red", "green", "red"), cex = 1)
@@ -1320,3 +1319,14 @@ abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
 > path.gene <- merge(comb, res.info.path, by.x = "id", by.y = "id")
 > path.gene.x <- path.gene[ path.gene$XX.x == "XX", ]
 > path.gene.y <- path.gene[ path.gene$XX.x == "XY", ]
+####ddx3x + ddx3y combined cpm
+> cor.test( path.gene.x$cpm, path.gene.x$mean )
+> cor.test( path.gene.y$cpm, path.gene.y$mean )
+> cor.test( path.gene$cpm, path.gene$mean )
+
+###ddx3x only, all 39 samples
+> cor.test( log2(path.gene$mean.x+1), path.gene$mean )
+###ddx3x only, female samples only
+> cor.test( log2(path.gene.x$mean.x+1), path.gene.x$mean )
+
+
