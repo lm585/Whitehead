@@ -1308,3 +1308,15 @@ points(me[ me$grape3.x == "XY Control", ]$mean.x, me[ me$grape3.x == "XY Control
 legend("topleft", inset = 0.05, c("XX control", "XX tumor", "XY control", "XY tumor"), pch=c(16,16,17,17), col = c("green", "red", "green", "red" ))
 abline(h = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
 abline(v = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
+
+.....a <- d ####no log2
+comb <- merge(ddx3X, ddx3y, by.x="id", by.y="id" )
+> comb$cpm <- (comb$mean.x / 8928 + comb$mean.y / 5738) * 10000
+> comb$cpm <- log2((comb$mean.x / 8928 + comb$mean.y / 5738) * 10000 + 1)
+> boxplot( comb$cpm ~ comb$grape3.x, ylab = "DDX3X + DDX3Y (cpm normalized by gene length. log2 scale)", xlab = "", cex = 0.5 )
+beeswarm( comb$cpm ~ comb$grape3.x,add =T,pch = c(16,16,17,17), col=c("green", "red", "green", "red"), cex = 1)
+title(main = "DDX3X + DDX3Y")
+abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+> path.gene <- merge(comb, res.info.path, by.x = "id", by.y = "id")
+> path.gene.x <- path.gene[ path.gene$XX.x == "XX", ]
+> path.gene.y <- path.gene[ path.gene$XX.x == "XY", ]
