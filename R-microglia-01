@@ -1329,4 +1329,6 @@ abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
 ###ddx3x only, female samples only
 > cor.test( log2(path.gene.x$mean.x+1), path.gene.x$mean )
 
+####ddx3y only, male samples only
+> cor.test( log2(path.gene.y$mean.y+1), path.gene.y$mean )
 
