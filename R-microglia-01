@@ -1332,3 +1332,16 @@ abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
 ####ddx3y only, male samples only
 > cor.test( log2(path.gene.y$mean.y+1), path.gene.y$mean )
 
+###test gene length
+cat gene-length | awk 'NR == 5000'
+ENSG00000120049 3294
+grep "gene_id .ENSG00000120049.;" Homo_sapiens.GRCh38.90.gtf > temp1
+grep -w exon temp1 > temp2
+cat temp2 | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = $4; i <= $5; i++) print $1, i}' | sort | uniq -c | wc -l
+    3294
+grep "prime_utr" temp1 >> temp2
+cut -f 3 temp2 | sort | uniq -c
+
+ENSG00000000003 4535 (first gene)
+ENSG00000284748 1326 (last gene)
+ENSG00000156515 6073 (10000th gene)
