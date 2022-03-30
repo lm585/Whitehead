@@ -250,3 +250,26 @@ pred <- SingleR(test = pbmc.avg.exp$RNA , ref = ref.data,  labels =  ref.data$la
 8 Myeloid dendritic cells Myeloid dendritic cells Myeloid dendritic cells
 9  Intermediate monocytes        Progenitor cells        Progenitor cells
 
+###################################################################
+###clustering on CD4/CD8 cells only
+> pbmc.cd4.cd8 <- pbmc[,pbmc$RNA_snn_res.0.5 %in% c(0,2,4)]
+> pbmc.cd4.cd8
+An object of class Seurat
+13714 features across 1502 samples within 1 assay
+Active assay: RNA (13714 features, 2000 variable features)
+ 2 dimensional reductions calculated: pca, umap
+> 696 + 467 + 339
+[1] 1502
+
+> pbmc.cd4.cd8 <- FindVariableFeatures(pbmc.cd4.cd8, selection.method = "vst", nfeatures = 2000)
+all.genes <- rownames(pbmc.cd4.cd8)
+pbmc.cd4.cd8 <- ScaleData(pbmc.cd4.cd8, features = all.genes)
+pbmc.cd4.cd8 <- RunPCA(pbmc.cd4.cd8, features = VariableFeatures(object = pbmc.cd4.cd8))
+ElbowPlot(pbmc.cd4.cd8)
+pbmc.cd4.cd8 <- FindNeighbors(pbmc.cd4.cd8, dims = 1:10)
+pbmc.cd4.cd8 <- FindClusters(pbmc.cd4.cd8, resolution = 0.5)
+pbmc.cd4.cd8 <- RunUMAP(pbmc.cd4.cd8, dims = 1:10)
+DimPlot(pbmc.cd4.cd8, reduction = "umap")
+write.table( Idents(pbmc.cd4.cd8), "temp.txt", quote=F, sep="\t")
+vi temp.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   temp.txt  pbmc3k.azimuth.anno.txt   out
