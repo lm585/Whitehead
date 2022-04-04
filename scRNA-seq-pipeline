@@ -225,6 +225,10 @@ cut -f 2,3 temp2 > temp2.2
 mv -i temp2.2 pbmc3k.CellAtlas.singleR.annot.txt
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine         pbmc3k.clustering.annot.txt pbmc3k.CellAtlas.singleR.annot.txt out
 
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   pbmc3k.clustering.annot.txt pbmc3k.Monaco.singleR.annot.txt  out
+paste  pbmc3k.clustering.annot.txt out > temp.2
+cat temp.2 | cut -f 2,4 | sort | uniq -c | sed 's/^ *//' | sed 's/  */\t/' | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == "Naive CD4 T" ' | sort -nr | cut -f 1,3 | sed 's/^/ /'
+
 pbmc.avg.exp <- AverageExpression(pbmc, group.by="ident", slot="data", verbose=T)
 dim(pbmc.avg.exp$RNA)
 ###[1] 13714-RNA-features     9-clusters
