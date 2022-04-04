@@ -464,3 +464,33 @@ boxplot(t5$Age ~ t5$Group, cex = 0.1, xlab="", ylab="Age")
 beeswarm(t5$Age ~ t5$Group, pch = 20, pwcol=t5$color , cex = 2, add=T)
 legend(2,30, c("potential new samples"), pch=c(20), col = c( "red" ))
 abline(h = seq(0,80,1), lty = 5, lwd = 0.3, col = "gray")
+
+####fai, fei, shbg
+t2e.age <- read.delim("t2eratio-age-bmi-shbg-testorone-estradiol-37samples.txt", row.names=1)
+t2e.age$FEI <- 1000 * t2e.age$Estradiol..pg.ml. * 0.003671 / t2e.age$SHBG..nmol.L.
+t2e.age$FreeAndrogenIndex <- 100 * t2e.age$Testosterone..ng.dl. * 0.03467 / t2e.age$SHBG..nmol.L.
+t2e.age$Group <- factor(t2e.age$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
+boxplot(log10(t2e.age$Estradiol..pg.ml.) ~ t2e.age$Group)
+beeswarm(log10(t2e.age$Estradiol..pg.ml.) ~ t2e.age$Group,  pch = 20, col = 1, cex = 2, add = T)
+abline(h = seq(0,80,0.1), lty = 5, lwd = 0.5, col = "gray")
+title(main="Estradiol")
+
+boxplot(log10(t2e.age$SHBG..nmol.L.) ~ t2e.age$Group)
+beeswarm(log10(t2e.age$SHBG..nmol.L.) ~ t2e.age$Group,  pch = 20, col = 1, cex = 2, add = T)
+abline(h = seq(0,80,0.1), lty = 5, lwd = 0.5, col = "gray")
+title(main="SHBG")
+
+boxplot(log10(t2e.age$FEI) ~ t2e.age$Group)
+beeswarm(log10(t2e.age$FEI) ~ t2e.age$Group,  pch = 20, col = 1, cex = 2, add = T)
+abline(h = seq(0,80,0.1), lty = 5, lwd = 0.5, col = "gray")
+title(main="FEI")
+
+boxplot(log10(t2e.age$FreeAndrogenIndex ) ~ t2e.age$Group)
+beeswarm(log10(t2e.age$FreeAndrogenIndex) ~ t2e.age$Group,  pch = 20, col = 1, cex = 2, add = T)
+abline(h = seq(-10,80,0.25), lty = 5, lwd = 0.5, col = "gray")
+title(main="FAI")
+
+boxplot(log10(t2e.age$Testosterone..ng.dl. ) ~ t2e.age$Group, cex = 0.01)
+beeswarm(log10(t2e.age$Testosterone..ng.dl.) ~ t2e.age$Group,  pch = 20, col = 1, cex = 2, add = T)
+abline(h = seq(-10,80,0.25), lty = 5, lwd = 0.5, col = "gray")
+title(main="Testosterone")
