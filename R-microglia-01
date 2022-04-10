@@ -1255,6 +1255,26 @@ cat  microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt | awk  '$
 cat  microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt | awk '$5 < 8.210181e-05 && $13 == "X"'  | wc -l
        8
 
+######histogram of r
+head -1  microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt > temp.1.txt
+cat  microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $13 == "X"' >> temp.1.txt
+> x <- read.delim("temp.1.txt")
+> summary(x)
+> x.fdr <- p.adjust(x$f.p, method="fdr")
+> head(x.fdr)
+[1] 0.79662208 0.02437901 0.64919635 0.70664229 0.17453162 0.29113280
+> x.m.fdr <- p.adjust(x$m.p, method="fdr")
+> x.all.fdr <- p.adjust(x$a.p, method="fdr")
+> x.f.m.fdr <- data.frame(x, f.fdr = x.fdr, m.fdr = x.m.fdr, a.fdr = x.all.fdr )
+> write.table(x.f.m.fdr, "temp.2.txt", quote=F, sep = "\t")
+vi temp.2.txt
+cp -i temp.2.txt microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.xGenes.fdr.txt
+hist(x.f.m.fdr$f.r, breaks=seq(-1,1,0.05), xlab = "r with XX samples", ylab = "# of X chromosome genes", main = "correlation with HALLMARK_INFLAMMATORY_RESPONSE", ylim=c(0, 40))
+abline(v = 0.67, col="blue") ### r = +/- 0.67, fdr = 0.05
+abline(h = seq(0,800,5), lty = 5, lwd = 0.5, col = "gray")
+abline(v = -0.67, col="blue")
+text(0.67, 20, "FDR = 0.05", pos = 4, col = "blue")
+
 #########################################################################
 ###gene level expression 39 samples boxplot
 t <- read.delim("temp.txt", header = T, row.names = 1)
