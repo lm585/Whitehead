@@ -45,3 +45,42 @@ t3[,i] = t2[,i] / sum(t2[,i])
 points(0:23, rowMeans(t3), pch = 1, col = "red", cex = 1)
 lines(0:23, rowMeans(t3),  col = "red")
 legend(0, 0.15, c("stra8_het", "stra8_lxlx"), pch = c(1,1), col = c("black", "red"), cex = 1)
+
+############cat R-stra8-linear-mix-model
+setwd("/Users/linyongmao/Documents/Mina-scRNA-project/220407_for_linyong")
+x <- read.delim("cluster_counts_stra8lxcxe_samples.txt")
+s <- read.delim("sample_metadata.txt")
+s$id <- gsub("-", ".", s$Sample_ID)
+
+t1 <- s[ s$Genotype=="stra8_het", ]$id
+t2 <- x[, colnames(x) %in% t1 ]
+t3 = t2
+for(i in 1:dim(t2)[2]) {
+ t3[,i] = t2[,i] / sum(t2[,i])
+}
+ctr = t3
+t1 <- s[ s$Genotype=="stra8_lxlx", ]$id
+t2 <- x[, colnames(x) %in% t1 ] 
+t3 = t2
+for(i in 1:dim(t2)[2]) { 
+ t3[,i] = t2[,i] / sum(t2[,i])
+ }
+mut = t3
+c3.m3 <- cbind(ctr, mut, x)
+uc <- unique( c3.m3$celltype)
+for(i in 1:length(uc)) {
+if(uc[i] != "prelep" & uc[i] != "MI/II" ) {
+cellType = uc[i]
+t <- c3.m3[ c3.m3$celltype == cellType, 1:8]
+write.table(t, "temp.stra8.txt", quote=F, sep="\t")
+system("bash script-linear-mix-ip-with-mice > temp.stra8.mix.txt")
+t1 <- read.delim("temp.stra8.mix.txt")
+t2 <- merge(t1, s, by.x="mouse", by.y="id")
+res <- lm( t2$clusterFreq ~ t2$cluster + t2$Batch + t2$Genotype)
+sr <- summary(res)
+cat(cellType)
+cat("\n")
+print(sr$coefficients)
+cat("\n")
+}
+}
