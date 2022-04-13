@@ -453,6 +453,13 @@ cat("\n")
 
 sink()
 
+############################################################
+###4-12-2022 37 new potential samples
+> t4 <- read.delim("potential-new-samples.4-12-2022.txt")
+> t5[38:74,]$color = "red"
+> boxplot(t5$Age ~ t5$Group, xlab = "", ylab = "Age")
+
+
 t4 <- read.delim("potential-new-samples.3-20-2022.txt")
 ##30 new samples
 colnames(t4) <- colnames(t3)
