@@ -1365,3 +1365,74 @@ cut -f 3 temp2 | sort | uniq -c
 ENSG00000000003 4535 (first gene)
 ENSG00000284748 1326 (last gene)
 ENSG00000156515 6073 (10000th gene)
+
+#############################################################################
+#############medians of xx control, xx tumor, for inflamm pathway, 39 samples20
+c(xc,xt, yc, yt)
+[1] -0.21874569  0.24967022 -0.04865440  0.09667048
+#######all genes, no filtering
+dim(y)
+##[1] 58302    39
+d = cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+  a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+f <- read.delim("female-noCereb.noOcci-diff2-1.txt")
+dim(f)
+##[1] 17319     6
+####sig up in XX tumor
+g <- f[ f$logFC > 0 & f$PValue < 0.05, ]
+dim(g)
+##[1] 800   6
+a.1 <- as.data.frame(a)
+a.1$geneID <- rownames(a.1)
+a.2 <- merge(a.1, g, by.x="geneID", by.y="geneID")
+g <- read.delim("geneID-name")
+a.df.g <- merge(a.2, g, by.x="geneID", by.y="geneID")
+dim(a.df.g)
+##[1] 800  46
+p <- read.delim("temp-path.genes", header=F)
+p.exp <- a.df.g[ a.df.g$name %in% p$V1, ]
+length(p.exp$name)
+##52
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+##> thresh = xt - xc - (yt - yc)
+thresh = 0.323091
+##[1] 0.323091
+p.exp$dif = 0
+
+for(i in 1:dim(p.exp)[1]) {
+###each geneID
+#############################gene median difference, tumor - control in XX, in XY
+mat <- as.matrix(p.exp[i, 2:40])
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+res.info <- merge(res, info, by.x="id", by.y="id1")
+res.info$group <- paste(res.info$XX, res.info$Tumor)
+t <- res.info[ res.info$group == "XX Control",]$mean
+t1 <- median(t)
+t <- res.info[ res.info$group == "XX Tumor",]$mean
+t2 <- median(t)
+t <- res.info[ res.info$group == "XY Control",]$mean
+t3 <- median(t)
+t <- res.info[ res.info$group == "XY Tumor",]$mean
+t4 <- median(t)
+dif = t2-t1 - (t4-t3)
+p.exp[i,]$dif = dif
+}
+
+######gene level, 39 samples, z-score boxplot
+for(i in 1:1) {
+name="IL1B"
+mat <- as.matrix(p.exp[p.exp$name == name, 2:40])
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+res.info <- merge(res, info, by.x="id", by.y="id1")
+res.info$group <- paste(res.info$XX, res.info$Tumor)
+boxplot(res.info$mean ~ res.info$group, xlab = "", ylab = "z-score")
+title(main=name)
+beeswarm(res.info$mean ~ res.info$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+abline(h = seq(-100,100,0.2), lty = 5, lwd = 0.5, col = "gray")
+}
