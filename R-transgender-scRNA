@@ -527,3 +527,44 @@ abline(lm(log10(x$Testosterone..ng.dl.) ~ log10(x$Estradiol..pg.ml.)))
 res <- cor.test(log10(x$Testosterone..ng.dl.) , log10(x$Estradiol..pg.ml.))
 title(main=paste( geno[i], " \n","r= ",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
 }
+
+######3rd batch potential new samples
+#####t3 = 37 old samples
+> t4 <- read.delim("potential-new-samples.4-25-2022.txt")
+> t5 <- t4[, c(2,5,6,4)]
+> colnames(t5) <- colnames(t3)
+> t6 <- rbind(t3,t5)
+> t6$color = "black"
+> t6[38:69,]$color = "red"
+t6$Group <- factor(t6$Group, levels = c("Cis F", "Trans M (XX)", "Trans F (XY)", "Cis M"))
+> boxplot(t6$BMI ~ t6$Group, xlab = "", ylab = "BMI", ylim=c(14,56), outline=F)
+> beeswarm(t6$BMI ~ t6$Group, pch = 20, pwcol=t6$color , cex = 2, add=T)
+> abline(h = seq(0,80,2), lty = 5, lwd = 0.5, col = "gray")
+> legend(0.5,54, c("potential new samples"), pch=c(20), col = c( "red" ))
+
+sink("temp-res.txt")
+f <- t6[t6$Group == "Cis F",]$BMI
+m <- t6[t6$Group == "Cis M",]$BMI
+tf <- t6[t6$Group == "Trans F (XY)",]$BMI
+tm <- t6[t6$Group == "Trans M (XX)",]$BMI
+
+ll <- list(cisF=f,cisM=m,transF_XY=tf,transM_XX=tm)
+for(i in 1:length(ll)) {
+ for(j in 1:length(ll)) {
+wilcox <- wilcox.test(ll[[i]], ll[[j]], paired=F, exact=F, conf.int = T)
+str <- paste(names(ll)[i], names(ll)[j], wilcox$p.value, sep = "\t" )
+cat(str)
+cat("\n")
+ }
+}
+
+for(i in 1:length(ll)) {
+ for(j in 1:length(ll)) {
+wilcox <- wilcox.test(ll[[i]], ll[[j]], paired=F, exact=F, conf.int = T)
+str <- paste(wilcox$p.value, "", sep = "\t" )
+cat(str)
+ }
+cat("\n")
+}
+
+sink()
