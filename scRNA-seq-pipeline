@@ -277,3 +277,52 @@ DimPlot(pbmc.cd4.cd8, reduction = "umap")
 write.table( Idents(pbmc.cd4.cd8), "temp.txt", quote=F, sep="\t")
 vi temp.txt
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   temp.txt  pbmc3k.azimuth.anno.txt   out
+
+https://satijalab.org/seurat/articles/integration_introduction.html
+###copied from above website
+###14053 features across 13999 samples within 1 assay
+
+library(Seurat)
+library(SeuratData)
+library(patchwork)
+# install dataset
+InstallData("ifnb")
+# load dataset
+LoadData("ifnb")
+
+# split the dataset into a list of two seurat objects (stim and CTRL)
+ifnb.list <- SplitObject(ifnb, split.by = "stim")
+
+# normalize and identify variable features for each dataset independently
+ifnb.list <- lapply(X = ifnb.list, FUN = function(x) {
+    x <- NormalizeData(x)
+    x <- FindVariableFeatures(x, selection.method = "vst", nfeatures = 2000)
+})
+
+# select features that are repeatedly variable across datasets for integration
+features <- SelectIntegrationFeatures(object.list = ifnb.list)
+immune.anchors <- FindIntegrationAnchors(object.list = ifnb.list, anchor.features = features)
+# this command creates an 'integrated' data assay
+immune.combined <- IntegrateData(anchorset = immune.anchors)
+# specify that we will perform downstream analysis on the corrected data note that the
+# original unmodified data still resides in the 'RNA' assay
+DefaultAssay(immune.combined) <- "integrated"
+
+# Run the standard workflow for visualization and clustering
+immune.combined <- ScaleData(immune.combined, verbose = FALSE)
+immune.combined <- RunPCA(immune.combined, npcs = 30, verbose = FALSE)
+immune.combined <- RunUMAP(immune.combined, reduction = "pca", dims = 1:30)
+immune.combined <- FindNeighbors(immune.combined, reduction = "pca", dims = 1:30)
+immune.combined <- FindClusters(immune.combined, resolution = 0.5) 
+###15 clusters, 
+#1799 CD4 Memory T
+#2525 CD4 Naive T
+# 779 CD8 T
+
+DimPlot(immune.combined, reduction = "umap", label = TRUE, repel = TRUE)
+FeaturePlot(immune.combined, features = c("CD3D", "SELL", "CREM", "CD8A", "GNLY", "CD79A", "FCGR3A",
+    "CCL2", "PPBP"), min.cutoff = "q9")
+    
+
+
+
