@@ -324,5 +324,42 @@ FeaturePlot(immune.combined, features = c("CD3D", "SELL", "CREM", "CD8A", "GNLY"
     "CCL2", "PPBP"), min.cutoff = "q9")
     
 
+#########
+ifnb1 <- subset( ifnb, subset= stim == "STIM" )
+
+pbmc3k <- SCTransform(ifnb1, verbose = T)
+###Set default assay to SCT
+anchors <- FindTransferAnchors(
+  reference = reference,
+  query = pbmc3k,
+  normalization.method = "SCT",
+  reference.reduction = "spca",
+  dims = 1:50
+)
+### Normalizing query using reference SCT model
+### Projecting cell embeddings
+### Finding neighborhoods
+### Finding anchors
+# [1] "CTRL" 6548 samples 
+#     "STIM" 7451 samples
+###ctrl         Found 3728 anchors
+###STIM         Found 971 anchors
+pbmc3k <- MapQuery(
+  anchorset = anchors,
+  query = pbmc3k,
+  reference = reference,
+  refdata = list(
+    celltype.l1 = "celltype.l1",
+    celltype.l2 = "celltype.l2",
+    predicted_ADT = "ADT"
+  ),
+  reference.reduction = "spca",
+  reduction.model = "wnn.umap"
+)
+
+DimPlot(pbmc3k, reduction = "ref.umap", group.by = "predicted.celltype.l2", label = TRUE, label.size = 3 ,repel = TRUE)
+FeaturePlot(pbmc3k, features = c("CD4 Naive", "CD4 TCM"),  reduction = "ref.umap", cols = c("lightgrey", "darkred"), ncol = 2) & theme(plot.title = element_text(size = 10))
+FeaturePlot(pbmc3k, features = c("CD8 Naive", "CD8 TCM", "CD8 TEM"),  reduction = "ref.umap", cols = c("lightgrey", "darkred"), ncol = 3) & theme(plot.title = element_text(size = 10))
+
 
 
