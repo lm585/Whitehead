@@ -323,7 +323,18 @@ DimPlot(immune.combined, reduction = "umap", label = TRUE, repel = TRUE)
 FeaturePlot(immune.combined, features = c("CD3D", "SELL", "CREM", "CD8A", "GNLY", "CD79A", "FCGR3A",
     "CCL2", "PPBP"), min.cutoff = "q9")
     
+####azimuth query data mapped to reference
+library(Seurat)
+library(SeuratDisk)
+library(ggplot2)
+library(patchwork)
 
+setwd("/Users/linyongmao/Documents/scRNA-seq-1")
+reference <- LoadH5Seurat("./pbmc_multimodal.h5seurat")
+DimPlot(object = reference, reduction = "wnn.umap", group.by = "celltype.l2", label = TRUE, label.size = 3, repel = TRUE) + NoLegend()
+library(SeuratData)
+InstallData("ifnb")
+LoadData("ifnb")
 #########
 ifnb1 <- subset( ifnb, subset= stim == "STIM" )
 
