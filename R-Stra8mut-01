@@ -123,3 +123,42 @@ print(sr$coefficients)
 cat("\n")
 }
 }
+
+###combine two mutants, linear mixed model
+i = 2 ##prelep
+cellType = uc[i]
+...
+...
+t2$mut = "stra8"
+t2.stra=t2
+...
+t2$mut = "bhmg"
+t2.bh = t2
+t3 <- rbind(t2.stra, t2.bh)
+res <- lm( t3$clusterFreq ~ t3$Batch + t3$genotype)
+> summary(res)
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)      0.019375   0.008878   2.182 0.065402 .   
+t3$Batchbatch1-2 0.011643   0.010024   1.161 0.283517    
+t3$Batchbatch2-1 0.057640   0.010629   5.423 0.000984 *** 
+t3$Batchbatch2-2 0.063746   0.010629   5.998 0.000544 *** 
+t3$genotypemut   0.016351   0.006877   2.378 0.049043 *   
+
+> t3
+        mouse clusterFreq cluster genotype  Sample_ID    Batch   Genotype   mut 
+1  MM346.7893  0.11319770 clust-3      mut MM346-7893 batch2-1 stra8_lxlx stra8
+2  MM346.7894  0.06657224 clust-3      ctr MM346-7894 batch2-1  stra8_het stra8
+3  MM346.7895  0.08397901 clust-3      mut MM346-7895 batch2-1 stra8_lxlx stra8
+4  MM346.7905  0.10324948 clust-3      mut MM346-7905 batch2-2 stra8_lxlx stra8
+5  MM346.7906  0.09073826 clust-3      ctr MM346-7906 batch2-2  stra8_het stra8
+6  MM346.7907  0.07172605 clust-3      ctr MM346-7907 batch2-2  stra8_het stra8
+7  MM344.6851  0.03245073 clust-3      mut MM344-6851 batch1-1   bhmg1_KO  bhmg
+8  MM344.6852  0.02265086 clust-3      ctr MM344-6852 batch1-1  bhmg1_het  bhmg
+9  MM344.6872  0.03512015 clust-3      ctr MM344-6872 batch1-2  bhmg1_het  bhmg
+10 MM344.6873  0.03786192 clust-3      ctr MM344-6873 batch1-2  bhmg1_het  bhmg
+11 MM344.6874  0.04225846 clust-3      mut MM344-6874 batch1-2   bhmg1_KO  bhmg
+12 MM344.6875  0.04153481 clust-3      mut MM344-6875 batch1-2   bhmg1_KO  bhmg
+
+> i = 7 ####"elongating_spermatids"
+> res <- lm( t3$clusterFreq ~ t3$Batch + t3$genotype + t3$cluster)
