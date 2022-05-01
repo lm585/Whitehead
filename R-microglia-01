@@ -766,6 +766,26 @@ t.test(as.numeric(t4) - mean(as.numeric(cy)),as.numeric(t3) - mean(as.numeric(cx
 t.test(as.numeric(tx),as.numeric(ty))
 t.test(as.numeric(tx) - mean(as.numeric(cx)),as.numeric(ty) - mean(as.numeric(cy)))
 
+######[1] XX Control             XX Tumor               XY Control             XY Low grade resection XY Tumor resection;   5 categories instead of 7 categories                                                                           
+
+pca.info$grape2 <- pca.info$grade
+for(i in 1:dim(pca.info)[1]) {
+ if(pca.info$Tumor[i] == "Control")
+  { pca.info$grape2[i] = "Control"
+  }
+}
+pca.info$grape3 <- paste(pca.info$XX, pca.info$grape2)
+pca.info[ pca.info$XX == "XX" & pca.info$Tumor == "Tumor",]$grape3 <- "XX Tumor"
+pca.info$grape3 <- factor( pca.info$grape3)
+boxplot(as.numeric(pca.info$V3) ~ pca.info$grape3 ,  ylab = "PC2 (14%)", xlab = "")
+beeswarm(as.numeric(pca.info$V3) ~ pca.info$grape3 ,add =T,pch = c(16,16,17,17,17), col=c("green", "red","green","red", "red", "red"), cex=2)
+abline(h = seq(-2,2,0.1), lty = 5, lwd = 0.5, col = "gray")
+t1 <- pca.info[ pca.info$grape3 == "XY Control",]$V3
+t2 <- pca.info[ pca.info$grape3 == "XY Low grade resection",]$V3
+t3 <- pca.info[ pca.info$grape3 == "XY Tumor resection",]$V3
+t.test( as.numeric(t1), as.numeric(t2))
+mean(as.numeric(t1)) - mean(as.numeric(t2))
+
 ##############################################################################
 #####lm(), PC2 ~ multivariables
 res <- lm(-as.numeric(pca.info$V3) ~ pca.info$XX + pca.info$location + pca.info$age + pca.info$Tumor)
