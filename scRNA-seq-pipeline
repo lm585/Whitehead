@@ -372,5 +372,26 @@ DimPlot(pbmc3k, reduction = "ref.umap", group.by = "predicted.celltype.l2", labe
 FeaturePlot(pbmc3k, features = c("CD4 Naive", "CD4 TCM"),  reduction = "ref.umap", cols = c("lightgrey", "darkred"), ncol = 2) & theme(plot.title = element_text(size = 10))
 FeaturePlot(pbmc3k, features = c("CD8 Naive", "CD8 TCM", "CD8 TEM"),  reduction = "ref.umap", cols = c("lightgrey", "darkred"), ncol = 3) & theme(plot.title = element_text(size = 10))
 
+###### gene expression per cell type per donor, azimuth ref data set
+> ref.count <- CreateSeuratObject(counts = reference@assays$SCT@counts, meta.data = reference@meta.data)
+> ref.1 <- subset(ref.count, subset = donor == "P1")
+> ref.1 <- NormalizeData(ref.1, normalization.method = "LogNormalize", scale.factor = 10000)
+> ref.1.avg <- AverageExpression(ref.1, group.by="celltype.l2", slot="data", verbose=T)
+> dim(ref.1.avg$RNA)
+###20729    31
+> summary(ref.1.avg$RNA)
+> write.table(ref.1.avg$RNA, "temp-P1.txt", quote = F, sep="\t")
+> t1 = unique(ref.count$donor)
+for(i in 1:length(t1)) {
+ print(t1[i])
+ ref.1 <- subset(ref.count, subset = donor == t1[i])
+ ref.1 <- NormalizeData(ref.1, normalization.method = "LogNormalize", scale.factor = 10000)
+ ref.1.avg <- AverageExpression(ref.1, group.by="celltype.l2", slot="data", verbose=T)
+ dim(ref.1.avg$RNA)
+ f <- paste("temp", t1[i], sep = "-")
+ print(f)
+ write.table(ref.1.avg$RNA, f, quote = F, sep="\t")
+ }
+
 
 
