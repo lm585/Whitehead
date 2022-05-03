@@ -393,5 +393,33 @@ for(i in 1:length(t1)) {
  write.table(ref.1.avg$RNA, f, quote = F, sep="\t")
  }
 
+#
+ls temp-P[1-8] | while read ll
+do
+ cat "$ll" | awk 'NR == 1 ' | sed 's/^/gene     /' > "$ll".head
+ cat "$ll" | awk 'NR > 1' >> "$ll".head
+done
+
+paste temp-P1.head temp-P2.head    temp-P3.head    temp-P4.head    temp-P5.head    temp-P6.head    temp-P7.head temp-P8.head > temp.1.txt
+% cat temp-scr2
+#
+cat temp.1.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"}
+ {
+  for(i = 33; i <= NF; i = i+32)
+  {
+   if($1 == $i)
+     print "eq";
+   else
+     print "not";
+  }
+  print "line"
+ }'
+
+% bash temp-scr2 |  uniq -c | sort | uniq -c
+#20730    1 line
+#20730    7 eq
+mv -i temp.1.txt azimuth.8donors.celltype.avg-expression.txt
+> par(pin=c(12,3))
+> boxplot(as.numeric( t3$V2) ~ t3$V1, las =2, xlab = "")
 
 
