@@ -422,4 +422,14 @@ mv -i temp.1.txt azimuth.8donors.celltype.avg-expression.txt
 > par(pin=c(12,3))
 > boxplot(as.numeric( t3$V2) ~ t3$V1, las =2, xlab = "")
 
+t1 <- read.delim("azimuth.8donors.celltype.avg-expression.txt", header = F)
+par(pin=c(12,3))
+
+gene = "CD8A"
+t2 <- as.data.frame( t(rbind(t1[1,], t1[t1$V1 == gene,])))
+t3 <- t2[ t2[,1] != "gene",]
+boxplot( as.numeric(t3[,2]) ~ t3[,1], las=2, xlab = "")
+abline(h = seq(0,200,1), lty = 5, lwd = 0.5, col = "gray")
+tit <- paste(gene, "average expression per donor", sep = " ")
+title(main = tit, cex = 0.5)
 
