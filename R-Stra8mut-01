@@ -162,3 +162,22 @@ t3$genotypemut   0.016351   0.006877   2.378 0.049043 *
 
 > i = 7 ####"elongating_spermatids"
 > res <- lm( t3$clusterFreq ~ t3$Batch + t3$genotype + t3$cluster)
+
+#######testis weight
+tw <- read.delim("testis.weights.txt")
+tw$id <- gsub("_", ".", tw$Sample)
+tw$wt <- (tw$right_testis_weight_mg + tw$left_testis_weight_mg) / 2
+s <- read.delim("sample_metadata.txt")
+s$id <- gsub("-", ".", s$Sample_ID)
+tw.s <- merge(tw, s, by.x="id", by.y="id")
+boxplot(tw.s$wt ~ tw.s$Genotype)
+beeswarm(tw.s$wt ~ tw.s$Genotype, add=T, cex = 2)
+abline(h = seq(-100,200,5), lty = 5, lwd = 0.5, col = "gray")
+t1 <- tw.s[ tw.s$Genotype == "stra8_lxlx",]
+text(4, t1$wt, t1$Batch, pos =1)
+t1 <- tw.s[ tw.s$Genotype == "stra8_het",]
+text(3, t1$wt, t1$Batch, pos =1)
+t1 <- tw.s[ tw.s$Genotype == "bhmg1_het",]
+text(1, t1$wt, t1$Batch, pos =2, cex = 0.7, col="red")
+t1 <- tw.s[ tw.s$Genotype == "bhmg1_KO",]
+text(2, t1$wt, t1$Batch, pos =2, cex = 0.7, col="red")
