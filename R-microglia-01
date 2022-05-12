@@ -1517,3 +1517,20 @@ t1$group[i] = info[ info$id1 == t1$colnames.mat.[i], ]$group
 }
 ha <- HeatmapAnnotation(group = t1$group)
 Heatmap(matrix = mat, name = "Z-score", row_names_gp = gpar(fontsize = 8), bottom_annotation=ha, column_order=order(t1$group), column_split=t1$group, row_km=3, column_names_gp= gpar(fontsize = 8), row_km_repeats = 1234, column_title_gp=gpar(fontsize=8))
+
+t1 <- read.delim("microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt")
+t1$f.fdr <- p.adjust(t1$f.p, method = "fdr")
+t1$m.fdr <- p.adjust(t1$m.p, method = "fdr")
+t1$a.fdr <- p.adjust(t1$a.p, method = "fdr")
+dim(t1[t1$f.fdr < 0.05,])
+#1] 1348   16  
+dim(t1[t1$m.fdr < 0.05,])
+#1] 519  16  
+dim(t1[t1$a.fdr < 0.05,])
+#1] 3120   16  
+p <- read.delim("HALLMARK_INFLAMMATORY_RESPONSE.temp.genes", header=F)
+t1.p <- merge(p, t1, by.x="V1", by.y="name")
+t2 <- data.frame(f.r = t1.p$f.r, m.r=t1.p$m.r, a.r=t1.p$a.r)
+boxplot(t2, outline=F, ylim=c(-0.6,1))
+beeswarm(t2, add=T, pch = 16) 
+abline(h = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
