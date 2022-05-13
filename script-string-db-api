@@ -1,0 +1,8 @@
+echo "###" > string-api-enrich
+ echo -n "wget -O string-db-$1-enrich.txt " >> string-api-enrich
+ echo -n "https://version-11-0b.string-db.org/api/tsv/enrichment?identifiers=" >> string-api-enrich
+ cat temp-genes | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} {print $1 "%0d"}' >> string-api-enrich
+ echo "&species=9606" >> string-api-enrich
+ echo sleep 15 >> string-api-enrich
+cat string-api-enrich | sed 's/%0d&species=9606/\&species=9606/' > out
+mv out string-api-enrich
