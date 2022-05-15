@@ -1574,3 +1574,12 @@ HIF1A
 ICAM1
 PLAUR 
 ###
+###Func annotation of top 100 genes correlating with inflamm pathway in XX and XY, respectively
+cat string-db-female-enrich.txt| cut -f 1,2,10 |grep -i nf-k | wc -l
+      41
+cat string-db-male-enrich.txt| cut -f 1,2,10 |grep -i nf-k | wc -l
+       0
+cat string-db-female-enrich.txt| cut -f 1,2,10 |grep -i nfkb | wc -l
+       6
+cat string-db-male-enrich.txt| cut -f 1,2,10 |grep -i nfkb | wc -l
+       0
