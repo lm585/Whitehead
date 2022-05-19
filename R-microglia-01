@@ -1583,3 +1583,73 @@ cat string-db-female-enrich.txt| cut -f 1,2,10 |grep -i nfkb | wc -l
        6
 cat string-db-male-enrich.txt| cut -f 1,2,10 |grep -i nfkb | wc -l
        0
+
+##################################
+vi temp ### 13 pathway names only
+
+cat temp | while read ll
+do
+grep -i "$ll" ../h.all.v7.4.symbols.gmt
+done > temp.13.paths
+
+cat temp-script-make-geneset-a-file
+
+#
+cat temp.13.paths | while read ll
+do
+ f=`echo "$ll" | cut -f 1`
+ echo "$ll" | awk '
+BEGIN{
+ FS = "\t";
+ }
+ {
+  for(i = 3; i <= NF; i++)
+     print $i;
+ }' > temp-2
+ cat temp-2 | awk 'NF > 0' > "$f".genes 
+done
+
+ls HALLMARK*.genes | grep -v temp > temp-files-2
+
+######################hallmark.13.paths.39samples.z-score-avg.txt
+file <- read.delim("temp-files-2", header=F)
+for(index in 1:dim(file)[1]){
+print(file[index,1])
+pathname = file[index,1]
+p <- read.delim(file[index,1], header=F)
+p.exp <- a.df.g[ a.df.g$name %in% p$V1, ]
+mat <- as.matrix(p.exp[, 2:40])
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+colnames(res) <- c("id", pathname)
+if(index == 1)
+  res2 = res
+else
+  res2 <- cbind(res2, res)
+}
+res2$id1 <- res2$id
+res.info <- merge(res2, info, by.x="id1", by.y="id1")
+res.info$grape3 <- paste(res.info$XX, res.info$Tumor)
+write.table(t(res.info), "temp.2.txt", quote=F, sep="\t")
+sort -r temp.2.txt | uniq > hallmark.13.paths.39samples.z-score-avg.txt
+
+####temp.path.ddx3x
+grape3	XY Tumor	XY Tumor	XX Tumor	XY Tumor	XY Tumor	XY Control	XX Control
+HALLMARK_TNFA_SIGNALING_VIA_NFKB.genes	0.16357008	0.04620055	1.4796044	0.40593726	0.4957459	-0.42584137	-0.06869427
+HALLMARK_P53_PATHWAY.genes	-0.14155725	-0.26996674	0.19868397	0.18998015	0.11138088	-0.56229407	0.03495609
+HALLMARK_MYC_TARGETS_V2.genes	0.060938016	0.327836115	0.074658301	-0.011090214	0.460391099	-1.218443434	0.203158329
+DDX3X	8.805728876	8.34808815	9.541254324	8.886581593	8.742060298	7.044572005	8.615656457 log2(cpm+1)
+
+t <- read.delim("temp.path.ddx3x", header=F)
+t1 <- as.data.frame(t(t))
+for(i in 2:14) { #13 pathways
+f <- t1[ t1$V1 == "XX Control" | t1$V1 == "XX Tumor",][,c(i,15)]
+m <- t1[ t1$V1 == "XY Control" | t1$V1 == "XY Tumor",][,c(i,15)]
+a <- t1[ t1$V1 != "grape3",][,c(i,15)]
+f.r <- cor.test(as.numeric( f[,1]), as.numeric(f[,2]))
+m.r <- cor.test(as.numeric( m[,1]), as.numeric(m[,2]))
+a.r <- cor.test(as.numeric( a[,1]), as.numeric(a[,2]))
+geneName = paste(t1[t1$V1 == "grape3", 15] ,t1[ t1$V1 == "grape3", i], sep = "\t")
+corRes <- paste(geneName,  f.r$estimate, f.r$p.value, m.r$estimate, m.r$p.value, a.r$estimate, a.r$p.value, sep = "\t")
+cat(corRes)
+cat("\n")
+}
