@@ -1583,6 +1583,8 @@ cat string-db-female-enrich.txt| cut -f 1,2,10 |grep -i nfkb | wc -l
        6
 cat string-db-male-enrich.txt| cut -f 1,2,10 |grep -i nfkb | wc -l
        0
+cat string-db-male-enrich.txt|grep REL | wc -l
+       0
 
 ##################################
 vi temp ### 13 pathway names only
