@@ -1655,3 +1655,28 @@ corRes <- paste(geneName,  f.r$estimate, f.r$p.value, m.r$estimate, m.r$p.value,
 cat(corRes)
 cat("\n")
 }
+
+####################50 pathways, pairwise corr
+vi  temp.path.ddx3x ##rm some header lines
+t <- read.delim("temp.path.ddx3x", header=F)
+t1 <- as.data.frame(t(t))
+dim(t1)
+# [1] 40 (head+39samples) ; 51 (xx-ctrl + 50 paths)
+
+for(i in 2:51) { #13 pathways
+ for(j in 2:51) {
+  if(t1[1,i] < t1[1,j]) {
+f <- t1[ t1$V1 == "XX Control" | t1$V1 == "XX Tumor",][,c(i,j)]
+m <- t1[ t1$V1 == "XY Control" | t1$V1 == "XY Tumor",][,c(i,j)]
+a <- t1[ t1$V1 != "grape3",][,c(i,j)]
+f.r <- cor.test(as.numeric( f[,1]), as.numeric(f[,2]))
+m.r <- cor.test(as.numeric( m[,1]), as.numeric(m[,2]))
+a.r <- cor.test(as.numeric( a[,1]), as.numeric(a[,2]))
+geneName = paste(t1[t1$V1 == "grape3", i] ,t1[ t1$V1 == "grape3", j], sep = "\t")
+corRes <- paste(geneName,  f.r$estimate, f.r$p.value, m.r$estimate, m.r$p.value, a.r$estimate, a.r$p.value, sep = "\t")
+cat(corRes)
+cat("\n")
+}
+}
+}
+
