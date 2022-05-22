@@ -1680,3 +1680,38 @@ cat("\n")
 }
 }
 
+############fdr, family-wise error rate, hallmark 50 pathways pairwise cutoff
+cat hallmark.50.paths.39samples.pairwise.corr.f.m.a.uniqpair.txt hallmark.50.paths.39samples.pairwise.corr.f.m.a.redunpair.txt | sort | uniq -d | wc -l
+    1225
+t <- read.delim("hallmark.50.paths.39samples.pairwise.corr.f.m.a.uniqpair.txt", header=F)
+t$f.fdr <- p.adjust( t$V4, method="fdr")
+t$m.fdr <- p.adjust( t$V6, method="fdr")
+t$a.fdr <- p.adjust( t$V8, method="fdr")
+dim(t)
+#[1] 1225   11
+dim(t[ t$f.fdr < 0.05,])
+#[1] 410  11
+dim(t[ t$m.fdr < 0.05,])
+#[1] 947  11
+dim(t[ t$a.fdr < 0.05,])
+#[1] 950  11
+### Helen&2020
+###
+
+t <- read.delim("hallmark.50.paths.39samples.pairwise.corr.f.m.a.uniqpair.txt", header=F)
+t$f.fam <- p.adjust( t$V4, method="bonferroni")
+t$m.fam <- p.adjust( t$V6, method="bonferroni")
+t$a.fam <- p.adjust( t$V8, method="bonferroni")
+dim(t)
+#[1] 1225   11
+dim(t[ t$f.fam < 0.05,])
+dim(t[ t$m.fam < 0.05,])
+dim(t[ t$a.fam < 0.05,])
+#######
+# > dim(t[ t$f.fam < 0.05,])
+# [1] 109  11
+# > dim(t[ t$m.fam < 0.05,])
+# [1] 405  11
+# > dim(t[ t$a.fam < 0.05,])
+# [1] 509  11
+
