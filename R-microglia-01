@@ -1715,3 +1715,27 @@ dim(t[ t$a.fam < 0.05,])
 # > dim(t[ t$a.fam < 0.05,])
 # [1] 509  11
 
+#######################pathway-pathway coexpression network
+cat hallmark.50.paths.39samples.pairwise.corr.f.m.a.uniqpair.txt | awk 'BEGIN{FS = "\t"} $3 > 0.9 {print $1 "\t" $2 "\t" "F"}'   > temp-1
+cat hallmark.50.paths.39samples.pairwise.corr.f.m.a.uniqpair.txt | awk 'BEGIN{FS = "\t"} $5 > 0.9 {print $1 "\t" $2 "\t" "M"}'   > temp-2
+cat temp-1 temp-2 | cut -f 1-2 | sort | uniq -d | wc -l
+      30 (42, 116)
+cat temp-1 temp-2 | cut -f 1-2 | sort | uniq | wc -l
+     128 ##50 pathways, 128*2/50 = 5.12, avergae 5 links per path
+cat temp-1 temp-2 | cut -f 1-2 | sort | uniq -d | awk 'BEGIN{FS = "\t"}  {print $1 "\t" $2 "\t" "A"}'   > temp-3
+cat temp-1 temp-3 | cut -f 1-2 | sort | uniq -u | awk 'BEGIN{FS = "\t"}  {print $1 "\t" $2 "\t" "F"}' > temp-4
+cat temp-2 temp-3 | cut -f 1-2 | sort | uniq -u | awk 'BEGIN{FS = "\t"}  {print $1 "\t" $2 "\t" "M"}' > temp-5
+cat temp-3 temp-4 temp-5 > hallmark.50.paths.39samples.r.0.9.f.m.a.net
+
+hallmark.13paths.sexbiased
+
+cat hallmark.50.paths.39samples.pairwise.corr.f.m.a.uniqpair.txt | awk 'BEGIN{FS = "\t"} $3 > 0.9 {print $1 "\t" $2 "\t" "F"}'   > temp-1
+cat hallmark.50.paths.39samples.pairwise.corr.f.m.a.uniqpair.txt | awk 'BEGIN{FS = "\t"} $5 > 0.9 ' | sort -t '       ' +4 -5gr | head -42 | awk 'BEGIN{FS = "\t"} {print $1 "\t" $2 "\t" "M"}'   > temp-2
+###42nd ranked pair in XY samples: 0.941087486542388
+cat temp-1 temp-2 | cut -f 1-2 | sort | uniq -d | wc -l
+      15
+cat temp-1 temp-2 | cut -f 1-2 | sort | uniq  | wc -l
+      69 (22%)
+...
+cat temp-3 temp-4 temp-5 > hallmark.50.paths.39samples.top42.f.m.a.net
+
