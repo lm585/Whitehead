@@ -1,0 +1,179 @@
+#
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/female-14samps.tumResecOnly.logratioPlus0d01usMedian.Gsea.1642316090327/gsea_report_for_Tumor_1642316090327.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/female-14samps.tumResecOnly.logratioPlus0d01usMedian.Gsea.1642316090327/gsea_report_for_Control_1642316090327.tsv"
+cat "$f1" | awk 'NR > 1' > temp
+cat "$f2" | awk 'NR > 1' >> temp
+cat "$f1" | head -1 | cut -f 1,4-8 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "sex", "method", "sampling", $0;
+}
+' > temp.gsea.res.txt
+
+cat temp | cut -f 1,4-8 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "F", "samp-perm", "tumResecOnly", $0;
+}
+' >> temp.gsea.res.txt
+
+cat temp.gsea.res.txt | wc -l
+echo "-----------------------------------------------"
+echo
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/female_14samp.tumResecOnly.prerank.GseaPreranked.1642312369017/gsea_report_for_na_pos_1642312369017.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/female_14samp.tumResecOnly.prerank.GseaPreranked.1642312369017/gsea_report_for_na_neg_1642312369017.tsv"
+cat "$f1" | awk 'NR > 1' > temp
+cat "$f2" | awk 'NR > 1' >> temp
+
+cat temp | cut -f 1,4-8 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "F", "prerank", "tumResecOnly", $0;
+}
+' >> temp.gsea.res.txt
+
+cat temp.gsea.res.txt | wc -l
+echo "-----------------------------------------------"
+echo
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/male-17samps.tumResecOnly.logratioPlus0d01usMedian.Gsea.1642372573731/gsea_report_for_Tumor_1642372573731.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/male-17samps.tumResecOnly.logratioPlus0d01usMedian.Gsea.1642372573731/gsea_report_for_Control_1642372573731.tsv"
+cat "$f1" | awk 'NR > 1' > temp
+cat "$f2" | awk 'NR > 1' >> temp
+
+cat temp | cut -f 1,4-8 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "M", "samp-perm", "tumResecOnly", $0;
+}
+' >> temp.gsea.res.txt
+
+cat temp.gsea.res.txt | wc -l
+echo "-----------------------------------------------"
+echo
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/male_17samp.tumResecOnly.prerank.GseaPreranked.1642384219281/gsea_report_for_na_pos_1642384219281.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/male_17samp.tumResecOnly.prerank.GseaPreranked.1642384219281/gsea_report_for_na_neg_1642384219281.tsv"
+cat "$f1" | awk 'NR > 1' > temp
+cat "$f2" | awk 'NR > 1' >> temp
+
+cat temp | cut -f 1,4-8 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "M", "prerank", "tumResecOnly", $0;
+}
+' >> temp.gsea.res.txt
+
+cat temp.gsea.res.txt | wc -l
+echo "-----------------------------------------------"
+echo
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/female_noCereb.noOcci.TAM_prerank_p.GseaPreranked.1641587017060/gsea_report_for_na_pos_1641587017060.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/female_noCereb.noOcci.TAM_prerank_p.GseaPreranked.1641587017060/gsea_report_for_na_neg_1641587017060.tsv"
+cat "$f1" | awk 'NR > 1' > temp
+cat "$f2" | awk 'NR > 1' >> temp
+
+cat temp | cut -f 1,4-8 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "F", "prerank", "noCereb.noOcci", $0;
+}
+' >> temp.gsea.res.txt
+
+cat temp.gsea.res.txt | wc -l
+echo "-----------------------------------------------"
+echo
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/male_noCereb.noOcci.TAM_prerank_p.GseaPreranked.1641623359768/gsea_report_for_na_pos_1641623359768.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/male_noCereb.noOcci.TAM_prerank_p.GseaPreranked.1641623359768/gsea_report_for_na_neg_1641623359768.tsv"
+cat "$f1" | awk 'NR > 1' > temp
+cat "$f2" | awk 'NR > 1' >> temp
+
+cat temp | cut -f 1,4-8 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "M", "prerank", "noCereb.noOcci", $0;
+}
+' >> temp.gsea.res.txt
+
+cat temp.gsea.res.txt | wc -l
+echo "-----------------------------------------------"
+echo
+
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/tempMale_logratioPlus0d01usMedian.Gsea.1635809488219/gsea_report_for_Tumor_1635809488219.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/tempMale_logratioPlus0d01usMedian.Gsea.1635809488219/gsea_report_for_Control_1635809488219.tsv"
+cat "$f1" | awk 'NR > 1' > temp
+cat "$f2" | awk 'NR > 1' >> temp
+
+cat temp | cut -f 1,4-8 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "M", "samp-perm", "all39samples", $0;
+}
+' >> temp.gsea.res.txt
+
+cat temp.gsea.res.txt | wc -l
+echo "-----------------------------------------------"
+echo
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/templogratioPlus0d01usMedian.Gsea.1635801846691/gsea_report_for_Tumor_1635801846691.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/templogratioPlus0d01usMedian.Gsea.1635801846691/gsea_report_for_Control_1635801846691.tsv"
+cat "$f1" | awk 'NR > 1' > temp
+cat "$f2" | awk 'NR > 1' >> temp
+
+cat temp | cut -f 1,4-8 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "F", "samp-perm", "all39samples", $0;
+}
+' >> temp.gsea.res.txt
+
+cat temp.gsea.res.txt | wc -l
+echo "-----------------------------------------------"
+echo
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/microglia_female_prerank_p.GseaPreranked.1635699072273/gsea_report_for_na_pos_1635699072273.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/microglia_female_prerank_p.GseaPreranked.1635699072273/gsea_report_for_na_neg_1635699072273.tsv"
+cat "$f1" | awk 'NR > 1' > temp
+cat "$f2" | awk 'NR > 1' >> temp
+
+cat temp | cut -f 1,4-8 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "F", "prerank", "all39samples", $0;
+}
+' >> temp.gsea.res.txt
+
+cat temp.gsea.res.txt | wc -l
+echo "-----------------------------------------------"
+echo
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/microglia_male_prerank_p.GseaPreranked.1635699117040/gsea_report_for_na_pos_1635699117040.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/microglia_male_prerank_p.GseaPreranked.1635699117040/gsea_report_for_na_neg_1635699117040.tsv"
+cat "$f1" | awk 'NR > 1' > temp
+cat "$f2" | awk 'NR > 1' >> temp
+
+cat temp | cut -f 1,4-8 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "M", "prerank", "all39samples", $0;
+}
+' >> temp.gsea.res.txt
+
+cat temp.gsea.res.txt | wc -l
+echo "-----------------------------------------------"
+echo
+
