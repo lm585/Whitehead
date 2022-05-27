@@ -1,0 +1,70 @@
+#
+rm temp-HALLMARK*-f-m-ranks.txt
+
+cat ../h.all.v7.4.symbols.gmt| cut -f 1 | while read p
+do
+ bash script-f-m-rank-compare-allPathGenes-2  "$p"
+done
+
+ls temp-HALLMARK*-f-m-ranks.txt > temp-paths
+Rscript R-f-m-ranks-ttest 
+cat temp-res.txt | sed 's/temp-\(.*\)-f-m-ranks.txt/\1/' > temp
+###temp-HALLMARK_ADIPOGENESIS-f-m-ranks.txt	49.8291515026455	48.7562134920635	1.07293801058201	190	0.686380035840471
+###F	prerank	all39samples	HALLMARK_ADIPOGENESIS	186	0.45358628	1.797648	0	2.09E-04
+
+head -1 temp | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+{
+ print "sex	method	sampling", $1, $5, "NA", $4, $6, "NA", $2, $3;
+}' > temp.f-m.ttest.txt
+
+cat temp  | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+NR > 1 {
+ print "O-F-M-compare", "t-test", "noCereb.noOcci", $1, $5, "NA", $4, $6, "NA", $2, $3;
+}
+' >> temp.f-m.ttest.txt
+wc -l temp.f-m.ttest.txt
+
+########tumResecOnly
+rm temp-HALLMARK*-f-m-ranks.txt
+
+cat ../h.all.v7.4.symbols.gmt| cut -f 1 | while read p
+do
+ bash script-f-m-rank-compare-allPathGenes-3  "$p"
+done
+
+ls temp-HALLMARK*-f-m-ranks.txt > temp-paths
+Rscript R-f-m-ranks-ttest
+cat temp-res.txt | sed 's/temp-\(.*\)-f-m-ranks.txt/\1/' > temp
+cat temp  | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+NR > 1 {
+ print "O-F-M-compare", "t-test", "tumResecOnly", $1, $5, "NA", $4, $6, "NA", $2, $3;
+}
+' >> temp.f-m.ttest.txt
+wc -l temp.f-m.ttest.txt
+
+##########all 39 samples
+rm temp-HALLMARK*-f-m-ranks.txt
+
+cat ../h.all.v7.4.symbols.gmt| cut -f 1 | while read p
+do
+ bash script-f-m-rank-compare-allPathGenes  "$p"
+done
+
+ls temp-HALLMARK*-f-m-ranks.txt > temp-paths
+Rscript R-f-m-ranks-ttest
+cat temp-res.txt | sed 's/temp-\(.*\)-f-m-ranks.txt/\1/' > temp
+cat temp  | awk '
+BEGIN {FS = "\t";
+       OFS = "\t"}
+NR > 1 {
+ print "O-F-M-compare", "t-test", "all39samples", $1, $5, "NA", $4, $6, "NA", $2, $3;
+}
+' >> temp.f-m.ttest.txt
+wc -l temp.f-m.ttest.txt
+
