@@ -1,0 +1,32 @@
+#
+
+#check the order of sampling 
+echo "check the order of sampling"
+cat temp-1 | awk 'NR % 3 == 1' | cut -f 3 | uniq -c
+cat temp-1 | awk 'NR % 3 == 2' | cut -f 3 | uniq -c
+cat temp-1 | awk 'NR % 3 == 0' | cut -f 3 | uniq -c
+
+cat temp-1 | awk '
+BEGIN {FS = "\t";
+       OFS = "\t";
+      }
+{
+
+ i = NR % 3 
+ if(i == 0) 
+ {
+  i = 3;
+ }
+ if($7 < 0) ###female biased
+   a[i] = -log($8) / log(10);
+ else
+   a[i] = log($8) / log(10);
+
+ b[i] = $3;
+ 
+ if(NR == 3)
+   print "path", b[1], b[2], b[3];
+ if(i == 3)
+   print $4, a[1], a[2], a[3];
+}
+'
