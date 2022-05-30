@@ -1739,3 +1739,33 @@ cat temp-1 temp-2 | cut -f 1-2 | sort | uniq  | wc -l
 ...
 cat temp-3 temp-4 temp-5 > hallmark.50.paths.39samples.top42.f.m.a.net
 
+##############################sex bias test p-values; 3 sampling methods, barplot
+bash script-f-m-t-test-combined
+cat hallmark.13paths.sexbiased.2 | cut -f 1 | awk 'NR > 1' | while read ll
+do
+grep -w "$ll" temp.f-m.ttest.txt
+done > temp-1
+
+bash script-path-p.value-barplot-input
+bash script-path-p.value-barplot-input | awk 'NR > 4' | sort -t '       ' +1 -2g | sed 's/HALLMARK/h/' > temp-2
+./table-transpose temp-2 temp-3
+head temp-3 | cut -f 1-4 
+# path  h_E2F_TARGETS   h_MYC_TARGETS_V2        h_G2M_CHECKPOINT
+# noCereb.noOcci        -4.04017        -1.60241        -1.49978
+# tumResecOnly  -2.88397        -0.285539       -1.13095
+# all39samples  -2.14195        -0.374365       -0.743114
+
+t1 <- read.delim("temp-3", row.names=1)
+t2 <- seq(3, 100, by = 4) ###pathway position on y-axis
+t3 <- t1[2,]
+t3 <- rbind(t3, t1[3,])
+t3 <- rbind(t3, t1[1,])
+
+par(pin=c(2.8,4))
+barplot(as.matrix( t3), horiz=T, beside=T, xlim=c(-5, 15), xlab="signed log10(p)", yaxt = "n", col=c("green", "grey", "red"), main ="sex bias test p-values")
+axis(side=2, at = t2[1:13], labels=colnames(t1), las =1, cex.axis = 0.6)
+abline(v= log10(0.05), lty = 5, lwd = 0.5, col = "blue" )
+abline(v= -log10(0.05), lty = 5, lwd = 0.5, col = "blue" )
+text(-log10(0.05), 3, "p=0.05", pos=4, col="blue")
+legend("bottomright", rownames(t3), fill=c("green", "grey", "red"), cex = 0.6, inset = 0.05)
+
