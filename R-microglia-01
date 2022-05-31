@@ -1267,6 +1267,37 @@ points(m5$NES.2.y - m5$NES, m5$mean.diff..f.m., col = "red", pch=16)
 m6 <- m5[ m5$NAME == "HALLMARK_E2F_TARGETS", ]
 text(m6$NES.2.y - m6$NES, m6$mean.diff..f.m., "E2F", pos=4, cex = 0.7)
 
+#########################sex biased pathways in 3 different sampling setting
+###female biased
+t1 <- all39[ all39$FDR.q.val < 0.05 & all39$FDR.q.val.1 < 0.25 , ]
+dim(t1)
+#[1] 26 34
+t2 <- t1[ t1$mean.diff..f.m. < 0 & t1$t.test.p.value < 0.05, ]
+dim(t2)
+#[1] 13 34
+
+###male biased
+t3 <- all39[ all39$FDR.q.val.2 < 0.05 & all39$FDR.q.val.3 < 0.25, ]
+dim(t3)
+#[1]  6 34
+t4 <- t3[ t3$mean.diff..f.m. > 0 & t3$t.test.p.value < 0.05, ]
+dim(t4)
+#[1]  1 34
+
+#####tumor resection only
+a <- read.delim("tumResecOnly.NES.geneRankMean.diff.txt")
+t5 <- a[ a$FDR.q.val < 0.05 & a$FDR.q.val.1 < 0.25,]
+dim(t5)
+#[1] 22 32
+t6 <- t5[ t5$mean.diff..f.m. < 0 & t5$t.test.p.value < 0.05,]
+###3 pathways
+t7 <- a[ a$FDR.q.val.2 < 0.05 & a$FDR.q.val.3 < 0.25,]
+dim(t7)
+#[1] 13 32
+t8 <- t7[ t7$mean.diff..f.m. >0 & t7$t.test.p.value < 0.05, ] 
+dim(t8)
+#[1]  1 32
+
 ########################################################################
 cat  microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt | awk  '$13 == "X"'  | wc -l
      609
