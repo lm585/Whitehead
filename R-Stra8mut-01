@@ -187,6 +187,23 @@ cat("\n")
 }
 }
 
+####################each cluster linear mixed model
+for(cl in 10:17)
+{
+t <- c3.m3[cl, 1:8]
+write.table(t, "temp.stra8.txt", quote=F, sep="\t")
+system("bash script-linear-mix-ip-with-mice > temp.stra8.mix.txt")
+t1 <- read.delim("temp.stra8.mix.txt")
+t2 <- merge(t1, s, by.x="mouse", by.y="id")
+res <- lm( t2$clusterFreq ~  t2$Batch + t2$Genotype)
+sr <- summary(res)
+clust.id <- paste("cluster_", c3.m3[cl,]$cluster, sep ="" )
+cat(clust.id)
+cat("\n")
+print(sr$coefficients)
+cat("\n")
+}
+
 ###combine two mutants, linear mixed model
 i = 2 ##prelep
 cellType = uc[i]
