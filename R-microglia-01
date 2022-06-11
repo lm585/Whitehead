@@ -908,6 +908,18 @@ name <- t4[t4$geneID == id,]$symbol.x
 title(main = name)
 }
 
+##############################gene level expression 33 samples - no cereb, no occip
+cpm.info.noCereb <- cpm.g.t.info[ cpm.g.t.info$location != "Cerebellum" & cpm.g.t.info$location != "Occipital", ]
+dim(cpm.info.noCereb)
+layout(matrix(1:9, 3, 3, byrow=T) )
+for(i in 2:9) { ##8 genes
+boxplot( log2( cpm.info.noCereb[,i] + 1 ) ~ cpm.info.noCereb$group, xlab="", ylab = "log2 (cpm+1)", outline=T, pch = c(1,1,2,2),  cex=1 , outcol="white")
+beeswarm( log2( cpm.info.noCereb[,i] + 1 ) ~ cpm.info.noCereb$group, pch = c(1,1,2,2), col = c("green", "red", "green", "red" ), cex = 1, add = T)
+id <- colnames(cpm.info.noCereb)[i]
+name <- t4[t4$geneID == id,]$symbol.x
+title(main = name)
+}
+
 #############################################################################
 #######whole pathway level z-score boxplot
 d = cpm(y)
