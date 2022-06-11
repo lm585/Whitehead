@@ -850,6 +850,64 @@ beeswarm(log2(as.numeric( cpm.g.t.info[4:42,i])+1) ~ cpm.g.t.info[4:42,]$group, 
 title(main= cpm.g.t.info[43,i] )
 }
 
+###############################################gene level expression 39 sample boxplot
+t1 <- read.delim("female-noCereb.noOcci-diff2-1.name-type-chr.txt")
+t2 <- read.delim("male-noCereb.noOcci-diff2-1.name-type-chr.txt")
+f.m <- merge(t1,t2, by.x="geneID", by.y="geneID", all=T)
+g1 <- scan(what="", sep = "\n")
+IL12A
+IL12B
+IL23A
+TNF
+IL1B
+IL4
+Il5
+IL6
+ICAM1
+CXCL1
+CXCL2
+CXCL3
+CXCL5
+CXCL8
+CXCL9
+CXCL10
+
+t3 <- f.m[ f.m$symbol.x %in% unique(g1), ]
+dim(t3)
+t4 <- t3[ t3$PValue.x < 0.05, ]
+t4[, c(2,5,8,11,14,17) ]
+
+
+###t5 <- sort.int(t4$PValue.x, index.return=T )
+###sort t4 by XX p-value
+##t4 <- t4[t5$ix,]
+
+t <- read.delim("temp.txt", header = T, row.names = 1)
+dim(t)
+##[1] 58302    39
+rawCount <- t
+group <- factor(rep(1, 39))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+cpm <- cpm(y)
+cpm.g <- cpm[ rownames(cpm) %in% t4$geneID, ]
+cpm.g.t <- as.data.frame( t(cpm.g))
+dim(cpm.g.t)
+#[1] 39 8genes
+cpm.g.t$id <- rownames(cpm.g.t)
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+cpm.g.t.info <- merge(cpm.g.t, info,  by.x="id", by.y = "id1", all.x = TRUE)
+cpm.g.t.info$group <- paste(cpm.g.t.info$XX, cpm.g.t.info$Tumor, sep = "_")
+
+layout(matrix(1:9, 3, 3, byrow=T) )
+for(i in 2:9) { ##8 genes
+boxplot( log2( cpm.g.t.info[,i] + 1 ) ~ cpm.g.t.info$group, xlab="", ylab = "log2 (cpm+1)", outline=T, pch = c(1,1,2,2),  cex=1 , outcol="white")
+beeswarm( log2( cpm.g.t.info[,i] + 1 ) ~ cpm.g.t.info$group, pch = c(1,1,2,2), col = c("green", "red", "green", "red" ), cex = 1, add = T)
+id <- colnames(cpm.g.t.info)[i]
+name <- t4[t4$geneID == id,]$symbol.x
+title(main = name)
+}
+
 #############################################################################
 #######whole pathway level z-score boxplot
 d = cpm(y)
