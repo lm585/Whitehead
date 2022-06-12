@@ -1870,3 +1870,29 @@ abline(v= -log10(0.05), lty = 5, lwd = 0.5, col = "blue" )
 text(-log10(0.05), 3, "p=0.05", pos=4, col="blue")
 legend("bottomright", rownames(t3), fill=c("green", "grey", "red"), cex = 0.6, inset = 0.05)
 
+############################################refer to R-gene-pathway-corr for pathway level z-score
+> p <- read.delim("HALLMARK_INFLAMMATORY_RESPONSE.genes", header=F)
+> dim(p)
+[1] 200   1
+layout(matrix(1:3, 1, 3, byrow=T) )
+
+boxplot(res.info$mean ~ res.info$group, xlab = "", ylab = "z-score avg of all genes", ylim=c(-0.7,1.2))
+beeswarm(res.info$mean ~ res.info$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+title(main="HALLMARK_INFLAMMATORY_RESPONSE")
+abline(h = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
+
+res.info.noCereb <- res.info[ res.info$location != "Cerebellum" & res.info$location != "Occipital", ] 
+dim(res.info.noCereb)
+#[1] 33  9
+boxplot(res.info.noCereb$mean ~ res.info.noCereb$group, xlab = "", ylab = "z-score avg of all genes", ylim=c(-0.7,1.2))
+beeswarm(res.info.noCereb$mean ~ res.info.noCereb$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+title(main="HALLMARK_INFLAMMATORY_RESPONSE")
+abline(h = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
+
+res.info.resectOnly <- res.info[ res.info$Tumor == "Control" | res.info$grade == "Tumor resection", ] 
+dim(res.info.resectOnly)
+#[1] 31  9
+boxplot(res.info.resectOnly$mean ~ res.info.resectOnly$group, xlab = "", ylab = "z-score avg of all genes", ylim=c(-0.7,1.2))
+beeswarm(res.info.resectOnly$mean ~ res.info.resectOnly$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+title(main="HALLMARK_INFLAMMATORY_RESPONSE")
+abline(h = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
