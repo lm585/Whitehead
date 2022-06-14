@@ -920,6 +920,23 @@ name <- t4[t4$geneID == id,]$symbol.x
 title(main = name)
 }
 
+###############tumResecOnly gene level expression boxplot
+........
+> t1 <- read.delim("female-14samps.tumResecOnly.name-type-chr.txt")
+> t2 <- read.delim("M-17samps.tumResecOnly.name-type-chr.txt")
+> t4 <- t3[ (t3$PValue.x < 0.05 & !is.na(t3$PValue.x)) | (t3$PValue.y < 0.05 & !is.na(t3$PValue.y)) , ]
+........
+> cpm.g.t.info.resect <- cpm.g.t.info[ cpm.g.t.info$Tumor == "Control" | cpm.g.t.info$grade == "Tumor resection",]
+
+layout(matrix(1:6, 2, 3, byrow=T) )
+for(i in 2:7) { ## genes
+boxplot( log2( cpm.g.t.info.resect[,i] + 1 ) ~ cpm.g.t.info.resect$group, xlab="", ylab = "log2 (cpm+1)", outline=T, pch = c(1,1,2,2),  cex=1 , outcol="white")
+beeswarm( log2( cpm.g.t.info.resect[,i] + 1 ) ~ cpm.g.t.info.resect$group, pch = c(1,1,2,2), col = c("green", "red", "green", "red" ), cex = 1, add = T)
+id <- colnames(cpm.g.t.info.resect)[i]
+name <- t4[t4$geneID == id,]$symbol.x
+title(main = name)
+}
+
 #############################################################################
 #######whole pathway level z-score boxplot
 d = cpm(y)
