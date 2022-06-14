@@ -1870,6 +1870,22 @@ abline(v= -log10(0.05), lty = 5, lwd = 0.5, col = "blue" )
 text(-log10(0.05), 3, "p=0.05", pos=4, col="blue")
 legend("bottomright", rownames(t3), fill=c("green", "grey", "red"), cex = 0.6, inset = 0.05)
 
+############################################################pathway NES barplot
+cat temp-2 | grep -i inflamm | grep -w prerank | grep -w noCereb.noOcci > temp-3
+cat temp-2 | grep -i HALLMARK_E2F_TARGETS | grep -w prerank | grep -w noCereb.noOcci >> temp-3
+cat temp-2 | grep -i HALLMARK_G2M_CHECKPOINT | grep -w prerank | grep -w noCereb.noOcci >> temp-3
+cat temp-3
+bash temp-script-path-p.value-barplot-input   | awk 'NR > 3' > temp-4
+> t1
+                                      F        M
+HALLMARK_INFLAMMATORY_RESPONSE 2.605196 1.271141
+HALLMARK_E2F_TARGETS           1.384512 2.509930
+HALLMARK_G2M_CHECKPOINT        1.621786 2.514877
+
+barplot(as.matrix( t1), horiz=F, beside=T,  ylim=c(0, 3), ylab="NES (TAM vs ctrl, noCereb.noOcci)" , col=c("green", "grey", "red"), main ="")
+abline(h= seq(0, 2.7, 0.1), lty = 5, lwd = 0.5, col = "grey" ) 
+legend(2,3, rownames(t1), fill=c("green", "grey", "red"), cex = 0.6, inset = 0.05)
+
 ############################################refer to R-gene-pathway-corr for pathway level z-score
 > p <- read.delim("HALLMARK_INFLAMMATORY_RESPONSE.genes", header=F)
 > dim(p)
