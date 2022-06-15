@@ -908,6 +908,23 @@ name <- t4[t4$geneID == id,]$symbol.x
 title(main = name)
 }
 
+###M2
+M2 macrophages are characterized by the upregulation of Dectin-1, DC-SIGN, mannose receptor, scavenger receptor A, scavenger receptor B-1, CD163, CCR2, CXCR1, and CXCR2
+while M2 macrophages generate anti-inflammatory cytokine such as IL-10 and very low level of pro-inflammatory cytokine such as IL-12
+
+IL-12(-)
+IL10
+TGFB2
+TGFB3
+CD163
+CCR2
+CXCR1
+CXCR2
+
+####M1
+ and the typical characteristics of M1 macrophages include high antigen presentation, high production of IL-12 and IL-23,
+Second, inflammatory M1 macrophages produce many other pro-inflammatory cytokines like TNFα, IL-1, IL-6, IL-12, Type I IFN, CXCL1-3, CXCL-5, and CXCL8-10 (9),
+
 ##############################gene level expression 33 samples - no cereb, no occip
 cpm.info.noCereb <- cpm.g.t.info[ cpm.g.t.info$location != "Cerebellum" & cpm.g.t.info$location != "Occipital", ]
 dim(cpm.info.noCereb)
