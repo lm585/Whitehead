@@ -937,6 +937,18 @@ name <- t4[t4$geneID == id,]$symbol.x
 title(main = name)
 }
 
+###p-value on boxplot
+p.x <- t4[t4$geneID == id,]$PValue.x
+p.x
+###[1] 0.6036653
+p.y <- t4[t4$geneID == id,]$PValue.y
+ p.y
+h = 2.7
+lines(c(3,4), c(h,h), col="blue")
+lines(c(1,2), c(h,h), col="blue")
+text(1.5, h, paste("p=", format(p.x, digits=3), sep=""), pos=3 )
+text(3.5, h, paste("p=", format(p.y, digits=3), sep=""), pos=3 )
+
 ###############tumResecOnly gene level expression boxplot
 ........
 > t1 <- read.delim("female-14samps.tumResecOnly.name-type-chr.txt")
