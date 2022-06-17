@@ -1958,3 +1958,25 @@ boxplot(res.info.resectOnly$mean ~ res.info.resectOnly$group, xlab = "", ylab = 
 beeswarm(res.info.resectOnly$mean ~ res.info.resectOnly$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
 title(main="HALLMARK_INFLAMMATORY_RESPONSE")
 abline(h = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
+
+###t test between group means (pathway z-score)
+t1 <- res.info[ res.info$location != "Cerebellum" & res.info$location != "Occipital", ] 
+t1 <- res.info[ res.info$Tumor == "Control" | res.info$grade == "Tumor resection", ]
+#t1 <- t1[ t1$location != "Cerebellum" & t1$location != "Occipital", ] 
+
+dim(t1)
+ll <- list()
+for(i in 1:4)
+{
+ ll[[i]] <- t1[ t1$grape3 == group[i], ]
+ cat(mean( ll[[i]]$mean))
+ cat("\n")
+}
+t2 <- t.test(ll[[1]]$mean, ll[[2]]$mean)
+t3 <- t.test(ll[[3]]$mean, ll[[4]]$mean)
+{
+cat(t2$p.value)
+cat("\n")
+cat(t3$p.value)
+cat("\n")
+}
