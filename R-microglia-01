@@ -1988,3 +1988,34 @@ cat("\n")
 cat(t3$p.value)
 cat("\n")
 }
+
+head -1 microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt > temp.1.txt
+for g in `echo REL      RELB    NFKB2   NFKBIE  NFKBIA  NFKB1   RELA`
+do
+ grep -w "$g" microglia-39-sample.HALLMARK_INFLAMMATORY_RESPONSE.genes.corr.txt 
+done >> temp.1.txt
+
+# following results from R-gene-pathway-corr
+# gene level expression
+# pathway level expression
+# make gene-pathway correlation plot
+
+layout(matrix(1:2, 1, 2, byrow=T) )
+
+plot( res.info.g.p.fem$mean.x, res.info.g.p.fem$mean.y, xlab="inflamm pathway z-score", ylab="gene expr log2(cpm+1)", ylim=c(1, 8.5), col="white")
+abline(lm(res.info.g.p.fem$mean.y ~ res.info.g.p.fem$mean.x))
+points(res.info.g.p.fem[ res.info.g.p.fem$Tumor.x == "Control", ]$mean.x, res.info.g.p.fem[ res.info.g.p.fem$Tumor.x == "Control", ]$mean.y,  col = "green", pch = 16 , cex = 1.6)
+points(res.info.g.p.fem[ res.info.g.p.fem$Tumor.x == "Tumor", ]$mean.x, res.info.g.p.fem[ res.info.g.p.fem$Tumor.x == "Tumor", ]$mean.y, col = "red", pch = 16 , cex = 1.6)
+legend("topleft", inset = 0.05, c("XX control", "XX tumor"), pch=c(16,16), col = c("green", "red" ))
+title(main = paste(geneName, ", r=", round(t2$estimate, digits = 3), " p=", format(t2$p.value, digits=3), sep=""))
+abline(h = seq(0,10,0.5), lty = 5, lwd = 0.5, col = "gray")
+
+###male
+plot( res.info.g.p.male$mean.x, res.info.g.p.male$mean.y, xlab="inflamm pathway z-score", ylab="gene expr log2(cpm+1)", ylim=c(1, 8.5), col="white")
+abline(lm(res.info.g.p.male$mean.y ~ res.info.g.p.male$mean.x))
+points(res.info.g.p.male[ res.info.g.p.male$Tumor.x == "Control", ]$mean.x, res.info.g.p.male[ res.info.g.p.male$Tumor.x == "Control", ]$mean.y,  col = "green", pch = 17 , cex = 1.6)
+points(res.info.g.p.male[ res.info.g.p.male$Tumor.x == "Tumor", ]$mean.x, res.info.g.p.male[ res.info.g.p.male$Tumor.x == "Tumor", ]$mean.y, col = "red", pch = 17 , cex = 1.6)
+legend("topleft", inset = 0.05, c("XY control", "XY tumor"), pch=c(17,17), col = c("green", "red" ))
+title(main = paste(geneName, ", r=", round(t3$estimate, digits = 3), " p=", format(t3$p.value, digits=3), sep=""))
+abline(h = seq(0,10,0.5), lty = 5, lwd = 0.5, col = "gray")
+                                                                                           
