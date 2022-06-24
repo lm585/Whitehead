@@ -785,6 +785,29 @@ t2 <- pca.info[ pca.info$grape3 == "XY Low grade resection",]$V3
 t3 <- pca.info[ pca.info$grape3 == "XY Tumor resection",]$V3
 t.test( as.numeric(t1), as.numeric(t2))
 mean(as.numeric(t1)) - mean(as.numeric(t2))
+t4 <- pca.info[ pca.info$grape3 == "XX Control",]$V3
+t5 <- pca.info[ pca.info$grape3 == "XX Tumor",]$V3
+res.f <- t.test( as.numeric(t4), as.numeric(t5))
+res.f$p.value
+res.m.low <- t.test( as.numeric(t1), as.numeric(t2))
+res.m.resect <- t.test( as.numeric(t1), as.numeric(t3))
+res.m.resec.low <- t.test( as.numeric(t2), as.numeric(t3))
+res.m.low$p.value
+res.m.resect$p.value
+res.m.resec.low$p.value
+
+h = 0.6
+lines(c(3,4), c(h,h), col="blue")
+text(3.5, h, paste("p=", format(res.m.low$p.value , digits=3), sep=""), pos=3 ) 
+h = 0.7
+lines(c(4,5), c(h,h), col="blue")
+text(4.5, h, paste("p=", format(res.m.resec.low$p.value , digits=3), sep=""), pos=3 )
+h = 0.8
+lines(c(3,5), c(h,h), col="blue")
+text(4, h, paste("p=", format(res.m.resect$p.value , digits=3), sep=""), pos=3 )
+h = 0.7
+lines(c(1,2), c(h,h), col="blue")
+text(1.5, h, paste("p=", format(res.f$p.value , digits=3), sep=""), pos=3 )
 
 ##############################################################################
 #####lm(), PC2 ~ multivariables
