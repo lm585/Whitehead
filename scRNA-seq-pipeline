@@ -433,3 +433,73 @@ abline(h = seq(0,200,1), lty = 5, lwd = 0.5, col = "gray")
 tit <- paste(gene, "average expression per donor", sep = " ")
 title(main = tit, cex = 0.5)
 
+#############################################################################
+### mouse scRNA-seq microglia
+ls *mtx.gz | sed 's/-filtered-matrix.mtx.gz//' | while read dir
+do
+ mkdir dir-"$dir"
+ ls "$dir"*
+ mv "$dir"* dir-"$dir"
+done
+
+mv *-barcodes.tsv.gz barcodes.tsv.gz
+mv *features.tsv.gz features.tsv.gz
+mv *matrix.mtx.gz matrix.mtx.gz
+
+ls  | grep dir- | grep -v dir-GSM4039241_f-ctrl-1 | while read dir
+do
+ cd "$dir"
+ mv *-barcodes.tsv.gz barcodes.tsv.gz
+ mv *features.tsv.gz features.tsv.gz
+ mv *matrix.mtx.gz matrix.mtx.gz
+
+ cd ..
+done
+
+ls | grep dir-GSM | while read dir
+do
+ echo -n "$dir\t"
+ echo "$dir" | sed 's/dir-GSM[0-9]*_//'
+done
+
+cat nameDir-id 
+dir-GSM4039241_f-ctrl-1	f-ctrl-1
+dir-GSM4039242_f-ctrl-2	f-ctrl-2
+dir-GSM4039243_f-tumor-1	f-tumor-1
+dir-GSM4039244_f-tumor-2	f-tumor-2
+dir-GSM4039245_m-ctrl-1	m-ctrl-1
+dir-GSM4039246_m-ctrl-2	m-ctrl-2
+dir-GSM4039247_m-tumor-1	m-tumor-1
+dir-GSM4039248_m-tumor-2	m-tumor-2
+
+setwd("/Users/linyongmao/Documents/microglia-mouse")
+
+t1 <- read.delim("nameDir-id", header=F)
+ss <- list()
+for(i in 1:dim(t1)[1])
+{
+ mic.data <- Read10X(data.dir = t1[i, 1])
+ ss[[i]] <- CreateSeuratObject(counts = mic.data, project = t1[i, 2])
+}
+
+t2 <- ss[[2]]
+for(i in 3:8)
+{
+ t2 <- c(t2, ss[[i]])
+}
+
+mg <- merge(ss[[1]], y = t2, project = "microglia")
+Warning message:
+#In CheckDuplicateCellNames(object.list = objects) :
+#  Some cell names are duplicated across objects provided. Renaming to enforce unique cell names.
+
+mg
+# An object of class Seurat 
+# 31053 features across 41059 samples within 1 assay 
+# Active assay: RNA (31053 features, 0 variable features)
+
+for(i in 1:8)
+{
+ print(ss[[i]])
+}
+ 
