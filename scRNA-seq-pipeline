@@ -479,7 +479,7 @@ ss <- list()
 for(i in 1:dim(t1)[1])
 {
  mic.data <- Read10X(data.dir = t1[i, 1])
- ss[[i]] <- CreateSeuratObject(counts = mic.data, project = t1[i, 2])
+ ss[[i]] <- CreateSeuratObject(counts = mic.data, project = t1[i, 2], min.cells = 5)
 }
 
 t2 <- ss[[2]]
