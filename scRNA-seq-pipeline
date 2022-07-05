@@ -503,3 +503,53 @@ for(i in 1:8)
  print(ss[[i]])
 }
  
+-rw-r--r--@ 1 linyongmao  staff   1.7M Jul  4 14:26 Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip
+2022 July downloaded
+
+-rw-r--r--  1 linyongmao  staff   765M Jul  4 13:58 gencode.vM10.annotation.gtf
+Release M10 (GRCm38.p4)
+https://www.gencodegenes.org/mouse/release_M10.html
+2022 July downloaded
+
+#13 MT protein coding genes
+mg[["percent.mt"]] <- PercentageFeatureSet(mg, pattern = "^mt-")
+> # Visualize QC metrics as a violin plot
+> VlnPlot(mg, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+> plot(mg$nCount_RNA, mg$percent.mt, ylim=c(0,25), cex=0.3 )
+mg[ , mg$percent.mt < 10]
+> plot(mg$nCount_RNA, mg$nFeature_RNA,  cex=0.3 )
+> abline(h = seq(0,10000,500), lty = 5, lwd = 0.5, col = "gray")
+> abline(v = seq(0,50000,5000), lty = 5, lwd = 0.5, col = "gray")
+> mg[, mg$nFeature_RNA > 200 & mg$nFeature_RNA < 3000 & mg$percent.mt < 5 ]
+> mg[, mg$nFeature_RNA > 500 & mg$nFeature_RNA < 3000 & mg$percent.mt < 5 ]
+
+mg.1 <- mg[, mg$nFeature_RNA > 200 & mg$nFeature_RNA < 3000 & mg$percent.mt < 5 ]
+## 14618 features across 40401 samples within 1 assay
+ifnb.list <- SplitObject(mg.1, split.by = "orig.ident")
+# normalize and identify variable features for each dataset independently
+ifnb.list <- lapply(X = ifnb.list, FUN = function(x) {
+    x <- NormalizeData(x)
+    x <- FindVariableFeatures(x, selection.method = "vst", nfeatures = 2000)
+})
+# select features that are repeatedly variable across datasets for integration
+features <- SelectIntegrationFeatures(object.list = ifnb.list)
+immune.anchors <- FindIntegrationAnchors(object.list = ifnb.list, anchor.features = features)
+##Retained 5826 anchors
+##  |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed=59m 29s
+# this command creates an 'integrated' data assay
+immune.combined <- IntegrateData(anchorset = immune.anchors)
+# specify that we will perform downstream analysis on the corrected data note that the
+# original unmodified data still resides in the 'RNA' assay
+DefaultAssay(immune.combined) <- "integrated"
+
+# Run the standard workflow for visualization and clustering
+immune.combined <- ScaleData(immune.combined, verbose = FALSE)
+immune.combined <- RunPCA(immune.combined, npcs = 30, verbose = TRUE)
+immune.combined <- RunUMAP(immune.combined, reduction = "pca", dims = 1:30)
+immune.combined <- FindNeighbors(immune.combined, reduction = "pca", dims = 1:30)
+immune.combined <- FindClusters(immune.combined, resolution=0.3)
+# Number of nodes: 40401
+# Number of edges: 1652874
+# Number of communities: 19
+
+DimPlot(immune.combined, reduction = "umap", label = TRUE, repel = TRUE)
