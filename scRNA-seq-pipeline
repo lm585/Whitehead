@@ -495,8 +495,8 @@ Warning message:
 
 mg
 # An object of class Seurat 
-# 31053 features across 41059 samples within 1 assay 
-# Active assay: RNA (31053 features, 0 variable features)
+# 14618 features across 41059 samples within 1 assay 
+# Active assay: RNA (14618 features, 0 variable features)
 
 for(i in 1:8)
 {
