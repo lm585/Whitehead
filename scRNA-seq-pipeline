@@ -553,3 +553,62 @@ immune.combined <- FindClusters(immune.combined, resolution=0.3)
 # Number of communities: 19
 
 DimPlot(immune.combined, reduction = "umap", label = TRUE, repel = TRUE)
+
+> saveRDS(immune.anchors, file="anchors.rds")
+> DefaultAssay(immune.combined) <- "RNA"
+>  ref.1.avg <- AverageExpression(immune.combined, group.by="integrated_snn_res.0.1", slot="data", verbose=T)
+>  write.table(ref.1.avg$RNA, "avg-exp-allgenes-reso-0.1-10clusters.txt", quote = F, sep="\t")
+> sum((ref.1.avg$RNA[,1]))
+[1] 10000
+> sum((ref.1.avg$RNA[,2]))
+[1] 10000
+> summary(ref.1.avg$RNA)
+       0                  1                  2                  3                   4                  5                  6                  7                  8            
+ Min.   :  0.0000   Min.   :  0.0000   Min.   :  0.0000   Min.   :  0.00000   Min.   :  0.0000   Min.   :  0.0000   Min.   :  0.0000   Min.   :  0.0000   Min.   :   0.0000  
+ 1st Qu.:  0.0093   1st Qu.:  0.0106   1st Qu.:  0.0100   1st Qu.:  0.00780   1st Qu.:  0.0137   1st Qu.:  0.0078   1st Qu.:  0.0086   1st Qu.:  0.0196   1st Qu.:   0.0000  
+ Median :  0.0995   Median :  0.0880   Median :  0.1034   Median :  0.06687   Median :  0.0936   Median :  0.0678   Median :  0.0859   Median :  0.1214   Median :   0.0293  
+ Mean   :  0.6841   Mean   :  0.6841   Mean   :  0.6841   Mean   :  0.68409   Mean   :  0.6841   Mean   :  0.6841   Mean   :  0.6841   Mean   :  0.6841   Mean   :   0.6841  
+ 3rd Qu.:  0.3751   3rd Qu.:  0.3284   3rd Qu.:  0.3895   3rd Qu.:  0.28298   3rd Qu.:  0.3332   3rd Qu.:  0.2903   3rd Qu.:  0.3149   3rd Qu.:  0.3938   3rd Qu.:   0.1900  
+ Max.   :789.5800   Max.   :518.9368   Max.   :642.9373   Max.   :301.27950   Max.   :390.8133   Max.   :382.9453   Max.   :825.4658   Max.   :644.5161   Max.   :1423.5979  
+
+> t1 <- ref.1.avg$RNA
+g1 <- scan(what="", sep = "\n")
+Tmem119
+Cd14
+P2ry12
+Tgfbi
+Ifitm2
+Ifitm3
+S100a6
+Ly6c2
+Ccr2
+Mrc1
+Cd163
+Cd24a
+Ncam1
+Klrk1
+Ncr1
+Cd2
+Cd3d
+Cd4
+Cd8b1
+Ms4a1
+Lgals3
+
+#####P2ry12, Sparc, Tmem119, Gpr34, Selplg, and Cx3cr1 (refs. 19,42) in MG, Mo—Ly6i and Ly6c2, and MΦ genes—Ifitm3 (ref. 10) in Mo/MΦ, and BAM genes—Apoe, Ms4a7, and Mrc1
+P2ry12
+Sparc
+Tmem119
+Gpr34
+Selplg
+Cx3cr1
+Ly6i
+Ly6c2
+Ifitm3
+Apoe
+Ms4a7
+Mrc1
+Lgals3
+
+t1.g <- t1[ rownames(t1) %in% g1, ]
+dim(t1.g)
