@@ -612,3 +612,54 @@ Lgals3
 
 t1.g <- t1[ rownames(t1) %in% g1, ]
 dim(t1.g)
+
+mat <- as.matrix(t1.g)
+write.table(immune.combined@meta.data, "temp-meta-data.txt", quote=F, sep="\t" )
+DefaultAssay(immune.combined) <- "RNA"
+ref.1.avg <- AverageExpression(immune.combined, group.by="integrated_snn_res.0.6", slot="data", verbose=T)
+sum(ref.1.avg$RNA[,1])
+[1] 10000
+ref.data <- MouseRNAseqData()
+pred <- SingleR(test = ref.1.avg$RNA , ref = ref.data,  labels =  ref.data$label.fine, assay.type.test=1)
+data.frame(pred$first.labels, pred$labels, pred$pruned.labels)
+### install.packages("pheatmap")
+library(pheatmap)
+### install.packages("viridis")
+library(viridis)
+plotScoreHeatmap(pred)
+plotDeltaDistribution(pred, ncol = 3)
+####column #15 for cluster 14
+pred <- SingleR(test = ref.1.avg$RNA[,c(15, 9, 8,18)] , ref = ref.data,  labels =  ref.data$label.fine, assay.type.test=1)
+plotScoreHeatmap(pred)
+> ref.data <- celldex::ImmGenData()
+
+> ref.tam.avg <- AverageExpression(immune.combined, group.by="orig.ident", slot="data", verbose=T)
+sum(ref.tam.avg$RNA[,1:8])
+###[1] 80000
+
+for g in `echo REL  RELB    NFKB2   NFKBIE  NFKBIA  NFKB1`
+do
+awk '$2 == "'$g'"' Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip
+done > temp.1
+
+cat temp.1 | cut -f 1 | while read g
+do
+###grep 1 gene 1 minute
+grep -w $g gencode.vM10.annotation.gtf  | awk '$3 == "gene"'
+done > temp.2
+
+cat temp.2 | cut -f 9 | awk 'BEGIN {FS = ";"} {print $4}' | sed 's/ gene_name //' | sed 's/"//g' | sed 's/ *//'
+
+g1 <- scan(what="", sep = "\n")
+ref.tam.avg$RNA[ rownames(ref.tam.avg$RNA) %in% g1, ]
+t1 <- ref.tam.avg$RNA[ rownames(ref.tam.avg$RNA) %in% g1, ]
+for(i in 1:dim(t1)[1])
+{
+ t2 <- t.test(t1[i, 1:2], t1[i, 3:4])
+ t3 <- t.test(t1[i, 5:6], t1[i, 7:8])
+ str <- paste(rownames(t1)[i], t2$p.value, log2(t2$estimate[2] / t2$estimate[1]), 
+ t3$p.value, log2(t3$estimate[2] / t3$estimate[1]), sep = "\t" )
+ cat(str)
+ cat("\n")
+}
+
