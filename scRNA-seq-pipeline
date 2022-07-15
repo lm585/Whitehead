@@ -663,3 +663,73 @@ for(i in 1:dim(t1)[1])
  cat("\n")
 }
 
+> Heatmap(matrix =log2(mat+1), name = "log2(expr)", clustering_distance_columns="spearman", clustering_method_columns="complete", column_names_side = "top")
+immune.0 <- immune.combined[, immune.combined$integrated_snn_res.0.6 == 0] ###5748 cells in cluster 0
+DefaultAssay(immune.0) <- "RNA"
+ref.0.avg <- AverageExpression(immune.0, group.by="orig.ident", slot="data", verbose=T)
+sum(ref.0.avg$RNA[,1])
+###[1] 10000
+t1 <-  ref.0.avg$RNA[,1:4] * 100 ### * 100, turn to tpm 
+keep <-rowSums(t1 > 1) >= 2
+t1 <- t1[keep,]
+dim(t1)
+# 10989     4 
+g <- c("f-c","f-c","f-t", "f-t")
+mm <- model.matrix(~g)
+y <- voom(counts = as.matrix(t1), design=mm, plot=T)
+fit <- lmFit(y, mm)
+tmp <- contrasts.fit(fit, coef = 2) # test "gf-t" coefficient
+tmp <- eBayes(tmp)
+top.table <- topTable(tmp, sort.by = "P", n = Inf)
+head(top.table, 20)
+#               logFC   AveExpr         t      P.Value    adj.P.Val         B
+# Ifitm3    3.8488483  5.321071 15.543203 5.729872e-08 0.0006296556 6.7523914
+# Rtp4      2.8398411  5.457652 13.469757 2.060527e-07 0.0011321568 6.7137824
+# Ifi27l2a  3.7520950  5.648972 12.471517 4.074820e-07 0.0014926065 6.0981774
+# H2-D1     1.0923742  9.961997  9.635695 3.830362e-06 0.0085751606 4.5733087
+# Fth1      0.3226264 11.583458  9.614864 3.901702e-06 0.0085751606 4.1614702
+# Slfn2     1.8710931  5.899388  9.209562 5.625006e-06 0.0103021991 4.4930736
+# B2m       0.5139902 12.106590  8.461608 1.145338e-05 0.0165165020 2.8448533
+# Apoe      1.1173835  9.690092  8.312614 1.327519e-05 0.0165165020 3.2966298
+# Bst2      0.8164903  7.703852  8.293794 1.352703e-05 0.0165165020 3.6105462
+# Lgals3bp  1.2325149  6.821375  8.036655 1.754661e-05 0.0192819647 3.4461137
+# Rps19     0.3857742 10.544362  7.537822 2.961788e-05 0.0295882656 2.2278074
+# Rpl13     0.3048054 11.066134  7.259807 4.010565e-05 0.0351393028 1.7684765
+# Rpl41     0.2979776 11.121088  7.162895 4.466480e-05 0.0351393028 1.6375838
+# Cst7      2.1382368  4.290085  7.160838 4.476752e-05 0.0351393028 2.1830165
+# Rpl18a    0.3195510 11.199288  6.848780 6.378544e-05 0.0467292105 1.2315636
+# Junb      0.3948895  9.405650  6.660881 7.937777e-05 0.0545176423 1.4271054
+# Ccl12     1.2195836  7.350146  6.532087 9.244259e-05 0.0572436567 1.6774146
+# Rps14     0.2813726 10.678771  6.492904 9.686797e-05 0.0572436567 0.9145686
+# Stat1     1.5467106  5.212392  6.474931 9.897438e-05 0.0572436567 1.7862779
+
+write.table(top.table, "temp.clust.0.f.tum.txt", quote=F, sep="\t")
+###add geneID as header in 1st line 1st column
+vi temp.clust.0.f.tum.txt
+cat gencode.vM10.annotation.gtf | awk 'BEGIN{FS = "\t"} $3 == "gene"' | cut -f 1,9 | sed 's/;/       /g' | cut -f 1,2,3,4,5 > temp-1
+
+awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""} 
+{
+ print $5, $1, $2, $3, $4 "\n";
+}' M10.geneID-name-chr-type.2.txt > M10.geneID-name-chr-type.2.name-first.txt
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp.clust.0.f.tum.txt  M10.geneID-name-chr-type.2.name-first.txt out
+paste temp.clust.0.f.tum.txt   out | grep -vw notApplicable | 
+awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $10;
+for(i = 1; i <= NF; i++)
+{
+ if(i != 10)
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > temp.clust.0.f.tum.geneID.txt  
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    temp.clust.0.f.tum.geneID.txt  Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip out
+paste  temp.clust.0.f.tum.geneID.txt  out | grep -vw notApplicable > temp.clust.0.f.tum.human.gene.name.txt
+cat temp.clust.0.f.tum.human.gene.name.txt | cut -f 2-6,7,10,14 > temp
+/Users/linyongmao/Documents/microglia/make-rnk-genesymble temp temp.clust.0.f.tum.human.gene.rnk
+
