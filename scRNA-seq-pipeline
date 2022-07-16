@@ -664,7 +664,51 @@ for(i in 1:dim(t1)[1])
 }
 
 > Heatmap(matrix =log2(mat+1), name = "log2(expr)", clustering_distance_columns="spearman", clustering_method_columns="complete", column_names_side = "top")
+######################################################################################
+### voom DEG testing, scRNA-seq psuedo-bulk, cluster #0, male mouse, tumor vs control
 immune.0 <- immune.combined[, immune.combined$integrated_snn_res.0.6 == 0] ###5748 cells in cluster 0
+DefaultAssay(immune.0) <- "RNA"
+ref.0.avg <- AverageExpression(immune.0, group.by="orig.ident", slot="data", verbose=T)
+sum(ref.0.avg$RNA[,1])
+###[1] 10000
+t1 <-  ref.0.avg$RNA[,5:8] * 100 ### * 100, turn to tpm
+keep <-rowSums(t1 > 1) >= 2
+t1 <- t1[keep,]
+dim(t1)
+g <- c("m-c","m-c","m-t", "m-t")
+mm <- model.matrix(~g)
+y <- voom(counts = as.matrix(t1), design=mm, plot=T)
+fit <- lmFit(y, mm)
+tmp <- contrasts.fit(fit, coef = 2) # test "gm-t" coefficient
+tmp <- eBayes(tmp)
+top.table <- topTable(tmp, sort.by = "P", n = Inf)
+head(top.table, 20)
+write.table(top.table, "temp.clust.0.m.tum.txt", quote=F, sep="\t")
+
+sed '1 s/^/geneID   /' temp.clust.0.m.tum.txt > temp
+mv temp temp.clust.0.m.tum.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp.clust.0.m.tum.txt  M10.geneID-name-chr-type.2.name-first.txt out
+paste temp.clust.0.m.tum.txt   out | grep -vw notApplicable |
+awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $10;
+for(i = 1; i <= NF; i++)
+{
+ if(i != 10)
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > temp.clust.0.m.tum.geneID.txt
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    temp.clust.0.m.tum.geneID.txt  Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip out
+paste  temp.clust.0.m.tum.geneID.txt  out | grep -vw notApplicable > temp.clust.0.m.tum.human.gene.name.txt
+cat temp.clust.0.m.tum.human.gene.name.txt | cut -f 2-6,7,10,14 > temp
+/Users/linyongmao/Documents/microglia/make-rnk-genesymble temp temp.clust.0.m.tum.human.gene.rnk
+
+
+####################################### cluster #0, female mouse, tumor vs control
 DefaultAssay(immune.0) <- "RNA"
 ref.0.avg <- AverageExpression(immune.0, group.by="orig.ident", slot="data", verbose=T)
 sum(ref.0.avg$RNA[,1])
