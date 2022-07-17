@@ -672,7 +672,7 @@ ref.0.avg <- AverageExpression(immune.0, group.by="orig.ident", slot="data", ver
 sum(ref.0.avg$RNA[,1])
 ###[1] 10000
 t1 <-  ref.0.avg$RNA[,5:8] * 100 ### * 100, turn to tpm
-keep <-rowSums(t1 > 1) >= 2
+keep <-rowSums(t1 >= 1) >= 2
 t1 <- t1[keep,]
 dim(t1)
 g <- c("m-c","m-c","m-t", "m-t")
@@ -714,7 +714,7 @@ ref.0.avg <- AverageExpression(immune.0, group.by="orig.ident", slot="data", ver
 sum(ref.0.avg$RNA[,1])
 ###[1] 10000
 t1 <-  ref.0.avg$RNA[,1:4] * 100 ### * 100, turn to tpm 
-keep <-rowSums(t1 > 1) >= 2
+keep <-rowSums(t1 >= 1) >= 2
 t1 <- t1[keep,]
 dim(t1)
 # 10989     4 
