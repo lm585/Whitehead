@@ -663,6 +663,18 @@ for(i in 1:dim(t1)[1])
  cat("\n")
 }
 
+### t.test
+sink("mouse.clusts.micro.female.tum.t.test.txt")
+for(i in 1:dim(t1)[1])
+{
+ t2 <- t.test(t1[i, 1:2], t1[i, 3:4])
+ str <- paste(rownames(t1)[i], t2$p.value, log2(t2$estimate[2] / t2$estimate[1]),
+  sep = "\t" )
+ cat(str)
+ cat("\n")
+}
+sink()
+
 > Heatmap(matrix =log2(mat+1), name = "log2(expr)", clustering_distance_columns="spearman", clustering_method_columns="complete", column_names_side = "top")
 ######################################################################################
 ### voom DEG testing, scRNA-seq psuedo-bulk, cluster #0, male mouse, tumor vs control
