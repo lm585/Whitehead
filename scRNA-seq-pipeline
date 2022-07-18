@@ -675,6 +675,32 @@ for(i in 1:dim(t1)[1])
 }
 sink()
 
+######t.test result to .rnk file. ###cat te-script-ttest-op2rnk 
+# 
+ echo "geneID	p-value	logFC" > temp
+ cat mouse.clusts.micro.female.tum.t.test.txt | sed 's/	Inf/123456789/' | sed 's/	-Inf/-123456789/' >> temp
+ mv temp mouse.clusts.micro.female.tum.t.test.txt
+ /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine mouse.clusts.micro.female.tum.t.test.txt  M10.geneID-name-chr-type.2.name-first.txt out
+paste mouse.clusts.micro.female.tum.t.test.txt   out | grep -vw notApplicable |
+awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $6;
+for(i = 1; i <= NF; i++)
+{
+ if(i != 6)
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > mouse.clusts.micro.female.tum.t.test.geneID.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  mouse.clusts.micro.female.tum.t.test.geneID.txt Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip out
+paste mouse.clusts.micro.female.tum.t.test.geneID.txt out | grep -vw notApplicable > mouse.clusts.micro.female.tum.t.test.human.gene.name.txt 
+cat mouse.clusts.micro.female.tum.t.test.human.gene.name.txt  | awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $2, $4,$5,$6, $3, $7, $8, $10, $11 "\n"}' > temp
+/Users/linyongmao/Documents/microglia/make-rnk-genesymble temp mouse.clusts.micro.female.tum.t.test.human.gene.name.rnk
+
 > Heatmap(matrix =log2(mat+1), name = "log2(expr)", clustering_distance_columns="spearman", clustering_method_columns="complete", column_names_side = "top")
 ######################################################################################
 ### voom DEG testing, scRNA-seq psuedo-bulk, cluster #0, male mouse, tumor vs control
