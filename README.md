@@ -6,3 +6,6 @@
 
 install.packages("Matrix.utils")
 library(Matrix.utils)
+
+BiocManager::install("SingleCellExperiment")
+library(SingleCellExperiment)
