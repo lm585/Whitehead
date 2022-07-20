@@ -858,3 +858,50 @@ boxplot(res$mean ~ res$group, xlab = "", ylab = "z-score avg of all genes")
 title(main=paste(length(mic), "microglia", "clusters\n", f[i,1]))
 beeswarm(res$mean ~ res$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
 abline(h = seq(-10,10,0.05), lty = 5, lwd = 0.5, col = "gray")
+
+################################################################################
+### aggregate counts per sample, edgeR
+> BiocManager::install("SingleCellExperiment")
+Warning message:
+package(s) not installed when version(s) same as current; use `force = TRUE` to re-install: 'SingleCellExperiment'
+> library(SingleCellExperiment)
+#Attaching package: ‘SingleCellExperiment’
+#The following object is masked from ‘package:edgeR’:
+#    cpm
+
+counts <- immune.mic@assays$RNA@counts
+metadata <- immune.mic@meta.data
+metadata$cluster_id <- metadata$integrated_snn_res.0.6
+# Create single cell experiment object
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+# Identify groups for aggregation of counts
+# groups: character class
+groups <- colData(sce)[, c("orig.ident")]
+# Aggregate across cluster-sample groups
+pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+
+class(pb)
+
+dim(pb)
+# [1]     8 14618
+pb[1:8, 1:6] # 8 samples
+t1 <- as.data.frame(t(pb))
+head(t1)
+dim(t1)
+group <- factor(rep(1, 8))
+y <- DGEList(counts=t1,group=group)
+y <- calcNormFactors(y)
+# $samples
+#           group lib.size norm.factors
+# f-ctrl-1      1 10341169    1.0646442
+# f-ctrl-2      1 10532754    1.0679185
+# f-tumor-1     1  8254301    0.9430448
+# f-tumor-2     1 10370699    0.9643678
+# m-ctrl-1      1  8868850    1.0664425
+# m-ctrl-2      1  9519282    1.0567604
+# m-tumor-1     1  7168687    0.9162843
+# m-tumor-2     1  8580658    0.9365655
+
+mds <- plotMDS(y, top=98765)
