@@ -34,39 +34,6 @@ cellranger6 count --id=run_count_1kpbmcs --fastqs=/lab/solexa_page/linyong/run_c
 ls run_count_1kpbmcs/outs/filter*matrix/ -lh
 total 12M
 
-#############################################################################
-###make .gmt file 
-echo -n "female-noCereb.noOcci-upreg-pe2\tmicroglia-p-value-0.01" > temp-1
-cat ../microglia/female-noCereb.noOcci-diff2-1.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 >= -log(0.01)/log(10)' |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} {print "\t" $1}' >> temp-1
-echo >> temp-1
-
-echo -n "female-tumResecOnly-upreg-pe2\tmicroglia-p-value-0.01" >> temp-1
-cat ../microglia/female-14samps.tumResecOnly.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 >= -log(0.01)/log(10)' |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} {print "\t" $1}' >> temp-1
-echo >> temp-1
-
-echo -n "female-all39samples-upreg-pe2\tmicroglia-p-value-0.01" >> temp-1
-cat ../microglia/female-diff2-1-filtgenesFirst.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 >= -log(0.01)/log(10)' |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} {print "\t" $1}' >> temp-1
-echo >> temp-1
-
-echo -n "male-noCereb.noOcci-upreg-pe2\tmicroglia-p-value-0.01" >> temp-1
-cat ../microglia/male-noCereb.noOcci-diff2-1.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 >= -log(0.01)/log(10)' |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} {print "\t" $1}' >> temp-1
-echo >> temp-1
-
-echo -n "male-tumResecOnly-upreg-pe2\tmicroglia-p-value-0.01" >> temp-1
-cat ../microglia/M-17samps.tumResecOnly.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 >= -log(0.01)/log(10)' |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} {print "\t" $1}' >> temp-1
-echo >> temp-1
-
-echo -n "male-all39samples-upreg-pe2\tmicroglia-p-value-0.01" >> temp-1
-cat ../microglia/male-diff2-1-filtgenesFirst.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 >= -log(0.01)/log(10)' |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} {print "\t" $1}' >> temp-1
-echo >> temp-1
-
-cat ../microglia/onco-supp-genes-glio.gmt >> temp-1
-cat ../DDX3X_targets.gmt >> temp-1
-
-mv -i  temp-1 microglia-TAM.gmt
-
-bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    microglia-TAM.gmt   -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  mouse.clusts.micro.female.diff2-1.edgeR.human.gene.rnk  -rpt_label   "mouse.clusts.micro.female.edgeR_TAM.prerank.human.geneSet.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
-
 -rw-r--r-- 1 linyong input 6.9K Jan 22 21:03 barcodes.tsv.gz
 -rw-r--r-- 1 linyong input 298K Jan 22 21:03 features.tsv.gz
 -rw-r--r-- 1 linyong input 9.0M Jan 22 21:03 matrix.mtx.gz
