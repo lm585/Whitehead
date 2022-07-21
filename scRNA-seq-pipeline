@@ -905,3 +905,95 @@ y <- calcNormFactors(y)
 # m-tumor-2     1  8580658    0.9365655
 
 mds <- plotMDS(y, top=98765)
+
+#############################################################################
+###aggregate counts of scRNA-seq per sample, then using edgeR ,female DEG
+t2 <- t1[, 1:4]
+head(t2)
+#         f-ctrl-1 f-ctrl-2 f-tumor-1 f-tumor-2
+# Sox17          0        0         0         0
+# Mrpl15       652      618       475       626
+group <- factor(rep(1, 4))
+y <- DGEList(counts=t2,group=group)
+y <- calcNormFactors(y)
+keep <-rowSums(edgeR::cpm(y)>=1) >= 2
+y<-y[keep,]
+dim(y)
+# 11195  genes in female after filtering;
+g <- c("f-c","f-c","f-t", "f-t")
+design <- model.matrix(~g)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+
+sed '1 s/^/geneID   /' mouse.clusts.micro.female.diff2-1.edgeR.txt > temp 
+mv temp mouse.clusts.micro.female.diff2-1.edgeR.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  mouse.clusts.micro.female.diff2-1.edgeR.txt  M10.geneID-name-chr-type.2.name-first.txt out
+paste mouse.clusts.micro.female.diff2-1.edgeR.txt   out | grep -vw notApplicable |
+awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $9;
+for(i = 1; i <= NF; i++)
+{
+ if(i != 9)
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > mouse.clusts.micro.female.diff2-1.edgeR.geneID.txt
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    mouse.clusts.micro.female.diff2-1.edgeR.geneID.txt  Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip out
+paste  mouse.clusts.micro.female.diff2-1.edgeR.geneID.txt  out | grep -vw notApplicable > mouse.clusts.micro.female.diff2-1.edgeR.human.gene.name.txt
+cat mouse.clusts.micro.female.diff2-1.edgeR.human.gene.name.txt | cut -f 2-8,13 > temp
+head -3 temp       
+/Users/linyongmao/Documents/microglia/make-rnk-genesymble temp mouse.clusts.micro.female.diff2-1.edgeR.human.gene.rnk
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  mouse.clusts.micro.female.diff2-1.edgeR.human.gene.rnk  -rpt_label   "mouse.clusts.micro.female.edgeR_TAM.prerank_p.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+###male DEG
+t2 <- t1[, 5:8]
+head(t2)
+group <- factor(rep(1, 4))
+y <- DGEList(counts=t2,group=group)
+y <- calcNormFactors(y)
+y
+keep <-rowSums(edgeR::cpm(y)>=1) >= 2
+y<-y[keep,]
+dim(y)
+# 11150 genes in male after filtering;
+g <- c("m-c","m-c","m-t", "m-t")
+design <- model.matrix(~g)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+
+sed '1 s/^/geneID   /' mouse.clusts.micro.male.diff2-1.edgeR.txt > temp
+mv temp mouse.clusts.micro.male.diff2-1.edgeR.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  mouse.clusts.micro.male.diff2-1.edgeR.txt  M10.geneID-name-chr-type.2.name-first.txt out
+paste mouse.clusts.micro.male.diff2-1.edgeR.txt   out | grep -vw notApplicable |
+awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $9;
+for(i = 1; i <= NF; i++)
+{
+ if(i != 9)
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > mouse.clusts.micro.male.diff2-1.edgeR.geneID.txt
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    mouse.clusts.micro.male.diff2-1.edgeR.geneID.txt  Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip out
+paste  mouse.clusts.micro.male.diff2-1.edgeR.geneID.txt  out | grep -vw notApplicable > mouse.clusts.micro.male.diff2-1.edgeR.human.gene.name.txt
+cat mouse.clusts.micro.male.diff2-1.edgeR.human.gene.name.txt | cut -f 2-8,13 > temp
+head -3 temp
+/Users/linyongmao/Documents/microglia/make-rnk-genesymble temp mouse.clusts.micro.male.diff2-1.edgeR.human.gene.rnk
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  mouse.clusts.micro.male.diff2-1.edgeR.human.gene.rnk  -rpt_label   "mouse.clusts.micro.male.edgeR_TAM.prerank_p.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
