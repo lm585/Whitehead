@@ -1064,3 +1064,30 @@ cat mouse.clusts.micro.female.diff2-1.edgeR.human.gene.rnk | awk 'BEGIN {FS = "\
 cat mouse.clusts.micro.female.diff2-1.edgeR.human.gene.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 <= log(0.01)/log(10)'  | wc -l
 cat mouse.clusts.micro.male.diff2-1.edgeR.human.gene.rnk   | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 >= -log(0.01)/log(10)'  | wc -l
 cat mouse.clusts.micro.male.diff2-1.edgeR.human.gene.rnk   | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 <= log(0.01)/log(10)'  | wc -l
+
+#############################################################################
+###hypergeometric testing; human_DEG\tmouse_DEG\t#ofbg_genes\toverlap_genes\
+echo "human_DEG\tmouse_DEG\t#ofbg_genes\toverlap_genes\texpected_overlap\tenrichment\tenrich_p-value" > temp-res
+cat ../microglia/female-diff2-1-filtgenesFirst.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 >= - log(0.01)/log(10)' | cut -f 1 | sort | uniq > temp-human
+cat mouse.clusts.micro.female.diff2-1.edgeR.human.gene.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 >= - log(0.01)/log(10)' | cut -f 1 | sort | uniq > temp-mouse
+cat ../microglia/female-diff2-1-filtgenesFirst.rnk | cut -f 1 | sort | uniq > temp-1
+cat mouse.clusts.micro.female.diff2-1.edgeR.human.gene.rnk | cut -f 1 | sort | uniq > temp-2
+cat temp-1 temp-2| sort | uniq -d > temp-bg
+
+cat temp-human temp-bg | sort | uniq -d > temp-3
+mv temp-3 temp-human
+cat temp-mouse temp-bg | sort | uniq -d > temp-4
+mv temp-4 temp-mouse
+
+h=`wc -l temp-human | awk '{print $1}' `
+m=`wc -l temp-mouse | awk '{print $1}' `
+ov=`cat temp-human temp-mouse | sort | uniq -d | wc -l | awk '{print $1}' `
+bg=`wc -l temp-bg | awk '{print $1}' `
+ep=` echo "$h\t$m\t$bg" | awk '{print $1 * $2 / $3}'  `
+rich=` echo "$ep\t$ov" | awk '{print  $2 / $1}' `
+echo "$h\t$m\t$bg\t$ov\t$ep\t$rich" > temp-res-r-ip
+###must after temp-res-r-ip file generated
+p_val=`Rscript R-script-hypergeo-1 | awk '{print $2}' `
+echo "$h\t$m\t$bg\t$ov\t$ep\t$rich\t$p_val" >> temp-res
+
+cat temp-res
