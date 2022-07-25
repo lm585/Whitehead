@@ -1091,3 +1091,13 @@ p_val=`Rscript R-script-hypergeo-1 | awk '{print $2}' `
 echo "$h\t$m\t$bg\t$ov\t$ep\t$rich\t$p_val" >> temp-res
 
 cat temp-res
+
+####
+cat ../microglia/female-diff2-1-filtgenesFirst.rnk | cut -f 1 | sort | uniq > temp-1
+cat mouse.clusts.micro.female.diff2-1.edgeR.human.gene.rnk | cut -f 1 | sort | uniq > temp-2
+wc -l temp-1 temp-2
+cat temp-1 temp-2| sort | uniq -d | wc -l
+#   16835 temp-1
+#   10037 temp-2
+#   26872 total
+#    9418
