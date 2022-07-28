@@ -1,0 +1,44 @@
+###hypergeometric testing; human_DEG\tmouse_DEG\t#ofbg_genes\toverlap_genes\
+echo "DEG	pathwayGenes	#ofbg_genes	overlap_genes	expected_overlap	enrichment	enrich_p-value	pathway" > temp-res
+cat ../microglia/female-diff2-1-filtgenesFirst.rnk | cut -f 1 | sort | uniq > temp-1
+cat mouse.clusts.micro.female.diff2-1.edgeR.human.gene.rnk | cut -f 1 | sort | uniq > temp-2
+cat temp-1 temp-2| sort | uniq -d > temp-bg-female
+cat ../microglia/male-diff2-1-filtgenesFirst.rnk | cut -f 1 | sort | uniq > temp-1
+cat mouse.clusts.micro.male.diff2-1.edgeR.human.gene.rnk | cut -f 1 | sort | uniq > temp-2
+cat temp-1 temp-2| sort | uniq -d > temp-bg-male
+###### using all F-M genes
+cat temp-bg-female temp-bg-male | sort | uniq > temp-bg-bothSex
+wc -l temp-bg-female temp-bg-male temp-bg-bothSex
+mv temp-bg-bothSex temp-bg 
+cat mouse.clusts.micro.female.diff2-1.edgeR.human.gene.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 >= - log(0.01)/log(1    0)' | cut -f 1 | sort | uniq > temp-mouse-f
+cat ../microglia/female-diff2-1-filtgenesFirst.rnk | cut -f 1 | sort | uniq > temp-1
+cat temp-mouse-f temp-1 | sort | uniq -d > temp-2
+mv temp-2 temp-mouse-f
+cat mouse.clusts.micro.male.diff2-1.edgeR.human.gene.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 >= - log(0.01)/log(1        0)' | cut -f 1 | sort | uniq > temp-mouse-m
+cat ../microglia/male-diff2-1-filtgenesFirst.rnk | cut -f 1 | sort | uniq > temp-1
+cat temp-mouse-m temp-1 | sort | uniq -d > temp-2
+mv temp-2 temp-mouse-m
+
+cat temp-mouse-f temp-mouse-m | sort | uniq -d > temp-both-DEG
+wc -l temp-both-DEG
+cat temp-mouse-f temp-both-DEG | sort | uniq -u > temp-female-only-DEG
+wc -l temp-female-only-DEG
+mv temp-female-only-DEG temp-human
+cat temp-path-files |   while read f
+do
+ cat "$f" temp-bg | sort | uniq -d > temp-4
+ mv temp-4 temp-mouse
+ h=`wc -l temp-human | awk '{print $1}' `
+ m=`wc -l temp-mouse | awk '{print $1}' `
+ ov=`cat temp-human temp-mouse | sort | uniq -d | wc -l | awk '{print $1}' `
+ bg=`wc -l temp-bg | awk '{print $1}' `
+ ep=` echo "$h	$m	$bg" | awk '{print $1 * $2 / $3}'  `
+ rich=` echo "$ep	$ov" | awk '{print  $2 / $1}' `
+ echo "$h	$m	$bg	$ov	$ep	$rich" > temp-res-r-ip
+ ###must after temp-res-r-ip file generated
+ p_val=`Rscript R-script-hypergeo-1 | awk '{print $2}' `
+ echo "$h	$m	$bg	$ov	$ep	$rich	$p_val	$f" >> temp-res
+done
+cat temp-res
+
+
