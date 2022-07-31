@@ -1101,3 +1101,68 @@ cat temp-1 temp-2| sort | uniq -d | wc -l
 #   10037 temp-2
 #   26872 total
 #    9418
+
+#############################################################################
+### make female logFC (tumor vs control, only two samples per group, median) based gene rank file
+immune.anchors <- readRDS("anchors.rds")
+......
+> immune.combined <- FindClusters(immune.combined, resolution=0.6)
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 40401
+Number of edges: 1650579
+
+Maximum modularity in 10 random starts: 0.8882
+Number of communities: 22
+
+####temp-1, female 4 samples, cpm, filtered out low expr genes
+write.table(edgeR::cpm(y), "temp-1", quote=F, sep="\t")
+vi temp-1
+cat temp-1 | awk '
+BEGIN {FS = "\t"; OFS = "\t"} 
+{
+ if(NR == 1)
+ {
+  print $0, "log2FC";
+ }
+ else
+ {
+  c=($2 + $3 + 0.5*2) /2;
+  t=($4 + $5 + 0.5*2) /2;
+  fc= log(t/c) / log(2);
+  print $0, fc;
+ }
+}
+' > temp-2
+###how many identical logFC
+cat temp-2 | cut -f 6 | sort | uniq -c | awk '$1 > 2'
+cat temp-2 | awk 'NR > 1' | sort -t '       ' +5 -6g | tail -n 20
+wl=`cat temp-2 | awk 'NR > 1' | wc -l | awk '{print $1}'`
+echo $wl
+cat temp-2 | awk 'NR > 1' | sort -t '	' +5 -6g | awk '
+{
+ print $0 "\t" NR "\t"  1- NR/'$wl';
+}
+' > temp-3 
+echo "geneID	rank" > temp-4
+cat temp-3 | cut -f 1,8 >> temp-4
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    temp-4 M10.geneID-name-chr-type.2.name-first.txt out
+paste    temp-4  out | grep -vw notApplicable | awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $5;
+for(i = 1; i <= NF; i++)
+{
+ if(i != 5)
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > temp-4.tum.geneID.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   temp-4.tum.geneID.txt Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip out
+paste   temp-4.tum.geneID.txt  out | grep -vw notApplicable  > temp-5
+cat temp-5 | awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{print $9,$3,$10 "\n"}' > mouse-female-logFC-rank-scRNA-edgeR
+
+##SERBP1	0.170076	SERPINE1 mRNA binding protein 1 [Source:HGNC Symbol;Acc:HGNC:17860]
+./make-rnk-genesymble.logFC mouse-female-logFC-rank-scRNA-edgeR mouse-female-logFC-rank-scRNA-edgeR.combDupGenes
