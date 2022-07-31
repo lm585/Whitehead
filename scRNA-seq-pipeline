@@ -1162,7 +1162,7 @@ print "\n"
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   temp-4.tum.geneID.txt Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip out
 paste   temp-4.tum.geneID.txt  out | grep -vw notApplicable  > temp-5
 cat temp-5 | awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
-{print $9,$3,$10 "\n"}' > mouse-female-logFC-rank-scRNA-edgeR
+NR > 1 {print $9,$3,$10 "\n"}' > mouse-female-logFC-rank-scRNA-edgeR
 
 ##SERBP1	0.170076	SERPINE1 mRNA binding protein 1 [Source:HGNC Symbol;Acc:HGNC:17860]
 ./make-rnk-genesymble.logFC mouse-female-logFC-rank-scRNA-edgeR mouse-female-logFC-rank-scRNA-edgeR.combDupGenes
