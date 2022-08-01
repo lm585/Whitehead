@@ -1250,3 +1250,24 @@ title(tex)
 
 res <- lm(log2(t2) ~ des1 + des2 + des1 * des2)
 summary(res)
+
+#############################################################################
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/mouse.clusts.micro.sex-tum-interaction.edgeR_TAM.prerank.v7.4.GseaPreranked.1659319902010/gsea_report_for_na_neg_1659319902010.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/mouse.clusts.micro.sex-tum-interaction.edgeR_TAM.prerank.v7.4.GseaPreranked.1659319902010/gsea_report_for_na_pos_1659319902010.tsv"
+cat "$f1" > temp-1
+cat "$f2" | awk 'NR > 1' >> temp-1
+cat temp-1 | cut -f 1,4,5,6,7,8  > temp-2
+vi temp-2 
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/mouse.clusts.micro.male.edgeR_TAM.prerank_p.v7.4.GseaPreranked.1658355450441/gsea_report_for_na_pos_1658355450441.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/mouse.clusts.micro.male.edgeR_TAM.prerank_p.v7.4.GseaPreranked.1658355450441/gsea_report_for_na_neg_1658355450441.tsv"
+cat "$f1" > temp-1
+cat "$f2" | awk 'NR > 1' >> temp-1
+cat temp-1 | cut -f 1,4,5,6,7,8  > temp-2
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/mouse.clusts.micro.female.edgeR_TAM.prerank_p.v7.4.GseaPreranked.1658354084959/gsea_report_for_na_pos_1658354084959.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/mouse.clusts.micro.female.edgeR_TAM.prerank_p.v7.4.GseaPreranked.1658354084959/gsea_report_for_na_neg_1658354084959.tsv"
+cat "$f1" > temp-1
+cat "$f2" | awk 'NR > 1' >> temp-1
+cat temp-1 | cut -f 1,4,5,6,7,8  > temp-2
+vi temp-2
