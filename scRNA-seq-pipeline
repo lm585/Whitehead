@@ -1166,3 +1166,28 @@ NR > 1 {print $9,$3,$10 "\n"}' > mouse-female-logFC-rank-scRNA-edgeR
 
 ##SERBP1	0.170076	SERPINE1 mRNA binding protein 1 [Source:HGNC Symbol;Acc:HGNC:17860]
 ./make-rnk-genesymble.logFC mouse-female-logFC-rank-scRNA-edgeR mouse-female-logFC-rank-scRNA-edgeR.combDupGenes
+
+#############################################################################
+# F vs M t-test mouse scRNA-seq
+f <- read.delim("mouse-female-logFC-rank-scRNA-edgeR.combDupGenes", header=F)
+m <- read.delim("mouse-male-logFC-rank-scRNA-edgeR.combDupGenes", header=F)
+paths <- read.delim("temp-path-files", header=F)
+sink("temp-res.txt")
+str <- paste("pathway", "female-rank-mean", "male-rank-mean", "mean diff (f-m)", "numOfUnionDEGS", "t-test p-value", sep = "\t" )
+cat(str)
+cat("\n")
+for(i in 1:dim(paths)[1]) {
+ genes <- read.delim(file=paths[i,1], header=F)
+ f.rnk <- f[ f$V1 %in% genes$V1, ]$V2
+ m.rnk <- m[ m$V1 %in% genes$V1, ]$V2
+ res <- t.test(f.rnk, m.rnk)
+
+ m1 <- mean(f.rnk, na.rm=T)
+ m2 <- mean(m.rnk, na.rm=T)
+ str <- paste(paths[i,1],m1,m2,m1-m2,length(f.rnk), res$p.value, sep = "\t" )
+ cat(str)
+ cat("\n")
+}
+
+sink()
+
