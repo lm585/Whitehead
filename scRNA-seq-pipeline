@@ -1219,3 +1219,34 @@ topTags(qlf, n = 10)
 ls -l mouse.clusts.micro.sex-tum-interaction.diff2-1.edgeR.human.gene.rnk 
 cat mouse.clusts.micro.sex-tum-interaction.diff2-1.edgeR.human.gene.rnk |awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, (-1)*$2 } ' > mouse.clusts.micro.sex-tum-interaction.diff2-1.edgeR.human.gene.2.rnk
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  mouse.clusts.micro.sex-tum-interaction.diff2-1.edgeR.human.gene.2.rnk  -rpt_label   "mouse.clusts.micro.sex-tum-interaction.edgeR_TAM.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+#############################################################################
+### mouse scRNA-seq gene pseudobulk boxplot
+        f-ctrl-1  f-ctrl-2 f-tumor-1 f-tumor-2  m-ctrl-1 m-ctrl-2 m-tumor-1 m-tumor-2
+Ifitm2  6.176391  6.401068  67.05913  64.79243  9.938551 13.12179  47.04231  39.19691
+t2 <- edgeR::cpm(y)[c("Myc", "Ifitm2"),][2,]
+
+df <- data.frame(log2_cpm = log2(t2), sex = des1, tumor = des2)
+df$group <- paste(df$sex, df$tumor, sep="_")
+for(i in 1:dim(df)[1])
+{
+ if(df$sex[i] == "f" & df$tumor[i] == "t")
+   df$group[i] = "Female Tumor"
+ else if(df$sex[i] == "f" & df$tumor[i] == "c")
+   df$group[i] = "Female Ctrl"
+ else if(df$sex[i] == "m" & df$tumor[i] == "c")
+   df$group[i] = "Male Ctrl"
+ else if(df$sex[i] == "m" & df$tumor[i] == "t")
+   df$group[i] = "Male Tumor"
+ else
+   temp=1
+}
+
+boxplot(df$log2_cpm ~ df$group, xlab="", ylab="log2(cpm)", outcol="white")
+beeswarm(df$log2_cpm ~ df$group,  pch = c(1,1,2,2), col = c("green", "red", "green", "red" ), cex = 1, add = T )
+abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+tex="mouse scRNA  pseudobulk \n Ifitm2"
+title(tex)
+
+res <- lm(log2(t2) ~ des1 + des2 + des1 * des2)
+summary(res)
