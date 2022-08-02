@@ -2043,3 +2043,51 @@ legend("topleft", inset = 0.05, c("XY control", "XY tumor"), pch=c(17,17), col =
 title(main = paste(geneName, ", r=", round(t3$estimate, digits = 3), " p=", format(t3$p.value, digits=3), sep=""))
 abline(h = seq(0,10,0.5), lty = 5, lwd = 0.5, col = "gray")
                                                                                            
+#############################################################################
+### sex:tumor interaction
+t <- read.delim("temp.txt", header = T, row.names = 1)
+dim(t)
+##[1] 58302    39
+rawCount <- t
+group <- factor(rep(1, 39))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+keep <-rowSums(edgeR::cpm(y)>=1) >= 9
+y<-y[keep,]
+dim(y)
+# [1] 16285    39
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+identical(info$id1, row.names( y$samples))
+# [1] TRUE
+design <- model.matrix(~info$XX + info$Tumor + info$age + info$XX : info$Tumor + info$XX : info$age + info$age : info$Tumor)
+design
+#    (Intercept) info$XXXY info$TumorTumor info$age info$XXXY:info$TumorTumor info$XXXY:info$age info$TumorTumor:info$age
+# 1            1         1               1       75                         1                 75                       75
+# 2            1         1               1       32                         1                 32                       32
+# 3            1         0               1       64                         0                  0                       64
+# 4            1         1               1       63                         1                 63                       63
+# 5            1         1               1       63                         1                 63                       63
+# 6            1         1               0       60                         0                 60                        0
+# 7            1         0               0       73                         0                  0                        0
+# 8            1         0               1       67                         0                  0                       67
+# 9            1         1               1       55                         1                 55                       55
+# 10           1         1               1       69                         1                 69                       69
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=5)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+topTags(qlf, n = 9)
+# Coefficient:  info$XXXY:info$TumorTumor
+#                     logFC     logCPM        F       PValue       FDR
+# ENSG00000131002  5.025318  3.9277759 19.20134 9.546588e-05 0.9454273
+# ENSG00000162490  5.318278 -0.3963349 16.30299 2.655488e-04 0.9454273
+# ENSG00000139329  5.613509  0.8971800 15.57379 3.469926e-04 0.9454273
+
+mv -i diff2-1.txt all39samp.sex-tum-interaction.diff2-1.txt
+vi all39samp.sex-tum-interaction.diff2-1.txt ##geneID
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine all39samp.sex-tum-interaction.diff2-1.txt        geneID-name-type-chr out
+paste  all39samp.sex-tum-interaction.diff2-1.txt  out | grep -vw notApplicable > all39samp.sex-tum-interaction.diff2-1.name-type-chr.txt
+./make-rnk-genesymble  all39samp.sex-tum-interaction.diff2-1.name-type-chr.txt all39samp.sex-tum-interaction.diff2-1.rnk
+cat all39samp.sex-tum-interaction.diff2-1.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, (-1)*$2}' > all39samp.sex-tum-interaction.diff2-1.2.rnk
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  all39samp.sex-tum-interaction.diff2-1.2.rnk  -rpt_label   "all39samp.sex-tum-interaction.edgeR_TAM.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
