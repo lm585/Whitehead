@@ -1191,6 +1191,17 @@ for(i in 1:dim(paths)[1]) {
 
 sink()
 
+###using gene ranks that are based edgeR signed log10 p-values; vs logFC of medians(cpm+0.01) of two groups derived gene ranks
+file <- read.delim("/Users/linyongmao/gsea_home/output/microgliaSex/mouse.clusts.micro.female.edgeR_TAM.prerank_p.v7.4.GseaPreranked.1658354084959/HALLMARK_E2F_TARGETS.tsv")
+f <- file$RANK.IN.GENE.LIST / 10037
+file <- read.delim("/Users/linyongmao/gsea_home/output/microgliaSex/mouse.clusts.micro.male.edgeR_TAM.prerank_p.v7.4.GseaPreranked.1658355450441/HALLMARK_E2F_TARGETS.tsv")
+m <- file$RANK.IN.GENE.LIST / 10001
+t.test(f,m)
+###probably wilcox test more robust, median of ttest and ks test
+wilcox.test(f,m)
+ks.test(f,m)
+
+
 #############################################################################
 # sex:tumor interaction, mouse scRNA-seq 
 group <- factor(rep(1, 8))
