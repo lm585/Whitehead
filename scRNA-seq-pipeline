@@ -1191,6 +1191,30 @@ for(i in 1:dim(paths)[1]) {
 
 sink()
 
+###paired t-test
+f <- read.delim("mouse-female-logFC-rank-scRNA-edgeR.combDupGenes", header=F)
+m <- read.delim("mouse-male-logFC-rank-scRNA-edgeR.combDupGenes", header=F)
+paths <- read.delim("temp-path-files", header=F)
+sink("temp-res.txt")
+str <- paste("pathway", "female-rank-mean", "male-rank-mean", "mean diff (f-m)", "numOfAllexpressedGenesF-MIntersect", "paired t-test p-value", sep = "\t" )
+cat(str)
+cat("\n")
+for(i in 1:dim(paths)[1]) {
+genes <- read.delim(file=paths[i,1], header=F)
+ f.rnk <- f[ f$V1 %in% genes$V1, ]
+ m.rnk <- m[ m$V1 %in% genes$V1, ]
+t2 <- merge(f.rnk, m.rnk, by.x = "V1", by.y= "V1")
+res <- t.test(t2$V2.x, t2$V2.y, paired=T)
+
+ m1 <- mean(t2$V2.x, na.rm=T)
+ m2 <- mean(t2$V2.y, na.rm=T)
+ str <- paste(paths[i,1],m1,m2,m1-m2,dim(t2)[1], res$p.value, sep = "\t" )
+ cat(str)
+ cat("\n")
+}
+
+sink()
+
 ###using gene ranks that are based edgeR signed log10 p-values; vs logFC of medians(cpm+0.01) of two groups derived gene ranks
 file <- read.delim("/Users/linyongmao/gsea_home/output/microgliaSex/mouse.clusts.micro.female.edgeR_TAM.prerank_p.v7.4.GseaPreranked.1658354084959/HALLMARK_E2F_TARGETS.tsv")
 f <- file$RANK.IN.GENE.LIST / 10037
