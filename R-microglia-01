@@ -2091,3 +2091,35 @@ paste  all39samp.sex-tum-interaction.diff2-1.txt  out | grep -vw notApplicable >
 ./make-rnk-genesymble  all39samp.sex-tum-interaction.diff2-1.name-type-chr.txt all39samp.sex-tum-interaction.diff2-1.rnk
 cat all39samp.sex-tum-interaction.diff2-1.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, (-1)*$2}' > all39samp.sex-tum-interaction.diff2-1.2.rnk
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  all39samp.sex-tum-interaction.diff2-1.2.rnk  -rpt_label   "all39samp.sex-tum-interaction.edgeR_TAM.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+####F-M-33samps.noCereb.noOcci, sex-tum-interaction model
+rawCount <- read.delim("microglia-41-samples.F-M-33samps.noCereb.noOcci.genecount.txt", header = T, row.names = 1)
+dim(rawCount)
+##[1] 58302    33
+group <- factor(rep(1, 33))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+keep <-rowSums(edgeR::cpm(y)>=1) >= 8
+y<-y[keep,]
+dim(y)
+# [1] 16269    33
+info <- read.delim("microglia-33-sample-nocereb-nooci-sampInfo.txt")
+identical(info$geneID, row.names( y$samples))
+# [1] TRUE
+design <- model.matrix(~info$XX + info$Tumor + info$age + info$XX : info$Tumor + info$XX : info$age + info$age : info$Tumor)
+design
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=5)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+topTags(qlf, n = 9)
+
+mv -i diff2-1.txt human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.txt
+##geneID
+vi human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.txt 
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.txt        geneID-name-type-chr out
+paste  human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.txt  out | grep -vw notApplicable > human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.name-type-chr.txt
+./make-rnk-genesymble  human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.name-type-chr.txt human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.rnk
+cat human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, (-1)*$2}' > human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.2.rnk
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.2.rnk  -rpt_label   "human33samp.nocereb-nooci.sex-tum-interaction.edgeR_TAM.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
