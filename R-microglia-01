@@ -2123,3 +2123,73 @@ paste  human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.txt  out | grep -vw
 ./make-rnk-genesymble  human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.name-type-chr.txt human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.rnk
 cat human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, (-1)*$2}' > human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.2.rnk
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.2.rnk  -rpt_label   "human33samp.nocereb-nooci.sex-tum-interaction.edgeR_TAM.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+#############################################################################
+### tpm for all 39 samples
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp.txt gene-length out
+paste  temp.txt out | grep -vw notApplicable >  temp-1
+cat temp-1 | awk '
+BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+{
+ if(NR == 1)
+ {
+  print $1;
+  for(i = 2; i <= 40; i++)
+  {  print "\t" $i;}
+  print "\n";
+ }
+ else
+ {
+  print $1;
+  for(i = 2; i <= 40; i++)
+  {  print "\t" $i/$42;}
+  print "\n";
+ }
+}
+' > temp-2
+t1 <- read.delim("temp-2", row.names=1)
+cols <- base::colSums(t1)
+t2 <- t1 
+for(i in 1:dim(t1)[2])
+{
+ t2[,i] <- t1[,i] * 1e6 / cols[i]
+}
+summary(t2)
+#########
+    MGB_009             MGB_011            MGB_016            MGB_018            MGB_022             MGB_023            MGB_024             MGB_025        
+ Min.   :    0.000   Min.   :    0.00   Min.   :    0.00   Min.   :    0.00   Min.   :    0.000   Min.   :    0.00   Min.   :    0.000   Min.   :    0.00  
+ 1st Qu.:    0.000   1st Qu.:    0.00   1st Qu.:    0.00   1st Qu.:    0.00   1st Qu.:    0.000   1st Qu.:    0.00   1st Qu.:    0.000   1st Qu.:    0.00  
+ Median :    0.000   Median :    0.00   Median :    0.04   Median :    0.02   Median :    0.054   Median :    0.00   Median :    0.000   Median :    0.00  
+ Mean   :   17.152   Mean   :   17.15   Mean   :   17.15   Mean   :   17.15   Mean   :   17.152   Mean   :   17.15   Mean   :   17.152   Mean   :   17.15  
+ 3rd Qu.:    2.255   3rd Qu.:    2.98   3rd Qu.:    2.42   3rd Qu.:    2.43   3rd Qu.:    2.468   3rd Qu.:    2.67   3rd Qu.:    3.032   3rd Qu.:    3.09  
+ Max.   :29611.262   Max.   :47513.14   Max.   :36492.15   Max.   :54222.74   Max.   :27375.283   Max.   :97872.46   Max.   :26342.273   Max.   :54402.51  
+##########
+write.table(t2, "microglia-39-sample-tpm.txt", quote=F, sep="\t")
+vi  microglia-39-sample-tpm.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  microglia-39-sample-tpm.txt geneID-name out
+paste  microglia-39-sample-tpm.txt out | grep -vw notApplicable | awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $42;
+for(i = 2; i <= 40; i++)
+{
+ if(i != 45)
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > microglia-39-sample-tpm.genename.txt
+###dup gene names
+t3 <- read.delim("microglia-39-sample-tpm.genename.txt")
+med <- data.frame(t3[,1])
+med$logic <- TRUE
+for(i in 1:dim(t3)[1]) {
+ med$logic[i] <-  median(as.numeric( t3[i,2:40])) >= 1
+}
+t4<-t3[med$logic,]
+dim(t4)
+# 16266    40
+write.table(t4, "temp-39samp-TPM-medianGE1.txt", quote=F, sep="\t")
+cat temp-39samp-TPM-medianGE1.txt | cut -f 2-200 > temp
+vi temp
+mv temp temp-39samp-TPM-medianGE1.txt
