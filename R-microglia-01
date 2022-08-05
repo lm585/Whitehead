@@ -2193,3 +2193,30 @@ write.table(t4, "temp-39samp-TPM-medianGE1.txt", quote=F, sep="\t")
 cat temp-39samp-TPM-medianGE1.txt | cut -f 2-200 > temp
 vi temp
 mv temp temp-39samp-TPM-medianGE1.txt
+
+###### try to annotate microglia bulk RNA-seq with scRNA profile; batch effect?
+ref.data <- MonacoImmuneData()
+cat temp-39samp-TPM-medianGE1.txt | cut -f 2-200 > temp
+vi temp
+echo geneID > temp-2
+cat  temp | cut -f 1 | sort | uniq -u| grep -vw geneID >> temp-2
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   temp-2  temp out
+ge <- read.delim("out", row.names=1)
+summary(ge)
+dim(ge)
+# [1] 16136    39
+pred <- SingleR(test = ge , ref = ref.data,  labels =  ref.data$label.fine, assay.type.test=1)
+data.frame(pred$first.labels, pred$labels, pred$pruned.labels)
+
+ref.data <- celldex::HumanPrimaryCellAtlasData()
+pred <- SingleR(test = ge , ref = ref.data,  labels =  ref.data$label.fine, assay.type.test=1)
+res <- data.frame(pred$first.labels, pred$labels, pred$pruned.labels)
+
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+identical(info$id1,colnames(ge) )
+# [1] TRUE
+res[c(1,2,4,7,9:12,28,32:36,38,39),]
+# Macrophage:monocyte-derived:IL-4/Dex/TGFb
+info[c(1,2,4,7,9:12,28,32:36,38,39),]
+t1 <- info[c(1,2,4,7,9:12,28,32:36,38,39),]
+t1[ t1$XX == "XX",]
