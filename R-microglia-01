@@ -2220,3 +2220,109 @@ res[c(1,2,4,7,9:12,28,32:36,38,39),]
 info[c(1,2,4,7,9:12,28,32:36,38,39),]
 t1 <- info[c(1,2,4,7,9:12,28,32:36,38,39),]
 t1[ t1$XX == "XX",]
+
+#############################################################################
+# LM22 correlation microglia sample
+t1 <- read.delim("LM22.txt")
+summary(t1)
+###################
+microarray 
+
+Macrophages.M0     Macrophages.M1     Macrophages.M2      Dendritic.cells.resting Dendritic.cells.activated Mast.cells.resting  Mast.cells.activated  Eosinophils      
+ Min.   :    1.06   Min.   :    0.25   Min.   :    0.453   Min.   :    1.026       Min.   :    0.759         Min.   :    2.435   Min.   :    1.12     Min.   :    1.87  
+ 1st Qu.:   19.60   1st Qu.:   23.05   1st Qu.:   23.403   1st Qu.:   19.723       1st Qu.:   22.607         1st Qu.:   27.843   1st Qu.:   29.19     1st Qu.:   39.78  
+ Median :   58.12   Median :   76.08   Median :   88.341   Median :   65.778       Median :   70.791         Median :   76.946   Median :   92.54     Median :  119.94  
+ Mean   :  519.42   Mean   :  996.14   Mean   :  572.152   Mean   :  539.898       Mean   :  734.217         Mean   :  513.519   Mean   :  699.19     Mean   :  675.88  
+ 3rd Qu.:  204.55   3rd Qu.:  284.61   3rd Qu.:  268.321   3rd Qu.:  202.624       3rd Qu.:  259.681         3rd Qu.:  235.396   3rd Qu.:  324.56     3rd Qu.:  424.21  
+ Max.   :38944.02   Max.   :38944.02   Max.   :16386.057   Max.   :15992.470       Max.   :30950.328         Max.   :28290.310   Max.   :35339.69     Max.   :26617.24  
+  Neutrophils       
+ Min.   :    1.926  
+ 1st Qu.:   26.592  
+ Median :  111.272  
+ Mean   :  935.448  
+ 3rd Qu.:  429.546  
+ Max.   :27644.590  
+######################
+sink("temp-res.txt")
+for(i in 2:dim(t1)[2]) {
+ for(j in 2:dim(t1)[2]) {
+ res <- cor.test(t1[,i], t1[,j], method="spearman", exact=FALSE)
+ str <- paste(colnames(t1)[i], colnames(t1)[j], format(res$p.value, digits=3), round(res$estimate, digits = 3), sep = "\t" )
+ cat(str)
+ cat("\n")
+}
+}
+sink()
+
+
+cat temp-res.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $1 > $2 && $4 >= 0.7' > temp.0.7.txt
+wc -l  temp.0.7.txt
+      29 edges temp.0.7.txt for 21 nodes
+
+cat temp-res.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $1 > $2 && $4 >= 0.65' > temp.0.65.txt
+wc -l  temp.0.65.txt
+
+      38 eges, 22 nodes (add node eosino); temp.0.65.txt
+Neutrophils	Eosinophils	1.79e-73	0.673
+
+t3 <- read.delim("microglia-39-sample-tpm.genename.txt")
+summary(t3)
+t4 <- merge(t3, t1, by.x="name", by.y="Gene.symbol")
+dim(t4)
+# [1] 530  62
+dim(t1)
+# [1] 547  23
+length(unique(t4$name))
+## [1] 530
+
+sink("temp-res.txt")
+
+for(i in 2:40) {
+ for(j in 41:62) {
+ res <- cor.test(t4[,i], t4[,j], method="spearman", exact=FALSE)
+ str <- paste(colnames(t4)[i], colnames(t4)[j], format(res$p.value, digits=3), round(res$estimate, digits = 3), sep = "\t" )
+ cat(str)
+ cat("\n")
+}
+}
+sink()
+
+cat LM22.microgliaSamples-tpm.spearman.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $4 >= 0.4' > temp-1
+cat temp-1 | cut -f 1 | sort | uniq | while read s
+do
+ grep -w "$s" temp-1 | sort -t '        ' +3 -4gr | head -1
+done > temp-2
+cut -f 1 temp-2 | sort | uniq | wc -l
+#      39
+cut -f 2 temp-2 | sort | uniq -c     
+  11 Macrophages.M2
+  28 Monocytes
+cat temp-2 |  sort -t '   ' +3 -4gr | tail
+MGB_024	Monocytes	9.77e-33	0.486
+MGB_113	Monocytes	2.27e-32	0.483
+MGB_035	Monocytes	3.7e-31	0.475
+MGB_018	Macrophages.M2	5.41e-31	0.474
+MGB_119	Monocytes	4.81e-30	0.467
+MGB_086	Macrophages.M2	7.23e-30	0.466
+MGB_023	Monocytes	2.15e-29	0.462
+MGB_011	Macrophages.M2	2.79e-28	0.454
+MGB_073	Macrophages.M2	1.28e-27	0.449
+MGB_139	Macrophages.M2	1.35e-25	0.433
+
+cat temp-2 |  grep -i macrophages.m2  | cut -f 1 | while read s
+do
+grep -w "$s" microglia-39-sample-sampInfo.txt
+done     > temp-3   
+grep -w XY temp-3 | sort -t '     ' +4 -5 +5 -6
+
+cat LM22.microgliaSamples-tpm.spearman.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $4 >= 0.4' | grep -i Macrophage > temp-4
+cat temp-4 | cut -f 1 | sort | uniq | while read s
+do
+ grep -w "$s" temp-4 | sort -t '        ' +3 -4gr | head -1
+done > temp-5
+cat temp-5 | cut -f 1 | sort | uniq | wc -l
+      39
+cat temp-5 | cut -f 2 | sort | uniq -c     
+   3 Macrophages.M0
+  36 Macrophages.M2
+
