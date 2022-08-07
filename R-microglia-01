@@ -2326,3 +2326,28 @@ cat temp-5 | cut -f 2 | sort | uniq -c
    3 Macrophages.M0
   36 Macrophages.M2
 
+
+#########################merge with duplicate ids
+> df1
+  names data1
+1     a     1
+2     b     2
+3     c     3
+4     c     4
+5     d     5
+> df2
+  names data2
+1     a     1
+2     e     2
+3     e     3
+4     c     4
+5     c     5
+6     d     6
+> merge(df1, df2)
+  names data1 data2
+1     a     1     1
+2     c     3     4
+3     c     3     5
+4     c     4     4
+5     c     4     5
+6     d     5     6
