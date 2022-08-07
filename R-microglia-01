@@ -2351,3 +2351,27 @@ cat temp-5 | cut -f 2 | sort | uniq -c
 4     c     4     4
 5     c     4     5
 6     d     5     6
+
+######cpm/geneLength vs. tpm
+t <- read.delim("temp.txt", header = T, row.names = 1)
+dim(t)
+##[1] 58302    39
+rawCount <- t
+group <- factor(rep(1, 39))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+d = as.data.frame( edgeR::cpm(y))
+g <- read.delim("geneID-name")
+d$name <- rownames(d)
+d.g <- merge(d, g, by.x="name", by.y="geneID")
+t3 <- read.delim("microglia-39-sample-tpm.txt")
+summary(t3)
+cpm.tpm.1 <- merge(d.g, t3, by.x="name", by.y="geneID")
+dim(cpm.tpm.1)
+# [1] 58302    80
+mgb087.tpm <- cpm.tpm.1$MGB_087.y
+mgb087.cpm <- cpm.tpm.1$MGB_087.x
+len <- read.delim("geneID-name-type-chr-length")
+ct.2 <- merge(cpm.tpm.1, len, by.x="name", by.y="geneID")
+dim(ct.2)
+# [1] 58302    85
