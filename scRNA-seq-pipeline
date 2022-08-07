@@ -840,6 +840,8 @@ head(x1)
 x2 <- read.delim("M10.geneID-name-chr-type.2.txt")
 a2 <- as.data.frame(a)
 a2$name <- rownames(a2)
+###################################################
+#############x2, geneID is not unique, duplicated gene names
 a2.x <- merge(a2, x2, by.x="name", by.y = "geneID")
 a3.x <- merge(a2.x, x1, by.x="ID", by.y="ID")
 f <- read.delim("/Users/linyongmao/Documents/microglia/temp-files-2", header=F)
