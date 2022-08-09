@@ -2375,3 +2375,80 @@ len <- read.delim("geneID-name-type-chr-length")
 ct.2 <- merge(cpm.tpm.1, len, by.x="name", by.y="geneID")
 dim(ct.2)
 # [1] 58302    85
+
+#############################################################################
+###corr between mg bulk RNA-seq samples and mouse scRNA mg clusters
+> saveRDS(immune.combined, file="immune.combined.rds")
+......
+> t1 <- as.data.frame(t(pb))
+####t1, read count per gene, same "gene length" sampled, will be used for spearman corr
+> t1["Il1b",] ### raw aggregated read counts of cells belonging to microglia cluster-s
+     f-ctrl-1 f-ctrl-2 f-tumor-1 f-tumor-2 m-ctrl-1 m-ctrl-2 m-tumor-1 m-tumor-2
+Il1b       57      103       689       631       57       49       322       374
+Tnf       118      191       369       477      121      163       331       293
+
+> write.table(t1, "temp.1.txt", quote=F, sep="\t")
+vi "temp.1.txt"
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp.1.txt  M10.geneID-name-chr-type.2.name-first.txt out
+paste temp.1.txt   out | grep -vw notApplicable |
+awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $12;
+for(i = 1; i <= NF; i++)
+{
+ if(i != 12)
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > temp.1.geneID.txt
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    temp.1.geneID.txt  Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip out
+paste  temp.1.geneID.txt  out | grep -vw notApplicable > temp.1.human.gene.name.txt
+cat temp.1.human.gene.name.txt |  awk 'NR > 1' | cut -f 16 | sort | uniq -u > temp-2
+wc -l temp-2
+#   12272 temp-2
+
+t2 <- read.delim("temp.1.human.gene.name.txt")
+t3 <- read.delim("temp-2", header=F)
+t4 <- t2[ t2$Gene.Symbol %in% t3$V1, ]
+dim(t4)
+# 12272    17
+t5 <- read.delim("../microglia/LM22.txt")
+t6 <- merge(t4, t5, by.x= "Gene.Symbol", by.y="Gene.symbol")
+dim(t6)
+# 333  39
+length(unique(t6$Gene.Symbol))
+# [1] 333
+
+sink("temp-res.txt")
+
+for(i in 4:11) {
+ for(j in 18:39) {
+ res <- cor.test(t6[,i], t6[,j], method="spearman", exact=FALSE)
+ str <- paste(colnames(t6)[i], colnames(t6)[j], format(res$p.value, digits=3), round(res$estimate, digits = 3), sep = "\t" )
+ cat(str)
+ cat("\n")
+}
+}
+sink()
+
+t7 <- read.delim("../microglia/microglia-39-sample-tpm.genename.txt")
+summary(t7)
+t8 <- merge(t7, t6, by.x="name", by.y="Gene.Symbol")
+dim(t8)
+length(unique(t8$name))
+# 333
+sink("temp-res.txt")
+
+for(i in 2:40) {
+ for(j in c(43:50, 57:78)) {
+ res <- cor.test(t8[,i], t8[,j], method="spearman", exact=FALSE)
+ str <- paste(colnames(t8)[i], colnames(t8)[j], format(res$p.value, digits=3), round(res$estimate, digits = 3), sep = "\t" )
+ cat(str)
+ cat("\n")
+}
+}
+sink()
