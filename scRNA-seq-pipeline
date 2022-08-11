@@ -1388,3 +1388,15 @@ t1 <- res[res$group == "m-ctrl",]
 text(3, t1$mean, t1$id, pos = 4, cex = 0.5, col = "black")
 t1 <- res[res$group == "m-tumor",]
 text(4, t1$mean, t1$id, pos = 4, cex = 0.5, col = "black")
+
+#############################heatmap for a set of genes#####
+genes <- scan(what="", sep = "\n")
+p.g <- a5[ a5$Gene.Symbol %in% genes, ]
+p.g$"f-ctrl" <- ( p.g$"f-ctrl-1" + p.g$"f-ctrl-2")/2
+p.g$"f-tumor" <- ( p.g$"f-tumor-1" + p.g$"f-tumor-2")/2
+p.g$"m-ctrl" <- ( p.g$"m-ctrl-1" + p.g$"m-ctrl-2")/2
+p.g$"m-tumor" <- ( p.g$"m-tumor-1" + p.g$"m-tumor-2")/2
+p.g.1 <- p.g[, 17:20]
+rownames(p.g.1) <- p.g$id
+mat <- as.matrix(p.g.1)
+Heatmap(matrix=mat, name="z-score", cluster_columns=F, row_names_gp = gpar(fontsize = 5.0))
