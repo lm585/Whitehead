@@ -1308,3 +1308,83 @@ cat "$f1" > temp-1
 cat "$f2" | awk 'NR > 1' >> temp-1
 cat temp-1 | cut -f 1,4,5,6,7,8  > temp-2
 vi temp-2
+
+#############################################################################
+### pathway level z-score;
+immune.combined <- readRDS("immune.combined.rds")
+mic <- c(0:5,7,9,14)
+immune.mic <- immune.combined[, immune.combined$integrated_snn_res.0.6 %in% mic] ###5748 cells in cluster 0
+immune.mic
+# 16618 features across 31165 (out of 40401) samples within 2 assays
+counts <- immune.mic@assays$RNA@counts
+metadata <- immune.mic@meta.data
+metadata$cluster_id <- metadata$integrated_snn_res.0.6
+# Create single cell experiment object
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+# Identify groups for aggregation of counts
+# groups: character class
+groups <- colData(sce)[, c("orig.ident")]
+# Aggregate across cluster-sample groups
+pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+
+class(pb)
+
+dim(pb)
+# [1]     8 14618
+t1 <- as.data.frame(t(pb))
+head(t1)
+dim(t1)
+group <- factor(rep(1, 8))
+y <- DGEList(counts=t1,group=group)
+y <- calcNormFactors(y)
+
+keep <-rowSums(edgeR::cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+# 11032     8
+d = edgeR::cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+head(a)
+#                f-ctrl-1   f-ctrl-2  f-tumor-1  f-tumor-2   m-ctrl-1    m-ctrl-2  m-tumor-1  m-tumor-2
+# Mrpl15        -0.1030297 -0.9063680  0.2181332  0.4909031 -0.3570053 -1.64152623  0.6940354  1.6048575
+# Lypla1        -0.8168726  0.2955806 -0.2745238 -0.2532889  0.2742311  0.08644561  2.0451242 -1.3566962
+
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+g <- read.delim("M10.geneID.Human_Orthologs_MSigDB.v7.4.txt")
+a2 <- merge(a.df, g, by.x="id", by.y="geneID")
+write.table(a2$Gene.Symbol, "temp-1", quote=F, sep="\t")
+system("cat temp-1 | cut -f 2 | sort | uniq -c | awk '$1 <= 6' | sed 's/^ *[0-9][0-9]* *//' > temp-2")
+g3 <- read.delim("temp-2", header=F)
+a5 <- a2[ a2$Gene.Symbol %in% g3$V1, ]
+dim(a5)
+# [1] 10049    16
+paths <- read.delim("temp-path-files", header=F)
+i = 25 #inflamm pathway
+ genes <- read.delim(file=paths[i,1], header=F)
+ p.g <- a5[ a5$Gene.Symbol %in% genes$V1, ]
+ mat <- as.matrix(p.g[, 2:9])
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+res$group <- res$id
+res$group <- gsub("-1", "", res$group)
+res$group <- gsub("-2", "", res$group)
+boxplot(res$mean ~ res$group, xlab = "", ylab = "z-score avg of all genes")
+beeswarm(res$mean ~ res$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+abline(h = seq(-10,10,0.05), lty = 5, lwd = 0.5, col = "gray")
+title(main=paste(length(mic), "microglia", "clusters (mouse scRNA)\n", gsub("../microglia/", "", paths[i,1])))
+t1 <- res[res$group == "f-ctrl",]
+text(1, t1$mean, t1$id, pos = 4, cex = 0.5, col = "black")
+t1 <- res[res$group == "f-tumor",]
+text(2, t1$mean, t1$id, pos = 4, cex = 0.5, col = "black")
+t1 <- res[res$group == "m-ctrl",]
+text(3, t1$mean, t1$id, pos = 4, cex = 0.5, col = "black")
+t1 <- res[res$group == "m-tumor",]
+text(4, t1$mean, t1$id, pos = 4, cex = 0.5, col = "black")
