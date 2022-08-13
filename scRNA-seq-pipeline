@@ -1400,3 +1400,56 @@ p.g.1 <- p.g[, 17:20]
 rownames(p.g.1) <- p.g$id
 mat <- as.matrix(p.g.1)
 Heatmap(matrix=mat, name="z-score", cluster_columns=F, row_names_gp = gpar(fontsize = 5.0))
+
+#############################heatmap for a set of genes (human mg data)#####
+p.g.mouse <- p.g
+# a is z-score of log10(cpm+1)
+# mg 39 samples gene level z-score, mean of each group (XX-ctrl, XX-TAM,..)
+a.df.g <- merge(a.df, g, by.x="id", by.y="geneID")
+head(a.df.g)
+info <- read.delim("../microglia/microglia-39-sample-sampInfo.txt")
+a8 <- a.df.g[ a.df.g$name %in% genes, ] ###genes a set of genes (e.g. NF-kB members + DDX3X)
+info$group <- paste(info$XX, info$Tumor, sep="_")
+sort(unique(info$group))
+# [1] "XX_Control" "XX_Tumor"   "XY_Control" "XY_Tumor"  
+g5 <- sort(unique(info$group))
+c1 = numeric()
+c2 = numeric()
+c3 = numeric()
+c4 = numeric()
+for(i in 2:40) ###a8 column sample ID - group
+{
+ id <- colnames(a8)[i]
+ gr <- info[ info$id1 == id,]$group
+ if(gr == "XX_Control")
+   c1 <- c(c1, i)
+ else if (gr == "XX_Tumor")
+   c2 <- c(c2, i)
+ else if (gr == "XY_Control")
+   c3 <- c(c3, i)
+ else if (gr == "XY_Tumor")
+   c4 <- c(c4, i)
+ else
+   c5 = ""
+} 
+
+a8$"human-f-ctrl" = 1
+a8$"human-f-tumor" = 1
+a8$"human-m-ctrl" = 1
+a8$"human-m-tumor" = 1
+for(i in 1:dim(a8)[1])
+{
+ a8$"human-f-ctrl"[i]  = mean(as.numeric(a8[i,c1]))
+ a8$"human-f-tumor"[i] = mean(as.numeric(a8[i,c2]))
+ a8$"human-m-ctrl"[i]  = mean(as.numeric(a8[i,c3]))
+ a8$"human-m-tumor"[i] = mean(as.numeric(a8[i,c4]))
+}
+a9 <- a8[,42:45]
+rownames(a9) <- a8$name
+mat <- as.matrix(a9)
+a9$name <- a8$name
+a10 <- merge(a9, p.g.mouse, by.x="name", by.y="Gene.Symbol")
+a11 <- a10[, c(2:5, 21:24)]
+rownames(a11) <- paste(a10$name, a10$id, sep="_")
+mat <- as.matrix(a11)
+Heatmap(matrix=mat, name="z-score", cluster_columns=F, )
