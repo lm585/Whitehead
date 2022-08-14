@@ -1453,3 +1453,5 @@ a11 <- a10[, c(2:5, 21:24)]
 rownames(a11) <- paste(a10$name, a10$id, sep="_")
 mat <- as.matrix(a11)
 Heatmap(matrix=mat, name="z-score", cluster_columns=F, )
+h.m <- c(rep("human", 4), rep("mouse",4))
+Heatmap(matrix=mat, name="z-score", cluster_columns=F, column_split=h.m)
