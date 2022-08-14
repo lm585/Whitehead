@@ -1455,3 +1455,15 @@ mat <- as.matrix(a11)
 Heatmap(matrix=mat, name="z-score", cluster_columns=F, )
 h.m <- c(rep("human", 4), rep("mouse",4))
 Heatmap(matrix=mat, name="z-score", cluster_columns=F, column_split=h.m)
+
+###barplot NES of human, mouse, interaction
+cat temp-1
+id      mouse   human
+sex : tumor interaction 1.679   2.343
+Male tumor vs ctrl      1.996   1.658
+Female tumor vs ctrl    2.005   2.444
+
+t1 <- read.delim("temp-1", row.names=1)
+barplot(as.matrix( t1), horiz=T, beside=T, xlim=c(0,3), xlab="GSEA NES",  col=c("grey","green", "red"), main ="HALLMARK_INFLAMMATORY_RESPONSE")
+legend("bottomright", rev(rownames(t1)), fill=rev(c( "grey", "green", "red")), cex = 0.8, inset=0.02)
+abline(v = seq(0,3,0.5), lty = 5, lwd = 0.5, col = "gray")
