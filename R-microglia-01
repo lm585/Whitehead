@@ -2452,3 +2452,39 @@ for(i in 2:40) {
 }
 }
 sink()
+
+#############################################################################
+###gene-gene correlation over female samples, male samples
+dim(a.df.g)
+...
+c1 = numeric()
+c2 = numeric()
+for(i in 2:40) ###a8 column sample ID - group
+{
+ id <- colnames(a8)[i]
+ gr <- info[ info$id1 == id,]$XX
+ if(gr == "XX")
+   c1 <- c(c1, i)
+ else if (gr == "XY")
+   c2 <- c(c2, i)
+ else
+   c5 = ""
+}
+
+sink("temp.2.txt")
+str <- "geneID  name    pathway f-r     f-p     m-r     m-p     a-r     a-p"
+cat(str)
+cat("\n")
+
+for(i in 1:dim(a8)[1]) {
+ for(j in 1:dim(a8)[1]) {
+t1 <- cor.test(as.numeric(a8[i,2:40]), as.numeric(a8[j,2:40]))
+t2 <- cor.test(as.numeric(a8[i,c1]), as.numeric(a8[j,c1]))
+t3 <- cor.test(as.numeric(a8[i,c2]), as.numeric(a8[j,c2]))
+corRes <- paste(a8[i,]$id, a8[i,]$name, a8[j,]$name, round(t2$estimate, digits = 2), format(t2$p.value, digits = 3),
+  round(t3$estimate, digits = 2) , format(format(t3$p.value, digits = 3), digits = 3), round(t1$estimate , digits = 2) , t1$p.value, sep = "\t")
+cat(corRes)
+cat("\n") 
+}
+}
+sink()
