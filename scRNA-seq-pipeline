@@ -1467,3 +1467,23 @@ t1 <- read.delim("temp-1", row.names=1)
 barplot(as.matrix( t1), horiz=T, beside=T, xlim=c(0,3), xlab="GSEA NES",  col=c("grey","green", "red"), main ="HALLMARK_INFLAMMATORY_RESPONSE")
 legend("bottomright", rev(rownames(t1)), fill=rev(c( "grey", "green", "red")), cex = 0.8, inset=0.02)
 abline(v = seq(0,3,0.5), lty = 5, lwd = 0.5, col = "gray")
+
+#############################################################################
+#########all cells in scRNA, all CD11b+ populations
+> keep <-rowSums(edgeR::cpm(y)>=1) >= 4
+> y<-y[keep,]
+> dim(y)
+[1] 11535     8
+
+###$samples
+          group lib.size norm.factors
+f-ctrl-1      1 11282149    1.1076945
+f-ctrl-2      1 11484539    1.1158320
+f-tumor-1     1 17008502    0.9084570
+f-tumor-2     1 15620489    0.9403983
+m-ctrl-1      1  9949507    1.1079039
+m-ctrl-2      1 11113173    1.0956012
+m-tumor-1     1 14852877    0.8650514
+m-tumor-2     1 14459209    0.9019210
+
+cat mouse.allcells40401.sex-tum-interaction.diff2-1.edgeR.human.gene.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, (-1)*$2 } ' >  mouse.allcells40401.sex-tum-interaction.diff2-1.edgeR.human.gene.2.rnk
