@@ -1487,3 +1487,28 @@ m-tumor-1     1 14852877    0.8650514
 m-tumor-2     1 14459209    0.9019210
 
 cat mouse.allcells40401.sex-tum-interaction.diff2-1.edgeR.human.gene.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, (-1)*$2 } ' >  mouse.allcells40401.sex-tum-interaction.diff2-1.edgeR.human.gene.2.rnk
+
+#############################################################################
+###pca plot  of microglia-9-clusters
+keep <-rowSums(edgeR::cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+# 11032     8
+mds <- plotMDS(y, top=98765)
+x <- cbind( colnames(y$counts), mds$x, mds$y)
+x <- as.data.frame(x)
+pca.info <- x
+plot(pca.info$V2, pca.info$V3, cex=0.05, xlab="PC1 (66%)", ylab = "PC2 (12%)")
+points(pca.info[ pca.info$V1 == "f-ctrl-1" | pca.info$V1 == "f-ctrl-2",]$V2, pca.info[ pca.info$V1 == "f-ctrl-1" | pca.info$V1 == "f-ctrl-2",]$V3, col = "green", pch = 16 , cex = 1.6)
+points(pca.info[ pca.info$V1 == "f-tumor-1" | pca.info$V1 == "f-tumor-2",]$V2, pca.info[ pca.info$V1 == "f-tumor-1" | pca.info$V1 == "f-tumor-2",]$V3, col = "red", pch = 16 , cex = 1.6)
+points(pca.info[ pca.info$V1 == "m-ctrl-1" | pca.info$V1 == "m-ctrl-2",]$V2, pca.info[ pca.info$V1 == "m-ctrl-1" | pca.info$V1 == "m-ctrl-2",]$V3, col = "green", pch = 17 , cex = 1.6)
+points(pca.info[ pca.info$V1 == "m-tumor-1" | pca.info$V1 == "m-tumor-2",]$V2, pca.info[ pca.info$V1 == "m-tumor-1" | pca.info$V1 == "m-tumor-2",]$V3, col = "red", pch = 17 , cex = 1.6)
+legend(0,0.2, c("XX control", "XX tumor", "XY control", "XY tumor"), pch=c(16,16,17,17), col = c("green", "red", "green", "red" ))
+abline(h = seq(-1,1,0.1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-1,1,0.1), lty = 5, lwd = 0.5, col = "gray")
+pca.info$group = pca.info$V1
+pca.info$group <- gsub("-1", "", pca.info$group)
+pca.info$group <- gsub("-2", "", pca.info$group)
+boxplot(as.numeric( pca.info$V2) ~ pca.info$group, xlab="", ylab = "PC1 (66%)")
+beeswarm(as.numeric( pca.info$V2) ~ pca.info$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+abline(h = seq(-1,1,0.1), lty = 5, lwd = 0.5, col = "gray")
