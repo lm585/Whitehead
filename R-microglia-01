@@ -2488,3 +2488,22 @@ cat("\n")
 }
 }
 sink()
+
+###############################################################
+###https://www.creative-diagnostics.com/The-NF-kB-Signaling-Pathway.htm
+###rela/nfkb1 targets gene symbols
+PLA2G6(?)
+IL4
+CCL2
+NOS2
+CXCL8
+PTGS2
+IL1B
+CCL3
+SELE
+IL6
+CCL5
+IL5
+TNF
+ICAM1
+VCAM1
