@@ -1512,3 +1512,45 @@ pca.info$group <- gsub("-2", "", pca.info$group)
 boxplot(as.numeric( pca.info$V2) ~ pca.info$group, xlab="", ylab = "PC1 (66%)")
 beeswarm(as.numeric( pca.info$V2) ~ pca.info$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
 abline(h = seq(-1,1,0.1), lty = 5, lwd = 0.5, col = "gray")
+
+#############################################################################
+###gene-gene correlation over female samples, male samples
+keep <-rowSums(edgeR::cpm(y)>=1) >= 4 
+y<-y[keep,]
+dim(y)
+# 11032     8 
+d = edgeR::cpm(y)
+a <- log2(d+1)
+head(a)
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+g <- read.delim("M10.geneID.Human_Orthologs_MSigDB.v7.4.txt")
+a2 <- merge(a.df, g, by.x="id", by.y="geneID")
+write.table(a2$Gene.Symbol, "temp-1", quote=F, sep="\t")
+system("cat temp-1 | cut -f 2 | sort | uniq -c | awk '$1 <= 6' | sed 's/^ *[0-9][0-9]* *//' > temp-2")
+g3 <- read.delim("temp-2", header=F)
+a5 <- a2[ a2$Gene.Symbol %in% g3$V1, ]
+dim(a5)
+# [1] 10049    16
+genes <- scan(what="", sep = "\n")
+a6 <- a5[ a5$Gene.Symbol %in% genes, ]
+sink("temp.2.txt")
+str <- paste("mouseID", "human", "mID2", "human2", "f-r","f-p", "m-r","m-p", "a-r", "a-p", "gene-title",  "mouse-chr", "type", "known", "id", 
+ "gene-title",  "mouse-chr", "type", "known", "id", sep="\t")
+cat(str)
+cat("\n")
+for(i in 1:dim(a6)[1]) {
+ for(j in 1:dim(a6)[1]) {
+t1 <- cor.test(as.numeric(a6[i,2:9]), as.numeric(a6[j,2:9]))
+t2 <- cor.test(as.numeric(a6[i,2:5]), as.numeric(a6[j,2:5]))
+t3 <- cor.test(as.numeric(a6[i,6:9]), as.numeric(a6[j,6:9]))
+corRes <- paste(a6[i,]$id, a6[i,]$"Gene.Symbol", a6[j,]$id, a6[j,]$"Gene.Symbol", 
+ round(t2$estimate, digits = 2), format(t2$p.value, digits = 3), 
+ round(t3$estimate, digits = 2) , format(format(t3$p.value, digits = 3), digits = 3), round(t1$estimate , digits = 2) , format(format(t1$p.value, digits = 3), digits = 3),
+ a6[i,]$"Gene.Title", a6[i,]$chr, a6[i,]$type, a6[i,]$known, a6[i,]$ID,
+ a6[j,]$"Gene.Title", a6[j,]$chr, a6[j,]$type, a6[j,]$known, a6[j,]$ID,sep = "\t")
+cat(corRes)
+cat("\n")
+}
+}
+sink()
