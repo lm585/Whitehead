@@ -2455,8 +2455,35 @@ sink()
 
 #############################################################################
 ###gene-gene correlation over female samples, male samples
+t <- read.delim("temp.txt", header = T, row.names = 1)
+dim(t)
+##[1] 58302    39
+rawCount <- t
+group <- factor(rep(1, 39))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- edgeR::cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+dim(y)
+###[1] 14170    39
+d = edgeR::cpm(y)
+a <- log2(d+1)
+head(a)
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+g <- read.delim("geneID-name")
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, g, by.x="id", by.y="geneID")
 dim(a.df.g)
-...
+###[1] 14170    41
+genes <- scan(what="", sep = "\n")
+a8 <- a.df.g[ a.df.g$name %in% genes,]
 c1 = numeric()
 c2 = numeric()
 for(i in 2:40) ###a8 column sample ID - group
