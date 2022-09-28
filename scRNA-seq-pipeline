@@ -1558,3 +1558,120 @@ sink()
 ##################################################small network
 cat te-nfkb-ddx3x-ppp2ca-corr.mouse-mg-clusters.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $1 <  $3 && $9 > 0.5 && $10 < 0.05' | cut -f 1,3,5-10 | cut -f 1,2,7,8 >> te-nfkb-ddx3x-ppp2ca-corr.mouse-mg-clusters.net
 cat te-nfkb-ddx3x-ppp2ca-corr.39samples.txt | cut -f 2-5 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $3 > 0.5 && $4 < 0.005 && $1 < $2' | sort +2 -3g > te-nfkb-ddx3x-ppp2ca-corr.39samples.female.net
+
+#############################################################################
+##############mouse ddx3x knockout, infection RNA-seq,
+paste GSM*.txt > temp-1    
+###check gene orders in each file identical
+awk 'BEGIN {FS = "\t"; OFS = "\t"} 
+{
+ for(i = 1; i <= NF; i=i+7)
+ {
+  if($1 != $i)
+    print NR, 1, i;
+ }
+}   
+' temp-1
+
+awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+{
+ print $1;
+ for(i = 5; i <= NF; i=i+7)
+ {
+  print "\t" $i;
+ }
+ print "\n";
+}' temp-1 > temp-2
+
+ls GSM*.txt | awk '
+BEGIN {FS = "\t"; OFS = ""; ORS = "";
+   print "geneID" ;}
+{
+ print "\t" $1;
+}
+END {print "\n";}
+'  > temp-3
+
+vi temp-3
+cat temp-2 >> temp-3
+vi temp-3
+mv -i temp-3 mouse-ddx3x-ko-16samples.txt
+mv -i  mouse-ddx3x-ko-16samples.txt  mouse-ddx3x-ko-infect-16samples.txt
+
+t <- read.delim("mouse-ddx3x-ko-infect-16samples.txt", header = T, row.names = 1)
+dim(t)
+# [1] 24411    16
+rawCount <- t
+group <- factor(rep(1, 16))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+sort(y$samples$norm.factors)
+#  [1] 0.7025797 0.7369683 0.7615953 0.8683144 0.8701827 0.8751881 0.9522696 0.9931409 1.0730275 1.1502053 1.1745915 1.1905353 1.2058200 1.2346446 1.2499452 1.2625279
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- edgeR::cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+y<-y[med$logic,]
+dim(y)
+# 11404    16
+
+mds <- plotMDS(y, top=98765)
+x <- cbind( colnames(y$counts), mds$x, mds$y)
+x <- as.data.frame(x)
+
+pca.info <- x
+#f-wt-c green circle 16
+#f-wt-l green square 15
+#f-wt-h green triangle 17
+#f-ko-c red circle 16
+#f-ko-l red square 15
+#f-ko-h red triangle 17
+#m-wt-c green circle 1 (non-filled circle)
+#m-wt-l green square 0
+#m-wt-h green triangle 2
+#m-ko-c red circle 1
+#m-ko-l red square 0
+#m-ko-h red triangle 2
+1  GSM2306442_fKOh -0.398030561860996   0.463723368875836
+2  GSM2306443_fKOc  0.335170332438942   0.554766726573618
+3  GSM2306444_fWTh -0.763848976210092  -0.202290249653096
+4  GSM2306445_fWTc  0.520873082565794  -0.243104136674508
+5  GSM2306446_fKOl -0.175135082736795   0.601011945810428
+6  GSM2306447_fKOc  0.430314554989837   0.590175133866312
+7  GSM2306448_fWTl -0.439689271212108  -0.195417871094616
+8  GSM2306449_fWTc  0.567415871865775  -0.253405263262447
+9  GSM2306450_mKOh -0.869659902380943 -0.0129432389931189
+10 GSM2306451_mKOc  0.638499270869316 -0.0730359897148057
+11 GSM2306452_mWTh -0.865691580959139  -0.297476697797767
+12 GSM2306453_mWTc   0.66961257271551  -0.323718383002413
+13 GSM2306454_mKOl -0.423144214915911   0.034059583020039
+14 GSM2306455_mKOc  0.621951259126233 -0.0602663034551374
+15 GSM2306456_mWTl   -0.5546042440519  -0.267613117796934
+16 GSM2306457_mWTc  0.705966889756476  -0.314465506701391
+
+plot(pca.info$V2, pca.info$V3, cex=0.05, xlab="PC1 (62%)", ylab = "PC2 (20%)")
+
+points( pca.info[1,]$V2,  pca.info[1,]$V3, col = "red", pch = 17 , cex = 1.6)
+points( pca.info[2,]$V2,  pca.info[2,]$V3, col = "red", pch = 16 , cex = 1.6)
+points( pca.info[3,]$V2,  pca.info[3,]$V3, col = "green", pch = 17 , cex = 1.6)
+points( pca.info[4,]$V2,  pca.info[4,]$V3, col = "green", pch = 16 , cex = 1.6)
+points( pca.info[5,]$V2,  pca.info[5,]$V3, col = "red", pch = 15 , cex = 1.6)
+points( pca.info[6,]$V2,  pca.info[6,]$V3, col = "red", pch = 16 , cex = 1.6)
+points( pca.info[7,]$V2,  pca.info[7,]$V3, col = "green", pch = 15 , cex = 1.6)
+points( pca.info[8,]$V2,  pca.info[8,]$V3, col = "green", pch = 16 , cex = 1.6)
+points( pca.info[9,]$V2,  pca.info[9,]$V3, col = "red", pch = 2 , cex = 1.6)
+points( pca.info[10,]$V2,  pca.info[10,]$V3, col = "red", pch = 1 , cex = 1.6)
+points( pca.info[11,]$V2,  pca.info[11,]$V3, col = "green", pch = 2 , cex = 1.6)
+points( pca.info[12,]$V2,  pca.info[12,]$V3, col = "green", pch = 1 , cex = 1.6)
+points( pca.info[13,]$V2,  pca.info[13,]$V3, col = "red", pch = 0 , cex = 1.6)
+points( pca.info[14,]$V2,  pca.info[14,]$V3, col = "red", pch = 1 , cex = 1.6)
+points( pca.info[15,]$V2,  pca.info[15,]$V3, col = "green", pch = 0 , cex = 1.6)
+points( pca.info[16,]$V2,  pca.info[16,]$V3, col = "green", pch = 1 , cex = 1.6)
+abline(h = seq(-1,1,0.1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-1,1,0.1), lty = 5, lwd = 0.5, col = "gray")
+legend("topleft", inset = 0.05, c("f-wt-c", "f-wt-l", "f-wt-h", "f-ko-c", "f-ko-l", "f-ko-h",
+    "m-wt-c", "m-wt-l", "m-wt-h", "m-ko-c", "m-ko-l", "m-ko-h"),
+    pch = c(16,15,17,16,15,17,1,0,2,1,0,2),
+    col = c("green","green","green", "red","red","red","green","green","green", "red","red","red"))
