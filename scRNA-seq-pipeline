@@ -1730,3 +1730,46 @@ bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /U
 NAME	ORIGINAL SIZE	AFTER RESTRICTING TO DATASET
 HALLMARK_TNFA_SIGNALING_VIA_NFKB	200	181
 HALLMARK_INFLAMMATORY_RESPONSE	200	160
+
+### male
+rawCount <- t[, c(9,11,13,15)]
+...
+$samples
+                group lib.size norm.factors
+GSM2306450_mKOh     1 22415399    0.9001071
+GSM2306452_mWTh     1 18860185    0.9238811
+GSM2306454_mKOl     1 18656682    1.1076929
+GSM2306456_mWTl     1 17826641    1.0856013
+
+keep <-rowSums(edgeR::cpm(y)>=1) >= 2
+y<-y[keep,]
+dim(y)
+[1] 11289     4
+g1 <- c("h", "h", "l", "l")
+g2 <- c("t", "c", "t", "c")
+
+NAME	ORIGINAL SIZE	AFTER RESTRICTING TO DATASET
+HALLMARK_TNFA_SIGNALING_VIA_NFKB	200	179
+HALLMARK_INFLAMMATORY_RESPONSE	200	161
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  mouse-infect-ddx3x-KOvWT-diff2-1.M.txt ../../M10.geneID-name-chr-type.2.name-first.txt           out
+paste mouse-infect-ddx3x-KOvWT-diff2-1.M.txt   out | grep -vw notApplicable |
+awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $9;
+for(i = 1; i <= NF; i++)
+{
+ if(i != 9)
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > mouse-infect-ddx3x-KOvWT-diff2-1.M.geneID.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    mouse-infect-ddx3x-KOvWT-diff2-1.M.geneID.txt  ../../Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip out
+paste  mouse-infect-ddx3x-KOvWT-diff2-1.M.geneID.txt  out | grep -vw notApplicable > mouse-infect-ddx3x-KOvWT-diff2-1.M.human.gene.name.txt
+cat mouse-infect-ddx3x-KOvWT-diff2-1.M.human.gene.name.txt | cut -f 2-8,13 > temp
+head -3 temp       
+/Users/linyongmao/Documents/microglia/make-rnk-genesymble temp mouse-infect-ddx3x-KOvWT-diff2-1.M.human.gene.rnk
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  mouse-infect-ddx3x-KOvWT-diff2-1.M.human.gene.rnk  -rpt_label   "mouse-infect-ddx3x-KOvWT.M.prerank_h.all.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
