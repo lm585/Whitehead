@@ -1791,3 +1791,40 @@ text(4, a1$log2_cpm[1], "h", cex = 0.5, col = "red", pos=2)
 text = paste("mouse Mg ddx3x KO infection \n", gene, sep="" )
 title(text)
 abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+
+#### mg anti-viral signature
+###both M & F samples, adjusted by sex
+###ctrl vs infection, mouse BMDM
+rawCount <- t[, c(3,4,7,8,11,12,15,16)]
+.....
+$samples
+                group lib.size norm.factors
+GSM2306444_fWTh     1 15670581    0.7438589
+GSM2306445_fWTc     1 14651126    1.2275609
+GSM2306448_fWTl     1 14473364    0.9218971
+GSM2306449_fWTc     1 14906881    1.2484673
+GSM2306452_mWTh     1 18860185    0.7142349
+GSM2306453_mWTc     1 19447194    1.2406120
+GSM2306456_mWTl     1 17826641    0.8392081
+GSM2306457_mWTc     1 17979197    1.2795582
+.....
+keep <-rowSums(edgeR::cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+# [1] 11602     8
+g1 <- c(rep('f', 4), rep('m',4))
+g2 <- c('t','c','t','c','t','c','t','c')
+design <- model.matrix(~g1 + g2)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=3)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+topTags(qlf, n = 20) 
+
+cat mouse-infect-BMDM-vsCtrl-diff2-1.txt | head 
+geneID  logFC   logCPM  F       PValue  FDR
+Tpst1   3.14100714732866        6.35962041809877        816.8945510757  4.6671522030767e-09     1.11720898337967e-05
+Pald1   -3.44110844606262       5.91034230249713        630.169416822635        1.24836224087595e-08    1.11720898337967e-05
+
+   10685 unique human-homolog genes mouse-infect-BMDM-vsCtrl-diff2-1.human.gene.rnk
