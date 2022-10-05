@@ -1,0 +1,51 @@
+#
+sed '1,1 s/^/id\t/' temp.1.txt > temp-2
+##sort -t 'tab'; sorted by NES of interaction NES value
+cat temp-2 | cut -f 2-200 | sort -t '	' +9 -10g > temp-3
+cat temp-3 | awk '
+BEGIN {FS = "\t";
+ OFS = "";
+ ORS = "";
+ }
+{
+ if(NR == 1)
+  print $0 "\n";
+ else
+ {
+ print $1;
+ for(i = 2; i <= NF; i++)
+ {
+  if(i >= 3 && i % 2 == 1) ###FDR value columns
+  {
+  ##negative NES, fdr > 0.25, lightgreen; > 0.05, lightblue; < 0.05, blue; pch=21
+  ##positive NES, fdr > 0.25, yellow; > 0.05, pink; < 0.05, red; pch=21
+   if($(i-1) >= 0)
+   {
+    if($i > 0.25)
+      print "\t" "yellow"
+    else if ($i > 0.05)  
+      print "\t" "pink"
+    else
+      print "\t" "red"
+   } 
+   else
+   {
+    if($i > 0.25)
+      print "\t" "lightgreen"
+    else if ($i > 0.05)
+      print "\t" "lightblue"
+    else
+      print "\t" "blue"
+   }
+  }
+  else
+  {
+   print "\t" $i;
+  }
+ }
+ print "\n";
+}
+}
+' > temp-4
+cat temp-4
+
