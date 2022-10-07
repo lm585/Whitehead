@@ -1106,6 +1106,17 @@ cat("\n")
 
 sink()
 
+cat temp-2.txt | awk 'NR % 2 == 1' | uniq > temp-3
+cat temp-2.txt | awk 'NR % 2 == 0' | uniq >> temp-3
+vi temp-3
+b1 <- read.delim("temp-3")
+summary(b1)
+mat <- as.matrix(b1[, 2:5])
+rownames(mat) <- b1[,1]
+col_fun = colorRamp2(c(-0.4,0,0.4), c("blue", "white",  "red"))
+ca <- HeatmapAnnotation(XX.T_XY.T = mat[,2] - mat[,4], which = "row", col=list(XX.T_XY.T = col_fun) )
+Heatmap(matrix=mat, name = "z-score", row_names_gp = gpar(fontsize = 8), column_order=c(1:4), right_annotation=ca)
+
 #######################################################################
 #######15 pathways, 7 groups, pathway-level z-score of all genes,
 #######[1] "XX Benign resection"    "XX Control"             "XX Met resection"       "XX Tumor resection"    
