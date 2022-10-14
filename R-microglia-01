@@ -2638,3 +2638,42 @@ for(i in 1:6) { ## of NESs
 
 abline(h = seq(1,dim(a7)[1],1), lty = 5, lwd = 0.5, col = "gray")
 abline(v = 5.5,  lwd = 2, col = "black")
+
+#############################################################################
+###heatmap of gene level z-score average per group (XX_TAM,
+###annotated with mouse BMDM bacterial infection
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/all39samp.sex-tum-interaction.edgeR_TAM.prerank.v7.4.GseaPreranked.1659467396692/HALLMARK_TNFA_SIGNALING_VIA_NFKB.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/all39samp.sex-tum-interaction.edgeR_TAM.prerank.v7.4.GseaPreranked.1659467396692/HALLMARK_INFLAMMATORY_RESPONSE.tsv"
+#77 genes; LEGs && interaction p-value < 0.1
+cat "$f1"  "$f2" | cut -f 2,4,6 | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $3 == "Yes" && $2 > -log(0.1) / log(10)' | cut -f 1 | sort | uniq  > temp-genes
+genes <- read.delim("temp-genes", header=F)
+a8 <- a.df.g[ a.df.g$name %in% genes$V1, ] ###genes a set of genes (e.g. NF-kB members + DDX3X)
+dim(a8)
+# [1] 72 41 (77 genes in the orig list)
+info$group <- paste(info$XX, info$Tumor, sep="_")
+sort(unique(info$group))
+# [1] "XX_Control" "XX_Tumor"   "XY_Control" "XY_Tumor"
+g5 <- sort(unique(info$group))
+c1 = numeric()
+c2 = numeric()
+......
+a9 <- a8[,42:45]
+rownames(a9) <- a8$name
+mat <- as.matrix(a9)
+
+dim(mat)
+# [1] 72  4
+Heatmap(matrix=mat, name="z-score", cluster_columns=F, row_names_gp = gpar(fontsize = 6))
+
+b1 <- read.delim("/Users/linyongmao/Documents/microglia-mouse/dir-ddx3x-list-infection/GSE86591_RAW/mouse-infect-BMDM-vsCtrl-diff2-1.human.gene.rnk", header=F)
+a9$name <- rownames(a9)
+a.b <- merge(a9, b1, by.x="name", by.y="V1")
+dim(a.b)
+# [1] 61  6
+a.b <- merge(a9, b1, by.x="name", by.y="V1", all.x=T)
+dim(a.b)
+# [1] 72  6
+mat <- as.matrix(a.b[,2:5])
+rownames(mat) <- a.b$name
+col_fun = colorRamp2(c(-4,0,8), c("blue", "white",  "red"))
+ca <- HeatmapAnnotation(bact_infect = a.b$V2, col=list(bact_infect = col_fun), which="row")
