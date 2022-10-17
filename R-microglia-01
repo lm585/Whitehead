@@ -2710,4 +2710,5 @@ mat <- as.matrix(a.b[,2:5])
 rownames(mat) <- a.b$name
 col_fun = colorRamp2(c(-4,0,8), c("blue", "white",  "red"))
 ca <- HeatmapAnnotation(bact_infect = a.b$V2, col=list(bact_infect = col_fun), which="row")
+>need to be tested: Heatmap(matrix=mat, name="z-score", cluster_columns=F, row_names_gp = gpar(fontsize = 6), right_annotation=ca)
 
