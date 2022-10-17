@@ -2639,6 +2639,39 @@ for(i in 1:6) { ## of NESs
 abline(h = seq(1,dim(a7)[1],1), lty = 5, lwd = 0.5, col = "gray")
 abline(v = 5.5,  lwd = 2, col = "black")
 
+####add human33samp.nocereb-nooci, and compare
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/human33samp.nocereb-nooci.sex-tum-interaction.edgeR_TAM.prerank.v7.4.GseaPreranked.1659566792009/gsea_report_for_na_pos_1659566792009.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/human33samp.nocereb-nooci.sex-tum-interaction.edgeR_TAM.prerank.v7.4.GseaPreranked.1659566792009/gsea_report_for_na_neg_1659566792009.tsv"
+cat "$f1" "$f2" > te-human33samp.nocereb-nooci.sex-tum-interaction-gsea.txt
+vi te-human33samp.nocereb-nooci.sex-tum-interaction-gsea.txt
+
+b1 <- read.delim("te-human33samp.nocereb-nooci.sex-tum-interaction-gsea.txt")
+b2 <- b1[, c(1,6,8)]
+b3 <- merge(a6, b2, by.x="NAME", by.y="NAME")
+write.table(b3, "temp.1.txt", quote=F, sep="\t")
+system("bash ./script-fdr2col")
+a7 <- read.delim("temp-4")
+
+par(pin=c(1.5,5), mai = c(2,5,1,1))
+ plot(0, 0, xlim=c(0.5, 2.5), ylim=c(0,20), col="white", cex = 0.05,  xlab = "",ylab = "", yaxt="n", xaxt = "n"  )
+ axis(2, at = 1:dim(a7)[1], labels=a7$NAME, las=1, cex.axis = 0.7)
+axis(1, at = c(1:2), labels=c( "sex:tumor interaction, \n all 39 samples", "33 samples without \n Cerebellum and occipital"), las = 2, cex.axis = 0.8)
+
+for(i in 1:2) { ## of NESs
+ for(j in 1:dim(a7)[1]) { ## of pathways
+# points(1,12, pch=21, bg="yellow", )
+ x = i;
+ y = j;
+ c = c(11,13)
+ s = c(10,12)
+ col = a7[j, c[i]];  #11, 13
+ siz = abs(a7[j,s[i]]) * 1.0;
+ points(x, y, pch = 21, bg = col, cex = siz)
+}
+}
+
+abline(h = seq(1,dim(a7)[1],1), lty = 5, lwd = 0.5, col = "gray")
+
 #############################################################################
 ###heatmap of gene level z-score average per group (XX_TAM,
 ###annotated with mouse BMDM bacterial infection
@@ -2678,34 +2711,3 @@ rownames(mat) <- a.b$name
 col_fun = colorRamp2(c(-4,0,8), c("blue", "white",  "red"))
 ca <- HeatmapAnnotation(bact_infect = a.b$V2, col=list(bact_infect = col_fun), which="row")
 
-f1="/Users/linyongmao/gsea_home/output/microgliaSex/human33samp.nocereb-nooci.sex-tum-interaction.edgeR_TAM.prerank.v7.4.GseaPreranked.1659566792009/gsea_report_for_na_pos_1659566792009.tsv"
-f2="/Users/linyongmao/gsea_home/output/microgliaSex/human33samp.nocereb-nooci.sex-tum-interaction.edgeR_TAM.prerank.v7.4.GseaPreranked.1659566792009/gsea_report_for_na_neg_1659566792009.tsv"
-cat "$f1" "$f2" > te-human33samp.nocereb-nooci.sex-tum-interaction-gsea.txt
-vi te-human33samp.nocereb-nooci.sex-tum-interaction-gsea.txt
-
-b1 <- read.delim("te-human33samp.nocereb-nooci.sex-tum-interaction-gsea.txt")
-b2 <- b1[, c(1,6,8)]
-b3 <- merge(a6, b2, by.x="NAME", by.y="NAME")
-write.table(b3, "temp.1.txt", quote=F, sep="\t")
-system("bash ./script-fdr2col")
-a7 <- read.delim("temp-4")
-
-par(pin=c(1.5,5), mai = c(2,5,1,1))
- plot(0, 0, xlim=c(0.5, 2.5), ylim=c(0,20), col="white", cex = 0.05,  xlab = "",ylab = "", yaxt="n", xaxt = "n"  )
- axis(2, at = 1:dim(a7)[1], labels=a7$NAME, las=1, cex.axis = 0.7)
-axis(1, at = c(1:2), labels=c( "sex:tumor interaction, \n all 39 samples", "33 samples without \n Cerebellum and occipital"), las = 2, cex.axis = 0.8)
-
-for(i in 1:2) { ## of NESs
- for(j in 1:dim(a7)[1]) { ## of pathways
-# points(1,12, pch=21, bg="yellow", )
- x = i;
- y = j;
- c = c(11,13)
- s = c(10,12)
- col = a7[j, c[i]];  #11, 13
- siz = abs(a7[j,s[i]]) * 1.0;
- points(x, y, pch = 21, bg = col, cex = siz)
-}
-}
-
-abline(h = seq(1,dim(a7)[1],1), lty = 5, lwd = 0.5, col = "gray")
