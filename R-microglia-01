@@ -2712,3 +2712,28 @@ col_fun = colorRamp2(c(-4,0,8), c("blue", "white",  "red"))
 ca <- HeatmapAnnotation(bact_infect = a.b$V2, col=list(bact_infect = col_fun), which="row")
 >need to be tested: Heatmap(matrix=mat, name="z-score", cluster_columns=F, row_names_gp = gpar(fontsize = 6), right_annotation=ca)
 
+######M1 mg LPS stimulation, signaling genes
+echo $f1
+../microglia-mouse/dir-ddx3x-list-infection/GSE86591_RAW/mouse-infect-BMDM-vsCtrl-diff2-1.human.gene.rnk
+cat $f1 all39samp.sex-tum-interaction.diff2-1.2.rnk  | cut -f 1 | sort | uniq | wc -l
+   17024
+cat $f1 all39samp.sex-tum-interaction.diff2-1.2.rnk  | cut -f 1 | sort | uniq > temp-1
+rm temp-2
+grep -i "tlr[24]"  temp-1 >> temp-2
+grep -i "myd88" temp-1 >> temp-2
+grep -i TICAM1  temp-1 >> temp-2
+grep -i "irf[1-9]$" temp-1 >> temp-2
+grep -i "stat" temp-1 >> temp-2
+grep -i "jun" temp-1 >> temp-2
+grep -i nfkb  temp-1 >> temp-2
+grep -i ^rel temp-1 >> temp-2
+vi temp-2
+sort temp-2 | uniq > temp-3
+mv temp-3 M1-mg-LPS-signaling-genes
+
+f1 <- read.delim("../microglia-mouse/dir-ddx3x-list-infection/GSE86591_RAW/mouse-infect-BMDM-vsCtrl-diff2-1.human.gene.rnk", header=F)
+g1 <- read.delim("M1-mg-LPS-signaling-genes", header=F)
+a1 <- merge(g1, f1, by.x="V1", by.y="V1")
+f2 <- read.delim("all39samp.sex-tum-interaction.diff2-1.2.rnk", header=F)
+a2 <- merge(a1, f2, by.x="V1", by.y="V1")
+write.table(a2, "temp.2.txt", quote=F, sep="\t")
