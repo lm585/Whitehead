@@ -2732,7 +2732,7 @@ sort temp-2 | uniq > temp-3
 mv temp-3 M1-mg-LPS-signaling-genes
 
 f1 <- read.delim("../microglia-mouse/dir-ddx3x-list-infection/GSE86591_RAW/mouse-infect-BMDM-vsCtrl-diff2-1.human.gene.rnk", header=F)
-g1 <- read.delim("M1-mg-LPS-signaling-genes", header=F)
+g1 <- read.delim("M1-mg-LPS-signaling-genes.v2", header=F)
 a1 <- merge(g1, f1, by.x="V1", by.y="V1")
 f2 <- read.delim("all39samp.sex-tum-interaction.diff2-1.2.rnk", header=F)
 a2 <- merge(a1, f2, by.x="V1", by.y="V1")
@@ -2762,3 +2762,7 @@ abline(v = 0, lwd = 1)
 
 res <- cor.test(x,y)
 title(main=paste("r=",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
+
+###########male plot
+ylab="male signed logP (TAM vs ctrl)"
+f2 <- read.delim("male-diff2-1-filtgenesFirst.rnk", header=F)
