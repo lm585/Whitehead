@@ -1788,7 +1788,7 @@ boxplot(a1$log2_cpm ~ a1$group, xlab="", ylab="log2(cpm)", outcol="white", col=c
 beeswarm(a1$log2_cpm ~ a1$group, col = c("green", "red", "green", "red" ),  cex = 1, add = T )
 text(2, a1$log2_cpm[3], "h", cex = 0.5, col = "red", pos=2)
 text(4, a1$log2_cpm[1], "h", cex = 0.5, col = "red", pos=2)
-text = paste("mouse Mg ddx3x KO infection \n", gene, sep="" )
+text = paste("mouse BMDM ", gene, sep="" )
 title(text)
 abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
 
