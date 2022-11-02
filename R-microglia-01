@@ -2672,6 +2672,10 @@ for(i in 1:2) { ## of NESs
 
 abline(h = seq(1,dim(a7)[1],1), lty = 5, lwd = 0.5, col = "gray")
 
+######human and mouse scRNA-seq TAM
+> b1 <- read.delim("te-mouse.clusts.micro.sex-tum-interaction-gsea.txt")
+"sex:tumor interaction, \n mouse scRNA-seq TAM"
+
 #############################################################################
 ###heatmap of gene level z-score average per group (XX_TAM,
 ###annotated with mouse BMDM bacterial infection
