@@ -1828,3 +1828,95 @@ Tpst1   3.14100714732866        6.35962041809877        816.8945510757  4.667152
 Pald1   -3.44110844606262       5.91034230249713        630.169416822635        1.24836224087595e-08    1.11720898337967e-05
 
    10685 unique human-homolog genes mouse-infect-BMDM-vsCtrl-diff2-1.human.gene.rnk
+
+#############################################################################
+### boxplot pathway-level z-scores, human vs mouse scRNA-seq, same y axis scale
+> file
+                                         V1
+1        HALLMARK_ALLOGRAFT_REJECTION.genes
+2                  HALLMARK_APOPTOSIS.genes
+3                 HALLMARK_COMPLEMENT.genes
+4                HALLMARK_E2F_TARGETS.genes
+5             HALLMARK_G2M_CHECKPOINT.genes
+6                 HALLMARK_GLYCOLYSIS.genes
+7                    HALLMARK_HYPOXIA.genes
+8        HALLMARK_IL2_STAT5_SIGNALING.genes
+9    HALLMARK_IL6_JAK_STAT3_SIGNALING.genes
+10     HALLMARK_INFLAMMATORY_RESPONSE.genes
+11 HALLMARK_INTERFERON_ALPHA_RESPONSE.genes
+12 HALLMARK_INTERFERON_GAMMA_RESPONSE.genes
+13         HALLMARK_KRAS_SIGNALING_UP.genes
+14          HALLMARK_MTORC1_SIGNALING.genes
+15               HALLMARK_P53_PATHWAY.genes
+16   HALLMARK_PI3K_AKT_MTOR_SIGNALING.genes
+17   HALLMARK_TNFA_SIGNALING_VIA_NFKB.genes
+18 HALLMARK_UNFOLDED_PROTEIN_RESPONSE.genes
+> index = 10
+p <- read.delim(file[index,1], header=F)
+ p.exp <- a.df.g.human[ a.df.g.human$name %in% p$V1, ]
+ length(p.exp$name)
+ ###[1] 185
+ mat <- as.matrix(p.exp[, 2:40])
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+ ###> res        
+ ###             id        mean
+ ###MGB_009 MGB_009  0.16357008
+ ###MGB_011 MGB_011  0.04620055
+ res.info <- merge(res, info, by.x="id", by.y="id1")
+ res.info$grape3 <- paste(res.info$XX, res.info$Tumor)
+ ### par(cex = 0.4)
+ boxplot(as.numeric(res.info$mean) ~ res.info$grape3 ,  ylab = "z-score avg of all genes", xlab = "", ylim = c(-0.6,1.2))
+ beeswarm(as.numeric(res.info$mean) ~ res.info$grape3 ,add =T,pch = c(16,16,17,17), col=c("green", "red", "green", "red"), cex = 1.5)
+ title(main = paste("human\n", file[index,1], sep=""))
+abline(h = seq(-100,100,0.25), lty = 5, lwd = 0.5, col = "gray")
+
+genes <- p
+ p.g <- a5[ a5$Gene.Symbol %in% genes$V1, ]
+mat <- as.matrix(p.g[, 2:9])
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+res$group <- res$id
+res$group <- gsub("-1", "", res$group)
+res$group <- gsub("-2", "", res$group)
+boxplot(res$mean ~ res$group, xlab = "", ylab = "z-score avg of all genes", ylim=c(-1,1.5))
+beeswarm(res$mean ~ res$group, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+abline(h = seq(-10,10,0.25), lty = 5, lwd = 0.5, col = "gray")
+title(main=paste( "microglial", "clusters (mouse scRNA)\n", file[index,1]))
+t1 <- res[res$group == "f-ctrl",]
+text(1, t1$mean, t1$id, pos = 4, cex = 0.5, col = "black")
+t1 <- res[res$group == "f-tumor",]
+text(2, t1$mean, t1$id, pos = 4, cex = 0.5, col = "black")
+t1 <- res[res$group == "m-ctrl",]
+text(3, t1$mean, t1$id, pos = 4, cex = 0.5, col = "black")
+t1 <- res[res$group == "m-tumor",]
+text(4, t1$mean, t1$id, pos = 4, cex = 0.5, col = "black")
+
+##################################################################
+### corr pathway ~ gene mouse scRNA-seq 8 samples
+###gene log2(cpm+1) score
+y <- DGEList(counts=t1,group=group)
+y <- calcNormFactors(y)
+
+keep <-rowSums(edgeR::cpm(y)>=1) >= 2
+y<-y[keep,]
+dim(y)
+#11472     8
+d = edgeR::cpm(y)
+a <- log2(d+1)
+
+str <- "geneID\tpathway\tf-r\tf-p\tm-r\tm-p\ta-r\ta-p"
+cat(str)
+cat("\n")
+p <- res$mean
+p.f <- p[1:4]
+p.m <- p[5:8]
+for(geneID2 in 1:dim(a)[1]) {
+g <- a[geneID2, ]
+g.f <- g[1:4]
+g.m <- g[5:8]
+t1 <- cor.test(p, g)
+t2 <- cor.test(p.f, g.f)
+t3 <- cor.test(p.m, g.m)
+corRes <- paste(rownames(a)[geneID2], file[index,1],  t2$estimate, t2$p.value, t3$estimate, t3$p.value, t1$estimate, t1$p.value, sep = "\t")
+cat(corRes)
+cat("\n")
+}
