@@ -1920,3 +1920,16 @@ corRes <- paste(rownames(a)[geneID2], file[index,1],  t2$estimate, t2$p.value, t
 cat(corRes)
 cat("\n")
 }
+
+###################pathway ~ gene correlation figure
+name <- "Sat1"
+g <- a[rownames(a) == name,]
+t1 <- cor.test(p, g)
+plot(p, g, xlab="inflamm pathway z-score", ylab="gene expr log2(cpm+1)", col="white")
+abline(lm(g ~ p)) 
+points(p[1:2], g[1:2], col = "green", pch = 16 , cex = 2)
+points(p[3:4], g[3:4], col = "red", pch = 16 , cex = 2)
+points(p[5:6], g[5:6], col = "green", pch = 17, cex = 2)
+points(p[7:8], g[7:8], col = "red", pch = 17, cex = 2)
+title(main = paste(name, ", r=", round(t1$estimate, digits = 3), " p=", format(t1$p.value, digits=3), sep=""))
+legend(-0.4,10.55, c("XX control", "XX tumor", "XY control", "XY tumor"), pch=c(16,16,17,17), col = c("green", "red", "green", "red" ))
