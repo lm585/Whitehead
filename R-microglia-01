@@ -2775,3 +2775,31 @@ plot(a2$V2.x, a2$V2.y, xlab="signed logP (mouse BMDM infect vs ctrl)", ylab="fem
 ###########male plot
 ylab="male signed logP (TAM vs ctrl)"
 f2 <- read.delim("male-diff2-1-filtgenesFirst.rnk", header=F)
+
+#############################################################################
+###########correlation human and mouse gene signed logP-value
+####using all genes
+hm <- read.delim("male-diff2-1-filtgenesFirst.rnk", header=F)
+mm <- read.delim("../microglia-mouse/mouse.clusts.micro.male.diff2-1.edgeR.human.gene.rnk", header=F)
+a1 <- merge(hm, mm, by.x="V1", by.y="V1")
+dim(a1)
+# [1] 9364    3
+dim(hm)
+# [1] 16233     2
+dim(mm)
+# [1] 10001     2
+plot(a1$V2.x, a1$V2.y, xlab="male human signed logP (TAM vs ctrl, all 39 samples)", ylab = "male mouse signed logP (TAM vs ctrl)", cex=0.2)
+abline(lm(a1$V2.y ~ a1$V2.x), col="red")
+abline(v = 0, lty = 5, lwd = 1, col = "blue")
+abline(h = 0, lty = 5, lwd = 1, col = "blue")
+res <- cor.test(a1$V2.y , a1$V2.x)
+title(main=paste("r=",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
+a2 <- a1[ (a1$V2.x)^2 >= (log10(0.01))^2 | (a1$V2.y)^2 >= (log10(0.01))^2,]
+dim(a2)
+# [1] 1702    3
+plot(a2$V2.x, a2$V2.y, xlab="male human signed logP (TAM vs ctrl, all 39 samples)", ylab = "male mouse signed logP (TAM vs ctrl)", cex=0.2)
+abline(lm(a2$V2.y ~ a2$V2.x), col="red")
+abline(v = 0, lty = 5, lwd = 1, col = "blue")
+abline(h = 0, lty = 5, lwd = 1, col = "blue")
+res <- cor.test(a2$V2.y , a2$V2.x)
+title(main=paste("genes with p<= 0.01 in human or mouse\n", "r=",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
