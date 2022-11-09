@@ -2776,6 +2776,18 @@ plot(a2$V2.x, a2$V2.y, xlab="signed logP (mouse BMDM infect vs ctrl)", ylab="fem
 ylab="male signed logP (TAM vs ctrl)"
 f2 <- read.delim("male-diff2-1-filtgenesFirst.rnk", header=F)
 
+############male tumor resection only vs all male samples
+f1 <- read.delim("M-17samps.tumResecOnly.rnk", header=F)
+g1 <- read.delim("M1-mg-LPS-signaling-genes.v2", header=F)
+a1 <- merge(g1, f1, by.x="V1", by.y="V1")
+f2 <- read.delim("male-diff2-1-filtgenesFirst.rnk", header=F)
+a2 <- merge(a1, f2, by.x="V1", by.y="V1")
+write.table(a2, "temp.2.txt", quote=F, sep="\t")
+
+plot(a2$V2.x, a2$V2.y, xlab="male signed logP (TAM vs ctrl, tumResecOnly)", ylab="male signed logP (TAM vs ctrl, all 39 samples)", pch = 21,
+ bg = "black", cex=0.5, )
+abline(lm(a2$V2.y ~ a2$V2.x), lwd = 0.5)
+
 #############################################################################
 ###########correlation human and mouse gene signed logP-value
 ####using all genes
