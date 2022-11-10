@@ -2788,6 +2788,27 @@ plot(a2$V2.x, a2$V2.y, xlab="male signed logP (TAM vs ctrl, tumResecOnly)", ylab
  bg = "black", cex=0.5, )
 abline(lm(a2$V2.y ~ a2$V2.x), lwd = 0.5)
 
+# f1 <- read.delim("M-17samps.tumResecOnly.rnk", header=F)
+f1 <- read.delim("../microglia-mouse/dir-ddx3x-list-infection/GSE86591_RAW/mouse-infect-BMDM-vsCtrl-diff2-1.human.gene.rnk", header=F)
+# g1 <- read.delim("M1-mg-LPS-signaling-genes.v2", header=F)
+g1 <- read.delim("M1-marker-genes", header=F)
+head(g1)
+a1 <- merge(g1, f1, by.x="V1", by.y="V1")
+# f2 <- read.delim("female-diff2-1-filtgenesFirst.rnk", header=F)
+f2 <- read.delim("all39samp.sex-tum-interaction.diff2-1.2.rnk", header=F)
+a2 <- merge(a1, f2, by.x="V1", by.y="V1")
+write.table(a2, "temp.2.txt", quote=F, sep="\t")
+plot(a2$V2.x, a2$V2.y, xlab="male signed logP (TAM vs ctrl, tumResecOnly)", ylab="male signed logP (TAM vs ctrl, all male samples)", pch = 21,
+ bg = "black", cex=0.5, )
+y = 1:5
+x = y
+abline(lm(y~x))
+abline(h = seq(-10,10,0.5), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-10,10,0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = 0,  lwd = 1)
+ abline(v = 0, lwd = 1)
+pointLabel(a2$V2.x, a2$V2.y, a2$V1, offset = 0, cex = 1, method="SANN", col="red")
+
 #############################################################################
 ###########correlation human and mouse gene signed logP-value
 ####using all genes
