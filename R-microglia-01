@@ -2135,6 +2135,50 @@ paste  human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.txt  out | grep -vw
 cat human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, (-1)*$2}' > human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.2.rnk
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  human33samp.nocereb-nooci.sex-tum-interaction.diff2-1.2.rnk  -rpt_label   "human33samp.nocereb-nooci.sex-tum-interaction.edgeR_TAM.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
 
+###############################human34samps.noXYlowgrade.sex-tum-interaction.
+cat microglia-39-sample-sampInfo.txt  | grep -v " XY      .*Low grade resection" | cut -f 1 > temp-nocere-sampids
+head -1 microglia-41-samples.genecount.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i, i}' > temp-1
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine temp-nocere-sampids temp-1 out
+paste temp-nocere-sampids out | cut -f 3 | awk 'BEGIN {FS = "\t"; ORS = ""} {print $1 ","}'
+cut -f 1,3,6,8,9,10,11,12,13,14,16,17,18,19,20,21,23,24,25,26,27,28,29,30,32,33,34,35,36,37,38,39,41,42,43 microglia-41-samples.genecount.txt > temp
+mv temp microglia-41-samples.F-M-34samps.noXYlowgrade.genecount.txt
+head -1 microglia-41-samples.F-M-34samps.noXYlowgrade.genecount.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i, i}' > temp-2
+vi temp-2
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp-2  microglia-39-sample-sampInfo.txt out
+mv out microglia-41-samples.F-M-34samps.noXYlowgrade.sampInfo.txt 
+
+> rawCount <- read.delim("microglia-41-samples.F-M-34samps.noXYlowgrade.genecount.txt", header = T, row.names = 1)
+dim(rawCount)
+# [1] 58302    34
+group <- factor(rep(1, 34))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+keep <-rowSums(edgeR::cpm(y)>=1) >= 34/4
+y<-y[keep,]
+dim(y)
+# [1] 15896    34
+info <- read.delim("microglia-41-samples.F-M-34samps.noXYlowgrade.sampInfo.txt")
+identical(info$id1, row.names( y$samples))
+# [1] TRUE
+design <- model.matrix(~info$XX + info$Tumor + info$age + info$XX : info$Tumor + info$XX : info$age + info$age : info$Tumor)
+design
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=5)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+topTags(qlf, n = 9)
+
+mv -i diff2-1.txt human34samps.noXYlowgrade.sex-tum-interaction.diff2-1.txt
+##geneID
+vi human34samps.noXYlowgrade.sex-tum-interaction.diff2-1.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine human34samps.noXYlowgrade.sex-tum-interaction.diff2-1.txt        geneID-name-type-chr out
+paste  human34samps.noXYlowgrade.sex-tum-interaction.diff2-1.txt  out | grep -vw notApplicable > human34samps.noXYlowgrade.sex-tum-interaction.diff2-1.name-type-chr.txt
+./make-rnk-genesymble  human34samps.noXYlowgrade.sex-tum-interaction.diff2-1.name-type-chr.txt human34samps.noXYlowgrade.sex-tum-interaction.diff2-1.rnk
+cat human34samps.noXYlowgrade.sex-tum-interaction.diff2-1.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, (-1)*$2}' > human34samps.noXYlowgrade.sex-tum-interaction.diff2-1.2.rnk
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  human34samps.noXYlowgrade.sex-tum-interaction.diff2-1.2.rnk  -rpt_label   "human34samps.noXYlowgrade.sex-tum-interaction.edgeR_TAM.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+
 #############################################################################
 ### tpm for all 39 samples
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp.txt gene-length out
