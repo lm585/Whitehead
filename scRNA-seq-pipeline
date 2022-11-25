@@ -1934,3 +1934,83 @@ points(p[7:8], g[7:8], col = "red", pch = 17, cex = 2)
 title(main = paste(name, ", r=", round(t1$estimate, digits = 3), " p=", format(t1$p.value, digits=3), sep=""))
 legend(-0.4,10.55, c("XX control", "XX tumor", "XY control", "XY tumor"), pch=c(16,16,17,17), col = c("green", "red", "green", "red" ))
 abline(h = seq(0,200,0.1), lty = 5, lwd = 0.5, col = "gray")
+
+#######FindMarkers between microglia and monocyte
+> setwd("/Users/linyongmao/Documents/microglia-mouse/")
+immune.combined <- readRDS("immune.combined.rds")
+mic <- c(0:5,7,9,14)
+mono <- c(6,11,12,15)
+DefaultAssay(immune.combined) <- "RNA"
+markers <- FindMarkers(immune.combined, ident.1 = mic, ident.2 = mono)
+g1 <- scan(what="", sep = "\n")
+g2 <- unique(g1)
+length(g2)
+# [1] 28
+markers[rownames(markers) %in% g2,]
+        p_val avg_log2FC pct.1 pct.2 p_val_adj
+Gpr34       0   3.869356 0.968 0.138         0
+P2ry12      0   4.173291 0.988 0.246         0
+S100a6      0  -3.223847 0.009 0.739         0
+Tmem119     0   3.592275 0.971 0.192         0
+Selplg      0   2.797299 0.988 0.639         0
+Klrk1       0  -1.448147 0.002 0.346         0
+Apoe        0  -2.236243 0.547 0.853         0
+Ifitm2      0  -3.621467 0.047 0.840         0
+Ifitm3      0  -4.027222 0.224 0.960         0
+Lgals3      0  -4.215205 0.053 0.901         0
+Cx3cr1      0   3.082532 0.963 0.259         0
+Ccr2        0  -2.175161 0.011 0.470         0
+Sparc       0   3.684193 0.968 0.147         0
+Tgfbi       0  -2.874752 0.066 0.730         0
+Ly6i        0  -4.295157 0.032 0.697         0
+Ly6c2       0  -4.889621 0.029 0.787         0
+Ms4a7       0  -2.569811 0.016 0.458         0
+
+mark2 <- markers[ (markers$avg_log2FC)^2 > 2^2,]
+dim(mark2)
+# [1] 135   5
+write.table(markers, "temp.1.txt", sep="\t", quote=F)
+mark2 <- markers[ (markers$avg_log2FC)^2 > (log2(2))^2 & markers$p_val_adj < 0.005 ,]
+dim(mark2)
+# [1] 457   5
+immune.mic <- immune.combined[, immune.combined$integrated_snn_res.0.6 %in% mic] ###5748 cells in cluster 0
+immune.mic
+immune.mic$id_1 = 1
+ref.0.avg <- AverageExpression(immune.mic, group.by="id_1", slot="data", verbose=T)
+sum(ref.0.avg$RNA[,1])
+# [1] 10000
+t1 <-  ref.0.avg$RNA * 100 ### * 100, turn to tpm
+summary(t1)
+t2 <- as.matrix(t1)
+summary(t2)
+mic.avg <- data.frame(id = rownames(t2), avg = t2[,1])
+
+immune.mic <- immune.combined[, immune.combined$integrated_snn_res.0.6 %in% mono] ###5748 cells in cluster 0
+immune.mic
+# 16618 features across 5392 samples within 2 assays 
+immune.mic$id_1 = 1
+ref.0.avg <- AverageExpression(immune.mic, group.by="id_1", slot="data", verbose=T)
+sum(ref.0.avg$RNA[,1])
+# [1] 10000
+t1 <-  ref.0.avg$RNA * 100 ### * 100, turn to tpm
+summary(t1)
+t2 <- as.matrix(t1)
+summary(t2)
+mono.avg <- data.frame(id = rownames(t2), avg = t2[,1])
+
+mic.mono.avg <- merge(mic.avg, mono.avg, by.x="id", by.y="id")
+mark2$id <- rownames(mark2)
+mic.mono.2 <- merge(mic.mono.avg, mark2, by.x="id", by.y="id")
+plot(log2(mic.mono.2$avg.x), log2(mic.mono.2$avg.y), xlab = "log2(microglia avg exp)", ylab="log2(monocyte avg exp)")
+a <- 1:6
+b = a
+abline(lm(b ~ a))
+abline(h = seq(0,200,1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(0,200,1), lty = 5, lwd = 0.5, col = "gray")
+title("457 marker genes between microglia and monocyte (mouse scRNA)")
+gene = "Ccr2"
+t3 <- mic.mono.2[ mic.mono.2$id ==gene, ]
+text( log2(t3$avg.x), log2(t3$avg.y), gene, pos = 4, cex = 0.7, col = "red" ) #Values of 1, 2, 3 and 4, respectively indicate positions below, to the left of, above and to the right of the specified (x,y) coordinates.
+gene = "Cx3cr1"
+t3 <- mic.mono.2[ mic.mono.2$id ==gene, ]
+text( log2(t3$avg.x), log2(t3$avg.y), gene, pos = 4, cex = 0.7, col = "red" )
