@@ -2050,3 +2050,37 @@ boxplot(log2(t4+1), ylab = "log2(Tpm+1)", outcol = "white")
 beeswarm(log2(t4+1), add=T, cex = 1, col = "red")
 title("mouse monocyte scRNA pseudobulk")
 abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+
+#####################reorder genes in x-axis of boxplot
+t5 <- data.frame( t4$Actb, t4$Itgam, t4$P2ry12, t4$Tmem119, t4$Ccr2, t4$Cx3cr1 ) 
+rownames(t5) <- rownames(t4)
+colnames(t5) <- gsub("t4.", "", colnames(t5))
+t4 <- t5
+boxplot(log2(t4+1), ylab = "log2(Tpm+1)", outcol = "white", ylim = c(0, 14) ) 
+
+P2ry12  Tmem119 Cx3cr1  Ccr2    Actb    Itgam
+###human ortholog
+P2RY12  TMEM119 CX3CR1  CCR2    ACTB    ITGAM
+
+h1 <- read.delim("../microglia/microglia-39-sample-tpm.genename.txt")
+sum(h1[,2:40])
+# [1] 3.9e+07 /39 samples = 1e6 per sample
+t3 <- h1[ h1$name %in% g2, ] 
+rownames(t3) <- t3$name
+t3 <- t3[, 2:40]
+dim(t3)
+# [1]  6 39
+t4 <- as.data.frame( t(t3))
+t5 <- data.frame( t4$ACTB, t4$ITGAM, t4$P2RY12, t4$TMEM119, t4$CCR2, t4$CX3CR1 ) 
+rownames(t5) <- rownames(t4)
+colnames(t5) <- gsub("t4.", "", colnames(t5))
+t4 <- t5
+boxplot(log2(t4+1), ylab = "log2(Tpm+1)", outcol = "white", ylim = c(0,14))
+beeswarm(log2(t4+1), add=T, cex = 1, col = "red")
+abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+title("human microglia 39 samples")
+info <- read.delim("../microglia/microglia-39-sample-sampInfo.txt")
+t5 <- t4
+t5$id <- rownames(t4)
+t6 <- merge(t5, info, by.x="id", by.y="id1")
+write.table(t6, "human.tpm.ccr2.cx3cr1.marker.txt", sep="\t", quote=F)
