@@ -1921,6 +1921,7 @@ cat(corRes)
 cat("\n")
 }
 
+##########################################################################################################
 ###################pathway ~ gene correlation figure
 name <- "Sat1"
 g <- a[rownames(a) == name,]
@@ -2014,3 +2015,38 @@ text( log2(t3$avg.x), log2(t3$avg.y), gene, pos = 4, cex = 0.7, col = "red" ) #V
 gene = "Cx3cr1"
 t3 <- mic.mono.2[ mic.mono.2$id ==gene, ]
 text( log2(t3$avg.x), log2(t3$avg.y), gene, pos = 4, cex = 0.7, col = "red" )
+
+#############
+P2ry12
+Tmem119
+Cx3cr1
+Ccr2
+Aif1
+Actb
+Gapdh
+
+ref.0.avg <- AverageExpression(immune.mic, group.by="orig.ident", slot="data", verbose=T)
+t1 <-  ref.0.avg$RNA * 100 ### * 100, turn to tpm
+sum(t1)
+# [1] 8e+06 eight samples
+summary(t1)
+t2 <- as.data.frame(t1)
+t3 <- t2[ rownames(t2) %in% g1,  ]
+dim(t3)
+t4 <- as.data.frame( t(t3))
+boxplot(t4, ylab = "Tpm", outcol = "white")
+beeswarm(t4, add=T, cex = 1)
+title("mouse microglia scRNA pseudobulk")
+boxplot(log2(t4+1), ylab = "log2(Tpm+1)", outcol = "white")
+beeswarm(log2(t4+1), add=T, cex = 1, col = "red")
+title("mouse microglia scRNA pseudobulk")
+abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+###monocyte
+###only use samples from tumors
+...
+t5 <- t4[c(3,4,7,8),]
+t4 <- t5
+boxplot(log2(t4+1), ylab = "log2(Tpm+1)", outcol = "white")
+beeswarm(log2(t4+1), add=T, cex = 1, col = "red")
+title("mouse monocyte scRNA pseudobulk")
+abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
