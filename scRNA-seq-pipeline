@@ -2084,3 +2084,23 @@ t5 <- t4
 t5$id <- rownames(t4)
 t6 <- merge(t5, info, by.x="id", by.y="id1")
 write.table(t6, "human.tpm.ccr2.cx3cr1.marker.txt", sep="\t", quote=F)
+
+################add  "Cd3d"    "Ms4a1", order them
+P2RY12
+TMEM119
+CX3CR1
+CCR2
+ACTB
+ITGAM
+CD3D
+MS4A1
+"P2ry12"  "Tmem119" "Cx3cr1"  "Ccr2"    "Actb"    "Itgam"   "Cd3d"    "Ms4a1"
+
+> t5 <- data.frame( t4$ACTB, t4$ITGAM, t4$P2RY12, t4$TMEM119, t4$CX3CR1, t4$CCR2, t4$CD3D, t4$MS4A1 )
+> t5 <- data.frame( t4$Actb, t4$Itgam, t4$P2ry12, t4$Tmem119, t4$Cx3cr1, t4$Ccr2, t4$Cd3d, t4$Ms4a1 )
+...
+par(pin=c(9,5))
+boxplot(log2(t4+1), ylab = "log2(Tpm+1)", outcol = "white", ylim = c(0,14))
+beeswarm(log2(t4+1), add=T, cex = 1, col = c("red", "black"))
+abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+title("human microglia 39 samples")
