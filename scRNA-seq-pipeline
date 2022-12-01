@@ -2104,3 +2104,21 @@ boxplot(log2(t4+1), ylab = "log2(Tpm+1)", outcol = "white", ylim = c(0,14))
 beeswarm(log2(t4+1), add=T, cex = 1, col = c("red", "black"))
 abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
 title("human microglia 39 samples")
+
+#################mouse-human side by side boxplot for gene markers
+li <- list()
+# 1,2,3,4,5,6
+# 1,2,3,4,5,6
+# 1,1,2,2,3,3,4,4,5,5,6,6
+# 1,3,5,7,9,11
+for( i in seq(1,dim(t4)[2] * 2, 2)) {
+ li[[i]] = log2(t4[,(i+1)/2]+1)
+ li[[i+1]] = log2(t4.human[, (i+1)/2]+1)
+ }
+length(li)
+par(pin=c(9,5))
+boxplot(li, ylab = "log2(Tpm+1)",  xaxt="n", ylim = c(0,14), col = c("grey", "red"), outcol = c("black", "red"))
+axis(1, at = seq(1,15,2), labels= colnames(t4.human), las = 1, cex.axis = 0.8)
+abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(2.5, 14.5, 2), lty = 5, lwd = 0.5, col = "blue")
+legend(0.5, 3, legend=c("mouse microglia scRNA", "human microglia"), pch = 22, cex = 1, pt.bg = c("grey", "red"), pt.cex = 2, bg = "white")
