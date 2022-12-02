@@ -2122,3 +2122,14 @@ axis(1, at = seq(1,15,2), labels= colnames(t4.human), las = 1, cex.axis = 0.8)
 abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
 abline(v = seq(2.5, 14.5, 2), lty = 5, lwd = 0.5, col = "blue")
 legend(0.5, 3, legend=c("mouse microglia scRNA", "human microglia"), pch = 22, cex = 1, pt.bg = c("grey", "red"), pt.cex = 2, bg = "white")
+
+###only use specified samples for NKT clusters
+> immune.mic <- immune.combined[, immune.combined$integrated_snn_res.0.6 %in% c(10)] ###5748 cells in cluster 0
+> immune.mic
+# cluster 10: NKT cells
+# 16618 features across 1016 samples within 2 assays
+> summary(factor(immune.mic$orig.ident))
+ f-ctrl-1  f-ctrl-2 f-tumor-1 f-tumor-2  m-ctrl-1  m-ctrl-2 m-tumor-1 m-tumor-2
+       58        37       475        37        83       161       131        34 
+...
+> t4 <- t5[c(3,7),]
