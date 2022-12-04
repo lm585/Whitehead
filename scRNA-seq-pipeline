@@ -2086,6 +2086,44 @@ t6 <- merge(t5, info, by.x="id", by.y="id1")
 write.table(t6, "human.tpm.ccr2.cx3cr1.marker.txt", sep="\t", quote=F)
 
 ################add  "Cd3d"    "Ms4a1", order them
+immune.mic <- immune.combined[, immune.combined$integrated_snn_res.0.6 %in% c(19)] ###B cell cluster
+immune.mic
+# An object of class Seurat
+# 16618 features across 189 samples within 2 assays
+ref.0.avg <- AverageExpression(immune.mic, group.by="orig.ident", slot="data", verbose=T)
+t1 <-  ref.0.avg$RNA * 100 ### * 100, turn to tpm
+sum(t1)
+# [1] 8e+06 eight samples
+summary(t1)
+t2 <- as.data.frame(t1)
+t3 <- t2[ rownames(t2) %in% g1,  ]
+dim(t3)
+t4 <- as.data.frame( t(t3))
+t4 <- t4[c(2),] ##only from f-tumor-1
+t5 <- data.frame( t4$Actb, t4$Itgam, t4$P2ry12, t4$Tmem119, t4$Cx3cr1, t4$Ccr2, t4$Cd3d, t4$Ms4a1 )
+rownames(t5) <- rownames(t4)
+colnames(t5) <- gsub("t4.", "", colnames(t5))
+t4 <- t5
+
+li <- list()
+# 1,2,3,4,5,6
+# 1,2,3,4,5,6
+# 1,1,2,2,3,3,4,4,5,5,6,6
+# 1,3,5,7,9,11
+for( i in seq(1,dim(t4)[2] * 2, 2)) {
+ li[[i]] = log2(t4[,(i+1)/2]+1)
+ li[[i+1]] = log2(t4.human[, (i+1)/2]+1)
+ }
+length(li)
+par(pin=c(9,5))
+boxplot(li, ylab = "log2(Tpm+1)",  xaxt="n", ylim = c(0,14), col = c("grey", "red"), outcol = c("black", "red"))
+axis(1, at = seq(1,15,2), labels= colnames(t4.human), las = 1, cex.axis = 0.8)
+abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(2.5, 14.5, 2), lty = 5, lwd = 0.5, col = "blue")
+legend(0.5, 2, legend=c("mouse B_cell scRNA", "human microglia"), pch = 22, cex = 1, pt.bg = c("grey", "red"), pt.cex = 2, bg = "white")
+
+
+################add  "Cd3d"    "Ms4a1", order them
 P2RY12
 TMEM119
 CX3CR1
