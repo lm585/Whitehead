@@ -2086,6 +2086,22 @@ t6 <- merge(t5, info, by.x="id", by.y="id1")
 write.table(t6, "human.tpm.ccr2.cx3cr1.marker.txt", sep="\t", quote=F)
 
 ################add  "Cd3d"    "Ms4a1", order them
+#################mouse-human side by side boxplot for gene markers
+h1 <- read.delim("../microglia/microglia-39-sample-tpm.genename.txt")
+sum(h1[,2:40])
+# [1] 3.9e+07 /39 samples = 1e6 per sample
+t3 <- h1[ h1$name %in% g2, ]
+rownames(t3) <- t3$name
+t3 <- t3[, 2:40]
+dim(t3)
+# [1]  6 39
+t4 <- as.data.frame( t(t3))
+t5 <- data.frame( t4$ACTB, t4$ITGAM, t4$P2RY12, t4$TMEM119, t4$CX3CR1, t4$CCR2, t4$CD3D, t4$MS4A1 )
+colnames(t5) <- gsub("t4.", "", colnames(t5))
+t4 <- t5
+
+t4.human <- t4
+
 immune.mic <- immune.combined[, immune.combined$integrated_snn_res.0.6 %in% c(19)] ###B cell cluster
 immune.mic
 # An object of class Seurat
