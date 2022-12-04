@@ -2115,6 +2115,8 @@ t2 <- as.data.frame(t1)
 t3 <- t2[ rownames(t2) %in% g1,  ]
 dim(t3)
 t4 <- as.data.frame( t(t3))
+####f-tumor-1 2nd row
+#### change values for other cell types. e.g. t4[c(3,4,7,8),]
 t4 <- t4[c(2),] ##only from f-tumor-1
 t5 <- data.frame( t4$Actb, t4$Itgam, t4$P2ry12, t4$Tmem119, t4$Cx3cr1, t4$Ccr2, t4$Cd3d, t4$Ms4a1 )
 rownames(t5) <- rownames(t4)
