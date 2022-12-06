@@ -2189,3 +2189,42 @@ legend(0.5, 3, legend=c("mouse microglia scRNA", "human microglia"), pch = 22, c
        58        37       475        37        83       161       131        34 
 ...
 > t4 <- t5[c(3,7),]
+
+#############mouse scRNA pseudobulk tpm four group boxplot
+setwd("../microglia-mouse/")
+immune.combined <- readRDS("immune.combined.rds")
+mic <- c(0:5,7,9,14)
+mono <- c(6,11,12,15)
+immune.mic <- immune.combined[, immune.combined$integrated_snn_res.0.6 %in% mono] ###5748 cells in cluster 0
+immune.mic
+ref.0.avg <- AverageExpression(immune.mic, group.by="orig.ident", slot="data", verbose=T)
+t1 <-  ref.0.avg$RNA * 100 ### * 100, turn to tpm
+sum(t1)
+# [1] 8e+06 eight samples
+summary(t1)
+t2 <- as.data.frame(t1)
+t3 <- t2[ rownames(t2) %in% c("Ptprc"),  ]
+dim(t3)
+des1 <- c("f", "f", "f", "f", "m","m","m","m")
+des2 <- c("c", "c", "t", "t", "c", "c", "t", "t")
+df <- data.frame(tpm = as.numeric(t3[1,]), sex = des1, tumor = des2)
+df$group <- paste(df$sex, df$tumor, sep="_")
+for(i in 1:dim(df)[1])
+{
+ if(df$sex[i] == "f" & df$tumor[i] == "t")
+   df$group[i] = "Female Tumor"
+ else if(df$sex[i] == "f" & df$tumor[i] == "c")
+   df$group[i] = "Female Ctrl"
+ else if(df$sex[i] == "m" & df$tumor[i] == "c")
+   df$group[i] = "Male Ctrl"
+ else if(df$sex[i] == "m" & df$tumor[i] == "t")
+   df$group[i] = "Male Tumor"
+ else
+   temp=1
+}
+boxplot(df$tpm ~ df$group, xlab="", ylab="Tpm", outcol="white")
+beeswarm(df$tpm ~ df$group,  pch = c(1,1,2,2), col = c("green", "red", "green", "red" ), cex = 1, add = T )
+abline(h = seq(0,1000,10), lty = 5, lwd = 0.5, col = "gray")
+tex="mouse monocyte scRNA pseudobulk \n Ptprc"
+title(tex)
+   abline(h = seq(-100,1000,100), lty = 5, lwd = 0.5, col = "gray")
