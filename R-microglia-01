@@ -2880,3 +2880,20 @@ abline(v = 0, lty = 5, lwd = 1, col = "blue")
 abline(h = 0, lty = 5, lwd = 1, col = "blue")
 res <- cor.test(a2$V2.y , a2$V2.x)
 title(main=paste("genes with p<= 0.01 in human or mouse\n", "r=",round(res$estimate, digits = 3), " p=", format(res$p.value, digits=3), sep =""))
+
+#############human tpm four group boxplot
+h1 <- read.delim("../microglia/microglia-39-sample-tpm.genename.txt")
+sum(h1[,2:40])
+# [1] 3.9e+07 /39 samples = 1e6 per sample
+t3 <- h1[ h1$name %in% c("PTPRC"), ]
+rownames(t3) <- t3$name
+t3 <- t3[, 2:40]
+dim(t3)
+res <- data.frame(id = colnames(t3), mean = colMeans(t3))
+info <- read.delim("../microglia/microglia-39-sample-sampInfo.txt")
+res.info <- merge(res, info, by.x="id", by.y="id1")
+res.info$grape3 <- paste(res.info$XX, res.info$Tumor)
+boxplot(as.numeric(res.info$mean) ~ res.info$grape3 ,  ylab = "Tpm", xlab = "", outcol = "white")
+   beeswarm(as.numeric(res.info$mean) ~ res.info$grape3 ,add =T,pch = c(16,16,17,17), col=c("green", "red", "green", "red"), cex = 1)
+   title(main = "human microglia PTPRC")
+   abline(h = seq(-100,1000,100), lty = 5, lwd = 0.5, col = "gray")
