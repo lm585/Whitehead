@@ -2228,3 +2228,15 @@ abline(h = seq(0,1000,10), lty = 5, lwd = 0.5, col = "gray")
 tex="mouse monocyte scRNA pseudobulk \n Ptprc"
 title(tex)
    abline(h = seq(-100,1000,100), lty = 5, lwd = 0.5, col = "gray")
+
+##########enrichr 
+cat  mouse-infect-ddx3x-KOvWT-diff2-1.human.gene.name.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $7 < 0.05 && $3 > 1.5 ' | cut -f 2,3,6,7,13 | cut -f 5 | sort | uniq
+cat  mouse-infect-ddx3x-KOvWT-diff2-1.human.gene.name.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $7 < 0.05 && $3 < -1.5 ' | cut -f 2,3,6,7,13  | cut -f 5 | sort | uniq
+
+ls -lh ~/Downloads | grep "Dec  8" | awk '{print $9}' | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} {print "\""  $1  "\"" "  " }'
+ls -lh ~/Downloads | grep "Dec  8"  | grep 13: | awk '{print $9}'  | grep -v temp | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} {print "\""  $1  "\"" "  " }'
+
+cat temp-1
+cat "Descartes_Cell_Types_and_Tissue_2021_table.txt"  "ENCODE_Histone_Modifications_2015_table.txt"  "GO_Biological_Process_2021_table.txt"  "MSigDB_Hallmark_2020_table.txt"  "Mouse_Gene_Atlas_table.txt"  "TRRUST_Transcription_Factors_2019_table(1).txt"  > temp.down.txt
+cat temp-2
+cat "Descartes_Cell_Types_and_Tissue_2021_table(1).txt"  "ENCODE_Histone_Modifications_2015_table(1).txt"  "GO_Biological_Process_2021_table(1).txt"  "MSigDB_Hallmark_2020_table(1).txt"  "Mouse_Gene_Atlas_table(1).txt"  "TRRUST_Transcription_Factors_2019_table(2).txt"  > temp.up.txt
