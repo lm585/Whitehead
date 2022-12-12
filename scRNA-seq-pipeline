@@ -2240,3 +2240,41 @@ cat temp-1
 cat "Descartes_Cell_Types_and_Tissue_2021_table.txt"  "ENCODE_Histone_Modifications_2015_table.txt"  "GO_Biological_Process_2021_table.txt"  "MSigDB_Hallmark_2020_table.txt"  "Mouse_Gene_Atlas_table.txt"  "TRRUST_Transcription_Factors_2019_table(1).txt"  > temp.down.txt
 cat temp-2
 cat "Descartes_Cell_Types_and_Tissue_2021_table(1).txt"  "ENCODE_Histone_Modifications_2015_table(1).txt"  "GO_Biological_Process_2021_table(1).txt"  "MSigDB_Hallmark_2020_table(1).txt"  "Mouse_Gene_Atlas_table(1).txt"  "TRRUST_Transcription_Factors_2019_table(2).txt"  > temp.up.txt
+
+#########
+cat  mouse-infect-ddx3x-KOvWT-diff2-1.human.gene.name.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $7 < 0.05 && $3 < -1.5 ' | cut -f 2,3,6,7,13  | cut -f 5 | sort | uniq > temp-1
+cat  trrust_rawdata.human.tsv | grep "^RELA    "  | cut -f 2 | sort | uniq | wc -l
+     301
+cat  trrust_rawdata.human.tsv | grep "^RELA    "  | cut -f 2 | sort | uniq > temp-2
+cat temp-1 temp-2 | sort | uniq -d | wc -l
+      33
+33/301
+        rela    non-rela-target
+inputset  33    366
+non-input 301-33   n-399-(301-33)
+
+n = 2e4
+a <- c(33, 399-33, 301-33,   n-399-(301-33))
+m <- matrix(a,  nrow=2, ncol = 2, byrow=T )
+fisher.test(m)
+
+        Fisher's Exact Test for Count Data
+
+data:  m
+p-value = 1.921e-15
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 4.321985 9.517047
+sample estimates:
+odds ratio
+  6.502676
+> m
+     [,1]  [,2]
+[1,]   33   366
+[2,]  268 19333
+> 33/366 / (268/19333)
+[1] 6.504251
+> 33/366
+[1] 0.09016393
+> 268/19333
+[1] 0.01386231
