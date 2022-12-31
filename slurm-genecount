@@ -37,3 +37,9 @@ sh -x ./script-samtools-genecount
 
 ##################################################################################################
 sbatch ./slurm-wi-mit
+
+## some cmds
+$ squeue - information on running slurm jobs
+$ sinfo - information on available nodes
+$ scontrol show job <jobid>
+$ squeue -u <your username> - information on your running jobs
