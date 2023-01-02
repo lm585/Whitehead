@@ -2897,3 +2897,24 @@ boxplot(as.numeric(res.info$mean) ~ res.info$grape3 ,  ylab = "Tpm", xlab = "", 
    beeswarm(as.numeric(res.info$mean) ~ res.info$grape3 ,add =T,pch = c(16,16,17,17), col=c("green", "red", "green", "red"), cex = 1)
    title(main = "human microglia PTPRC")
    abline(h = seq(-100,1000,100), lty = 5, lwd = 0.5, col = "gray")
+
+########################################################################################################
+cat microglia-all-samples-sampInfo.txt | cut -f 7 | sort  | uniq -u | wc -l
+     121
+     121 microglia-all-samples-sampInfo.txt
+
+> s1 <- read.delim("microglia-all-samples-sampInfo.txt")
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+ss <- merge(s1, info, by.x="BamID", by.y="id1")
+data.frame(ss$Age, ss$age)
+unique(paste(ss$Sex, ss$XX))
+[1] "M XY" "F XX"
+unique(paste(ss$Brain_region, ss$location))
+[1] "Parietal Parietal"     "Temporal Temporal"     "Frontal Frontal"       "Occipital Occipital"   "Cerebellum Cerebellum"
+unique(paste(ss$Pathology_major, ss$Tumor))
+[1] "Tumour Tumor"    "Control Control"
+ss2 <- ss[ ss$Pathology_major == "Tumour",]
+unique(paste(ss2$Pathology, ss2$grade))
+[1] "Tumour resection Tumor resection"        "Low grade resection Low grade resection" "Tumour resection  Tumor resection"       "Benign resection Benign resection"
+[5] "Met resection Met resection"  
+
