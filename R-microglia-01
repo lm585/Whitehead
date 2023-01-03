@@ -2918,3 +2918,20 @@ unique(paste(ss2$Pathology, ss2$grade))
 [1] "Tumour resection Tumor resection"        "Low grade resection Low grade resection" "Tumour resection  Tumor resection"       "Benign resection Benign resection"
 [5] "Met resection Met resection"  
 
+############################################################################################
+ls /lab/solexa_page/mtharp/EGA_microglia/All_pathologies_bam/Haemorrage/  | wc -l
+18
+ls /lab/solexa_page/mtharp/EGA_microglia/All_pathologies_bam/Hydrocephalus/  | wc -l
+19
+ls /lab/solexa_page/mtharp/EGA_microglia/All_pathologies_bam/Trauma/  | wc -l
+14
+
+summary(factor(ss$Population))
+      European South American           NA's
+            35              2              2
+ss[ ss$DemuxletPair1 != ss$DemuxletPair2,]
+summary(as.numeric( ss$RIN))
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
+  5.000   7.325   7.800   7.718   8.475   9.600       1
+> s1[ s1$DemuxletPair1 != s1$DemuxletPair2,]
+
