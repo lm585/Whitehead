@@ -2935,3 +2935,60 @@ summary(as.numeric( ss$RIN))
   5.000   7.325   7.800   7.718   8.475   9.600       1
 > s1[ s1$DemuxletPair1 != s1$DemuxletPair2,]
 
+#############################################################################
+### tpm for all trauma-etc-51samples samples
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp.1.txt gene-length out
+paste  temp.1.txt out | grep -vw notApplicable >  temp-1
+
+cat temp-1 | awk '
+BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+{
+ if(NR == 1)
+ {
+  print $1;
+  for(i = 2; i <= 52; i++)
+  {  print "\t" $i;}
+  print "\n";
+ }
+ else
+ {
+  print $1;
+  for(i = 2; i <= 52; i++)
+  {  print "\t" $i/$54;}
+  print "\n";
+ }
+}
+' > temp-2
+
+t1 <- read.delim("temp-2", row.names=1)
+cols <- base::colSums(t1)
+t2 <- t1 
+for(i in 1:dim(t1)[2])
+{
+ t2[,i] <- t1[,i] * 1e6 / cols[i]
+}
+summary(t2)
+######
+    MGB_031             MGB_036            MGB_043            MGB_052            MGB_056            MGB_065             MGB_068            MGB_074        
+ Min.   :    0.000   Min.   :    0.00   Min.   :    0.00   Min.   :    0.00   Min.   :    0.00   Min.   :     0.00   Min.   :    0.00   Min.   :    0.00  
+ 1st Qu.:    0.000   1st Qu.:    0.00   1st Qu.:    0.00   1st Qu.:    0.00   1st Qu.:    0.00   1st Qu.:     0.00   1st Qu.:    0.00   1st Qu.:    0.00  
+ Median :    0.000   Median :    0.05   Median :    0.00   Median :    0.00   Median :    0.00   Median :     0.00   Median :    0.00   Median :    0.03  
+ Mean   :   17.152   Mean   :   17.15   Mean   :   17.15   Mean   :   17.15   Mean   :   17.15   Mean   :    17.15   Mean   :   17.15   Mean   :   17.15  
+ 3rd Qu.:    2.004   3rd Qu.:    2.70   3rd Qu.:    0.99   3rd Qu.:    2.38   3rd Qu.:    1.13   3rd Qu.:     1.44   3rd Qu.:    1.78   3rd Qu.:    3.43  
+ Max.   :29608.106   Max.   :70958.02   Max.   :72278.89   Max.   :63705.61   Max.   :63449.07   Max.   :103610.43   Max.   :87305.84   Max.   :40912.74  
+
+write.table(t2, "microglia-trauma-etc-51-sample-tpm.txt", quote=F, sep="\t")
+vi microglia-trauma-etc-51-sample-tpm.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  microglia-trauma-etc-51-sample-tpm.txt  geneID-name out
+paste   microglia-trauma-etc-51-sample-tpm.txt  out | grep -vw notApplicable | awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $54;
+for(i = 2; i <= 52; i++)
+{
+ if(i != 450)
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > microglia-trauma-etc-51-sample-tpm.genename.txt
