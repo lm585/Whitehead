@@ -2992,3 +2992,29 @@ for(i = 2; i <= 52; i++)
 }
 print "\n"
 }' > microglia-trauma-etc-51-sample-tpm.genename.txt
+
+#################################trauma etc samples boxplot
+> t1 <- read.delim("microglia-39-sample-tpm.txt")
+t2 <- read.delim("microglia-trauma-etc-51-sample-tpm.txt")
+t3 <- merge(t1, t2, by.x="geneID", by.y = "geneID")
+dim(t3)
+# [1] 58302    91
+g <- read.delim("geneID-name")
+t4 <- merge(t3, g, by.x="geneID", by.y = "geneID" )
+g2 <- scan(what="", sep = "\n")
+t5 <- t4[ t4$name %in% g2,]
+t6 <- t5[, c(2:91)]
+rownames(t6) <- t5$name
+dim(t6)
+# [1]  8 90
+t7 <- as.data.frame( t(t6))
+t7$name <- rownames(t7)
+s <- read.delim("microglia-all-samples-sampInfo.txt")
+t8 <- merge(t7, s, by.x="name", by.y="BamID")
+summary(factor(t8$Pathology_major))
+#      Control   Haemorrhage Hydrocephalus        Trauma        Tumour
+#           16            18            19            14            23
+boxplot(t8$TMEM119 ~ t8$Pathology_major, ylab = "TMEM119 (tpm)",  outcol = "white", cex.axis = 0.8, col = c("grey", "white"))
+beeswarm(t8$TMEM119 ~ t8$Pathology_major, col = c("green", "red"), add=T)
+abline(h = seq(0, 500, 50), lty = 5, lwd = 0.5, col = "gray")
+
