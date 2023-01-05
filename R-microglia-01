@@ -3018,3 +3018,5 @@ boxplot(t8$TMEM119 ~ t8$Pathology_major, ylab = "TMEM119 (tpm)",  outcol = "whit
 beeswarm(t8$TMEM119 ~ t8$Pathology_major, col = c("green", "red"), add=T)
 abline(h = seq(0, 500, 50), lty = 5, lwd = 0.5, col = "gray")
 
+#F Control   F Haemorrhage F Hydrocephalus        F Trauma        F Tumour       M Control   M Haemorrhage M Hydrocephalus        M Trauma        M Tumour 
+#        7               6               9               3              10               9              12              10              11              13 
