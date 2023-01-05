@@ -3020,3 +3020,67 @@ abline(h = seq(0, 500, 50), lty = 5, lwd = 0.5, col = "gray")
 
 #F Control   F Haemorrhage F Hydrocephalus        F Trauma        F Tumour       M Control   M Haemorrhage M Hydrocephalus        M Trauma        M Tumour 
 #        7               6               9               3              10               9              12              10              11              13 
+
+#################################trauma etc samples pathway level boxplot
+t1 <- read.delim("temp.txt")
+t2 <- read.delim("trauma-hae-hydro-51samp.counts_gene.52colum.txt")
+t3 <- merge(t1, t2, by.x="geneID", by.y = "geneID")
+dim(t3)
+# [1] 58302    91
+t4 <- t3[, colnames(t3) != "MGB_102" & colnames(t3) != "MGB_103"]
+t5 <- t4[,2:89]
+rownames(t5) <- t4$geneID
+
+rawCount <- t5
+group <- factor(rep(1, 88))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+y$samples
+# MGB_097     1 42617903    0.3342273
+# 81   76   M     Haemorrhage    Arteriovenous Malformation   Cerebellum               European MGB_097       MGB_097       MGB_097                   N/D                   
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+dim(y)
+# [1] 13991    88
+d = cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+info <- read.delim("microglia-all-samples-sampInfo.txt")
+g <- read.delim("geneID-name")
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, g, by.x="id", by.y="geneID")
+dim(a.df.g)
+# [1] 13991    90
+file <- read.delim("temp-files", header=F)
+index = 10
+file[index,1]
+# [1] "HALLMARK_INFLAMMATORY_RESPONSE.genes"
+pathname = file[index,1]
+p <- read.delim(file[index,1], header=F)
+p.exp <- a.df.g[ a.df.g$name %in% p$V1, ]
+length(p.exp$name)
+# [1] 164
+mat <- as.matrix(p.exp[, 2:89])
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+res.info <- merge(res, info, by.x="id", by.y="BamID")
+res.info$grape3 <- paste(res.info$Sex, res.info$Pathology_major)
+res.info.path <- res.info
+r2 <- res.info[ res.info$Pathology_major == "Trauma" | res.info$Pathology_major == "Control",]
+dim(r2)
+boxplot( r2$mean ~ r2$grape3, xlab = "", ylab = "z-score avg of all genes", outcol = "white")
+title(main= gsub(".genes", "", pathname))
+beeswarm(r2$mean ~ r2$grape3, pch = c(16,16,17,17), col = c("green", "red", "green", "red" ), cex = 2, add = T)
+abline(h = seq(-100, 500, 0.1), lty = 5, lwd = 0.5, col = "gray")
+
