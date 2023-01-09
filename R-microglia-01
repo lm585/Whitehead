@@ -3108,3 +3108,54 @@ points(res.info.g.p.male[ res.info.g.p.male$Pathology_major.x == "Hydrocephalus"
 legend("topleft", inset = 0.05, c("XY control", "XY tumor", "XY Trauma", "XY Haemorrhage", "XY Hydrocephalus"), pch=c(16,16,17,15,18), col = c("green", "red", "orange", "blue","black" ), bty = "n")
 title(main = paste(a.df.g[geneID2, ]$name, ", r=", round(t3$estimate, digits = 3), " p=", format(t3$p.value, digits=3), sep=""))
 abline(h = seq(0,20,1), lty = 5, lwd = 0.5, col = "gray")
+
+#################################trauma etc corr between gene and a pathway
+...
+res.info.path <- res.info
+...
+###gene expr
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+y$samples
+keep <-rowSums(cpm(y)>=1) >= 6
+y<-y[keep,]
+dim(y)
+# [1] 19210    88
+d = cpm(y)
+a <- log2(d+1)
+###a is log2(cpm+1)
+info <- read.delim("microglia-all-samples-sampInfo.txt")
+g <- read.delim("geneID-name")
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, g, by.x="id", by.y="geneID")
+dim(a.df.g)
+# [1] 19210    90
+str <- "geneID	name	pathway	f-r	f-p	m-r	m-p	a-r	a-p"
+cat(str)
+cat("\n")
+for(geneID2 in 1:dim(a.df.g)[1]) {
+# geneID2 = 5405
+p.exp <- a.df.g[geneID2, ]
+geneName = paste(a.df.g[geneID2, ]$id, a.df.g[geneID2, ]$name, sep = "\t")
+length(p.exp$name)
+# [1] 1
+mat <- as.matrix(p.exp[, 2:89])
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+res.info <- merge(res, info, by.x="id", by.y="BamID")
+res.info$grape3 <- paste(res.info$Sex, res.info$Pathology_major)
+res.info.xgene <- res.info
+
+res.info.g.p <- merge(res.info.path, res.info.xgene, by.x="id", by.y="id")
+res.info.g.p.fem <- res.info.g.p[ res.info.g.p$Sex.x == "F", ]
+res.info.g.p.male <- res.info.g.p[ res.info.g.p$Sex.x == "M", ]
+t1 <- cor.test(res.info.g.p$mean.x, res.info.g.p$mean.y)
+t2 <- cor.test(res.info.g.p.fem$mean.x, res.info.g.p.fem$mean.y)
+t3 <- cor.test(res.info.g.p.male$mean.x, res.info.g.p.male$mean.y)
+corRes <- paste(geneName, pathname, t2$estimate, t2$p.value, t3$estimate, t3$p.value, t1$estimate, t1$p.value, sep = "\t")
+cat(corRes)
+cat("\n")
+# ENSG00000130066	SAT1	HALLMARK_INFLAMMATORY_RESPONSE.genes	0.881003868640096	6.25377307153326e-12	0.828280839536467	1.09261636934345e-14	0.851018408237509	8.8103590119187e-26
+# ENSG00000104856	RELB	HALLMARK_INFLAMMATORY_RESPONSE.genes	0.91618895880208	2.97446066087139e-14	0.774425341585504	6.43728727603421e-12	0.835542577721745	4.38048596889194e-24
+}
+
