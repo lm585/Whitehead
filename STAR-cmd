@@ -1,0 +1,4 @@
+
+java -jar /usr/local/share/picard-tools/picard.jar SamToFastq I="/lab/solexa_page/mtharp/EGA_microglia/All_pathologies_bam/Tumor/EGAF00003091636/MGB_022.bam" FASTQ="r1.fq" SECOND_END_FASTQ="r2.fq"
+
+STAR  --runMode genomeGenerate  --genomeDir /lab/solexa_page/linyong/dir-star-genome-index-oh75  --genomeFastaFiles  /lab/solexa_page/helen/STAR/gencode/GRCh38.primary_assembly.genome.fa  --sjdbGTFfile /lab/solexa_page/helen/STAR/gencode/gencode.v42.primary_assembly.annotation.gtf --sjdbOverhang 75 --runThreadN 4
