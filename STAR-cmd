@@ -22,3 +22,15 @@ cat slurm-wi-star-genome-index
 # This is the actual section for commands to run
 STAR  --runMode genomeGenerate  --genomeDir /lab/solexa_page/linyong/dir-star-genome-index-oh75  --genomeFastaFiles  /lab/solexa_page/helen/STAR/gencode/GRCh38.primary_assembly.genome.fa  --sjdbGTFfile /lab/solexa_page/helen/STAR/gencode/gencode.v42.primary_assembly.annotation.gtf --sjdbOverhang 75 --runThreadN 16
 
+###hg genome indexing finished successfully
+tail Log.out
+Writing 3199098424 bytes into /lab/solexa_page/linyong/dir-star-genome-index-oh75/Genome ; empty space on disk = 2200571281408 bytes ... done
+SA size in bytes: 24823723282
+Jan 13 15:20:34 ... writing Suffix Array to disk ...
+Writing 24823723282 bytes into /lab/solexa_page/linyong/dir-star-genome-index-oh75/SA ; empty space on disk = 2197366177792 bytes ... done
+Jan 13 15:21:32 ... writing SAindex to disk
+Writing 8 bytes into /lab/solexa_page/linyong/dir-star-genome-index-oh75/SAindex ; empty space on disk = 2165558542336 bytes ... done
+Writing 120 bytes into /lab/solexa_page/linyong/dir-star-genome-index-oh75/SAindex ; empty space on disk = 2165557493760 bytes ... done
+Writing 1565873491 bytes into /lab/solexa_page/linyong/dir-star-genome-index-oh75/SAindex ; empty space on disk = 2165557493760 bytes ... done
+Jan 13 15:21:38 ..... finished successfully
+DONE: Genome generation, EXITING
