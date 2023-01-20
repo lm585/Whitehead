@@ -3159,3 +3159,57 @@ cat("\n")
 # ENSG00000104856	RELB	HALLMARK_INFLAMMATORY_RESPONSE.genes	0.91618895880208	2.97446066087139e-14	0.774425341585504	6.43728727603421e-12	0.835542577721745	4.38048596889194e-24
 }
 
+#############################################################################
+#############STAR vs RSEM read mapping
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  MGB_022.2.genecount  rsem-count.genes.results  out
+paste  MGB_022.2.genecount   out | grep -iv  notapp  > star-rsem.txt
+cat star-rsem.txt  | cut -f 1,3,8 > temp.1.txt
+
+t <- read.delim("temp.1.txt", header = T, row.names = 1)
+dim(t)
+##62750     2
+rawCount <- t
+group <- factor(rep(1, 2))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+dim(y)
+# 15907     2
+t1 <- as.data.frame(y$counts)
+> plot( log10(t1$expected_count + 1), log10(t1$count + 1))
+
+abline(h = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+abline(v = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+x1 <- 1:10
+y1 <- x1
+abline( lm(y1 ~ x1), col = "blue")
+t2 <- read.delim("MGB_022.2.genecount")
+t1$gene_id <- rownames(t1)
+t3 <- merge(t1, t2, by.x="gene_id", by.y="gene_id")
+file <- read.delim("temp-files", header=F)
+index = 10
+file[index,1]
+# [1] "HALLMARK_INFLAMMATORY_RESPONSE.genes"
+pathname = file[index,1]
+p <- read.delim(file[index,1], header=F)
+p.exp <- t3[ t3$name %in% p$V1, ]
+dim(p.exp)
+# [1] 169   5
+plot( log10(p.exp$expected_count + 1), log10(p.exp$count.x + 1))
+abline(h = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+abline(v = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+x1 <- 1:10
+y1 <- x1
+abline( lm(y1 ~ x1), col = "blue")
+title(main = pathname)
+sum(p.exp$count.x > p.exp$expected_count)
+sum(p.exp$count.x < p.exp$expected_count)
+sum(p.exp$count.x == p.exp$expected_count)
+
