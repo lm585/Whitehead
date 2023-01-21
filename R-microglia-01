@@ -3213,3 +3213,49 @@ sum(p.exp$count.x > p.exp$expected_count)
 sum(p.exp$count.x < p.exp$expected_count)
 sum(p.exp$count.x == p.exp$expected_count)
 
+ls HALLMARK*.genes | grep -v temp > temp-files.2
+file <- read.delim("temp-files.2", header=F)
+sink("temp-sink.txt")
+
+for(index in 1:dim(file)[1]) {
+pathname = file[index,1]
+p <- read.delim(file[index,1], header=F)
+p.exp <- t3[ t3$name %in% p$V1, ]
+dim(p.exp)
+a <- sum(p.exp$count.x > p.exp$expected_count)
+b <- sum(p.exp$count.x < p.exp$expected_count)
+c <- sum(p.exp$count.x == p.exp$expected_count)
+res <- paste( pathname, a, b, c, sep="\t")
+cat(res)
+cat("\n")
+
+}
+sink()
+t4 <- read.delim("temp-sink.txt", header=F)
+par()$mar
+# [1] 5.1 4.1 4.1 2.1
+par(mar=c(6,6,4,2))
+plot(t4$V3, t4$V2, xlim=c(0, 200), ylim=c(0,200), xlab="# of genes in a hallmark pathway \n for which RSEM has more reads mapped", ylab = "# of genes in a hallmark pathway \n for which STAR has more reads mapped")
+abline(h = seq(0,200,50), lty = 1, lwd = 0.5, col = "gray")
+abline(v = seq(0,200,50), lty = 1, lwd = 0.5, col = "gray")
+x1 <- 1:10
+y1 <- x1
+abline( lm(y1 ~ x1), col = "blue")
+
+# 4383 uniq genes in hallmark pathway
+p <- read.delim("temp-uniq", header=F)
+p.exp <- t3[ t3$name %in% p$V1, ]
+dim(p.exp)
+# [1] 3614    5
+
+# temp2 contains expressed hallmark genes with STAR gene-level-count < 10
+cat temp2 | awk '{print $5}' | uniq | sort | uniq | while read g
+do
+grep -w "$g" HALLMARK*.genes
+done | sort | uniq > temp3
+vi temp3
+cat temp3 | cut -f 1 | sort | uniq -c
+grep HALLMARK_KRAS_SIGNALING_UP.genes  temp3  | cut -f 2 | while read g
+do
+grep -w "$g" temp2
+done | awk 'BEGIN {OFS = "\t"} {print $2, $3, $4, $5}' > temp4.txt
