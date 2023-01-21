@@ -3259,3 +3259,32 @@ grep HALLMARK_KRAS_SIGNALING_UP.genes  temp3  | cut -f 2 | while read g
 do
 grep -w "$g" temp2
 done | awk 'BEGIN {OFS = "\t"} {print $2, $3, $4, $5}' > temp4.txt
+
+#############STAR gene count from (old) ensemble GTF
+62750 substitutions on 62750 lines
+cp rsem-count.genes.results rsem-count.genes.2.results
+vi rsem-count.genes.2.results                         
+# :1, $ s/\.[0-9][0-9]*^I/^I/
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   MGB_022.counts_gene   rsem-count.genes.2.results  out
+paste  MGB_022.counts_gene    out | grep -iv  notapp > star-rsem.2.txt
+cat star-rsem.2.txt | cut -f 1,3,8 > temp.1.txt
+
+t <- read.delim("temp.1.txt", header = T, row.names = 1)
+dim(t)
+## [1] 57603     2
+rawCount <- t 
+group <- factor(rep(1, 2))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) { 
+  med$logic[i] <- median(d[i,]) >= 1
+ }
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+dim(y)
+## [1] 15326     2
+t1 <- as.data.frame(y$counts)
+plot( log10(t1$expected_count + 1), log10(t1$STAR_ensemb_count + 1))
