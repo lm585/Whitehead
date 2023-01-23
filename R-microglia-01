@@ -3288,3 +3288,50 @@ dim(y)
 ## [1] 15326     2
 t1 <- as.data.frame(y$counts)
 plot( log10(t1$expected_count + 1), log10(t1$STAR_ensemb_count + 1))
+
+###############STAR two diff mode compare & RSEM. three way compare
+################also compare with TAM STAR (old) ensembl uniq gene count
+paste MGB_022.2.genecount MGB_022.2.multimap200.nonunique.genecount rsem-count.genes.results | awk '$1 == $4 && $1 == $7' | cut -f 1,3,6,11 > temp.1.txt
+t <- read.delim("temp.1.txt", header = T, row.names = 1)
+dim(t)
+##62750     2
+rawCount <- t
+group <- factor(rep(1, 3))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+med <- as.data.frame(y$counts)
+med$logic <- med$count >= 45 | med$expected_count >= 45
+y <- y[ med$logic,]
+dim(y)
+# [1] 16738     3
+t1 <- as.data.frame(y$counts)
+t2 <- t1[ t1$count == t1$count.1,]
+dim(t2)
+# [1] 8625    3
+plot( log10(t2$expected_count + 1), log10(t2$count.1 +1), xlab="RSEM log10(count+1)", ylab="STAR log10(count + 1)")
+title(main = paste(dim(t2)[1], "expressed genes. \n100% of reads that can be mapped to a gene by STAR are unique reads", sep = " "), cex.main = 0.8)
+abline(h = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+abline(v = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+x1 <- 1:10
+y1 <- x1
+abline( lm(y1 ~ x1), col = "blue")
+cor.test(log10(t2$expected_count + 1), log10(t2$count.1 +1))
+sum( t2$expected_count < t2$count.1)
+sum( t2$expected_count * 1.25 < t2$count.1)
+# [1] 2010
+write.table(t2, "temp.t2.txt", quote=F, sep="\t")
+cat temp.t2.txt | sed 's/\.[0-9][0-9]*\t/\t/' > temp3   
+t3 <- read.delim("temp3")
+t3$gene_id <- rownames(t3)
+t4 <- read.delim("MGB_022.counts_gene")
+t5 <- merge(t3, t4, by.x="gene_id", by.y="gene_id")
+dim(t5)
+# [1] 8237    6
+plot( log10(t5$expected_count + 1), log10( t5$STAR_ensemb_count + 1), )
+title(main = paste(dim(t5)[1], "expressed genes. \n100% of reads that can be mapped to a gene by STAR are unique reads\n TAM (old) ensembl count", sep = " "), cex.main = 0.8)
+abline(h = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+abline(v = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+x1 <- 1:10
+y1 <- x1
+abline( lm(y1 ~ x1), col = "blue")
+write.table(t5, "temp.t5.txt", quote=F, sep="\t") 
