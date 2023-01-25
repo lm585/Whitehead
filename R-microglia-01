@@ -3335,3 +3335,36 @@ x1 <- 1:10
 y1 <- x1
 abline( lm(y1 ~ x1), col = "blue")
 write.table(t5, "temp.t5.txt", quote=F, sep="\t") 
+
+cat temp.t2.txt| awk 'NR > 1 && $3 >= 45' | cut -f 1 > temp-1
+cat temp.t2.txt| awk 'NR > 1 && $4 >= 45' | cut -f 1 > temp-2
+cat temp-1 temp-2 | sort | uniq -d | wc -l
+    7370
+    8119 temp-1 STAR
+    7876 temp-2 RSEM
+
+t6 <- t1[ t1$count != t1$count.1,]
+dim(t6)
+# [1] 8113    3
+plot( log10(t6$expected_count + 1), log10(t6$count.1 +1), xlab="RSEM log10(count+1)", ylab="STAR (nonunique=all) log10(count + 1)")
+title(main = paste(dim(t6)[1], "expressed genes. \ngenes with potential multi-mapping reads by STAR", sep = " "), cex.main = 0.8)
+abline(h = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+abline(v = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+x1 <- 1:10
+y1 <- x1
+abline( lm(y1 ~ x1), col = "blue")
+cor.test(log10(t6$expected_count + 1), log10(t6$count.1 +1))
+
+plot( log10(t6$expected_count + 1), log10(t6$count +1), xlab="RSEM log10(count)", ylab="STAR (uniq only) log10(count + 1)")
+title(main = paste(dim(t6)[1], "expressed genes. \ngenes with potential multi-mapping reads by STAR", sep = " "), cex.main = 0.8)
+abline(h = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+abline(v = seq(0,20,1), lty = 1, lwd = 0.5, col = "gray")
+x1 <- 1:10
+y1 <- x1
+abline( lm(y1 ~ x1), col = "blue")
+cor.test(log10(t6$expected_count + 1), log10(t6$count +1))
+
+write.table(t6, "temp.t6.txt", quote=F, sep="\t")
+cat temp.t6.txt| awk 'NR > 1 && $2 >= 45' | cut -f 1 > temp-1
+cat temp.t6.txt| awk 'NR > 1 && $4 >= 45' | cut -f 1 > temp-2
+cat temp-1 temp-2 | sort | uniq -d | wc -l
