@@ -3368,3 +3368,47 @@ write.table(t6, "temp.t6.txt", quote=F, sep="\t")
 cat temp.t6.txt| awk 'NR > 1 && $2 >= 45' | cut -f 1 > temp-1
 cat temp.t6.txt| awk 'NR > 1 && $4 >= 45' | cut -f 1 > temp-2
 cat temp-1 temp-2 | sort | uniq -d | wc -l
+
+#############################################################################
+###### TAM sample onle, M vs F, 
+t <- read.delim("temp.txt", header = T, row.names = 1)
+dim(t)
+##[1] 58302    39
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+c1 <- data.frame( colnames(t))
+c1$index <- 1:39
+c2 <- merge(c1, info, by.x="colnames.t.", by.y="id1")
+dim(c2)
+# [1] 39  8
+c3 <- c2[ c2$Tumor == "Tumor", ]
+t1 <- t[ , c3$index]
+dim(t1)
+# [1] 58302    23
+rawCount <- t1
+group <- factor(rep(1, 23))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+keep <-rowSums(cpm(y)>=1) >= 6
+y<-y[keep,]
+dim(y)
+# [1] 16107    23
+c4 <- colnames(rawCount)
+info2 <- info[1:23, c(1,3,5,7)]
+for(index in 1:dim(rawCount)[2]) {
+info2[index, ] <- info[ info$id1 == c4[index],c(1,3,5,7)]
+}
+design <- model.matrix(~info2$XX + info2$age)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+mv -i diff2-1.txt TAMonly-F-M-diff2-1.txt
+vi TAMonly-F-M-diff2-1.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  TAMonly-F-M-diff2-1.txt         geneID-name-type-chr out
+paste  TAMonly-F-M-diff2-1.txt out > TAMonly-F-M-diff2-1.name-type-chr.txt
+./make-rnk-genesymble                TAMonly-F-M-diff2-1.name-type-chr.txt  TAMonly-F-M-diff2-1.rnk
+cat TAMonly-F-M-diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} !($10 == "X" || $10 == "Y") ' > TAMonly-F-M-diff2-1.noXYgenes.name-type-chr.txt
+./make-rnk-genesymble               TAMonly-F-M-diff2-1.noXYgenes.name-type-chr.txt  TAMonly-F-M-diff2-1.noXYgenes.rnk
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  TAMonly-F-M-diff2-1.noXYgenes.rnk  -rpt_label   "TAMonly-F-M.Malepostive.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
