@@ -1,0 +1,36 @@
+/home/linyong/.local/bin/pfb to -i "export_2023-01-26T21 12 10.avro" tsv
+-rw-r--r-- 1 linyong input 22M Jan 26 16:18 export_2023-01-26T21 12 10.avro
+
+
+./gen3-client configure --profile=gtexv8 --cred=credentials.json --apiendpoint=https://gen3.theanvil.io
+# 2023/01/27 15:22:22 Profile 'gtexv8' has been configured successfully.
+
+
+    Important: “--protocol” tag is important to this command as it will determine which bucket the files will be downloaded from. The “s3” value will download from the egress free Cleversafe bucket for the datasets in the “Downloadable” tab.
+
+    Note: With larger manifests containing more than 100,000 files such as GTEx v8, the initial process of reading and parsing the manifest into the gen3-client can take anywhere from 30 - 240 mins.
+
+cp -i  file-manifest.json file-manifest.test.json
+vi file-manifest.test.json
+
+./gen3-client download-multiple --profile=gtexv8  --manifest=file-manifest.test.json --download-path=dir-gtexv8-bam-files --protocol=s3
+#
+2023/01/27 15:36:19 A new version of gen3-client is available! The latest version is 2023.2.0. You are using version 2022.12
+2023/01/27 15:36:19 Please download the latest gen3-client release from https://github.com/uc-cdis/cdis-data-client/releases/latest
+2023/01/27 15:36:19 Reading manifest...
+ 1.86 KiB / 1.86 KiB [===========================================================================================] 100.00% 0s
+WARNING: flag "rename" was set to false in "original" mode, duplicated files under "dir-gtexv8-bam-files/" will be overwritten
+Proceed? [y/n]: y
+2023/01/27 15:36:42 Total number of objects in manifest: 8
+2023/01/27 15:36:42 Preparing file info for each file, please wait...
+ 8 / 8 [=========================================================================================================] 100.00% 0s
+2023/01/27 15:36:42 File info prepared successfully  
+GTEX-1CB4F-2326-SM-7MKFO.Aligned.sortedByCoord.out.patched.md.bam  4.77 GiB / 4.77 GiB [============================] 100.00%
+GTEX-1GMRU-0011-R5a-SM-CKZNS.Aligned.sortedByCoord.out.patched.md.bam  4.83 GiB / 4.83 GiB [========================] 100.00%
+GTEX-1I1CD-1226-SM-CNPQ2.Aligned.sortedByCoord.out.patched.md.bam  4.77 GiB / 4.77 GiB [============================] 100.00%
+GTEX-S341-0008-SM-4AD6D.Aligned.sortedByCoord.out.patched.md.bam  4.79 GiB / 4.79 GiB [=============================] 100.00%
+GTEX-RM2N-1426-SM-2TF4H.Aligned.sortedByCoord.out.patched.md.bam  6.45 GiB / 6.45 GiB [=============================] 100.00%
+GTEX-1HCVE-1026-SM-ACKXR.Aligned.sortedByCoord.out.patched.md.bam  5.15 GiB / 5.15 GiB [============================] 100.00%
+GTEX-1GN2E-1526-SM-7P8TD.Aligned.sortedByCoord.out.patched.md.bam  4.55 GiB / 4.55 GiB [============================] 100.00%
+GTEX-17JCI-1526-SM-7IGOQ.Aligned.sortedByCoord.out.patched.md.bam  2.29 GiB / 2.29 GiB [============================] 100.00%
+2023/01/27 15:43:44 8 files downloaded.
