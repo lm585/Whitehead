@@ -3412,3 +3412,40 @@ cat TAMonly-F-M-diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} !
 ./make-rnk-genesymble               TAMonly-F-M-diff2-1.noXYgenes.name-type-chr.txt  TAMonly-F-M-diff2-1.noXYgenes.rnk
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  TAMonly-F-M-diff2-1.noXYgenes.rnk  -rpt_label   "TAMonly-F-M.Malepostive.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
 
+#########################control only, F vs M, remove sex chromosome genes
+control-F-M-diff2-1.name-type-chr.txt
+
+cat control-F-M-diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} !($10 == "X" || $10 == "Y") ' > control-F-M-diff2-1.noXYgenes.name-type-chr.txt
+
+   16367 control-F-M-diff2-1.name-type-chr.txt
+   15818 control-F-M-diff2-1.noXYgenes.name-type-chr.txt
+
+./make-rnk-genesymble               control-F-M-diff2-1.noXYgenes.name-type-chr.txt  control-F-M-diff2-1.noXYgenes.rnk
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  control-F-M-diff2-1.noXYgenes.rnk  -rpt_label   "control-F-M.Malepostive.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/control-F-M.Malepostive.prerank.v7.4.GseaPreranked.1674958784305/gsea_report_for_na_pos_1674958784305.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/control-F-M.Malepostive.prerank.v7.4.GseaPreranked.1674958784305/gsea_report_for_na_neg_1674958784305.tsv"
+f3="/Users/linyongmao/gsea_home/output/microgliaSex/ControlOnlyMalevsFemale_prerank_p.GseaPreranked.1638567040071/gsea_report_for_na_pos_1638567040071.tsv"
+f4="/Users/linyongmao/gsea_home/output/microgliaSex/ControlOnlyMalevsFemale_prerank_p.GseaPreranked.1638567040071/gsea_report_for_na_neg_1638567040071.tsv"
+ns <- read.delim(f1)
+ns2 <- read.delim(f2)
+ns3 <- rbind(ns, ns2)
+s <- read.delim(f3)
+s2 <- read.delim(f4)
+s3 <- rbind(s, s2)
+t1 <- merge(ns3, s3, by.x="NAME", by.y="NAME")
+data.frame(colnames(t1))
+t1[ t1$FDR.q.val.x < 0.05 | t1$FDR.q.val.y < 0.05, c(1,4,6:8, 15, 17:19)]
+t2 <- t1[ t1$FDR.q.val.x < 0.05 | t1$FDR.q.val.y < 0.05, c(1,4,6:8, 15, 17:19)]
+t2$ratio <- t2$NES.y / t2$NES.x
+t2
+                                         NAME SIZE.x     NES.x NOM.p.val.x  FDR.q.val.x SIZE.y     NES.y NOM.p.val.y FDR.q.val.y     ratio
+2                HALLMARK_ALLOGRAFT_REJECTION    157  1.730020 0.000000000 0.0052771512    164  1.608558 0.001222494 0.039411537 0.9297917
+14 HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION    155 -1.685263 0.000000000 0.0102786130    162 -1.661654 0.000000000 0.015616424 0.9859908
+23               HALLMARK_IL2_STAT5_SIGNALING    173  1.527865 0.000000000 0.0396095740    177  1.501424 0.003567182 0.091185950 0.9826940
+24           HALLMARK_IL6_JAK_STAT3_SIGNALING     69  1.719169 0.000000000 0.0046780757     73  1.681050 0.009655172 0.031978138 0.9778273
+25             HALLMARK_INFLAMMATORY_RESPONSE    171  1.744233 0.000000000 0.0047457116    174  1.693243 0.000000000 0.036932122 0.9707663
+34                        HALLMARK_MYOGENESIS    140 -1.565596 0.004716981 0.0160890600    145 -1.562876 0.000000000 0.020362413 0.9982626
+37                       HALLMARK_P53_PATHWAY    182  1.698751 0.000000000 0.0050824624    186  1.673375 0.000000000 0.027309450 0.9850624
+45           HALLMARK_TNFA_SIGNALING_VIA_NFKB    189  1.992358 0.000000000 0.0000000000    190  1.927015 0.000000000 0.008157514 0.9672032
+46         HALLMARK_UNFOLDED_PROTEIN_RESPONSE    104  1.844930 0.000000000 0.0006617647    106  1.780454 0.000000000 0.023579200 0.9650521
