@@ -3449,3 +3449,23 @@ t2
 37                       HALLMARK_P53_PATHWAY    182  1.698751 0.000000000 0.0050824624    186  1.673375 0.000000000 0.027309450 0.9850624
 45           HALLMARK_TNFA_SIGNALING_VIA_NFKB    189  1.992358 0.000000000 0.0000000000    190  1.927015 0.000000000 0.008157514 0.9672032
 46         HALLMARK_UNFOLDED_PROTEIN_RESPONSE    104  1.844930 0.000000000 0.0006617647    106  1.780454 0.000000000 0.023579200 0.9650521
+
+######
+ctrl <- t1[, c(1,4,6:8)]
+f1="/Users/linyongmao/gsea_home/output/microgliaSex/TAMonly-F-M.Malepostive.prerank.v7.4.GseaPreranked.1674687625757/gsea_report_for_na_neg_1674687625757.tsv"
+f2="/Users/linyongmao/gsea_home/output/microgliaSex/TAMonly-F-M.Malepostive.prerank.v7.4.GseaPreranked.1674687625757/gsea_report_for_na_pos_1674687625757.tsv"
+ns <- read.delim(f1)
+ns2 <- read.delim(f2)
+ns3 <- rbind(ns, ns2)
+data.frame(colnames(ns3))
+tam <- ns3[, c(1,4:8)]
+c.t <- merge(ctrl, tam, by.x="NAME", by.y="NAME")
+c.t.2 <- c.t[ c.t$NOM.p.val.x < 0.05 | c.t$NOM.p.val < 0.05, c(1,2,3,4,6,8,9)]
+plot( c.t.2$NES.x, c.t.2$NES,xlab = "NES, ctrl M vs. F", ylab = "NES, TAM M vs. F" )
+abline(h = seq(-20,20,1), lty = 1, lwd = 0.5, col = "gray")
+abline(v = seq(-20,20,1), lty = 1, lwd = 0.5, col = "gray")
+x1 <- 1:10
+y1 <- x1
+abline( lm(y1 ~ x1), col = "blue")
+title(main = "NOM.p < 0.05 in one of comparisons (M vs. F)")
+write.table(c.t.2, "temp.2.txt", quote=F, sep="\t")
