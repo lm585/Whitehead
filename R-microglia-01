@@ -3469,3 +3469,18 @@ y1 <- x1
 abline( lm(y1 ~ x1), col = "blue")
 title(main = "NOM.p < 0.05 in one of comparisons (M vs. F)")
 write.table(c.t.2, "temp.2.txt", quote=F, sep="\t")
+
+##############################
+tam <- read.delim("TAMonly-F-M-diff2-1.name-type-chr.txt")
+g1 <- read.delim("kdm6a-zfx.genes")
+ctl <- read.delim("control-F-M-diff2-1.name-type-chr.txt")
+interact <- read.delim("all39samp.sex-tum-interaction.diff2-1.name-type-chr.txt")
+t.c <- merge(tam, ctl, by.x="geneID", by.y="geneID")
+t.c.inter <- merge(t.c, interact, by.x="geneID", by.y="geneID")
+t1 <- t.c.inter[ t.c.inter$symbol.x %in% g1$name[1:5],]
+data.frame( colnames(t1))
+t2 <- t1[, c(1,2,5,11,14,20,23,26)]
+t3 <- t.c.inter[ t.c.inter$symbol.x %in% c("MPP1", "SAT1", "RELB"),]
+t4 <- t3[, c(1,2,5,11,14,20,23,26)]
+t5 <- rbind(t2,t4)
+write.table(t5, "temp.2.txt", sep = "\t", quote=F)
