@@ -69,3 +69,18 @@ diff gencode.v42.primary_assembly.annotation.gtf  gencode/gencode.v42.primary_as
 (from helen) -r-xr-xr-x 1 linyong input 1561033529 Jan 13 20:43 gencode/gencode.v42.primary_assembly.annotation.gtf*
 (download  ) -rw-r--r-- 1 linyong input 1561033529 Feb  2 14:01 gencode.v42.primary_assembly.annotation.gtf
 
+##################
+
+java -jar /usr/local/share/picard-tools/picard.jar SamToFastq I=GTEX-RM2N-1426-SM-2TF4H.Aligned.sortedByCoord.out.patched.md.bam FASTQ="r3.fq" SECOND_END_FASTQ="r4.fq"
+
+[Thu Feb 02 14:45:09 EST 2023] picard.sam.SamToFastq done. Elapsed time: 14.32 minutes.
+Runtime.totalMemory()=2,016,411,648
+
+  196335196 r3.fq (49083799 read pairs)
+  196335196 r4.fq
+  392670392 total
+awk 'NR % 4 == 1'  r3.fq | sort | uniq -d | wc
+(no dup read)      0       0       0
+/lab/solexa_page/linyong/dir-gtexv8-bam-files$ awk 'NR % 4 == 1'  r3.fq | sort | uniq -u | wc -l
+49083799
+
