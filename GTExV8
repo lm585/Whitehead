@@ -34,3 +34,38 @@ GTEX-1HCVE-1026-SM-ACKXR.Aligned.sortedByCoord.out.patched.md.bam  5.15 GiB / 5.
 GTEX-1GN2E-1526-SM-7P8TD.Aligned.sortedByCoord.out.patched.md.bam  4.55 GiB / 4.55 GiB [============================] 100.00%
 GTEX-17JCI-1526-SM-7IGOQ.Aligned.sortedByCoord.out.patched.md.bam  2.29 GiB / 2.29 GiB [============================] 100.00%
 2023/01/27 15:43:44 8 files downloaded.
+
+##############################rm _PAR_Y lines from gtf
+sort gencode.v42.primary_assembly.annotation.gtf | uniq -d | wc -l
+0
+cat gencode.v42.primary_assembly.annotation.gtf | grep -iw "transcript" | wc -l
+252475
+cat rsemindex_gencode_01.ti | grep ENST | awk 'NF == 2' | wc -l
+252475
+cat rsemindex_gencode_01.ti | grep ENST | awk 'NF == 2' | cut -f 1 | sort | uniq -d | wc -l
+0
+cat rsemindex_gencode_01.ti | grep ENST | awk 'NF == 2' | cut -f 1 | sed 's/_PAR_Y//' | sort | uniq -d | wc -l
+174
+cat gencode.v42.primary_assembly.annotation.gtf | grep PAR_Y | cut -f 3 | sort |uniq -c
+    450 CDS
+    937 exon
+     47 gene
+     71 start_codon
+     58 stop_codon
+    174 transcript
+    214 UTR
+450 + 937 + 47 + 71 + 58 + 174 + 214
+[1] 1951
+cat gencode.v42.primary_assembly.annotation.gtf | grep "_PAR_Y\"; " > temp-1
+wc -l temp-1
+1951 temp-1
+cat temp-1 | grep "tag \"PAR\";" | wc -l
+1951
+grep -v "_PAR_Y\"; " gencode.v42.primary_assembly.annotation.gtf > gencode.v42.primary_assembly.noPar.annotation.gtf
+grep -i "par.y" gencode.v42.primary_assembly.noPar.annotation.gtf | wc -l
+0
+diff gencode.v42.primary_assembly.annotation.gtf  gencode/gencode.v42.primary_assembly.annotation.gtf | wc
+      0       0       0
+(from helen) -r-xr-xr-x 1 linyong input 1561033529 Jan 13 20:43 gencode/gencode.v42.primary_assembly.annotation.gtf*
+(download  ) -rw-r--r-- 1 linyong input 1561033529 Feb  2 14:01 gencode.v42.primary_assembly.annotation.gtf
+
