@@ -2,7 +2,7 @@
 -rw-r--r-- 1 linyong input 22M Jan 26 16:18 export_2023-01-26T21 12 10.avro
 
 
-./gen3-client configure --profile=gtexv8 --cred=credentials.json --apiendpoint=https://gen3.theanvil.io
+./gen3-client |not exec this cmd### configure --profile=gtexv8 --cred=credentials.json --apiendpoint=https://gen3.theanvil.io
 # 2023/01/27 15:22:22 Profile 'gtexv8' has been configured successfully.
 
 
