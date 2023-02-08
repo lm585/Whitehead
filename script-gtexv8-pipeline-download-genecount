@@ -1,7 +1,7 @@
 #
 
 t=1
-while [ "$t"  -le 3 ]
+while [ "$t"  -le 40 ]
 do
  echo "---------------------------"
  cat ../file-manifest.json  | head -1 > temp.json
@@ -27,5 +27,8 @@ do
 
  htseq-count  --mode=union --stranded=no --idattr=gene_id --format=bam --additional-attr=gene_name --order=name --type=exon  Aligned.out.bam /lab/solexa_page/linyong/gencode/gencode.v42.primary_assembly.noPar.annotation.gtf   > "$f.counts_gene"
  rm Aligned.out.bam 
+ grep -w ACTB  "$f.counts_gene" >> "$f.STAR.log"
+ grep -w GAPDH "$f.counts_gene" >> "$f.STAR.log"
+ cat "$f.STAR.log"
 done
 
