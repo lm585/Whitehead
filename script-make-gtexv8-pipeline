@@ -1,6 +1,12 @@
 #
-dir="dir-gtex-03"
-n2=81
+if [ $# -lt 2 ]
+then
+  echo $0 " dir-name startNumberOfBamFile"
+  exit 1
+fi
+
+dir="$1"
+n2="$2"
 n3=`expr $n2 + 39`
 app=`date | sed 's/  */_/g'`
 echo "out-$dir-$app"
