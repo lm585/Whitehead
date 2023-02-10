@@ -106,3 +106,37 @@ STAR  --runMode genomeGenerate  --genomeDir /lab/solexa_page/linyong/dir-star-ge
 # Slurm doesn't do this automatically, regardless of the mail-type setting above.
 #/usr/bin/mail -s "$SLURM_JOB_NAME $SLURM_JOB_ID" your_username@wi.mit.edu < friendlyname-${SLURM_JOB_ID}.out
 
+##################bsub script-gtexv8-pipeline-download-genecount 
+###pipeline QA cmds
+cd /lab/solexa_page/linyong/
+date
+df -h | grep -i page
+du -sh .
+grep -in error dir-gtex-*/out-*
+# dir-gtex-02/out-01:23403:  [Exception type: ValueError, raised in libcalignmentfile.pyx:947]
+# check if still running
+ls dir-gtex-*/out-* -lh
+tail dir-gtex-*/out-*
+
+rm -f temp1
+cat dir-gtex-*/out-* > temp1
+cat temp1 | grep "Uniquely mapped reads" | grep "%" | wc -l
+cat temp1 | grep "Uniquely mapped reads" | grep "%" | sort +5 -6g
+cat temp1 | grep "Uniquely mapped reads" | grep -v "%" | sort +5 -6g | sort | uniq -d
+ls dir-gtex-*/*counts_gene -lh | grep "Feb  9 18"
+# -rw-r--r-- 1 linyong input    0 Feb  9 18:26 dir-gtex-01/GTEX-WFON-2226-SM-3TW8W.Aligned.sortedByCoord.out.patched.md.bam.counts_gene
+head dir-gtex-*/script-gtexv8-pipeline-download-genecount
+h | grep script-make-gtexv8-pipeline
+# issue pipeline cmd
+# disc space used
+ls -lh dir-gtex-* | grep total
+# total 97G
+
+-rw-r--r-- 1 linyong input  48G Feb  9 18:52 GTEX-14BMU-1526-SM-5TDE6.Aligned.sortedByCoord.out.patched.md.bam
+-rw-r--r-- 1 linyong input  61G Feb  9 21:06 r3.fq
+-rw-r--r-- 1 linyong input  61G Feb  9 21:06 r4.fq
+                          Number of input reads |       334353824
+                      Average input read length |       152
+                   Uniquely mapped reads number |       309927931
+                        Uniquely mapped reads % |       92.69%
+
