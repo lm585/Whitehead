@@ -140,3 +140,47 @@ ls -lh dir-gtex-* | grep total
                    Uniquely mapped reads number |       309927931
                         Uniquely mapped reads % |       92.69%
 
+
+######pipeline QC cmds; version Feb 13, 2023
+cd /lab/solexa_page/linyong/
+date
+df -h | grep -i page
+du -sh . /lab/page_human_data/linyong2/
+grep -in error dir-gtex-*/out-*  /lab/page_human_data/linyong2/dir-gtex-*/out-*
+# dir-gtex-02/out-01:23403:  [Exception type: ValueError, raised in libcalignmentfile.pyx:947]
+# dir-gtex-41/out-dir-gtex-41-Tue_Feb_14_15:21:42_EST_2023:1867:  [Exception type: ValueError, raised in libcalignmentfile.pyx:947]
+
+# check if still running
+ls dir-gtex-*/out-*  /lab/page_human_data/linyong2/dir-gtex-*/out-* -lh
+tail dir-gtex-*/out-* /lab/page_human_data/linyong2/dir-gtex-*/out-*
+###avoid dup directory such as out-dir-gtex-34
+bjobs -w -u  linyong | grep linyong | awk '{print $10}' | sort | sed 's/-[A-Z].*//' | sort | uniq -d
+# out-dir-gtex-16
+# out-dir-gtex-17
+# out-dir-gtex-18
+
+ls dir-gtex-10/*counts_gene | while read f; do grep -iw ddx3y "$f"; grep -iw xist "$f"; echo; done
+# ENSG00000067048.17    DDX3Y   4
+# ENSG00000229807.13    XIST    14641
+
+#MT- genes at the end of orig/downloaded bam file
+grep "MT-CO1" dir-gtex-24/*counts_gene  | sort +2 -3g | wc -l
+# dir-gtex-24/GTEX-P4QS-1126-SM-3NMD5.Aligned.sortedByCoord.out.patched.md.bam.counts_gene:ENSG00000198804.2    MT-CO1  3848681
+
+rm -f temp1
+cat dir-gtex-*/out-*  /lab/page_human_data/linyong2/dir-gtex-*/out-*  > temp1
+cat temp1 | grep "Uniquely mapped reads" | grep "%" | wc -l
+cat temp1 | grep "Uniquely mapped reads" | grep "%" | sort +5 -6g
+cat temp1 | grep "Uniquely mapped reads" | grep -v "%" | sort +5 -6g | sort | uniq -d
+cat temp1 | grep "Uniquely mapped reads" | grep -v "%" | sort +5 -6g | sort  | uniq | awk 'NR == 450'
+###median uniq read coverage                   Uniquely mapped reads number |   37274465
+
+ls dir-gtex-*/*counts_gene /lab/page_human_data/linyong2/dir-gtex-*/*counts_gene  -lh | grep "Feb  9 18"
+# -rw-r--r-- 1 linyong input    0 Feb  9 18:26 dir-gtex-01/GTEX-WFON-2226-SM-3TW8W.Aligned.sortedByCoord.out.patched.md.bam.counts_gene
+head dir-gtex-*/script-gtexv8-pipeline-download-genecount
+h | grep script-make-gtexv8-pipeline
+# issue pipeline cmd
+# disc space used
+ls -lh dir-gtex-* | grep total
+# total 97G
+
