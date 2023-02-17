@@ -184,3 +184,20 @@ h | grep script-make-gtexv8-pipeline
 ls -lh dir-gtex-* | grep total
 # total 97G
 
+# error message before Fri Feb 17 12:51:13 EST 2023
+# dir-gtex-02/out-01:23403:  [Exception type: ValueError, raised in libcalignmentfile.pyx:947]
+# dir-gtex-38/out-dir-gtex-38-Tue_Feb_14_15:14:38_EST_2023:54102:2023/02/17 06:41:20 Error occurred when checking for latest version: Get "https://api.github.com/repos/uc-cdis/cdis-data-client/tags": dial tcp 140.82.114.6:443: connect: connection refused
+### for dir-gtex-38/GTEX-146FR-0526-SM-5Q5EX.Aligned.sortedByCoord.out.patched.md.bam
+### 2023/02/17 06:42:54 1 files downloaded.
+### -rw-r--r-- 1 linyong input 9.9G Feb 17 07:01 r3.fq
+###                    Uniquely mapped reads number |       51774649
+### result ok
+### -rw-r--r-- 1 linyong input 1.9M Feb 17 09:29 dir-gtex-38/GTEX-146FR-0526-SM-5Q5EX.Aligned.sortedByCoord.out.patched.md.bam.counts_gene
+### next bam file 2023/02/17 09:29:54 1 files downloaded.
+### -rw-r--r-- 1 linyong input 1.9M Feb 17 11:59 dir-gtex-38/GTEX-17JCI-2326-SM-7IGPC.Aligned.sortedByCoord.out.patched.md.bam.counts_gene
+
+# dir-gtex-41/out-dir-gtex-41-Tue_Feb_14_15:21:42_EST_2023:1867:  [Exception type: ValueError, raised in libcalignmentfile.pyx:947]
+# /lab/page_human_data/linyong2/dir-gtex-44/out-dir-gtex-44-Wed_Feb_15_15:26:05_EST_2023:13062:  [Exception type: ValueError, raised in libcalignmentfile.pyx:947]  
+### dir-gtex-44/GTEX-1GTWX-0003-SM-EYYVV.Aligned.sortedByCoord.out.patched.md.bam  files have encountered an error during downloading
+### INFO    2023-02-16 15:27:08     SamToFastq
+
