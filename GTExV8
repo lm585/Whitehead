@@ -201,3 +201,4 @@ ls -lh dir-gtex-* | grep total
 ### dir-gtex-44/GTEX-1GTWX-0003-SM-EYYVV.Aligned.sortedByCoord.out.patched.md.bam  files have encountered an error during downloading
 ### INFO    2023-02-16 15:27:08     SamToFastq
 
+# /lab/page_human_data/linyong2/dir-gtex-62/out-dir-gtex-62-Fri_Feb_17_13:22:32_EST_2023:218:  [Exception type: ValueError, raised in libcalignmentfile.pyx:947] GTEX-18465-0526-SM-7LG4K.Aligned.sortedByCoord.out.patched.md.bam, Error occurred when getting download URL for object; INFO    2023-02-17 13:22:40     SamToFastq; next bam file , "GTEX-11OC5-0626-SM-5HL6M.Aligned.sortedByCoord.out.patched.md.bam", to be downloaded 2023/02/17 13:27:52 A new version of gen3-client is available! The latest version is 2023.2.0. You are using version 2022.12;
