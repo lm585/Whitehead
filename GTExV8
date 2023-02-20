@@ -201,4 +201,11 @@ ls -lh dir-gtex-* | grep total
 ### dir-gtex-44/GTEX-1GTWX-0003-SM-EYYVV.Aligned.sortedByCoord.out.patched.md.bam  files have encountered an error during downloading
 ### INFO    2023-02-16 15:27:08     SamToFastq
 
+# GTEX-XGQ4-1026-SM-4AT4L.Aligned.sortedByCoord.out.patched.md.bam
+###EXITING: fatal error trying to allocate genome arrays, exception thrown: std::bad_alloc
+###Possible cause 1: not enough RAM. Check if you have enough RAM 31588312371 bytes
+###Possible cause 2: not enough virtual memory allowed with ulimit. SOLUTION: run ulimit -v 31588312371
+### -rw-r--r-- 1 linyong page_hd 6.1G Feb 19 03:02 r4.fq
+### -rw-r--r-- 1 linyong page_hd    0 Feb 19 03:02 /lab/page_human_data/linyong2/dir-gtex-54/GTEX-XGQ4-1026-SM-4AT4L.Aligned.sortedByCoord.out.patched.md.bam.counts_gene
+
 # /lab/page_human_data/linyong2/dir-gtex-62/out-dir-gtex-62-Fri_Feb_17_13:22:32_EST_2023:218:  [Exception type: ValueError, raised in libcalignmentfile.pyx:947] GTEX-18465-0526-SM-7LG4K.Aligned.sortedByCoord.out.patched.md.bam, Error occurred when getting download URL for object; INFO    2023-02-17 13:22:40     SamToFastq; next bam file , "GTEX-11OC5-0626-SM-5HL6M.Aligned.sortedByCoord.out.patched.md.bam", to be downloaded 2023/02/17 13:27:52 A new version of gen3-client is available! The latest version is 2023.2.0. You are using version 2022.12;
