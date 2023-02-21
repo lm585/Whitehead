@@ -1,0 +1,51 @@
+#!/bin/bash
+# Configuration values for SLURM job submission.
+# One leading hash ahead of the word SBATCH is not a comment, but two are.
+#SBATCH --job-name="star-map" # friendly name for job.
+#SBATCH --nodes=1                      # ensure cores are on one node
+#SBATCH --ntasks=1                     # run a single task
+#SBATCH --cpus-per-task=5              # number of cores/threads requested.
+#SBATCH --mem=40gb                      # memory requested.
+#SBATCH --partition=20                 # partition (queue) to use
+#SBATCH --output "out-$dir-$app"   # name of output file.  %j is jobid
+#SBATCH --mail-type=ALL               # send email on job start/finish.
+#SBATCH --mail-user=linyong@wi.mit.edu
+
+# This is the actual section for commands to run
+
+# Uncomment the last line to email output file to specified address.
+# Slurm doesn't do this automatically, regardless of the mail-type setting above.
+#/usr/bin/mail -s "$SLURM_JOB_NAME $SLURM_JOB_ID" your_username@wi.mit.edu < friendlyname-${SLURM_JOB_ID}.out
+
+t=841
+while [ "$t"  -le 880 ]
+do
+ echo "---------------------------"
+ cat /lab/solexa_page/linyong/file-manifest.json  | head -1 > temp.json
+ cat /lab/solexa_page/linyong/file-manifest.json  | awk 'NR > 1 + ('$t' - 1) *6  && NR <= 1 + '$t' * 6' | sed 's/},/}/' >> temp.json 
+ cat /lab/solexa_page/linyong/file-manifest.json  | tail -n 1 >> temp.json 
+ cat temp.json
+ echo
+ t=`expr $t + 1`
+
+ rm *.bam
+ /lab/solexa_page/linyong/gen3-client download-multiple --profile=gtexv8  --manifest=temp.json --protocol=s3 --no-prompt  
+ f=`ls | grep -i "^gtex.*.bam$" | head -1`
+ ### bam -> fastq
+ java -jar /usr/local/share/picard-tools/picard.jar SamToFastq I="$f"  FASTQ="r3.fq" SECOND_END_FASTQ="r4.fq" 
+ ls -lh "r3.fq" "r4.fq"  
+ rm "$f" 
+ ###fq -> STAR align
+
+ STAR --runThreadN 4 --outFilterMultimapNmax 20  --genomeDir /lab/solexa_page/linyong/dir-star-genome-index-oh75 --readFilesIn r3.fq r4.fq  --outSAMtype BAM Unsorted --outSAMunmapped Within --outSAMattributes Standard
+ rm r3.fq r4.fq  
+ cat Log.final.out > "$f.STAR.log"
+###samtools sort -n -@ 6 -o MGB_022.name.multimap20.bam Aligned.out.bam
+
+ htseq-count  --mode=union --stranded=no --idattr=gene_id --format=bam --additional-attr=gene_name --order=name --type=exon  Aligned.out.bam /lab/solexa_page/linyong/gencode/gencode.v42.primary_assembly.noPar.annotation.gtf   > "$f.counts_gene"
+ rm Aligned.out.bam 
+ grep -w ACTB  "$f.counts_gene" >> "$f.STAR.log"
+ grep -w GAPDH "$f.counts_gene" >> "$f.STAR.log"
+ cat "$f.STAR.log"
+done
+
