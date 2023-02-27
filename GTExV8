@@ -4,6 +4,10 @@
 
 ./gen3-client |not exec this cmd### configure --profile=gtexv8 --cred=credentials.json --apiendpoint=https://gen3.theanvil.io
 # 2023/01/27 15:22:22 Profile 'gtexv8' has been configured successfully.
+./gen3-client configure --profile=gtexv8expire_3_29  --cred=credentials_expire_3_29.json --apiendpoint=https://gen3.theanvil.io
+2023/02/27 12:27:17 A new version of gen3-client is available! The latest version is 2023.2.0. You are using version 2022.12
+2023/02/27 12:27:17 Please download the latest gen3-client release from https://github.com/uc-cdis/cdis-data-client/releases/latest
+2023/02/27 12:27:17 Profile 'gtexv8expire_3_29' has been configured successfully.
 
 
     Important: “--protocol” tag is important to this command as it will determine which bucket the files will be downloaded from. The “s3” value will download from the egress free Cleversafe bucket for the datasets in the “Downloadable” tab.
