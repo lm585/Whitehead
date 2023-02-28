@@ -12,12 +12,14 @@ app=`date | sed 's/  */_/g'`
 echo "out-$dir-$app"
 mkdir "$dir"
 cd "$dir"
-cat ../dir-gtex-01/script-gtexv8-pipeline-download-genecount > temp
+rm "out-$dir-"*
+cat ../script-gtexv8-pipeline-download-genecount > temp
+
 head -2  temp > script-gtexv8-pipeline-download-genecount
 echo "t=$n2" >> script-gtexv8-pipeline-download-genecount
 echo "while [ \"\$t\"  -le $n3 ]" >> script-gtexv8-pipeline-download-genecount
 awk 'NR > 4' temp  >> script-gtexv8-pipeline-download-genecount
 cat script-gtexv8-pipeline-download-genecount
-bsub -n 5 "bash script-gtexv8-pipeline-download-genecount > out-$dir-$app  2>&1 "
+bsub -n 5 -R "rusage[mem=40000]"  "bash script-gtexv8-pipeline-download-genecount > out-$dir-$app  2>&1 "
 
 cd ..
