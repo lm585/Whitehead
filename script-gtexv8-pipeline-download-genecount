@@ -1,18 +1,18 @@
 #
 
-t=1
-while [ "$t"  -le 40 ]
+t=841
+while [ "$t"  -le 880 ]
 do
  echo "---------------------------"
- cat ../file-manifest.json  | head -1 > temp.json
- cat ../file-manifest.json  | awk 'NR > 1 + ('$t' - 1) *6  && NR <= 1 + '$t' * 6' | sed 's/},/}/' >> temp.json 
- cat ../file-manifest.json  | tail -n 1 >> temp.json 
+ cat /lab/solexa_page/linyong/file-manifest.json  | head -1 > temp.json
+ cat /lab/solexa_page/linyong/file-manifest.json  | awk 'NR > 1 + ('$t' - 1) *6  && NR <= 1 + '$t' * 6' | sed 's/},/}/' >> temp.json 
+ cat /lab/solexa_page/linyong/file-manifest.json  | tail -n 1 >> temp.json 
  cat temp.json
  echo
  t=`expr $t + 1`
 
  rm *.bam
- ../gen3-client download-multiple --profile=gtexv8  --manifest=temp.json --protocol=s3 --no-prompt  
+ /lab/page_human_data/linyong2/dir-gtex-118/gen3-client download-multiple --profile=gtexv8expire_3_29  --manifest=temp.json --protocol=s3 --no-prompt
  f=`ls | grep -i "^gtex.*.bam$" | head -1`
  ### bam -> fastq
  java -jar /usr/local/share/picard-tools/picard.jar SamToFastq I="$f"  FASTQ="r3.fq" SECOND_END_FASTQ="r4.fq" 
