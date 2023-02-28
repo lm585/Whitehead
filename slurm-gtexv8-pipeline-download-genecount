@@ -29,7 +29,7 @@ do
  t=`expr $t + 1`
 
  rm *.bam
- /lab/solexa_page/linyong/gen3-client download-multiple --profile=gtexv8  --manifest=temp.json --protocol=s3 --no-prompt  
+ /lab/page_human_data/linyong2/dir-gtex-118/gen3-client download-multiple --profile=gtexv8expire_3_29  --manifest=temp.json --protocol=s3 --no-prompt
  f=`ls | grep -i "^gtex.*.bam$" | head -1`
  ### bam -> fastq
  java -jar /usr/local/share/picard-tools/picard.jar SamToFastq I="$f"  FASTQ="r3.fq" SECOND_END_FASTQ="r4.fq" 
