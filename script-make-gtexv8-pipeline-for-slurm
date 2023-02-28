@@ -12,6 +12,7 @@ app=`date | sed 's/  */_/g'`
 echo "out-$dir-$app"
 mkdir "$dir"
 cd "$dir"
+rm "out-$dir-"*
 cat ../slurm-gtexv8-pipeline-download-genecount > temp
 
 head -9  temp > slurm-gtexv8-pipeline-download-genecount
