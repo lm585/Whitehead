@@ -215,3 +215,33 @@ ls -lh dir-gtex-* | grep total
 ### -rw-r--r-- 1 linyong page_hd    0 Feb 19 03:02 /lab/page_human_data/linyong2/dir-gtex-54/GTEX-XGQ4-1026-SM-4AT4L.Aligned.sortedByCoord.out.patched.md.bam.counts_gene
 
 # /lab/page_human_data/linyong2/dir-gtex-62/out-dir-gtex-62-Fri_Feb_17_13:22:32_EST_2023:218:  [Exception type: ValueError, raised in libcalignmentfile.pyx:947] GTEX-18465-0526-SM-7LG4K.Aligned.sortedByCoord.out.patched.md.bam, Error occurred when getting download URL for object; INFO    2023-02-17 13:22:40     SamToFastq; next bam file , "GTEX-11OC5-0626-SM-5HL6M.Aligned.sortedByCoord.out.patched.md.bam", to be downloaded 2023/02/17 13:27:52 A new version of gen3-client is available! The latest version is 2023.2.0. You are using version 2022.12;
+
+head dir-gtex-97/GTEX-1B933-0011-R11a-SM-7P8PM.Aligned.sortedByCoord.out.patched.md.bam.counts_gene
+ENSG00000000003.15      TSPAN6  95
+ENSG00000000005.6       TNMD    0
+ENSG00000000419.14      DPM1    1297
+ENSG00000000457.14      SCYL3   622
+ENSG00000000460.17      C1orf112        141
+ENSG00000000938.13      FGR     125
+ENSG00000000971.17      CFH     25
+ENSG00000001036.14      FUCA2   281
+ENSG00000001084.13      GCLC    861
+ENSG00000001167.15      NFYA    1014
+
+tail -n 15 dir-gtex-107/GTEX-13O3P-0626-SM-5L3D5.Aligned.sortedByCoord.out.patched.md.bam.counts_gene
+ENSG00000291292.1       ENSG00000291292 0
+ENSG00000291293.1       ENSG00000291293 0
+ENSG00000291294.1       ENSG00000291294 0
+ENSG00000291295.1       ENSG00000291295 0
+ENSG00000291296.1       ENSG00000291296 4
+ENSG00000291297.1       ENSG00000291297 0
+ENSG00000291298.1       ENSG00000291298 0
+ENSG00000291299.1       ENSG00000291299 48
+ENSG00000291300.1       PRSS30P 0
+ENSG00000291301.1       ENSG00000291301 0
+__no_feature            2245732
+__ambiguous             4096397
+__too_low_aQual         0
+__not_aligned           731747
+__alignment_not_unique          1859550
+
