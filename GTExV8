@@ -215,6 +215,17 @@ ls -lh dir-gtex-* | grep total
 ### -rw-r--r-- 1 linyong page_hd    0 Feb 19 03:02 /lab/page_human_data/linyong2/dir-gtex-54/GTEX-XGQ4-1026-SM-4AT4L.Aligned.sortedByCoord.out.patched.md.bam.counts_gene
 
 # /lab/page_human_data/linyong2/dir-gtex-62/out-dir-gtex-62-Fri_Feb_17_13:22:32_EST_2023:218:  [Exception type: ValueError, raised in libcalignmentfile.pyx:947] GTEX-18465-0526-SM-7LG4K.Aligned.sortedByCoord.out.patched.md.bam, Error occurred when getting download URL for object; INFO    2023-02-17 13:22:40     SamToFastq; next bam file , "GTEX-11OC5-0626-SM-5HL6M.Aligned.sortedByCoord.out.patched.md.bam", to be downloaded 2023/02/17 13:27:52 A new version of gen3-client is available! The latest version is 2023.2.0. You are using version 2022.12;
+head ../dir-gtex-84/GTEX-1ICLZ-0726-SM-ARL84.Aligned.sortedByCoord.out.patched.md.bam.counts_gene
+ENSG00000000003.15      TSPAN6  757
+ENSG00000000005.6       TNMD    24
+ENSG00000000419.14      DPM1    620
+ENSG00000000457.14      SCYL3   440
+ENSG00000000460.17      C1orf112        194
+ENSG00000000938.13      FGR     273
+ENSG00000000971.17      CFH     3229
+ENSG00000001036.14      FUCA2   520
+ENSG00000001084.13      GCLC    399
+ENSG00000001167.15      NFYA    630
 
 head dir-gtex-97/GTEX-1B933-0011-R11a-SM-7P8PM.Aligned.sortedByCoord.out.patched.md.bam.counts_gene
 ENSG00000000003.15      TSPAN6  95
