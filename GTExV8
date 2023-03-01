@@ -245,3 +245,14 @@ __too_low_aQual         0
 __not_aligned           731747
 __alignment_not_unique          1859550
 
+dir-gtex-118/GTEX-ZAB5-2426-SM-5CVMW.Aligned.sortedByCoord.out.patched.md.bam.counts_gene <==
+ENSG00000000003.15      TSPAN6  1901
+ENSG00000000005.6       TNMD    2
+ENSG00000000419.14      DPM1    1456
+ENSG00000000457.14      SCYL3   443
+ENSG00000000460.17      C1orf112        437
+ENSG00000000938.13      FGR     144
+ENSG00000000971.17      CFH     147
+ENSG00000001036.14      FUCA2   223
+ENSG00000001084.13      GCLC    574
+ENSG00000001167.15      NFYA    2663
