@@ -1,0 +1,10 @@
+#
+
+b=`ls temp-gtexv8-*.counts_gene | awk 'NR == 1' `
+cp "$b" s
+ls temp-gtexv8-*.counts_gene | awk 'NR > 1' | while read f
+do
+ cut -f 3 "$f" > f2
+ paste s f2 > m
+ mv m s
+done
