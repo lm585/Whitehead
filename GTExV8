@@ -267,3 +267,29 @@ ENSG00000000971.17      CFH     147
 ENSG00000001036.14      FUCA2   223
 ENSG00000001084.13      GCLC    574
 ENSG00000001167.15      NFYA    2663
+
+#######################################################################################################
+###### Mar 2, 2023 gene count table for 1st 3k samples
+rm -f dir-list
+ls  /lab/solexa_page/linyong/ | grep dir-gtex- | awk '{print "/lab/solexa_page/linyong/" $0}' > dir-list
+ls /lab/page_human_data/linyong2/ | grep "dir-gtex-[0-7][0-9]\/" | awk '{print "/lab/page_human_data/linyong2/" $0}' >> dir-list
+wc -l dir-list
+# 79 dir-list
+bash  /lab/solexa_page/linyong/script-genecount-merge-2
+ls  /lab/solexa_page/linyong/temp-gtexv8-* | wc -l
+# 3127
+cd /lab/solexa_page/linyong/
+rm -f temp1
+bsub "bash script-paste-files"
+ls -lh m s
+# -rw-r--r-- 1 linyong input 490M (3127 samples) Mar  2 19:21 s
+grep -n '__no_feature' s | cut -f 1-10
+# 62705:__no_feature
+awk 'NR < 62705' s > temp1
+# mv -i  temp1 gtex-comb-3127samp.gene.count.txt
+awk '{print NF}' gtex-comb-3127samp.gene.count.txt | uniq -c | head
+#  62704 3129
+awk '{print NF}' s | uniq -c | head
+#  62704 3129
+#      5 3128 (lack gene_name column)
+rm -f s
