@@ -1,6 +1,8 @@
 #
 
 rm -f /lab/solexa_page/linyong/temp-gtexv8-*
+rm -f /lab/solexa_page/linyong/temp-error
+
 cat  dir-list | head -1234567 | while read d
 do
   cd "$d"
@@ -15,6 +17,7 @@ do
     
     if [ "$t" -gt 999 ]
     then
+     ls -lh /lab/solexa_page/linyong/temp-gtexv8-$s >> /lab/solexa_page/linyong/temp-error 2>&1
      echo "geneID	name	$id" >  /lab/solexa_page/linyong/temp-gtexv8-$s
      cat $s >> /lab/solexa_page/linyong/temp-gtexv8-$s
     fi 
