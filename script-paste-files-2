@@ -1,0 +1,8 @@
+#
+
+b=`ls temp-gtexv8-*.counts_gene | awk 'NR == 1' `
+
+ls temp-gtexv8-*.counts_gene | awk 'NR > 1' | while read f
+do
+ paste "$b" "$f" | awk '$1 != $4'
+done
