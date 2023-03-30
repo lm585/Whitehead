@@ -545,3 +545,10 @@ ENSG00000171860	C3AR1	7615	ENSG00000171860	7615
 ENSG00000110848	CD69	7968	ENSG00000110848	7968
 ENSG00000174125	TLR1	9152	ENSG00000174125	9152
 
+chr1    HAVANA  exon    247423847       247425599       .       +       .       gene_id "ENSG00000162711.18"; transcript_id "ENST00000697350.1"; gene_type "protein_coding"; gene_name "NLRP3"; transcript_type "protein_coding"; transcript_name "NLRP3-210"; exon_number 4; exon_id "ENSE00001067929.1"; level 2; protein_id "ENSP00000513275.1"; hgnc_id "HGNC:16400"; tag "alternative_5_UTR"; tag "upstream_ATG"; tag "RNA_Seq_supported_only"; tag "basic"; tag "appris_principal_1"; havana_gene "OTTHUMG00000040647.7";
+
+chr1    HAVANA  exon    247423847       247425599       .       +       .       gene_id "ENSG00000289728.1"; transcript_id "ENST00000697408.1"; gene_type "lncRNA"; gene_name "ENSG00000289728"; transcript_type "lncRNA"; transcript_name "ENST00000697408"; exon_number 7; exon_id "ENSE00003970522.1"; level 2; tag "RNA_Seq_supported_only"; tag "basic"; tag "Ensembl_canonical"; tag "readthrough_transcript";
+
+cat /lab/solexa_page/linyong/Homo_sapiens.GRCh38.90.gtf| grep "24742[0-9][0-9][0-9][0-9]"  | awk '$1 == 1'  | grep -v NLRP3 | wc -l
+0
+
