@@ -3484,3 +3484,35 @@ t3 <- t.c.inter[ t.c.inter$symbol.x %in% c("MPP1", "SAT1", "RELB"),]
 t4 <- t3[, c(1,2,5,11,14,20,23,26)]
 t5 <- rbind(t2,t4)
 write.table(t5, "temp.2.txt", sep = "\t", quote=F)
+
+##################################
+human mouse gene conversion
+cat /Users/linyongmao/Downloads/177+DEGs_WTs_vs_mutants.txt |  sed 's/^M//' > temp1
+cat temp1 | while read g
+do
+grep -i "^$g    " M10.geneID-name-chr-type.2.name-first.txt
+done > temp2
+cat temp2 | cut -f 4 | sort | uniq -c
+ 174 protein_coding
+   1 transcribed_unprocessed_pseudogene
+cat temp2 | awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $3;
+for(i = 1; i <= NF; i++)
+{
+ if(i != 3)  
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > temp3
+vi temp3
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    temp3  Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip out
+paste  temp3  out | grep -vw notApplicable > temp3.human.gene.name.txt
+head temp3.human.gene.name.txt
+cat temp3.human.gene.name.txt | cut -f 7 | awk 'NR > 1' | sort | uniq > temp3.human.gene.name.2.txt
+
+Term    Overlap P-value Adjusted P-value        Old P-value     Old Adjusted P-value    Odds Ratio      Combined Score  Genes
+Cardiomyocytes  6/174   0.002797759156843714    0.274180397370684       0       0       4.562152133580705       26.820602620655634      MYOCD;DHRS7C;HSPB7;ATP1A2;FGF2;MYOZ2
+Adipocytes      6/210   0.006950687120078092    0.3405836688838265      0       0       3.750190985485103       18.63437933344835       NNMT,HSPB7,TSPO,RNASE4,MNDA,ADGRL4
