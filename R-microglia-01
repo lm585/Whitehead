@@ -3516,3 +3516,11 @@ cat temp3.human.gene.name.txt | cut -f 7 | awk 'NR > 1' | sort | uniq > temp3.hu
 Term    Overlap P-value Adjusted P-value        Old P-value     Old Adjusted P-value    Odds Ratio      Combined Score  Genes
 Cardiomyocytes  6/174   0.002797759156843714    0.274180397370684       0       0       4.562152133580705       26.820602620655634      MYOCD;DHRS7C;HSPB7;ATP1A2;FGF2;MYOZ2
 Adipocytes      6/210   0.006950687120078092    0.3405836688838265      0       0       3.750190985485103       18.63437933344835       NNMT,HSPB7,TSPO,RNASE4,MNDA,ADGRL4
+
+####################Sat1 KO mouse reg genes
+for g in `echo Cd14 Tnf Ccl8 Foxp3 Cxcr6 Cxcr3 IL1b IL10 Il6 CCL2`
+do
+grep -i "^$g    " /Users/linyongmao/Documents//microglia-mouse/M10.geneID-name-chr-type.2.name-first.txt
+done
+
+CCL2, CCL8, CD14, CXCR3, CXCR6, FOXP3, IL10, IL1B, IL6, TNF,
