@@ -3524,3 +3524,16 @@ grep -i "^$g    " /Users/linyongmao/Documents//microglia-mouse/M10.geneID-name-c
 done
 
 CCL2, CCL8, CD14, CXCR3, CXCR6, FOXP3, IL10, IL1B, IL6, TNF,
+
+#########################################################
+rm temp
+ls HALLMARK*.genes | grep -v temp | while read f
+do
+cat "$f" >> temp
+done
+
+wc -l temp
+#    7321 temp
+sort temp | uniq | wc -l
+#    4383
+
