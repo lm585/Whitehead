@@ -552,3 +552,19 @@ chr1    HAVANA  exon    247423847       247425599       .       +       .       
 cat /lab/solexa_page/linyong/Homo_sapiens.GRCh38.90.gtf| grep "24742[0-9][0-9][0-9][0-9]"  | awk '$1 == 1'  | grep -v NLRP3 | wc -l
 0
 
+for d in  `echo "dir-gtex-433 dir-gtex-436 dir-gtex-437 dir-gtex-438 dir-gtex-439" `
+do
+ tail -n 1 $d/out*
+ cd  $d
+ rm -f [GL]*
+ sbatch slurm-gtexv8-pipeline-download-genecount 
+ cd ..
+ sleep 30
+done
+
+scontrol show job | grep linyong | grep StdOut | grep -o "dir-gtex-[0-9]*" | sort | uniq | while read d
+do
+echo $d
+cat $d/out* | tail
+echo
+done
