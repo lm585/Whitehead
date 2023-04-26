@@ -15,6 +15,10 @@ linyong@tak /lab/solexa_page/linyong$ /lab/page_human_data/linyong2/dir-gtex-118
 2023/03/27 16:32:08 Please download the latest gen3-client release from https://github.com/uc-cdis/cdis-data-client/releases/latest
 2023/03/27 16:32:08 Profile 'gtexv8expire_4_26' has been configured successfully.
 
+linyong@fry /lab/solexa_page/linyong$ /lab/page_human_data/linyong2/dir-gtex-118/gen3-client  configure --profile=gtexv8expire_5_26 --cred=credentials-5-26-5pm.json  --apiendpoint=https://gen3.theanvil.io 
+2023/04/26 17:36:24 A new version of gen3-client is available! The latest version is 2023.4.0. You are using version 2022.12
+2023/04/26 17:36:24 Please download the latest gen3-client release from https://github.com/uc-cdis/cdis-data-client/releases/latest
+2023/04/26 17:36:24 Profile 'gtexv8expire_5_26' has been configured successfully.
 
     Important: “--protocol” tag is important to this command as it will determine which bucket the files will be downloaded from. The “s3” value will download from the egress free Cleversafe bucket for the datasets in the “Downloadable” tab.
 
