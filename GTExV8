@@ -572,3 +572,31 @@ echo $d
 cat $d/out* | tail
 echo
 done
+
+#########################merge gene count files; combine
+ls  /lab/solexa_page/linyong/ | grep "^dir-gtex-[0-9]*/"  | awk '{print "/lab/solexa_page/linyong/" $0}' > dir-list
+ls /lab/page_human_data/linyong2/ | grep "^dir-gtex-[0-9]*/" | awk '{print "/lab/page_human_data/linyong2/" $0}' >> dir-list
+wc -l dir-list*
+cat dir-list* | sort | uniq -d | wc -l
+cat dir-list* | sort | uniq -u | wc -l
+cat dir-list* | sort | uniq -u > temp
+mv temp dir-list
+###rm dir-gtex-462 from dir-list because dir-gtex-462 is still running
+bash  /lab/solexa_page/linyong/script-genecount-merge-2
+cat  /lab/solexa_page/linyong/temp-error | grep -v "cannot access" |head
+ls  /lab/solexa_page/linyong/temp-gtexv8-* | wc -l
+# 6402
+cd /lab/solexa_page/linyong/
+rm -f temp1
+bsub "bash script-paste-files"
+# 8 hour running on LSF
+ls -lh s  f2 m
+grep -n '__no_feature' s | cut -f 1-10
+# 62705:__no_feature            1875341 3762916 3548239 3767337 2554672 3159592 2963935 2526148
+awk 'NR < 62705' s > temp1
+mv -i temp1 gtex-comb-6402samp.gene.count.txt
+chmod -w gtex-comb-6402samp.gene.count.txt
+awk '{print NF}' gtex-comb-6402samp.gene.count.txt | uniq -c | head
+#  62704 6404
+rm -f s
+
