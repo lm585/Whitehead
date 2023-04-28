@@ -1,0 +1,19 @@
+#
+if [ $# -lt 2 ]
+then
+  echo $0 "dir-number(292)   bamSeqentialNum(17000)"
+  exit 1
+fi
+
+d1=$1
+n1=$2
+t=1
+
+while [ $t -le 15 ]
+do
+ echo "bash script-make-gtexv8-pipeline-for-slurm dir-gtex-$d1 $n1"
+ echo "sleep 30"
+ d1=`expr $d1 + 1 `
+ n1=`expr $n1 + 20 `
+ t=`expr $t + 1 `
+done
