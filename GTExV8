@@ -566,6 +566,12 @@ do
  sleep 30
 done
 
+#####################################check stuck then rerun results
+cd ../dir-gtex-433
+ls -lh *counts_gene | sort  +5 -6 +6 -7g +7 -8 | awk '{print $7}' | uniq -c
+ls -lh *counts_gene | sort  +5 -6 +6 -7g +7 -8
+ls *counts_gene | while read f; do grep -iw ddx3y "$f"; grep -iw xist "$f"; echo; done
+
 scontrol show job | grep linyong | grep StdOut | grep -o "dir-gtex-[0-9]*" | sort | uniq | while read d
 do
 echo $d
