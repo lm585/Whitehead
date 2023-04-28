@@ -606,3 +606,7 @@ awk '{print NF}' gtex-comb-6402samp.gene.count.txt | uniq -c | head
 #  62704 6404
 rm -f s
 
+##########################################################
+-r--r--r-- 1 linyong systemd-timesync  513411552 Mar  2 22:21 gtex-comb-3127samp.gene.count.txt
+-r--r--r-- 1 linyong systemd-timesync  719148199 Mar 27 11:39 gtex-comb-4388samp.gene.count.txt
+-r--r--r-- 1 linyong systemd-timesync 1048559353 Apr 27 23:40 gtex-comb-6402samp.gene.count.txt
