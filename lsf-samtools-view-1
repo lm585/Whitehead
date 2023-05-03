@@ -1,0 +1,16 @@
+#
+ls GTEX*.cram | while read f
+do
+ ls -lh "$f"
+ samtools view "$f" | awk '$3 == "chrX" || $3 == "chrY" ' > temp-X-Y.sam
+ awk '$3 == "chrY" ' temp-X-Y.sam > temp-Y.sam
+ ls -lh  temp-Y.sam temp-X-Y.sam
+ awk '$2 == 163 && $5 == 60 && $3 == "chrX" ' temp-X-Y.sam  | wc -l
+ awk '$2 == 163 && $5 == 60 && $3 == "chrY" ' temp-X-Y.sam  | wc -l
+ awk '$2 == 147 && $5 == 60 && $3 == "chrX" ' temp-X-Y.sam  | wc -l
+ awk '$2 == 147 && $5 == 60 && $3 == "chrY" ' temp-X-Y.sam  | wc -l
+done
+
+rm temp-Y.sam temp-X-Y.sam
+
+
