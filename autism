@@ -1,0 +1,53 @@
+linyong@tak /lab/solexa_page/linyong/cyno-data$ head -50 script*
+==> script-cyno-atac-seq-bwa <==
+#
+cat ~/cyno-atac-seq-info |grep -i atac | grep -i pu.1 | cut -f 1 | while read id 
+do 
+ ls -lh "/lab/solexa_public/Page/230215_WIGTC-NOVASEQ1A_AHW33KDRX2/FASTQ/$id"* 
+ echo 
+ f1=`ls "/lab/solexa_public/Page/230215_WIGTC-NOVASEQ1A_AHW33KDRX2/FASTQ/$id"* | head -1`
+ f2=`ls "/lab/solexa_public/Page/230215_WIGTC-NOVASEQ1A_AHW33KDRX2/FASTQ/$id"* | awk 'NR == 2' `
+ bwa mem -t 4 /lab/solexa_page/linyong/cyno-genome/GCF_012559485_plus_Y.fna "$f1" "$f2" > "$id".sam
+done
+
+
+
+==> script-sam2bam <==
+#
+
+ls L16_620*.mapQ.paired.sam | while read f
+do
+ id=`echo "$f" | sed 's/.sam//' `
+ samtools view -b -S  -t /lab/solexa_page/linyong/cyno-genome/GCF_012559485_plus_Y.fna.fai -o "$id".bam  "$f"
+ ls -lh "$id".bam "$f" 
+done
+
+
+==> script-select-readss <==
+#
+
+ls L16_620*.sam | while read f
+do
+ id=`echo "$f" | sed 's/.sam//' `
+ echo "$id"
+ awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 != 83 && $2 != 163) && $5 == 60'  "$f" > "$id".kept.sam
+ ls -lh "$f"  "$id".kept.sam
+ wc -l "$f"  "$id".kept.sam
+
+done
+
+==> script-select-readss-2 <==
+#
+
+ls L16_620*.kept.sam | while read f
+do
+ id=`echo "$f" | sed 's/.kept.sam//' `
+ echo "$id"
+ cut -f 1 "$f" | sort | uniq -d > temp.paired.reads-ID
+ /lab/solexa_page/linyong/getSam-ID  temp.paired.reads-ID "$f" > "$id".mapQ.paired.sam
+ ls -lh  "$id".sam  "$id".kept.sam "$id".mapQ.paired.sam
+ wc -l "$id".sam  "$id".kept.sam "$id".mapQ.paired.sam
+ 
+done
+
+
