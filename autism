@@ -90,4 +90,75 @@ macs3 callpeak -f BAMPE -t ATAC.bam -g hs -n test -B -q 0.01
 macs2 callpeak -f BAMPE -t L16_6204.mapQ.paired.bam -g 2.53e9 --keep-dup all --outdir dir-macs2peaks -n NAME --tempdir "/tmp"   -B --SPMR  --call-summits
 macs2 callpeak -f BAMPE -t L16_6204.mapQ.paired.bam -g 2.53e9 --keep-dup all --outdir dir-macs2peaks -n NAME --tempdir "/tmp"
 
+=====================>cat ../script-peak-overlap
+#
+
+t="$1" ####L16_6204
+
+cat "$t".mapQ.paired_peaks.xls | awk 'NR > 22' | awk 'BEGIN {FS = "\t"; OFS = "\t";}  
+    {
+     a=$2-100;
+     if(a < 1) 
+     {
+      a = 1;
+     }
+     print $1, a, $3+100, $10 }' > temp-target.bed
+
+for q in `echo L16_6204 L16_6205 L16_6208 L16_6209`
+do
+  if [ "$q" != "$t" ]
+  then
+    cat "$q".mapQ.paired_peaks.xls | awk 'NR > 22' | awk 'BEGIN {FS = "\t"; OFS = "\t";}  {print $1, $2, $3, $10 }' > temp-"$q".bed
+    bedtools intersect -a temp-target.bed -b temp-"$q".bed -wa -wb  > temp-"$t"."$q".overlap
+    echo -n "$t	$q	"
+    cat temp-"$t"."$q".overlap | cut -f 4 | sort | uniq | wc -l
+  fi
+done
+#########################################
+ls temp-L16_6209.*.overlap -lh
+cat temp-L16_6209.*.overlap  |  cut -f 1-4 | sort | uniq -c | awk '$1 > 2' | wc
+# 29291  146455 2087263
+
+for q in `echo L16_6204 L16_6205 L16_6208 L16_6209`; do bash  ../script-peak-overlap $q; done
+# peak overlapped with  other 2 or more peaks of diff samples
+cat temp-*.overlap | cut -f 1-4 | sort | uniq -c | awk '$1 >= 2' |  awk 'BEGIN {OFS = "\t";} {print $5}' > conserved.3samp.peaks
+
+wc -l conserved.3.peaks
+296476 conserved.3.peaks
+cat temp-*.overlap | cut -f 1-4 | sort | uniq -c | awk '$1 >= 2' |  awk 'BEGIN {OFS = "\t";} {print $5}' > conserved.3samp.peaks
+cat *.mapQ.paired_peaks.xls | awk 'BEGIN {FS = "\t";} NF > 5' | sort -t '        ' +9 -10 > temp-1
+sort +0 -1 conserved.3samp.peaks > temp-2
+join -t '        ' -1 1 -2 10 temp-2 temp-1 -o "2.1,2.2,2.3,2.10" > conserved.3samp.peaks.coord
+cat conserved.3samp.peaks.coord | cut -f 4 | sed 's/paired_peak_[0-9][0-9]*//' | sort | uniq -c
+  59902 L16_6204.mapQ.
+  80950 L16_6205.mapQ.
+  69803 L16_6208.mapQ.
+  85821 L16_6209.mapQ.
+
+cat /lab/page_genomes/Macaca_fascicularis/genome/assemblies/GCF_012559485_plus_Y/GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.gtf | awk 'BEGIN {FS = "\t"; OFS = "\t";} NF > 6 && $3 == "gene"' > temp-gene
+wc -l temp-gene
+35591 temp-gene
+
+cat temp-gene |  awk 'BEGIN {FS = "\t"; OFS = "\t";} 
+  {
+   if($7 == "+")
+   {
+    a = $4 - 2000;
+    b = $4 + 2000;
+   }
+   else if ($7 == "-")
+   {
+    a = $5 - 2000;
+    b = $5 + 2000;
+   }
+   else
+   {t=0
+   }
+   if(a < 1) a= 1;
+   print $1,a,b,$9;
+  }' > temp-gene.bed
+bedtools intersect -a temp-gene.bed -b conserved.3samp.peaks.coord -wa -wb  > temp.gene.2kbp.peak
+cut -f 4 temp.gene.2kbp.peak | sort | uniq | wc -l
+17722
+
 
