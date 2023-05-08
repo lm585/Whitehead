@@ -50,4 +50,44 @@ do
  
 done
 
+==>   linyong@tak /lab/solexa_page/linyong/cyno-data$ cat   script-macs2-01   
+#
+ls L16_620*.mapQ.paired.bam | while read f
+do
+ id=`echo "$f" | sed 's/.bam//' `
+ macs2 callpeak -f BAMPE -t "$f" -g 2.53e9 --keep-dup all --outdir dir-macs2-defalt-param  -n "$id" --tempdir "/tmp"   
+
+done
+
+####################################################################################
+ls /lab/solexa_public/Page/230215_WIGTC-NOVASEQ1A_AHW33KDRX2/FASTQ/
+ls /lab/solexa_public/Page/230217_WIGTC-NOVASEQ1B_BHW3Y5DRX2/FASTQ/
+
+grep -iw spi1 /lab/page_genomes/Macaca_fascicularis/genome/assemblies/GCF_012559485/GCF_012559485.2_MFA1912RKSv2_genomic.gtf | grep 107415874
+grep ">" /lab/page_genomes/Macaca_fascicularis/genome/assemblies/GCF_012559485_plus_Y/GCF_012559485_plus_Y.fna | grep -v place | wc
+
+     23     259    2329
+cat L16_6209.mapQ.paired_peaks.xls | awk 'NR > 22' | awk 'BEGIN {FS = "\t"; OFS = "\t";}  
+    {
+     a=$2-100;
+     if(a < 1) 
+     {
+      a = 1;
+     }
+     print $1, a, $3+100, $10 }' > temp-L16_6209.bed
+
+cat L16_6204.mapQ.paired_peaks.xls | awk 'NR > 22' | awk 'BEGIN {FS = "\t"; OFS = "\t";}  {print $1, $2, $3, $10 }' > temp-L16_6204.bed
+bedtools intersect -a temp-L16_6209.bed -b temp-L16_6204.bed -wa -wb
+bedtools intersect -a temp-L16_6209.bed -b temp-L16_6204.bed -wa -wb | wc
+ 102875  823000 12963239
+bedtools intersect -a temp-L16_6209.bed -b temp-L16_6204.bed -wa -wb  | cut -f 4 | sort | uniq | wc -l
+98106
+
+chr     start   end     length  abs_summit      pileup  -log10(pvalue)  fold_enrichment -log10(qvalue)  name
+
+macs3 callpeak -f BAMPE -t ATAC.bam -g hs -n test -B -q 0.01
+
+macs2 callpeak -f BAMPE -t L16_6204.mapQ.paired.bam -g 2.53e9 --keep-dup all --outdir dir-macs2peaks -n NAME --tempdir "/tmp"   -B --SPMR  --call-summits
+macs2 callpeak -f BAMPE -t L16_6204.mapQ.paired.bam -g 2.53e9 --keep-dup all --outdir dir-macs2peaks -n NAME --tempdir "/tmp"
+
 
