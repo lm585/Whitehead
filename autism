@@ -162,3 +162,59 @@ cut -f 4 temp.gene.2kbp.peak | sort | uniq | wc -l
 17722
 
 
+######################################### peak also overlaped/nearby of two or more diff samples
+cat temp-*.overlap | sed 's/.mapQ.paired_peak_[0-9]*$//' | cut -f 4,8 | sort | uniq | cut -f 1 | uniq -c |  awk '$1 >= 2' |  awk 'BEGIN {OFS = "\t";} {print $2}' > conserved.3samp.peaks
+wc -l conserved.3samp.peaks
+273130 conserved.3samp.peaks
+cat *.mapQ.paired_peaks.xls | awk 'BEGIN {FS = "\t";} NF > 5' | sort -t '       ' +9 -10 > temp-1
+sort +0 -1 conserved.3samp.peaks > temp-2
+join -t '       ' -1 1 -2 10 temp-2 temp-1 -o "2.1,2.2,2.3,2.10" > conserved.3samp.peaks.coord
+cat conserved.3samp.peaks.coord | cut -f 4 | sed 's/paired_peak_[0-9][0-9]*//' | sort | uniq -c
+  55991 L16_6204.mapQ.
+  73778 L16_6205.mapQ.
+  62183 L16_6208.mapQ.
+  81178 L16_6209.mapQ.
+cat /lab/page_genomes/Macaca_fascicularis/genome/assemblies/GCF_012559485_plus_Y/GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.gtf | awk 'BEGIN {FS = "\t"; OFS = "\t";} NF > 6 && $3 == "gene"' > temp-gene
+wc -l temp-gene
+35591 temp-gene
+
+cat temp-gene |  awk 'BEGIN {FS = "\t"; OFS = "\t";}
+  {
+   if($7 == "+")
+   {
+    a = $4 - 2000;
+    b = $4 + 2000;
+   }
+   else if ($7 == "-")
+   {
+    a = $5 - 2000;
+    b = $5 + 2000;
+   }
+   else
+   {t=0
+   }
+   if(a < 1) a= 1;
+   print $1,a,b,$9;
+  }' > temp-gene.bed
+bedtools intersect -a temp-gene.bed -b conserved.3samp.peaks.coord -wa -wb  > temp.gene.2kbp.peak
+cut -f 4 temp.gene.2kbp.peak | sort | uniq | wc -l
+16914
+
+
+cat temp.gene.2kbp.peak |  awk 'BEGIN {FS = "\t"; OFS = "\t";} {print $8, $4}' | sed 's/;.*//' | sort -t '  ' +0 -1 > temp.gene.2kbp.peak.geneID
+rm temp-2
+cat  *.mapQ.paired_peaks.xls | awk 'BEGIN {FS = "\t"; OFS = "\t";} NF > 6' | sort -t '      ' +9 -10 > temp-2
+join -t '        ' -1 1 -2 10 temp.gene.2kbp.peak.geneID temp-2 > temp.gene.2kbp.peak.geneID.peak.pvalue
+wc -l  temp.gene.2kbp.peak.geneID temp-2 temp.gene.2kbp.peak.geneID.peak.pvalue
+    97853 temp.gene.2kbp.peak.geneID
+  2108351 temp-2
+    97853 temp.gene.2kbp.peak.geneID.peak.pvalue
+
+cat temp.gene.2kbp.peak.geneID.peak.pvalue | sort -t '   ' +1 -2 > temp.gene.2kbp.peak.geneID.peak.pvalue.sortbygeneID
+cat /lab/page_genomes/Macaca_fascicularis/genome/assemblies/GCF_012559485_plus_Y/GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.gtf | awk 'BEGIN {FS = "\t"; OFS = "\t";} NF > 6 && $3 == "gene"' > temp-gene
+cat  temp-gene | sed 's/;.*//' | awk 'BEGIN {FS = "\t"; OFS = "\t";} {print $9, $1, $4, $5, $7}' | sort -t '        ' +0 -1 > temp-gene-coord
+join -t '        ' -1 1 -2 2 temp-gene-coord temp.gene.2kbp.peak.geneID.peak.pvalue.sortbygeneID > temp.gene.2kbp.peak.6
+cd /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param
+cyno.gene.2kbp.promoter.atac.peaks.ge3samples.txt
+
+cat temp.gene.2kbp.peak.geneID.peak.pvalue | sort -t '   ' +8 -9gr  | grep -wv NC_012670.1 | cut -f 2 | head -350 | sort | uniq | sed 's/gene_id "//' | sed 's/"//' > temp
