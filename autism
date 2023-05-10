@@ -217,4 +217,33 @@ join -t '        ' -1 1 -2 2 temp-gene-coord temp.gene.2kbp.peak.geneID.peak.pva
 cd /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param
 cyno.gene.2kbp.promoter.atac.peaks.ge3samples.txt
 
-cat temp.gene.2kbp.peak.geneID.peak.pvalue | sort -t '   ' +8 -9gr  | grep -wv NC_012670.1 | cut -f 2 | head -350 | sort | uniq | sed 's/gene_id "//' | sed 's/"//' > temp
+sort -t '        ' +0 -1 +1 -2n  conserved.3samp.peaks.coord > conserved.3samp.peaks.coord.sorted
+bedtools merge -d 100 -i conserved.3samp.peaks.coord.sorted > conserved.3samp.peaks.coord.merged
+wc -l conserved.3samp.peaks.coord.merged
+79513 conserved.3samp.peaks.coord.merged
+
+# The output will be named the following way:
+# chr1    pfurio     peak     724705  724804   .      +       .      peak_id="chr1_724705_724804"
+# chr1    pfurio     peak     724805  725050   .      +       .      peak_id="chr1_724805_725050"
+# chr1    pfurio     peak     725051  725150   .      +       .      peak_id="chr1_725051_725150"
+
+rm -f conserved.3samp.peaks.coord.merged.gtf
+cat conserved.3samp.peaks.coord.merged |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+ {
+   print $1 "\t" "macs2" "\t" "peak" "\t"  $2 "\t" $3 "\t" "." "\t" "+"  "\t" "."  "\t" "peak_id=\"" $1 "@@@" $2 "@@@" $3  "\"" "\n";
+ }' > conserved.3samp.peaks.coord.merged.gtf
+
+ 
+===================> cat ../script-peak-read-count
+#
+ls ../L16_620*.mapQ.paired.bam | while read f
+do
+ id=`echo "$f" | sed 's/.bam//' | sed 's/..\///' `
+ echo "$id"
+ ###testing bam sorted by read names
+ samtools view "$f" | head -1000000 | cut -f 1 | uniq -d | wc -l
+ ## --nonunique=default: none
+ htseq-count  --mode=intersection-strict   --stranded=no --idattr=peak_id  --format=bam  --order=name --type=peak "$f"   conserved.3samp.peaks.coord.merged.gtf > "$id".conserved.3samp.peaks.readcount
+
+
+done
