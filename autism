@@ -247,3 +247,130 @@ do
 
 
 done
+
+=======>cat temp-s1
+#
+b=`ls L16_62*readcount | awk 'NR == 1' `
+id=`echo "$b" | sed 's/.mapQ.paired.conserved.3samp.peaks.readcount//'`
+echo "peak	$id" > s
+cat "$b" >> s
+
+ls  L16_62*readcount | awk 'NR > 1' | while read f
+do
+ id=`echo "$f" | sed 's/.mapQ.paired.conserved.3samp.peaks.readcount//'`
+ echo "$id" > f2
+ cut -f 2 "$f" >> f2
+ paste s f2 > m
+ mv m s
+done
+
+=============
+ mv -i s L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount
+paste L16_620*.mapQ.paired.conserved.3samp.peaks.readcount | awk '$1 != $3' | wc -l
+0
+paste L16_620*.mapQ.paired.conserved.3samp.peaks.readcount | awk '$1 != $5' | wc -l
+0
+paste L16_620*.mapQ.paired.conserved.3samp.peaks.readcount | awk '$1 != $7' | wc -l
+0
+
+========================> cat temp-s2
+#
+
+ls -lh L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount 
+wc -l L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount
+
+head -1 L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount > temp-1338
+cat L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount | awk 'NR > 1' |  awk 'BEGIN {FS = "\t"; OFS = ""; }
+ {
+  a=0;
+  for(i = 2; i <= NF; i++)
+  {
+   if($i >= 6) a++
+  }
+  if(a >= 3) print $0;
+ }' >> temp-1338
+
+mv temp-1338 L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount.2
+wc -l L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount.2
+======================= 
+
+  79519 L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount
+  70645 L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount.2
+
+vi L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount.2
+###no --no-features
+tail L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount.2
+head L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount.2
+cat L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount.2 | awk 'NR % 2000 == 0'
+
+> setwd("~")
+setwd("Documents/autism/")
+rawCount <- read.delim("L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount.2", header = T, row.names = 1)
+group <- factor(rep(1, 4))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+
+$samples
+         group lib.size norm.factors
+L16_6204     1 14816318    0.6526096
+L16_6205     1 11782753    1.0855438
+L16_6208     1 10390876    1.5565286
+L16_6209     1 14568029    0.9068638
+## [1]libsize*normfactor  9669271 12790695 16173696 13211218
+
+plotMDS(y, top=98765)
+ sex <- c("F", "F", "F", "M")
+ design <- model.matrix(~sex)
+ design
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+
+........
+d <- cpm(y)
+write.table(d, "temp.txt", quote=F, sep = "\t")
+
+head -20 L16.4samples.conserved.3samp.peaks.readcount.2.diff2-1.txt | while read ll
+do
+ echo "$ll" | cut -f 1-5
+ id=`echo "$ll" | cut -f 1`
+ grep -w "$id" L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount.2     L16.4samples.conserved.3samp.peaks.readcount.2.cpm.txt
+ echo
+done
+
+ls -lh temp-gene.bed 
+-rw-r--r-- 1 linyong input 5.5M May  9 12:56 temp-gene.bed
+cat  conserved.3samp.peaks.coord.merged | awk '{print $0 "\t" $1 "@@@" $2 "@@@" $3 }' > conserved.3samp.peaks.coord.merged.bed
+bedtools intersect -a temp-gene.bed -b   conserved.3samp.peaks.coord.merged.bed -wa -wb  > temp1
+cut -f 4 temp1 | sort | uniq | wc -l
+16914
+cat temp1  |  awk 'BEGIN {FS = "\t"; OFS = "\t";} {print $8, $4}' | sed 's/;.*//' | sort -t '       ' +0 -1 > temp2
+head temp2
+NC_012670.1@@@15968@@@16390	gene_id "KEG98_p01"
+cat  temp2 |   sort -t ' ' +1 -2  > temp2-sorted
+## -rw-r--r-- 1 linyong input 1.8M May  9 13:20 temp-gene-coord
+join -t '        ' -1 1 -2 2 temp-gene-coord temp2-sorted > temp2-genes
+wc -l temp-gene-coord temp2-sorted temp2-genes
+  35591 temp-gene-coord
+  21582 temp2-sorted
+  21582 temp2-genes
+head temp2-genes
+gene_id "AAAS"	NC_052265.1	50081541	50095684	-	NC_052265.1@@@50095425@@@50096224
+gene_id "AAR2"	NC_052264.1	32415598	32448062	+	NC_052264.1@@@32415026@@@32415838
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % sort -t '    ' +5 -6 temp2-genes > temp2-genes-sorted
+sort -t '    ' +0 -1  L16.4samples.conserved.3samp.peaks.readcount.2.diff2-1.txt > temp3
+join -t '    ' -1 6  -2 1 temp2-genes-sorted  temp3 > temp4
+wc -l  temp3 temp2-genes-sorted temp4                  
+   70645 temp3
+   21582 temp2-genes-sorted
+   20919 temp4  ##less peaks because requiring peak with >= 6 reads in >= 3 samples
+> t1 <- read.delim("L16.4samples.conserved.3samp.peaks.readcount.2.diff2-1.txt")
+> t1$id <- rownames(t1)
+> t2 <- read.delim("temp2-genes-sorted", header=F)
+> t3 <- merge(t2, t1, by.x="V6", by.y="id")
+> dim(t3)
+[1] 20919    11
+
