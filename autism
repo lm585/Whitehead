@@ -374,3 +374,58 @@ wc -l  temp3 temp2-genes-sorted temp4
 > dim(t3)
 [1] 20919    11
 
+#########################
+cat cyno.gene.2kbp.promoter.atac.peaksGe3samplesMerged.diff2-1.txt| awk 'BEGIN {FS = "\t"; OFS = "\t";}  {print $2, $3, $4,$5,$6, $1, $7,$8,  $9, $10,  $11} ' > temp
+mv -i temp cyno.gene.2kbp.promoter.atac.peaksGe3samplesMerged.diff2-1.txt
+head cyno.gene.2kbp.promoter.atac.peaksGe3samplesMerged.diff2-1.txt
+gene_id "KEG98_p01"	NC_012670.1	14749	15889	+	NC_012670.1@@@15968@@@16390	-10.9944210770356	11.2570560748315	15.038964625472	0.00154878829710883	0.999991100521646
+gene_id "KEG98_p02"	NC_012670.1	14148	14675	-	NC_012670.1@@@15968@@@16390	-10.9944210770356	11.2570560748315	15.038964625472	0.00154878829710883	0.999991100521646
+
+cat cyno.gene.2kbp.promoter.atac.peaksGe3samplesMerged.diff2-1.txt | sed 's/@@@/     /g' > temp.xls
+cat temp.xls | awk 'BEGIN {FS = "\t"; OFS = "\t";} $12 < 0.05 && $9 < 0' |  grep -v NC_012670.1 | cut -f 1,2 | grep -v "LOC[0-9][0-9][0-9]*" | cut -f 1 | sort | uniq | sed 's/gene_id "//' | sed 's/"//'
+cat cyno.female.enrichment.PMID-3.tsv cyno.female.enrichment.Process-4.tsv > temp1
+cat temp1 | grep -w "NLGN3" | cut -f 1-2
+cat temp1 | grep -w "NLGN4X" | cut -f 1-2
+cat temp1 | grep -w "GPR173" | cut -f 1-2
+cat temp.xls | awk 'BEGIN {FS = "\t"; OFS = "\t";} $12 < 0.05 && $9 > 0' |  grep -v NC_012670.1 | cut -f 1,2 | grep -v "LOC[0-9][0-9][0-9]*" | cut -f 1 | sort | uniq | sed 's/gene_id "//' | sed 's/"//'| wc -l
+     109
+
+Microglia Pathogen Phagocytosis Pathway WP3937
+
+ls -lh ~/Downloads | grep -iw "may 13" | awk '{print $9}' | sort
+ARCHS4_Kinases_Coexp_table.txt
+CORUM_table.txt
+HDSigDB_Human_2021_table.txt
+MSigDB_Hallmark_2020_table.txt
+WikiPathway_2021_Human_table.txt
+WikiPathways_2016_table.txt
+WikiPathways_2019_Mouse_table.txt
+
+ls -lh ~/Downloads | grep -iw "may 13" | awk '{print $9}' | sort | while read f
+do
+ echo "$f"
+ head -1  ~/Downloads/"$f" | cut -f 1-4,7,9
+ cat ~/Downloads/"$f" | awk 'BEGIN {FS = "\t"; OFS = "\t";} $4 < 0.05' | cut -f 1-4,7,9
+ echo
+ echo
+done
+
+f="MSigDB_Hallmark_2020_table.txt"
+cat ~/Downloads/"$f" | awk 'BEGIN {FS = "\t"; OFS = "\t";} $4 < 0.05' | cut -f 9 | awk 'BEGIN {FS = ";"; } {for (i = 1; i <= NF; i++) print $i;}' | sort | uniq  # | awk 'BEGIN {ORS = " " } {print $1}' 
+
+### Inflammation (Allograft Rejection, IL-6/JAK/STAT3 Signaling, NF-kB, Interferon Gamma. GENES with stronger promoter open chromatin in male : B4GALT1 CASP7 CCR5 CD40 HELZ2 ICOSLG IL4R ITGB2 ITGB3 KLF2 MAP3K8 PIK3R5 RELB TGFB1 TLR6 TNIP2 TRIM25)
+
+f="ARCHS4_Kinases_Coexp_table.txt"
+CSF1R human kinase ARCHS4 coexpression	15/299	8.435036230126662E-11	3.019742970385345E-8	11.01681899910099	SLC37A2;OLFML2B;TGFB1;PLXND1;UNC93B1;KCNK13;ITGB2;RHBDF2;CARD9;ADCY7;PIK3R5;KCNQ1;CTSH;KCTD12;CCR5
+based on co-expression analysis, male up-reg genes co-expressed with CSF1R (Macrophage Colony-Stimulating Factor 1 Receptor), which regulates proliferation and activation of microglial cells 
+
+
+cat temp-gene | grep ^Ycons | cut -f 9 | sed 's/;.*//' | sed 's/gene_name "//' | sed 's/"//' | sort | uniq > Y-gene-ids
+q=L16_6209
+cat "$q".mapQ.paired_peaks.xls | awk 'NR > 22' | awk 'BEGIN {FS = "\t"; OFS = "\t";}  {print $1, $2, $3, $10 }' > temp-1
+bedtools intersect -a temp-gene.bed -b  temp-1 -wa -wb  > temp1
+head temp1
+NC_052255.1	7616	11616	gene_id "LOC123572819"; transcript_id ""; db_xref "GeneID:123572819"; gbkey "Gene"; gene "LOC123572819"; gene_biotype "protein_coding"; 	NC_052255.1	9009	9121	L16_6209.mapQ.paired_peak_13
+cat temp1 | grep ^Ycons > Y-gene.2kbp.promoter.atac.peaks.L16_6209.bed.intersect
+cut -f 4 Y-gene.2kbp.promoter.atac.peaks.L16_6209.bed.intersect | sed 's/;.*//' | sed 's/gene_name "//' | sed 's/"//' | sort | uniq > temp2
+
