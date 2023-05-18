@@ -429,3 +429,39 @@ NC_052255.1	7616	11616	gene_id "LOC123572819"; transcript_id ""; db_xref "GeneID
 cat temp1 | grep ^Ycons > Y-gene.2kbp.promoter.atac.peaks.L16_6209.bed.intersect
 cut -f 4 Y-gene.2kbp.promoter.atac.peaks.L16_6209.bed.intersect | sed 's/;.*//' | sed 's/gene_name "//' | sed 's/"//' | sort | uniq > temp2
 
+bamCoverage --bam a.bam -o a.SeqDepthNorm.bw \
+    --binSize 10
+    --normalizeUsing RPGC
+    --effectiveGenomeSize 2150570000
+    --ignoreForNormalization chrX
+    --extendReads
+
+bamCoverage --bam ../L16_6209.mapQ.paired.bam -o L16_6209.bw -p 4 --verbose
+samtools sort -@ 4 -o temp.bam ../L16_6209.mapQ.paired.bam
+samtools index temp.bam
+bamCoverage --bam temp.bam -o temp.bw -p 4 --verbose
+# defaultFragmentLength: read length
+# maxPairedFragmentLength: 1000
+# minMappingQuality: None
+# ignoreDuplicates: False
+
+linyong@tak /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param2$ cat ../script-macs2-02
+#
+ls L16_620*.mapQ.paired.bam | while read f
+do
+ id=`echo "$f" | sed 's/.bam//' `
+ macs2 callpeak -f BAMPE -t "$f" -g 2.53e9 --keep-dup all --outdir dir-macs2-defalt-param2  -n "$id".B.SPMR  --tempdir "/tmp"   -B --SPMR
+
+done
+==========
+cat ../../cyno-genome/GCF_012559485_plus_Y.fna.fai | cut -f 1-2 > chrom.sizes
+
+for q in `echo L16_6204 L16_6205 L16_6208 L16_6209`
+do
+ bedGraphToBigWig "$q".mapQ.paired.B.SPMR_treat_pileup.bdg  chrom.sizes    "$q".mapQ.paired.B.SPMR_treat_pileup.bw
+ echo $q
+done
+
+cat /usr/local/bin/igv
+####increase memory for igv
+vi "$HOME/.igv/java_arguments"
