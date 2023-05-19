@@ -511,3 +511,23 @@ PIK3R5
 RHBDF2
 SLC37A2
 
+##############################
+> d <- cpm(y)
+t1 <- as.data.frame(log10(d + 1))
+t2 <- cor(t1)
+t3 <- as.data.frame(t2)
+F.F.corr <- c(t3[1, 2], t3[1,3], t3[2,3] )
+F.M.corr <- c(t3[4,1], t3[4,2], t3[4,3] )
+t4 <- list(F.F.corr, F.M.corr)
+
+boxplot(t4, ylab="log(cpm + 1) Pearson correlation between samples", ylim = c(0.2, 0.9))
+abline(h = seq(-100,100,0.02), lty = 5, lwd = 0.5, col = "gray")
+beeswarm(t4, add=T, cex=2, col=c("green", "red"))
+mds <- plotMDS(y, top=98765)
+x <- as.data.frame( cbind(  mds$x, mds$y))
+plot(x$V1, x$V2, xlab = "PC1 (62%)", ylab= "PC2 (21%)", cex=0.05, xlim=c(-2,2))
+x$sex <- c("F", "F", "F", "M")
+points(x[ x$sex == "F",]$V1, x[ x$sex == "F",]$V2, cex=2, col="green")
+points(x[ x$sex == "M",]$V1, x[ x$sex == "M",]$V2, cex=2, col="red")
+text( x$V1, x$V2, colnames(y$counts), pos=4) # text at right
+legend("topleft", inset = 0.05, c("XX", "XY"),  pch = c(1,1), col = c("green", "red" ))
