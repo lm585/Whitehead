@@ -465,3 +465,49 @@ done
 cat /usr/local/bin/igv
 ####increase memory for igv
 vi "$HOME/.igv/java_arguments"
+
+###temp contains a list of genes
+cat temp | sort | uniq -d | while read g
+do
+grep -iw "$g" cyno.gene.2kbp.promoter.atac.peaksGe3samplesMerged.diff2-1.txt
+echo "$g"
+echo "-----------------------------------------"
+done | cut -f 6 > temp-1
+
+###head temp-1
+NC_052255.1@@@70059047@@@70059587
+BATF3
+-----------------------------------------
+NC_052269.1@@@106789169@@@106789431
+CARD9
+-----------------------------------------
+
+###
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp-1 | grep -v '\------------' | while read g
+do
+grep -w "$g" L16.4samples.mapQ.paired.conserved.3samp.peaks.readcount.2 L16.4samples.conserved.3samp.peaks.readcount.2.cpm.txt
+echo "$g"
+echo ";;;"
+done
+
+male up-regulated promoter, "Microglia in Cerebellum", "MACROPHAGE" (Azimuth Cell Types), genes with non-small reads in all 4 samples
+=========
+CARD9
+ITGB2
+ITGB3
+KCNK13
+PIK3R5
+RHBDF2
+SLC22A18
+SLC37A2
+SNAI3
+
+####overlapping with CSF1R human kinase ARCHS4 coexpression
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp-3 | sort | uniq -d
+CARD9
+ITGB2
+KCNK13
+PIK3R5
+RHBDF2
+SLC37A2
+
