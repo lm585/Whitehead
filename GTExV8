@@ -610,3 +610,72 @@ rm -f s
 -r--r--r-- 1 linyong systemd-timesync  513411552 Mar  2 22:21 gtex-comb-3127samp.gene.count.txt
 -r--r--r-- 1 linyong systemd-timesync  719148199 Mar 27 11:39 gtex-comb-4388samp.gene.count.txt
 -r--r--r-- 1 linyong systemd-timesync 1048559353 Apr 27 23:40 gtex-comb-6402samp.gene.count.txt
+
+################################################select 10 random samples within top half
+linyongmao@Linyong-Mao-MBP16-2019 dir-gtex-website-data % cat  GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct | awk '{print NF}' | uniq -c
+   1 1
+   1 2
+56201 17384
+awk 'NR > 2'  GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct  > temp
+mv temp  GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct 
+head -1 GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct  | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print i, $i}' > GTEx_Analysis_2017-06-05_header
+cut -f 1,7    GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt > sample-tissue.2colum
+cut -f 2 sample-tissue.2colum | sort | uniq -c | wc
+      56 
+cat   GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt | cut -f 7,17 | sort | uniq -c   
+ 432 Heart - Left Ventricle	RNASEQ
+ 429 Heart - Atrial Appendage	RNASEQ
+ 803 Muscle - Skeletal	RNASEQ
+
+> setwd("/Users/linyongmao/Documents/dir-GTExV8/dir-gtex-website-data")
+t1 <- read.delim("sample-tissue.2colum", header=F)
+t2 <- t1[ t1$V2 == "Heart - Left Ventricle", ]
+t3 <- read.delim("GTEx_Analysis_2017-06-05_header", header=F)
+head(t3)
+#  V1                       V2
+#1  1                     Name
+#2  2              Description
+#3  3 GTEX-1117F-0226-SM-5GZZ7
+
+t4 <- merge(t3, t2, by.x="V2", by.y="V1")
+dim(t4)
+# [1] 432   3
+head(t4)
+#                         V2  V1                   V2.y
+# 1 GTEX-111FC-0826-SM-5GZWO  40 Heart - Left Ventricle
+# 2 GTEX-111YS-0426-SM-5987O  65 Heart - Left Ventricle
+raw <- read.delim("GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct", header=T)
+dim(raw)
+###[1] 56200genes  17384
+raw2 <- raw[, t4$V1 ]
+rownames(raw2) <- raw$Name
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+dim(y)
+# [1] 13615   432
+d = cpm(y)
+t9 <- as.data.frame(d)
+t10 <- log10(t9 + 1)
+t11 <- cor(t10)
+t12 <- as.data.frame(t11)
+mat <- as.matrix(t12)
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+summary( res$mean)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#  0.7060  0.8903  0.9091  0.8977  0.9158  0.9291 
+med <- median(res$mean)
+r2 <- res[ res$mean > med, ]
+dim(r2)
+##[1] 216   2
+set.seed(1234)
+r3 <- r2[ sample(1:dim(r2)[1], 10 ), ]
+write.table(r3, "Heart - Left Ventricle.10.samples", quote=F, sep='\t')
+
