@@ -1,0 +1,63 @@
+library(edgeR)
+library(dplyr)
+library(patchwork)
+
+setwd("/Users/linyongmao/Documents/dir-GTExV8/dir-gtex-website-data")
+raw <- read.delim("GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct", header=T)
+dim(raw)
+###[1] 56200genes  17384
+
+t1 <- read.delim("sample-tissue.2colum", header=F)
+t3 <- read.delim("GTEx_Analysis_2017-06-05_header", header=F)
+head(t3)
+#  V1                       V2
+#1  1                     Name
+#2  2              Description
+#3  3 GTEX-1117F-0226-SM-5GZZ7
+
+file <- read.delim("temp-tissue-names", header=F)
+for(index in 1:dim(file)[1]) 
+{
+ tissue = file[index,1]
+t2 <- t1[ t1$V2 == tissue, ]
+
+t4 <- merge(t3, t2, by.x="V2", by.y="V1")
+print(dim(t4))
+# [1] 432   3
+print(head(t4))
+#                         V2  V1                   V2.y
+# 1 GTEX-111FC-0826-SM-5GZWO  40 Heart - Left Ventricle
+# 2 GTEX-111YS-0426-SM-5987O  65 Heart - Left Ventricle
+raw2 <- raw[, t4$V1 ]
+rownames(raw2) <- raw$Name
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+# [1] 13615   432
+d = cpm(y)
+t9 <- as.data.frame(d)
+t10 <- log10(t9 + 1)
+t11 <- cor(t10)
+t12 <- as.data.frame(t11)
+mat <- as.matrix(t12)
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+print(summary( res$mean))
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#  0.7060  0.8903  0.9091  0.8977  0.9158  0.9291 
+med <- median(res$mean)
+r2 <- res[ res$mean > med, ]
+print(dim(r2))
+##[1] 216   2
+set.seed(1234)
+r3 <- r2[ sample(1:dim(r2)[1], 10 ), ]
+outfile <- paste(tissue, "10samples.940pm", sep = "")
+write.table(r3, outfile, quote=F, sep='\t')
+}
