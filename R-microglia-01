@@ -3537,3 +3537,64 @@ wc -l temp
 sort temp | uniq | wc -l
 #    4383
 
+#############################################################################
+claudia-GBM.txt
+linyongmao@Linyong-Mao-MBP16-2019 microglia % cat claudia-GBM.txt | cut -f 5 | sort | uniq -c | grep -iv ccr2    
+   1 GreyD1
+   1 GreyS1
+   1 GreyS2
+   3 P21
+   1 P8
+   1 Population
+   1 WhiteD2
+   1 WhiteS2
+cat claudia-GBM.txt | cut -f 5 | sort | uniq -c | grep -i ccr2 |grep -i hi
+   8 CCR2hi
+   1 P7CCR2hi
+cat claudia-GBM.txt | cut -f 5 | sort | uniq -c | grep -i ccr2 |grep -i lo 
+  34 CCR2lo
+   1 DeepP6CCR2lo
+   1 DeepP7CCR2lo
+   2 P7CCR2lo
+   1 SupCCR2lo
+cat claudia-GBM.txt | cut -f 5 | sort | uniq -c | grep -i ccr2 |wc
+       7    
+cat claudia-GBM.txt |grep -i ccr2 |grep -i lo  | cut -f 3,7,10 | sort | uniq -c
+   3 Epilepsy	0	F
+   2 Margin	Glioblastoma	M
+   2 Tumor		
+   1 Tumor	Anaplastic_astrocytoma,	M
+   1 Tumor	Anaplastic_oligodendroglioma	F
+   2 Tumor	Anaplastic_oligodendroglioma	M
+   1 Tumor	Astrocytoma	F
+   1 Tumor	Diffuse_astrocytoma	F
+   1 Tumor	Gemistocytic_astrocytoma	M
+   8 Tumor	Glioblastoma	
+   2 Tumor	Glioblastoma	0
+   8 Tumor	Glioblastoma	M
+   3 Tumor	Glioblastoma?	
+   1 Tumor	Infiltrating_diffuse_Glioma	M
+   2 Tumor	Oligodendroglioma	F
+   1 Tumor	embryonal	M
+
+cat claudia-GBM.txt |grep -i ccr2 |grep -i lo  | cut -f 3 | sort | uniq -c
+   3 Epilepsy
+   2 Margin
+  34 Tumor
+
+cat claudia-GBM.txt |grep -i ccr2 |grep -i lo  | cut -f 7,8 | sort | uniq -c
+   2 	
+   3 0	0
+   1 Anaplastic_astrocytoma,	II-III
+   3 Anaplastic_oligodendroglioma	III
+   1 Astrocytoma	II
+   1 Diffuse_astrocytoma	II
+   1 Gemistocytic_astrocytoma	0
+  20 Glioblastoma	IV
+   3 Glioblastoma?	IV
+   1 Infiltrating_diffuse_Glioma	II
+   2 Oligodendroglioma	II
+   1 embryonal	IV
+
+
+#############################################################################
