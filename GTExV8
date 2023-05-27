@@ -680,3 +680,15 @@ set.seed(1234)
 r3 <- r2[ sample(1:dim(r2)[1], 10 ), ]
 write.table(r3, "Heart - Left Ventricle.10.samples", quote=F, sep='\t')
 
+#########################merge gene count files; combine; May 25, 2023
+cd /lab/page_human_data/linyong2/
+from prev commands
+vi dir-list
+/lab/page_human_data/linyong2/dir-gtex-462/
+/lab/page_human_data/linyong2/dir-gtex-487/
+/lab/page_human_data/linyong2/dir-gtex-488/
+/lab/page_human_data/linyong2/dir-gtex-489/
+/lab/page_human_data/linyong2/dir-gtex-490/
+...
+/lab/page_human_data/linyong2/dir-gtex-601/
+2317 samples
