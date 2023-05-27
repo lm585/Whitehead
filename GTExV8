@@ -1,3 +1,14 @@
+linyong@tak ~$ h | grep pfb
+  540  pfb
+  543  pip install pypfb==0.5.0
+  544  pfb
+  546  /home/linyong/.local/bin/pfb
+  551  # pfb to -i <PATH_to_export_pfb.avro> tsv
+  552  pfb to -i  export_2023-01-26T20.avro tsv
+  553  /home/linyong/.local/bin/pfb to -i  export_2023-01-26T20.avro tsv
+  563  #/home/linyong/.local/bin/pfb to -i  export_2023-01-26T20.avro tsv
+  564  /home/linyong/.local/bin/pfb to -i export_2023-01-26T20\ 39\ 38.avro tsv
+  578  /home/linyong/.local/bin/pfb to -i "export_2023-01-26T21 12 10.avro" tsv
 ##from tak cluster only
 /home/linyong/.local/bin/pfb to -i "export_2023-01-26T21 12 10.avro" tsv
 -rw-r--r-- 1 linyong input 22M Jan 26 16:18 export_2023-01-26T21 12 10.avro
