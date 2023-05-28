@@ -1,0 +1,27 @@
+#
+if [ $# -lt 2 ]
+then
+  echo $0 " dir-name startNumberOfBamFile"
+  exit 1
+fi
+
+dir="$1"
+n2="$2"
+n3=`expr $n2 + 19`
+app=`date | sed 's/  */_/g'`
+echo "out-$dir-$app"
+mkdir "$dir"
+cd "$dir"
+ls -lh
+rm "out-$dir-"*
+cat ../slurm-gtexv8-pipeline-download-genecount-for-unprocessBams > temp
+
+head -9  temp > slurm-gtexv8-pipeline-download-genecount-for-unprocessBams
+echo "#SBATCH --output out-$dir-$app" >> slurm-gtexv8-pipeline-download-genecount-for-unprocessBams
+awk 'NR > 10 && NR <= 19 ' temp >> slurm-gtexv8-pipeline-download-genecount-for-unprocessBams
+echo "t=$n2" >> slurm-gtexv8-pipeline-download-genecount-for-unprocessBams
+echo "while [ \"\$t\"  -le $n3 ]" >> slurm-gtexv8-pipeline-download-genecount-for-unprocessBams
+awk 'NR > 21' temp  >> slurm-gtexv8-pipeline-download-genecount-for-unprocessBams
+cat slurm-gtexv8-pipeline-download-genecount-for-unprocessBams
+sbatch ./slurm-gtexv8-pipeline-download-genecount-for-unprocessBams 
+cd ..
