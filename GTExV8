@@ -708,3 +708,32 @@ vi dir-list
 ...
 /lab/page_human_data/linyong2/dir-gtex-601/
 2317 samples
+
+################################# order-bam.notProcessed
+cat /lab/solexa_page/linyong/file-manifest.json  | grep "Aligned.sortedByCoord.out.patched.md.bam" | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print NR, $1}' > temp1
+vi temp1
+linyong@fry /lab/solexa_page/linyong$ tail temp1
+...
+17348   GTEX-1HCVE-1026-SM-ACKXR.Aligned.sortedByCoord.out.patched.md.bam
+17349   GTEX-1GN2E-1526-SM-7P8TD.Aligned.sortedByCoord.out.patched.md.bam
+17350   GTEX-17JCI-1526-SM-7IGOQ.Aligned.sortedByCoord.out.patched.md.bam
+mv temp1 file-manifest.order-bam.txt
+ head -1 *samp.gene.count.txt | grep -w "geneID"  |cut -f 3-1234567 | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i}' > temp2
+wc -l temp2
+16234 temp2
+> 2317 + 3127 + 4388 + 6402
+[1] 16234
+head temp2
+GTEX-1117F-0526-SM-5EGHJ.
+GTEX-1117F-2826-SM-5GZXL.
+GTEX-111CU-0626-SM-5EGHL.
+cat temp2  | while read g; do grep  "$g"Aligned file-manifest.order-bam.txt; done > temp3
+cat file-manifest.order-bam.txt temp3 | sort | uniq -d | wc
+  16234
+cat file-manifest.order-bam.txt temp3 | sort | uniq -u | wc
+   1116
+cat file-manifest.order-bam.txt temp3 | sort | uniq -u > file-manifest.order-bam.notProcess.5.27.23
+head /lab/solexa_page/linyong/file-manifest.order-bam.notProcess.5.27.23  
+10068   GTEX-146FR-1826-SM-5QGPF.Aligned.sortedByCoord.out.patched.md.bam
+10069   GTEX-13RTJ-0726-SM-5QGQN.Aligned.sortedByCoord.out.patched.md.bam
+10070   GTEX-15RIE-0626-SM-6M47G.Aligned.sortedByCoord.out.patched.md.bam
