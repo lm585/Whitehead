@@ -575,3 +575,12 @@ points(x[ x$sex == "F",]$V1, x[ x$sex == "F",]$V2, cex=2, col="green")
 points(x[ x$sex == "M",]$V1, x[ x$sex == "M",]$V2, cex=2, col="red")
 text( x$V1, x$V2, colnames(y$counts), pos=4) # text at right
 legend("topleft", inset = 0.05, c("XX", "XY"),  pch = c(1,1), col = c("green", "red" ))
+
+#################################
+dim(y)
+# [1] 70644     4
+y <- y[ !grepl("NC_052275.1", rownames(y)) ,]
+dim(y)
+# [1] 69418     4
+1226/70644 chrX peaks
+# [1] 0.01735462
