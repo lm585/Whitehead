@@ -737,3 +737,55 @@ head /lab/solexa_page/linyong/file-manifest.order-bam.notProcess.5.27.23
 10068   GTEX-146FR-1826-SM-5QGPF.Aligned.sortedByCoord.out.patched.md.bam
 10069   GTEX-13RTJ-0726-SM-5QGQN.Aligned.sortedByCoord.out.patched.md.bam
 10070   GTEX-15RIE-0626-SM-6M47G.Aligned.sortedByCoord.out.patched.md.bam
+
+#################################filter first then normalization?
+cp -i temp-tissue-names tissue-names-lucas-list
+Rscript R-script-select-gtex-samples-in-a-tissue > out-select-gtex-samples-in-a-tissue 
+###median < 0.9 tissues
+6 GTEX-11DXX-1326-SM-5GIDZ 257 Stomach
+[1] 15530   359
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.7631  0.8313  0.8708  0.8562  0.8829  0.9073 
+
+6 GTEX-117YW-1826-SM-5PNY5 167 Colon - Transverse
+[1] 16005   406
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.7880  0.8249  0.8440  0.8467  0.8712  0.9002 
+
+cut -f 2 *10samples.940pm  | grep -vw mean > list.10samples.940pm.per15tissues
+
+setwd("/Users/linyongmao/Documents/dir-GTExV8/dir-gtex-website-data")
+raw <- read.delim("GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct", header=T)
+dim(raw)
+samp <- read.delim("list.10samples.940pm.per15tissues", header=F)
+dim(samp)
+# [1] 150   1
+raw.samp <- raw[, colnames(raw) %in% samp$V1]
+dim(raw.samp)
+#[1] 56200   150
+rownames(raw.samp) <- raw$Name
+length(raw.samp[,1] - raw[, "GTEX.11DXW.1026.SM.5H11K"]  )
+##[1] 56200
+summary( raw.samp[,1] - raw[, "GTEX.11DXW.1026.SM.5H11K"]  )
+write.table(raw.samp, "temp.raw.txt", quote=F, sep="\t")
+system("bash script-sel-expr-genes")
+raw.samp.filt <- read.delim("temp-1338", header=T)
+dim(raw.samp.filt)
+##[1] 25271   150
+y <- DGEList(counts=raw.samp.filt)
+y <- calcNormFactors(y)
+summary(y$samples$lib.size)
+##    Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+##35270131  51678694  62455252  65975200  77647586 124561663 
+summary(y$samples$norm.factors)
+##   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## 0.4770  0.7966  1.0715  1.0415  1.2766  1.5738 
+
+y <- DGEList(counts=raw.samp)
+y <- calcNormFactors(y)
+> summary(y$samples$lib.size)
+     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+ 35282054  51700389  62499855  66006365  77674598 124592493 
+> summary(y$samples$norm.factors)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.4991  0.8023  1.0639  1.0389  1.2576  1.5958 
