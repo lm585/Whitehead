@@ -832,8 +832,13 @@ t4[1:2, c(1:3, 20785:20788)]
 # T2-1KXAM-0526-SM-DKPQN Adipose - Visceral (Omentum) GTEX.1KXAM.0526.SM.DKPQN         0.3690278         0.3502886          3.935615 GTEX-1KXAM-0526-SM-DKPQN   T2
 
 mat <- as.matrix(t4[, c(3:20786)])
-> ca <- HeatmapAnnotation(tissue = t4$V2, which="row")
+ca <- HeatmapAnnotation(tissue = t4$V2, which="row")
 > Heatmap(matrix = mat, show_column_names=F, name="logCPM", row_names_gp = gpar(fontsize = 4), right_annotation=ca, row_dend_width=unit(30, "mm"))
+
+rowlabel <- data.frame(t4$V2)
+rowlabel$tissue <- ""
+rowlabel$tissue[ seq(1, 150, 10)] <- t4$V2[ seq(1,150, 10)]
+Heatmap(matrix = mat, show_column_names=F, name="logCPM", row_names_gp = gpar(fontsize = 6), right_annotation=ca, row_dend_width=unit(30, "mm"), row_labels= rowlabel$tissue)
 
 cut -f 1 GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt > temp1
 cut -f 1 GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"}  {print $1, $1}'| sed 's/-/@@@/' | sed 's/-.*      /       /' | sed 's/@@@/-/' > temp1
