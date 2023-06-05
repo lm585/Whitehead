@@ -3159,6 +3159,52 @@ cat("\n")
 # ENSG00000104856	RELB	HALLMARK_INFLAMMATORY_RESPONSE.genes	0.91618895880208	2.97446066087139e-14	0.774425341585504	6.43728727603421e-12	0.835542577721745	4.38048596889194e-24
 }
 
+#################################boxplot and correlation plot of all samples
+boxplot( res.info$mean ~ res.info$grape3, xlab = "", ylab = "z-score avg of all genes", outcol = "white")
+t <- unique(res.info$grape3)
+data.frame(t = t)
+res.info$grape3.order <- factor(res.info$grape3, levels=c(t[6], t[5], t[3], t[1], t[2], t[4], t[7], t[9], t[10],t[8] ) )
+res.info$grape3.order
+boxplot( res.info$mean ~ res.info$grape3.order, xlab = "", ylab = "z-score avg of all genes", outcol = "white",  xaxt = "n")
+axis(1, at = seq(1,10,by=1), labels=c(t[6], t[5], t[3], t[1], t[2], t[4], t[7], t[9], t[10],t[8] ), cex.axis = 0.6, las=2)
+title(main= gsub(".genes", "", pathname))
+beeswarm(res.info$mean ~ res.info$grape3.order, pch = 16, col = c("red", "blue" ), cex = 1, add = T)
+abline(h = seq(-100, 500, 0.1), lty = 5, lwd = 0.5, col = "gray")
+...
+...
+res.info.path <- res.info
+gene level log2(cpm+1)
+see the line "geneID2 = 5405"
+> head(res.info.xgene)
+res.info.xgene$grape3.order <- factor(res.info.xgene$grape3, levels=c(t[6], t[5], t[3], t[1], t[2], t[4], t[7], t[9], t[10],t[8] ) )
+res.info.xgene$grape3.order
+boxplot( res.info.xgene$mean ~ res.info.xgene$grape3.order, xlab = "", ylab = "log2(cpm+1)", outcol = "white",  xaxt = "n")
+axis(1, at = seq(1,10,by=1), labels=c(t[6], t[5], t[3], t[1], t[2], t[4], t[7], t[9], t[10],t[8] ), cex.axis = 0.6, las=2)
+title(main= p.exp$name)
+beeswarm(res.info.xgene$mean ~ res.info.xgene$grape3.order, pch = 16, col = c("red", "blue" ), cex = 1, add = T)
+abline(h = seq(-100, 500, 0.2), lty = 5, lwd = 0.5, col = "gray")
+res.info.g.p <- merge(res.info.path, res.info.xgene, by.x="id", by.y="id")
+t1 <- cor.test(res.info.g.p$mean.x, res.info.g.p$mean.y)
+res.info.g.p.fem <- res.info.g.p[ res.info.g.p$Sex.x == "F", ]
+res.info.g.p.male <- res.info.g.p[ res.info.g.p$Sex.x == "M", ]
+plot( res.info.g.p$mean.x, res.info.g.p$mean.y, xlab="inflamm pathway z-score", ylab="gene expr log2(cpm+1)",  col="black", cex = 0.1)
+abline(lm(res.info.g.p$mean.y ~ res.info.g.p$mean.x))
+points(res.info.g.p.fem[ res.info.g.p.fem$Pathology_major.x == "Control", ]$mean.x, res.info.g.p.fem[ res.info.g.p.fem$Pathology_major.x == "Control", ]$mean.y,  col = "red", pch = 1 , cex = 1)
+points(res.info.g.p.fem[ res.info.g.p.fem$Pathology_major.x == "Tumour", ]$mean.x, res.info.g.p.fem[ res.info.g.p.fem$Pathology_major.x == "Tumour", ]$mean.y, col = "red", pch = 16 , cex = 1)
+points(res.info.g.p.fem[ res.info.g.p.fem$Pathology_major.x == "Trauma", ]$mean.x, res.info.g.p.fem[ res.info.g.p.fem$Pathology_major.x == "Trauma", ]$mean.y, col = "red", pch = 17 , cex = 1)
+points(res.info.g.p.fem[ res.info.g.p.fem$Pathology_major.x == "Haemorrhage", ]$mean.x, res.info.g.p.fem[ res.info.g.p.fem$Pathology_major.x == "Haemorrhage", ]$mean.y, col = "red", pch = 15 , cex = 1)
+points(res.info.g.p.fem[ res.info.g.p.fem$Pathology_major.x == "Hydrocephalus", ]$mean.x, res.info.g.p.fem[ res.info.g.p.fem$Pathology_major.x == "Hydrocephalus", ]$mean.y, col = "red", pch = 18 , cex = 1)
+points(res.info.g.p.male[ res.info.g.p.male$Pathology_major.x == "Control", ]$mean.x, res.info.g.p.male[ res.info.g.p.male$Pathology_major.x == "Control", ]$mean.y,  col = "blue", pch = 1 , cex = 1)
+points(res.info.g.p.male[ res.info.g.p.male$Pathology_major.x == "Tumour", ]$mean.x, res.info.g.p.male[ res.info.g.p.male$Pathology_major.x == "Tumour", ]$mean.y, col = "blue", pch = 16 , cex = 1)
+points(res.info.g.p.male[ res.info.g.p.male$Pathology_major.x == "Trauma", ]$mean.x, res.info.g.p.male[ res.info.g.p.male$Pathology_major.x == "Trauma", ]$mean.y, col = "blue", pch = 17 , cex = 1)
+points(res.info.g.p.male[ res.info.g.p.male$Pathology_major.x == "Haemorrhage", ]$mean.x, res.info.g.p.male[ res.info.g.p.male$Pathology_major.x == "Haemorrhage", ]$mean.y, col = "blue", pch = 15 , cex = 1)
+points(res.info.g.p.male[ res.info.g.p.male$Pathology_major.x == "Hydrocephalus", ]$mean.x, res.info.g.p.male[ res.info.g.p.male$Pathology_major.x == "Hydrocephalus", ]$mean.y, col = "blue", pch = 18 , cex = 1)
+
+ legend("topleft", inset = 0.05, c("control", "tumor", "Trauma", "Haemorrhage", "Hydrocephalus"), pch=c(1,16,17,15,18), col = c("black" ), bty = "n")
+ title(main = paste(a.df.g[geneID2, ]$name, ", r=", round(t1$estimate, digits = 3), " p=", format(t1$p.value, digits=3),  ", ",dim(res.info.g.p)[1], " samples", sep=""))
+ abline(h = seq(0,20,0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-10,20,0.25), lty = 5, lwd = 0.5, col = "gray")
+
 #############################################################################
 #############STAR vs RSEM read mapping
 /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  MGB_022.2.genecount  rsem-count.genes.results  out
