@@ -3160,6 +3160,7 @@ cat("\n")
 }
 
 #################################boxplot and correlation plot of all samples
+###### boxplot for pathway level z-score, res.info pathway-level
 boxplot( res.info$mean ~ res.info$grape3, xlab = "", ylab = "z-score avg of all genes", outcol = "white")
 t <- unique(res.info$grape3)
 data.frame(t = t)
@@ -3178,6 +3179,7 @@ see the line "geneID2 = 5405"
 > head(res.info.xgene)
 res.info.xgene$grape3.order <- factor(res.info.xgene$grape3, levels=c(t[6], t[5], t[3], t[1], t[2], t[4], t[7], t[9], t[10],t[8] ) )
 res.info.xgene$grape3.order
+### boxplot of gene level log2(cpm+1)
 boxplot( res.info.xgene$mean ~ res.info.xgene$grape3.order, xlab = "", ylab = "log2(cpm+1)", outcol = "white",  xaxt = "n")
 axis(1, at = seq(1,10,by=1), labels=c(t[6], t[5], t[3], t[1], t[2], t[4], t[7], t[9], t[10],t[8] ), cex.axis = 0.6, las=2)
 title(main= p.exp$name)
