@@ -856,3 +856,56 @@ paste temp1 out  | cut -f 1-6 > GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS
 > dim(mat)
 [1]   150 20784
 
+#######################################################Website downloaded gene count vs. my star-htseq pipeline
+
+> t2 <- merge(b.mat.t.df, t1, by.x="id", by.y="id")
+t3 <- t2[ t2$V2 == "Heart - Atrial Appendage",][, 1:11]
+y$samples[ t3$id,]
+# GTEX.1AX8Z.1126.SM.731CS     1  60397468    0.9614743
+# GTEX-1AX8Z-1126-SM-731CS Heart - Atrial Appendage GTEX.1AX8Z.1126.SM.731CS
+
+GTEX-1AX8Z-1126-SM-731CS
+gtex-comb-6402samp.gene.count.txt
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % head -1 gtex-comb-6402samp.gene.count.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print i, $i}' | grep GTEX-1AX8Z-1126-SM-731CS
+2464	GTEX-1AX8Z-1126-SM-731CS.
+cut -f 1,2,2464 gtex-comb-6402samp.gene.count.txt > temp1
+vi temp1               
+# :1, $ s/\.[0-9]*//
+linyongmao@Linyong-Mao-MBP16-2019 dir-gtex-website-data % cut -f 1,2,6674 GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct > temp2
+vi temp2
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine ../temp1 temp2  out
+paste  ../temp1 out | grep -v notApplicable > temp3
+
+> me.gtex.compare <- read.delim("temp3")
+    geneID              name           GTEX.1AX8Z.1126.SM.731CS   geneID.1         Description        GTEX.1AX8Z.1126.SM.731CS.1
+ Length:55484       Length:55484       Min.   :      0.0        Length:55484       Length:55484       Min.   :      0           
+ Class :character   Class :character   1st Qu.:      0.0        Class :character   Class :character   1st Qu.:      0           
+ Mode  :character   Mode  :character   Median :      1.0        Mode  :character   Mode  :character   Median :      1           
+                                       Mean   :    535.7                                              Mean   :   1087           
+                                       3rd Qu.:     55.0                                              3rd Qu.:    112           
+                                       Max.   :1815295.0                                              Max.   :3542877           
+me.gtex.2 <- me.gtex.compare[ me.gtex.compare$GTEX.1AX8Z.1126.SM.731CS > 5 & me.gtex.compare$GTEX.1AX8Z.1126.SM.731CS.1 >5,]
+dim(me.gtex.2)
+# [1] 19590     6
+res <- lm( me.gtex.2$GTEX.1AX8Z.1126.SM.731CS.1 ~ me.gtex.2$GTEX.1AX8Z.1126.SM.731CS)
+summary(res)
+
+# Coefficients:
+#                                     Estimate Std. Error  t value Pr(>|t|)    
+# (Intercept)                        67.126582  28.100205    2.389   0.0169 *  
+# me.gtex.2$GTEX.1AX8Z.1126.SM.731CS  1.978679   0.001423 1390.068   <2e-16 ***
+# 
+# Multiple R-squared:   0.99,	Adjusted R-squared:   0.99 
+# F-statistic: 1.932e+06 on 1 and 19588 DF,  p-value: < 2.2e-16
+
+res <- lm( log2(me.gtex.2$GTEX.1AX8Z.1126.SM.731CS.1) ~ log2(me.gtex.2$GTEX.1AX8Z.1126.SM.731CS))
+summary(res)
+
+# Coefficients:
+#                                          Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)                              0.709241   0.016022   44.27   <2e-16 ***
+# log2(me.gtex.2$GTEX.1AX8Z.1126.SM.731CS) 1.022752   0.001951  524.15   <2e-16 ***
+# 
+# Multiple R-squared:  0.9334,	Adjusted R-squared:  0.9334 
+# F-statistic: 2.747e+05 on 1 and 19588 DF,  p-value: < 2.2e-16
+
