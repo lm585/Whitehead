@@ -909,3 +909,51 @@ summary(res)
 # Multiple R-squared:  0.9334,	Adjusted R-squared:  0.9334 
 # F-statistic: 2.747e+05 on 1 and 19588 DF,  p-value: < 2.2e-16
 
+#################################randomly select 10 samples among top half for metabolite data
+raw <- read.csv("allTissues_filtered_3QCcriteria_noNAvalues_60metabolites_in_columns.csv")
+dim(raw)
+# [1] 378  63
+rownames(raw) <- raw$sample_name
+tiss <- unique(raw$tissue)
+# 19 tissues
+for(index in 1:length(tiss))
+{
+x <- tiss[index]
+print(x)
+
+raw.tis <- raw[ raw$tissue == x, ]
+dim(raw.tis)
+# "LV" [1] 23samples 63metabolites - 3
+met.tis.df <- log10(raw.tis[, 4:63] + 1)
+print(dim(met.tis.df))
+t1 <- as.matrix(met.tis.df)
+t2 <- t(t1)
+t3 <- as.data.frame(t2)
+t11 <- cor(t3)
+t12 <- as.data.frame(t11)
+mat <- as.matrix(t12)
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+print(summary( res$mean))
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#  0.9820  0.9862  0.9886  0.9879  0.9903  0.9914
+if(dim(met.tis.df)[1] < 10)
+{
+ print(dim(met.tis.df));
+ r3 <- res;
+}
+else
+{
+ med <- median(res$mean)
+ r2 <- res[ res$mean > med, ]
+ print(dim(r2))
+ # [1] 11  2
+ set.seed(1234)
+ r3 <- r2[ sample(1:dim(r2)[1], 10 ), ]                                  
+}
+#                                                                        id      mean
+# 20220607_QE2_LC_Job2504_Heart_LV_147 20220607_QE2_LC_Job2504_Heart_LV_147 0.9911448
+# 20220607_QE2_LC_Job2504_Heart_LV_167 20220607_QE2_LC_Job2504_Heart_LV_167 0.9902635
+outfile <- paste("metab.", x, ".10samples.157pm", sep = "")
+print(outfile)
+write.table(r3, outfile, quote=F, sep='\t')
+}
