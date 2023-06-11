@@ -957,3 +957,36 @@ outfile <- paste("metab.", x, ".10samples.157pm", sep = "")
 print(outfile)
 write.table(r3, outfile, quote=F, sep='\t')
 }
+
+#################################sample x metabolite heatmap
+linyongmao@Linyong-Mao-MBP16-2019 dir-gtex-website-data % cut -f 1 metab*.157pm | grep -wv id > list.10samples.orless.940pm.per19tissues
+rm(list=ls())
+raw <- read.csv("allTissues_filtered_3QCcriteria_noNAvalues_60metabolites_in_columns.csv")
+samp <- read.delim("list.10samples.orless.940pm.per19tissues", header=F)
+dim(samp)
+# [1] 176   1
+raw.samp <- raw[ raw$sample_name %in% samp$V1,]
+# raw.samp <- raw
+dim(raw.samp)
+# [1] 176  63
+raw.tis <- raw.samp
+dim(raw.tis)
+# "LV" [1] 23samples 63metabolites - 3
+b <- log10(raw.tis[, 4:63] + 1)
+a = b
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+met.tis.df <- a
+print(dim(met.tis.df))
+# [1] 176  60
+rownames(met.tis.df) <- raw.tis$sample_name
+mat <- as.matrix(met.tis.df)
+ca <- HeatmapAnnotation(tissue = raw.tis$tissue, which="row")
+rowlabel <- data.frame(raw.tis$CDP)
+rowlabel$tissue <- ""
+step = 4
+rowlabel$tissue[ seq(1, dim(met.tis.df)[1], step)] <- raw.tis$tissue[ seq(1, dim(met.tis.df)[1], step)]
+Heatmap(matrix = mat, show_column_names=F, name="logMetab", row_names_gp = gpar(fontsize = 4), right_annotation=ca, row_dend_width=unit(30, "mm"), row_labels= rowlabel$tissue)
+> Heatmap(matrix = mat, show_column_names=F, name="z-socre (metab)", row_names_gp = gpar(fontsize = 4), right_annotation=ca, row_dend_width=unit(30, "mm"), clustering_distance_rows="pearson", clustering_distance_columns="pearson")
