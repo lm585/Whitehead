@@ -856,6 +856,28 @@ paste temp1 out  | cut -f 1-6 > GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS
 > dim(mat)
 [1]   150 20784
 
+#####################################using z-score of log10(cpm+1), pearson for clustering
+mat <- as.matrix(t4[, c(3:20786)])
+a <- mat
+for(i in 1:dim(mat)[1])
+{
+ a[i, ] <- (mat[i, ] - mean(as.numeric(mat[i,]))) / var(as.numeric(mat[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+m1 <- mat
+mat <- a
+summary( data.frame(mat[11,]))
+var( data.frame(mat[11,]))
+
+ca <- HeatmapAnnotation(tissue = t4$V2, which="row")
+> Heatmap(matrix = mat, show_column_names=F, name="z-score", row_names_gp = gpar(fontsize = 4), right_annotation=ca, row_dend_width=unit(30, "mm"), clustering_distance_rows="pearson", clustering_distance_columns="pearson")
+
+rowlabel <- data.frame(t4$V2)
+rowlabel$tissue <- ""
+rowlabel$tissue[ seq(1, 150, 10)] <- t4$V2[ seq(1,150, 10)]
+> Heatmap(matrix = mat, show_column_names=F, name="z-score", row_names_gp = gpar(fontsize = 4), right_annotation=ca, row_dend_width=unit(30, "mm"), clustering_distance_rows="pearson", clustering_distance_columns="pearson", row_labels= rowlabel$tissue)
+
+
 #######################################################Website downloaded gene count vs. my star-htseq pipeline
 
 > t2 <- merge(b.mat.t.df, t1, by.x="id", by.y="id")
