@@ -981,6 +981,28 @@ y = 1:5
 x = y 
 abline(lm(y~x), lwd = 1, col="blue")
 text(5, 20, "y = x", col="blue")
+#########
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  temp3 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $6 > 5 && $3 > 5' > temp4
+# 19590 expressed genes in both approaches
+cat temp4 | awk 'BEGIN {FS = "\t"; OFS = "\t"}  NR > 1 {print $0, $6 / ($3 * 2);}' > temp5
+dir-gtex-website-data/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct
+cat temp5 | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $7 < 1/2' | wc -l
+    1136
+cat temp5 | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $7 > 2' | wc -l
+#     669genes higher expr in website of gtex
+
+cat temp5 | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $7 < 1/10' | wc -l
+      50
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp5 | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $7 > 10' | wc -l
+     187
+
+ENSG00000243646 IL10RB  41      ENSG00000243646 IL10RB  1164    14.1951
+ENSG00000276409 CCL14   64      ENSG00000276409 CCL14   1573    12.2891
+ENSG00000100142 POLR2F  638     ENSG00000100142 POLR2F  35      0.0274295
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp3 |  awk 'BEGIN {FS = "\t"; OFS = "\t"}  $3 == 0 && $6 > 200' |wc
+     130     780    7322
+cat temp3 |  awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 == 0 && $3 > 100' |wc
+       2      12     117
 
 #################################randomly select 10 samples among top half for metabolite data
 raw <- read.csv("allTissues_filtered_3QCcriteria_noNAvalues_60metabolites_in_columns.csv")
