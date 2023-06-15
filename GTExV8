@@ -931,6 +931,57 @@ summary(res)
 # Multiple R-squared:  0.9334,	Adjusted R-squared:  0.9334 
 # F-statistic: 2.747e+05 on 1 and 19588 DF,  p-value: < 2.2e-16
 
+####################################
+plot(log2(me.gtex.2$GTEX.1AX8Z.1126.SM.731CS.1) ~ log2(2 * me.gtex.2$GTEX.1AX8Z.1126.SM.731CS), xlab="log2( 2 * geneCount), STAR-htseq", ylab = "log2(geneCount), RNA-SeQC")
+y = 1:5
+x = y
+abline(lm(y~x), lwd = 1, col="blue")
+# abline(lm( log2(me.gtex.2$GTEX.1AX8Z.1126.SM.731CS.1) ~ log2(me.gtex.2$GTEX.1AX8Z.1126.SM.731CS)), lwd = 1, col="blue")
+abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+text(5, 20, "y = x", col="blue")
+
+me.gtex.2 <- me.gtex.compare[ me.gtex.compare$GTEX.1AX8Z.1126.SM.731CS > 5 | me.gtex.compare$GTEX.1AX8Z.1126.SM.731CS.1 >5,]
+dim(me.gtex.2)
+# [1] 22391     6
+res <- lm( me.gtex.2$GTEX.1AX8Z.1126.SM.731CS.1 ~ me.gtex.2$GTEX.1AX8Z.1126.SM.731CS)
+summary(res)
+# lm(formula = me.gtex.2$GTEX.1AX8Z.1126.SM.731CS.1 ~ me.gtex.2$GTEX.1AX8Z.1126.SM.731CS)
+# 
+# Coefficients:
+#                                     Estimate Std. Error  t value Pr(>|t|)    
+# (Intercept)                        68.696260  24.716778    2.779  0.00545 ** 
+# me.gtex.2$GTEX.1AX8Z.1126.SM.731CS  1.978662   0.001339 1478.195  < 2e-16 ***
+# Residual standard error: 3689 on 22389 degrees of freedom
+# Multiple R-squared:  0.9899,	Adjusted R-squared:  0.9899 
+
+#11 ; 22
+#11+1; 22+2
+#2*(11+1); 22+2
+#2(a+1); 2a+2
+
+res <- lm( log2(me.gtex.2$GTEX.1AX8Z.1126.SM.731CS.1+2) ~ log2(2*(me.gtex.2$GTEX.1AX8Z.1126.SM.731CS+1)))
+summary(res)
+# Call:
+# lm(formula = log2(me.gtex.2$GTEX.1AX8Z.1126.SM.731CS.1 + 2) ~ 
+#     log2(2 * (me.gtex.2$GTEX.1AX8Z.1126.SM.731CS + 1)))
+# 
+# Coefficients:
+#                                                    Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)                                        0.651697   0.022193   29.36   <2e-16 ***
+# log2(2 * (me.gtex.2$GTEX.1AX8Z.1126.SM.731CS + 1)) 0.920062   0.002564  358.87   <2e-16 ***
+# 
+# Residual standard error: 1.259 on 22389 degrees of freedom
+# Multiple R-squared:  0.8519,	Adjusted R-squared:  0.8519 
+
+plot(log2(me.gtex.2$GTEX.1AX8Z.1126.SM.731CS.1+2) ~ log2(2*(me.gtex.2$GTEX.1AX8Z.1126.SM.731CS+1)), xlab="log2(2 *(geneCount + 1)), STAR-htseq", ylab =     "log2(geneCount + 2), RNA-SeQC", ylim=c(0, 25), xlim=c(0, 25))
+abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+y = 1:5 
+x = y 
+abline(lm(y~x), lwd = 1, col="blue")
+text(5, 20, "y = x", col="blue")
+
 #################################randomly select 10 samples among top half for metabolite data
 raw <- read.csv("allTissues_filtered_3QCcriteria_noNAvalues_60metabolites_in_columns.csv")
 dim(raw)
