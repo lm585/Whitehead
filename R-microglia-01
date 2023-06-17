@@ -3758,3 +3758,10 @@ col1 <- c("red", "green", "blue", "yellow", "white", "black", "grey", "orange", 
 names(col1) <- gr
 ca <- HeatmapAnnotation(sex = mat.df.info$XX, tumor = mat.df.info$Tumor, grade = mat.df.info$grade, col=list(sex = c("XY" = "blue", "XX" = "pink"), tumor=c("Tumor" = "black", "Control" = "green"), grade = col1), which="row")
 > Heatmap(matrix = mat, show_column_names=T, name="z-socre", row_names_gp = gpar(fontsize = 9), column_names_gp= gpar(fontsize = 4), right_annotation=ca, row_dend_width=unit(30, "mm"), )
+
+#########exclude MT genes
+> g3 <- g2[ g2$FDR < 0.05 & g2$chr != "MT",]
+> dim(g3)
+[1] 88 10
+....
+> mat <- as.matrix(mat.df.info[, c(2:89)])
