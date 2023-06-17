@@ -3728,3 +3728,33 @@ col1 <- c("red", "green", "blue", "yellow", "white", "black", "grey", "orange", 
 names(col1) <- gr
 ca <- HeatmapAnnotation(sex = mat.df.info$XX, tumor = mat.df.info$Tumor, grade = mat.df.info$grade, col=list(sex = c("XY" = "blue", "XX" = "pink"), tumor=c("Tumor" = "black", "Control" = "green"), grade = col1), which="row")
 Heatmap(matrix = mat, show_column_names=F, name="z-socre", row_names_gp = gpar(fontsize = 9), right_annotation=ca, row_dend_width=unit(30, "mm"), )
+
+###############using genes with fdr < 0.05
+g3 <- g2[ g2$FDR < 0.05,]
+dim(g3)
+# [1] 101  10
+dim(g3[ g3$chr == "X",])
+# 1] 5 10
+a.df.g.filt <- a.df.g[ a.df.g$id %in% g3$geneID,]
+t1 <- a.df.g.filt[, 2:40]
+### $name may not be unique
+ rownames(t1) <- a.df.g.filt$name
+# rownames(t1) <- a.df.g.filt$id
+mat <- t(as.matrix(t1))
+dim(mat)
+# 1]  39 101
+mat.df <- as.data.frame(mat)
+mat.df$sample <- rownames(mat.df)
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+mat.df.info <- merge(mat.df, info, by.x="sample", by.y="id1")
+dim(mat.df.info)
+mat <- as.matrix(mat.df.info[, c(2:102)])
+rownames(mat) <- mat.df.info$sample
+dim(mat)
+# 1]  39 101
+# each of 414 genes is z-scored (log10(d+1)) over 39 samples
+gr <- unique(mat.df.info$grade)
+col1 <- c("red", "green", "blue", "yellow", "white", "black", "grey", "orange", "magenta")
+names(col1) <- gr
+ca <- HeatmapAnnotation(sex = mat.df.info$XX, tumor = mat.df.info$Tumor, grade = mat.df.info$grade, col=list(sex = c("XY" = "blue", "XX" = "pink"), tumor=c("Tumor" = "black", "Control" = "green"), grade = col1), which="row")
+> Heatmap(matrix = mat, show_column_names=T, name="z-socre", row_names_gp = gpar(fontsize = 9), column_names_gp= gpar(fontsize = 4), right_annotation=ca, row_dend_width=unit(30, "mm"), )
