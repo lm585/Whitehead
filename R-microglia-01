@@ -3646,3 +3646,85 @@ cat claudia-GBM.txt |grep -i ccr2 |grep -i lo  | cut -f 7,8 | sort | uniq -c
 
 
 #############################################################################
+##########################TAM vs ctrl using all samples
+> keep <-rowSums(edgeR::cpm(y)>=1) >= 6
+> y<-y[keep,]
+> dim(y)
+[1] 17380    39
+> info <- read.delim("microglia-39-sample-sampInfo.txt")
+> identical(info$id1, row.names( y$samples))
+[1] TRUE
+> design <- model.matrix(~info$XX + info$Tumor + info$age )
+> design
+   (Intercept) info$XXXY info$TumorTumor info$age
+1            1         1               1       75
+2            1         1               1       32
+3            1         0               1       64
+4            1         1               1       63
+5            1         1               1       63
+6            1         1               0       60
+7            1         0               0       73
+> y <- estimateDisp(y,design)
+> fit <- glmQLFit(y, design)
+> qlf <- glmQLFTest(fit, coef=3)
+> top2v1 <- topTags(qlf, n = 91234)
+> write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+> topTags(qlf, n = 9)
+Coefficient:  info$TumorTumor 
+                     logFC    logCPM        F       PValue        FDR
+ENSG00000123975  2.0829039  2.641765 30.74270 2.149009e-06 0.01504899
+ENSG00000225630 -2.7669799  7.575982 28.85263 3.742070e-06 0.01504899
+linyongmao@Linyong-Mao-MBP16-2019 microglia % mv -i diff2-1.txt all39samp.tumVSctrl.diff2-1.txt
+vi all39samp.tumVSctrl.diff2-1.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine all39samp.tumVSctrl.diff2-1.txt        geneID-name-type-chr out
+paste   all39samp.tumVSctrl.diff2-1.txt   out | grep -vw notApplicable > all39samp.tumVSctrl.diff2-1.name-type-chr.txt
+ cat all39samp.tumVSctrl.diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $6 < 0.1' | wc 
+# 2.372082e-03(p-value) 0.09958159(fdr) 
+     414    4140   60921
+cat all39samp.tumVSctrl.diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $6 < 0.1 && $2 > 0' |cut -f 8 | sort
+DDX3X, SAT1
+cat all39samp.tumVSctrl.diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $6 < 0.1 && $2 < 0' |cut -f 8 | sort | grep -iv mt-
+
+d = cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+g <- read.delim("geneID-name")
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, g, by.x="id", by.y="geneID")
+dim(a.df.g)
+# 1] 17380    41
+g2 <- read.delim("all39samp.tumVSctrl.diff2-1.name-type-chr.txt")
+g3 <- g2[ g2$FDR < 0.1,]
+dim(g3)
+# 1] 414  10
+dim(g3[ g3$chr == "X",])
+# 1] 16 10
+a.df.g.filt <- a.df.g[ a.df.g$id %in% g3$geneID,]
+t1 <- a.df.g.filt[, 2:40]
+### $name may not be unique
+# rownames(t1) <- a.df.g.filt$name
+rownames(t1) <- a.df.g.filt$id
+mat <- t(as.matrix(t1))
+dim(mat)
+# 1]  39 414
+mat.df <- as.data.frame(mat)
+mat.df$sample <- rownames(mat.df)
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+mat.df.info <- merge(mat.df, info, by.x="sample", by.y="id1")
+dim(mat.df.info)
+# 1]  39 421
+mat <- as.matrix(mat.df.info[, c(2:415)])
+rownames(mat) <- mat.df.info$sample
+dim(mat)
+# 1]  39 414
+# each of 414 genes is z-scored (log10(d+1)) over 39 samples
+gr <- unique(mat.df.info$grade)
+col1 <- c("red", "green", "blue", "yellow", "white", "black", "grey", "orange", "magenta")
+names(col1) <- gr
+ca <- HeatmapAnnotation(sex = mat.df.info$XX, tumor = mat.df.info$Tumor, grade = mat.df.info$grade, col=list(sex = c("XY" = "blue", "XX" = "pink"), tumor=c("Tumor" = "black", "Control" = "green"), grade = col1), which="row")
+Heatmap(matrix = mat, show_column_names=F, name="z-socre", row_names_gp = gpar(fontsize = 9), right_annotation=ca, row_dend_width=unit(30, "mm"), )
