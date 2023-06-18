@@ -3765,3 +3765,45 @@ ca <- HeatmapAnnotation(sex = mat.df.info$XX, tumor = mat.df.info$Tumor, grade =
 [1] 88 10
 ....
 > mat <- as.matrix(mat.df.info[, c(2:89)])
+
+###### TAM sample onle, M vs F, 13 samples from clustering res, these 13 samples are separated from control microglia
+t <- read.delim("temp.txt", header = T, row.names = 1)
+dim(t)
+##[1] 58302    39
+info <- read.delim("microglia-39-sample-sampInfo.txt")
+c1 <- data.frame( colnames(t))
+c1$index <- 1:39
+c2 <- merge(c1, info, by.x="colnames.t.", by.y="id1")
+dim(c2)
+# [1] 39  8
+s <- c("MGB_028", "MGB_027", "MGB_047", "MGB_042", "MGB_055", "MGB_016", "MGB_018", "MGB_022", "MGB_026", "MGB_040", "MGB_039", "MGB_011", "MGB_009")
+t1 <- t[ , colnames(t) %in% s]
+dim(t1)
+# [1] 58302    13
+rawCount <- t1
+group <- factor(rep(1, 13))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+# 5 females only
+keep <-rowSums(cpm(y)>=1) >= 5
+y<-y[keep,]
+dim(y)
+# [1] 14930    13
+c4 <- colnames(rawCount)
+info2 <- info[1:13, c(1,3,5,7)]
+for(index in 1:dim(rawCount)[2]) {
+info2[index, ] <- info[ info$id1 == c4[index],c(1,3,5,7)]
+}
+design <- model.matrix(~info2$XX + info2$age)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+# mv -i diff2-1.txt TAMonly-13tamFromCluster-F-M-diff2-1.txt
+linyongmao@Linyong-Mao-MBP16-2019 microglia % vi TAMonly-13tamFromCluster-F-M-diff2-1.txt
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  TAMonly-13tamFromCluster-F-M-diff2-1.txt         geneID-name-type-chr out
+paste  TAMonly-13tamFromCluster-F-M-diff2-1.txt out > TAMonly-13tamFromCluster-F-M-diff2-1.name-type-chr.txt
+./make-rnk-genesymble                TAMonly-13tamFromCluster-F-M-diff2-1.name-type-chr.txt  TAMonly-13tamFromCluster-F-M-diff2-1.rnk
+cat TAMonly-13tamFromCluster-F-M-diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} !($10 == "X" || $10 == "Y") ' > TAMonly-13tamFromCluster-F-M-diff2-1.noXYgenes.name-type-chr.txt
+./make-rnk-genesymble               TAMonly-13tamFromCluster-F-M-diff2-1.noXYgenes.name-type-chr.txt  TAMonly-13tamFromCluster-F-M-diff2-1.noXYgenes.rnk
