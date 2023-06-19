@@ -1085,3 +1085,9 @@ step = 4
 rowlabel$tissue[ seq(1, dim(met.tis.df)[1], step)] <- raw.tis$tissue[ seq(1, dim(met.tis.df)[1], step)]
 Heatmap(matrix = mat, show_column_names=F, name="logMetab", row_names_gp = gpar(fontsize = 4), right_annotation=ca, row_dend_width=unit(30, "mm"), row_labels= rowlabel$tissue)
 > Heatmap(matrix = mat, show_column_names=F, name="z-socre (metab)", row_names_gp = gpar(fontsize = 4), right_annotation=ca, row_dend_width=unit(30, "mm"), clustering_distance_rows="pearson", clustering_distance_columns="pearson")
+
+#################################################################################################
+linyong@fry /lab/solexa_page/linyong$ awk '{print NF}' gtex-all-samples.gene.count.txt | uniq -c
+  62704 17352
+linyong@fry /lab/solexa_page/linyong$ ls -lh gtex-all-samples.gene.count.txt
+-r--r--r-- 1 linyong systemd-timesync 2.7G Jun 19 16:29 gtex-all-samples.gene.count.txt
