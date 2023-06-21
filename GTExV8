@@ -1163,3 +1163,62 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat dir-gtex-website-data/GTEx_An
 cut -f 2 *htseq.10samples.851pm |grep -v mean > gtex-htseq.50tiss-10sampPertiss
 cat out-R-script-select-gtex-htseq-samples-in-a-tissue-912pm  | awk '(NR -1) % 5 == 1' | cut -f 1
 
+#############################################################################
+raw <- read.delim("gtex-all-samples.gene.count.txt", header=T)
+dim(raw)
+# [1] 62703 17352
+samp <- read.delim("gtex-htseq.50tiss-10sampPertiss", header=F)
+dim(samp)
+samp$V2 <- paste( samp$V1, ".", sep="")
+raw.samp <- raw[, colnames(raw) %in% samp$V2]
+dim(raw.samp)
+rownames(raw.samp) <- raw$geneID
+summary( raw.samp[,1] - raw[, "GTEX.144GL.2926.SM.5O99F."]  )
+y <- DGEList(counts=raw.samp)
+y <- calcNormFactors(y)
+dim(y)
+summary(y$samples$norm.factors)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#  0.3249  0.8577  1.0377  1.0408  1.2318  1.9053 
+summary(y$samples$lib.size)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# 12279814 26497412 31427822 32812601 37609295 87255002 
+keep <-rowSums(cpm(y)>=1) >= 10
+y<-y[keep,]
+dim(y)
+# [1] 27501   500
+d = cpm(y)
+a <- d
+b = log10(a+1)
+b.df <- as.data.frame(b)
+b.mat <- as.matrix(b.df)
+b.mat.t <- t(b.mat)
+t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+b.mat.t.df <- as.data.frame(b.mat.t)
+b.mat.t.df$id <- rownames(b.mat.t.df)
+dim(b.mat.t.df)
+# [1]   500 27502
+t1$id2 <- gsub("-", ".", t1$V1)
+t1$id <- paste(t1$id2, ".", sep="")
+t2 <- merge(b.mat.t.df, t1, by.x="id", by.y="id")
+dim(t2)
+t3 <- read.delim("dir-gtex-website-data/samp-name-T55", header=F)
+head(t3)
+#                            V1 V2
+#1       Adipose - Subcutaneous T1
+#2 Adipose - Visceral (Omentum) T2
+#3                Adrenal Gland T3
+t4 <- merge(t2, t3, by.x="V2", by.y="V1")
+rownames(t4) <- paste( t4$V2.y, gsub("GTEX", "", t4$V1), sep="")
+t4[1:2, c(1:6, 27500:27506)]
+mat <- as.matrix(t4[, c(3:27503)])
+dim(mat)
+# [1]   500 27501
+ 
+ca <- HeatmapAnnotation(tissue = t4$V2, which="row")
+rowlabel <- data.frame(t4$V2) 
+rowlabel$tissue <- ""
+step = 2
+rowlabel$tissue[ seq(1, dim(t4)[1], step)] <- t4$V2[ seq(1, dim(t4)[1], step)]
+> Heatmap(matrix = mat, show_column_names=F, name="log10_CPM", row_names_gp = gpar(fontsize = 3), right_annotation=ca, row_dend_width=unit(30, "mm"), row_labels= rowlabel$tissue)
+
