@@ -1157,3 +1157,9 @@ dim(mat)
 ca <- HeatmapAnnotation(tissue = t4$V2, which="row")
 rowlabel <- data.frame(t4$V2) 
 > Heatmap(matrix = mat, show_column_names=F, name="log10_CPM", row_names_gp = gpar(fontsize = 4), right_annotation=ca, row_dend_width=unit(30, "mm"), row_labels= rowlabel$t4.V2)
+
+#########
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt | cut -f 7,17 | sort | uniq    | grep -i rnaseq |cut -f 1  > gtex-54tiss.txt
+cut -f 2 *htseq.10samples.851pm |grep -v mean > gtex-htseq.50tiss-10sampPertiss
+cat out-R-script-select-gtex-htseq-samples-in-a-tissue-912pm  | awk '(NR -1) % 5 == 1' | cut -f 1
+
