@@ -1282,3 +1282,42 @@ len <- length(unique(g.brain$SMTSD))
 axis(1, at = seq(1, len, by = 1), labels=substr( a$names, 1, 32), las=2, cex.axis=0.5)
 abline(h = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
 abline(v = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
+
+#########compare star-htseq with GTEx_Analysis_2017-06-05_v8_RNASeQC
+head -1 gtex-all-samples.gene.count.txt > temp1
+grep -iw xist gtex-all-samples.gene.count.txt >> temp1
+~/Documents/microglia/table-transpose temp1 temp1-transp
+
+head -1 dir-gtex-website-data/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct > temp2
+grep -iw xist dir-gtex-website-data/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct >> temp2
+~/Documents/microglia/table-transpose temp2 temp2-transp
+vi temp1-transp 
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp1-transp temp2-transp out
+paste  temp1-transp  out > temp1-temp2
+cat temp1-temp2 | wc -l
+   17351
+cat temp1-temp2 |  awk 'BEGIN {FS = "\t"; OFS = "\t"} $4 == $2 * 2' | wc -l
+    2171
+>t1 <- read.delim("temp1-temp2")
+info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+gene.info <- merge(t1, info, by.x="Description", by.y="SAMPID")
+dim(gene.info)
+# [1] 17350     9
+g2.f <- gene.info[ gene.info$SEX == 2 , ]
+dim(g2.f)
+# [1] 5783    9
+g2.m <- gene.info[ gene.info$SEX == 1 , ]
+dim(g2.m)
+# [1] 11567     9
+
+plot(log2( gene.info$XIST.1+2) ~ log2(2*(gene.info$XIST+1)), xlab="log2(2 *(geneCount + 1)), STAR-htseq", ylab =     "log2(geneCount + 2), RNA-SeQC", ylim=c(0, 20), xlim=c(0, 20), col = "white")
+points( log2(2*(g2.f$XIST+1)),log2( g2.f$XIST.1+2), col = "red")
+points( log2(2*(g2.m$XIST+1)),log2( g2.m$XIST.1+2), col = "blue")
+abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+y = 1:5
+x = y
+abline(lm(y~x), lwd = 1, col="blue")
+text(2, 20, "y = x", col="blue")
+legend(2, 18, c("F", "M"), pch = c(16,16),col = c("red", "blue" ) )
+
