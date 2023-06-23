@@ -1239,3 +1239,46 @@ rowlabel$tissue[ seq(1, dim(t4.brain)[1], step)] <- t4.brain$V2[ seq(1, dim(t4.b
 #for non-bain cells 
  Heatmap(matrix = mat, show_column_names=F, name="log10_CPM", row_names_gp = gpar(fontsize = 3), right_annotation=ca,  row_labels= rowlabel$tissue,  row_dend_width=unit(30, "mm"))
 
+#########QC of star-htseqcount res
+rm -f temp1
+head -1 gtex-all-samples.gene.count.txt > temp1
+grep -iw xist gtex-all-samples.gene.count.txt >> temp1
+grep -iw ddx3y gtex-all-samples.gene.count.txt >> temp1
+grep -iw zfy gtex-all-samples.gene.count.txt >> temp1
+grep -iw CPT1B gtex-all-samples.gene.count.txt >> temp1
+
+~/Documents/microglia/table-transpose temp1 temp1-transp
+# rm 1st line from temp1-transp
+# rm . from samaple ID GTEX-1117F-0003-SM-58Q7G.
+vi  temp1-transp
+
+> t1 <- read.delim("temp1-transp")
+info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+gene.info <- merge(t1, info, by.x="name", by.y="SAMPID")
+dim(gene.info)
+# [1] 17350    12
+tis <- read.delim("dir-gtex-website-data/sample-tissue.2colum")
+gene.info.tiss <- merge( gene.info, tis, by.x="name", by.y="SAMPID")
+plot(log2( gene.info.tiss$XIST +1) ~ log2( gene.info.tiss$DDX3Y +1), col = "white")
+g2.f <- gene.info.tiss[ gene.info.tiss$SEX == 2 , ]
+g2.m <- gene.info.tiss[ gene.info.tiss$SEX == 1 , ]
+points(log2(g2.f$DDX3Y +1), log2(g2.f$XIST +1), col = "red")
+points(log2(g2.m$DDX3Y +1), log2(g2.m$XIST +1), col = "blue")
+abline(h = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
+legend(0, 2.5, c("F", "M"), pch = c(16,16),col = c("red", "blue" ) )
+
+g2 <- gene.info.tiss[ gene.info.tiss$SEX == 2 & gene.info.tiss$DDX3Y > 100,]
+dim(g2)
+# [1] 20samples 
+
+g.brain <- gene.info.tiss[ !grepl("Brain", gene.info.tiss$SMTSD), ]
+#A numerical vector of the form c(bottom, left, top, right) which gives the number of lines of margin to be specified on the four sides of the plot
+#41 boxplots
+#Small Intestine - Terminal Ileum
+par( mar=c(8,5,2,2))
+a <- boxplot(log2(g.brain$CPT1B+1) ~ g.brain$SMTSD, xlab="", ylab="log2(CPT1B raw gene count)", xaxt= "n")
+len <- length(unique(g.brain$SMTSD))
+axis(1, at = seq(1, len, by = 1), labels=substr( a$names, 1, 32), las=2, cex.axis=0.5)
+abline(h = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
