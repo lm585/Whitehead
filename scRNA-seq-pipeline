@@ -2350,3 +2350,7 @@ mat1 <- t(as.matrix(t1))
 mat <- as.data.frame(mat1)
 dim(mat)
 #  8 282
+Heatmap(matrix = as.matrix(mat), show_column_names=F, name="z-socre", row_names_gp = gpar(fontsize = 12),  row_dend_width=unit(30, "mm"), clustering_distance_columns="pearson" )
+> g3 <- g2[ g2$FDR < 0.1 & g2$logFC > 0,]
+> dim(g3)
+[1] 212  10
