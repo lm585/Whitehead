@@ -2278,3 +2278,75 @@ odds ratio
 [1] 0.09016393
 > 268/19333
 [1] 0.01386231
+
+######mouse scRNA clustering on 8 mice, using DEGs from human, or from mouse itself
+> library(SingleCellExperiment)
+library(Matrix.utils)
+setwd("/Users/linyongmao/Documents/microglia-mouse")
+immune.combined <- readRDS("immune.combined.rds")
+mic <- c(0:5,7,9,14)
+immune.mic <- immune.combined[, immune.combined$integrated_snn_res.0.6 %in% mic] ###5748 cells in cluster 0
+immune.mic
+# 16618 features across 31165 (out of 40401) samples within 2 assays
+DefaultAssay(immune.mic) <- "RNA"
+counts <- immune.mic@assays$RNA@counts
+metadata <- immune.mic@meta.data
+metadata$cluster_id <- metadata$integrated_snn_res.0.6
+# Create single cell experiment object
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+# Identify groups for aggregation of counts
+# groups: character class
+groups <- colData(sce)[, c("orig.ident")]
+# Aggregate across cluster-sample groups
+pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+
+class(pb)
+
+dim(pb)
+# [1]     8 14618
+pb[1:8, 1:6] # 8 samples
+#           Sox17 Mrpl15 Lypla1 Tcea1 Atp6v1h Rb1cc1
+# f-ctrl-2      .    618    542   968     453    511
+# m-tumor-2     .    558    341   683     363    299
+t1 <- as.data.frame(t(pb))
+head(t1)
+dim(t1)
+group <- factor(rep(1, 8))
+y <- DGEList(counts=t1,group=group)
+y <- calcNormFactors(y)
+keep <-rowSums(edgeR::cpm(y)>=1) >= 2
+y<-y[keep,]
+dim(y)
+# [1] 11472     8
+d = edgeR::cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+geneid <- read.delim("M10.geneID-name-chr-type.2.name-first.txt")
+a.gene <- merge(a.df, geneid, by.x="id", by.y="geneID")
+dim(a.gene)
+#  [1] 11125    13
+chip <- read.delim("Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip")
+a.chip <- merge(a.gene, chip, by.x="ID", by.y="ID")
+dim(a.chip)
+# [1] 10385    15
+g2 <- read.delim("../microglia/all39samp.tumVSctrl.diff2-1.name-type-chr.txt")
+g3 <- g2[ g2$FDR < 0.1,]
+dim(g3)
+# 414  10
+a.df.g.filt <- a.chip[ a.chip$Gene.Symbol %in% g3$symbol, ]
+dim(a.df.g.filt)
+# 282  15
+t1 <- a.df.g.filt[, 3:10]
+rownames(t1) <- a.df.g.filt$id
+mat1 <- t(as.matrix(t1))
+mat <- as.data.frame(mat1)
+dim(mat)
+#  8 282
