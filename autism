@@ -584,3 +584,16 @@ dim(y)
 # [1] 69418     4
 1226/70644 chrX peaks
 # [1] 0.01735462
+
+#########human_data/SFARI , rna-seq, autism
+linyong@fry /lab/page_human_data/linyong2$ ls /lab/page_human_data/SFARI/hg38/RNA/* | grep -i microglia | tail -n 18 | sed 's/\*$//'
+# 18 postnatal samples
+# 17 fetal samples
+linyong@fry /lab/solexa_page/linyong/autism$ cat microglia-18-fq-files-read-len | awk 'NR % 3 == 1' | sort -g | uniq -c
+     10 50bp read len
+      1 54
+      3 75
+      4 76
+cat /lab/page_human_data/linyong2/dir-gtex-500/slurm-gtexv8-pipeline-download-genecount > slurm-human-mg-rna-seq
+linyong@fry /lab/solexa_page/linyong/autism$ sbatch slurm-human-mg-rna-seq
+Submitted batch job 372687
