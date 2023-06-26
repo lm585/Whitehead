@@ -597,3 +597,19 @@ linyong@fry /lab/solexa_page/linyong/autism$ cat microglia-18-fq-files-read-len 
 cat /lab/page_human_data/linyong2/dir-gtex-500/slurm-gtexv8-pipeline-download-genecount > slurm-human-mg-rna-seq
 linyong@fry /lab/solexa_page/linyong/autism$ sbatch slurm-human-mg-rna-seq
 Submitted batch job 372687
+
+#########human Microglia RNA-seq 18samples
+cat /lab/solexa_page/linyong/script-genecount-merge-2 > temp-merge
+vi temp-merge
+bash temp-merge
+linyong@fry /lab/solexa_page/linyong/autism$ cp temp-merge script-merge-june-25-2023
+> setwd("~/Documents/autism/")
+raw <- read.delim("human_Microglia_RNA-18samp.gene.count.txt")
+raw.samp <- raw[, 3:20]
+rownames(raw.samp) <- raw$geneID
+dim(raw.samp)
+# [1] 62703    18
+summary( raw.samp[,1] - raw[, 3]  )
+y <- DGEList(counts=raw.samp)
+y <- calcNormFactors(y)
+dim(y)
