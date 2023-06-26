@@ -1321,3 +1321,21 @@ abline(lm(y~x), lwd = 1, col="blue")
 text(2, 20, "y = x", col="blue")
 legend(2, 18, c("F", "M"), pch = c(16,16),col = c("red", "blue" ) )
 
+#############################################################################
+linyong@fry /lab/solexa_page/linyong/autism$ cp -i ../gtex-all-samples.gene.count.txt.gz  .
+linyong@fry /lab/solexa_page/linyong/autism$ gunzip gtex-all-samples.gene.count.txt.gz
+linyong@fry /lab/solexa_page/linyong/autism$ ls -l gtex-all-samples.gene.count.txt ../gtex-all-samples.gene.count.orig.txt
+-r--r--r-- 1 linyong systemd-timesync 2838623072 Jun 19 17:02 ../gtex-all-samples.gene.count.orig.txt
+-r--r--r-- 1 linyong systemd-timesync 2838623072 Jun 26 12:40 gtex-all-samples.gene.count.txt
+linyong@fry /lab/solexa_page/linyong/autism$ diff ../gtex-all-samples.gene.count.orig.txt gtex-all-samples.gene.count.txt | wc
+      0       0       0
+linyong@fry /lab/solexa_page/linyong/autism$ rm -f gtex-all-samples.gene.count.txt
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % scp linyong@tak.wi.mit.edu:/lab/solexa_page/linyong/gtex-all-samples.gene.count.orig.txt ./
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % ls -l gtex-all-samples.*
+-rw-r--r--  1 linyongmao  staff  2838623072 Jun 26 12:54 gtex-all-samples.gene.count.orig.txt
+-rw-r--r--  1 linyongmao  staff  2838623072 Jun 19 17:30 gtex-all-samples.gene.count.txt
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % diff gtex-all-samples.gene.count.orig.txt gtex-all-samples.gene.count.txt | wc
+       0       0       0
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % rm -f gtex-all-samples.gene.count.orig.txt
+
