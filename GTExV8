@@ -1339,3 +1339,12 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % diff gtex-all-samples.gene.count.
        0       0       0
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % rm -f gtex-all-samples.gene.count.orig.txt
 
+#############################################################################
+linyong@fry /lab/page_human_data/gtexV8-reMap-2023$ ls -lh /lab/solexa_page/linyong/gtex-all-samples.gene.count.txt.gz
+linyong@fry /lab/page_human_data/gtexV8-reMap-2023$ cp -i /lab/solexa_page/linyong/gtex-all-samples.gene.count.txt.gz ./
+linyong@fry /lab/page_human_data/gtexV8-reMap-2023$ cp -i /lab/solexa_page/linyong/gencode/gencode.v42.primary_assembly.annotation.gtf ./
+-r--r--r-- 1 linyong page_hd 763306586 Jun 26 13:07 /lab/page_human_data/gtexV8-reMap-2023/gtex-all-samples.gene.count.txt.gz
+-r--r--r-- 1 linyong systemd-timesync 763306586 Jun 19 16:29 /lab/solexa_page/linyong/gtex-all-samples.gene.count.txt.gz
+
+drwxr-sr-x   2 linyong  page_hd   52 Jun 26 13:06 gtexV8-reMap-2023/
+drwxr-sr-x 637 linyong  page_hd  21K Jun 19 15:33 linyong2/
