@@ -613,3 +613,26 @@ summary( raw.samp[,1] - raw[, 3]  )
 y <- DGEList(counts=raw.samp)
 y <- calcNormFactors(y)
 dim(y)
+###########
+> summary(y$samples$norm.factors)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.8655  0.9622  0.9917  1.0026  1.0548  1.1373 
+d <- edgeR::cpm(y)
+df <- as.data.frame(d)
+df.2 <- df[, 4:18] ###rm A17 A27, A41 samples, whose ages >= 37
+gene.name <- raw[, 1:2]
+df.2$geneID <- rownames(df.2)
+df.gene <- merge(df.2, gene.name, by.x="geneID", by.y="geneID")
+g1 <- scan(what="", sep = "\n")
+
+# "ACTB"    "ITGAM"   "P2RY12"  "TMEM119" "CX3CR1"  "CCR2"    "CD3D"    "MS4A1"  
+df.gene.filt <-  df.gene[ df.gene$name %in% g1,]
+rownames(df.gene.filt) <- df.gene.filt$name
+t4 <- as.data.frame( t(df.gene.filt[, 2:16]))
+t5 <- data.frame( t4$ACTB, t4$ITGAM, t4$P2RY12, t4$TMEM119, t4$CX3CR1, t4$CCR2, t4$CD3D, t4$MS4A1 )
+colnames(t5) <- gsub("t4.", "", colnames(t5))
+rownames(t5) <- rownames(t4)
+boxplot(log2(t5+1), outcol = "white", ylab = "log2(cpm+1)")
+beeswarm(log2(t5+1), add=T, cex = 0.6, col = "red" )
+abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
