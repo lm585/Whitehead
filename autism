@@ -672,3 +672,7 @@ summary(map.res)
 data.frame(map.res, map.res$no_feature / map.res$V2)
 sort(map.res$ambiguous / map.res$lib.size)
 sort(map.res$ambiguous / map.res$V2)
+
+> summary((map.res$V3 + map.res$alignment_not_unique + map.res$not_aligned) / map.res$V2)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+      1       1       1       1       1       1
