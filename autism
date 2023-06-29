@@ -636,3 +636,39 @@ boxplot(log2(t5+1), outcol = "white", ylab = "log2(cpm+1)")
 beeswarm(log2(t5+1), add=T, cex = 0.6, col = "red" )
 abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
 abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+###########
+linyong@fry /lab/solexa_page/linyong/autism$ head human*.STAR.log | grep "==> " | sed 's/.*polyA_//' | sed 's/.STAR.log <==//' > temp1
+head human*.STAR.log | grep "Number of input reads" | awk '{print $6}'  > temp2
+head human*.STAR.log | grep "Uniquely mapped reads number" | awk '{print $6}' > temp3
+paste temp1 temp2 temp3 > temp11
+
+
+
+b=`ls human*counts_gene  | awk 'NR == 1' `
+echo "$b" | sed 's/.*polyA_//' | sed 's/.counts_gene//' > s
+tail -n 5 "$b" | awk '{print $1 "\t" $2}' | sed 's/__//' >> s
+ls human*counts_gene  | awk 'NR > 1' | while read f
+do
+  echo "$f" | sed 's/.*polyA_//' | sed 's/.counts_gene//' > f2
+  tail -n 5 "$f" | awk '{print  $2}' | sed 's/__//' >> f2       
+  paste s f2 > m
+  mv m s
+done
+ls -lh s
+
+> t1 <- read.delim("temp11", header=F)
+t2 <- as.data.frame( y$samples)
+rownames(t2) <- gsub("human_Microglia_RNA_polyA_", "", rownames(t2))
+t2$V1 <- rownames(t2)
+t3 <- merge(t1, t2, by.x="V1", by.y="V1")
+t3$uniq.map.ratio <- t3$V3 / t3$V2
+t3$lib.size.ratio <- t3$lib.size / t3$V3
+t4 <- read.delim("s")
+t5 <- as.data.frame( t(t4))
+t5$id <- rownames(t5)
+map.res <- merge(t3, t5, by.x="V1", by.y="id")
+summary(map.res)
+# > write.table(map.res, "map.res.human.postnatal.18samp.txt", quote=F, sep="\t")
+data.frame(map.res, map.res$no_feature / map.res$V2)
+sort(map.res$ambiguous / map.res$lib.size)
+sort(map.res$ambiguous / map.res$V2)
