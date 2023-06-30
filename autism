@@ -728,3 +728,9 @@ pca.m <- pca.info[ pca.info$Sex == "M", ]
 points(pca.f$pc1, pca.f$pc2, col = "red", cex = 1.6)
 points(pca.m$pc1, pca.m$pc2, col = "blue", cex = 1.6)
 legend(-0.85, -0.45, legend=c("F", "M"), pch = c(1,1), col=c("red", "blue"), cex=1.2)
+
+###########13 samples (using P8_Parietal)
+> raw.samp <- raw[, c(6:7,9:18, 20)]
+[1] 14808 genes with >= 1cpm; no chrX genes; no chrY;    13 samples
+> plot(pca.info$pc1, pca.info$pc2, cex=0.05, xlab="PC1 (26%)", ylab = "PC2 (18%)")
+> legend(-0.6, -0.3, legend=c("F", "M"), pch = c(1,1), col=c("red", "blue"), cex=1.2)
