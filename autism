@@ -676,3 +676,55 @@ sort(map.res$ambiguous / map.res$V2)
 > summary((map.res$V3 + map.res$alignment_not_unique + map.res$not_aligned) / map.res$V2)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
       1       1       1       1       1       1
+
+###########13 samples (using P8_Occipital)
+raw <- read.delim("human_Microglia_RNA-18samp.gene.count.txt")
+#remove 3 adult samples, and only keep P17_Temporal & P8_Occipital
+raw.samp <- raw[, c(6:7,9:19)]
+rownames(raw.samp) <- raw$geneID
+dim(raw.samp)
+# [1] 62703    13
+summary( raw.samp[,1] - raw[, 6]  )
+y <- DGEList(counts=raw.samp)
+y <- calcNormFactors(y)
+dim(y)
+summary(y$samples$norm.factors)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#  0.8735  0.9490  1.0113  1.0025  1.0579  1.1458
+d <- edgeR::cpm(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+dim(y)
+# [1] 15223    13
+d <- edgeR::cpm(y)
+df <- as.data.frame(d)
+df.2 <- df
+gene.name <- raw[, 1:2]
+df.2$geneID <- rownames(df.2)
+df.gene <- merge(df.2, gene.name, by.x="geneID", by.y="geneID")
+
+chr <- read.delim("gencode.v42.primary_assembly.noPar.gene-chr-type")
+df.cpm.gene <- merge(df.gene, chr, by.x="geneID", by.y="geneID")
+df.cpm.noX.Y <- df.cpm.gene[ df.cpm.gene$chr != "chrX" & df.cpm.gene$chr != "chrY",]
+dim(df.cpm.noX.Y)
+# [1] 14760    18   minus 463 chrX gene
+
+y <- y[ rownames(y) %in% df.cpm.noX.Y$geneID, ]  
+dim(y)
+# [1] 14760    13
+mds <- plotMDS(y, top=98765)
+x <- data.frame( patient = colnames(y$counts), pc1 = mds$x, pc2 = mds$y )
+info <- read.delim("human.postnatal.18samp.info")
+x$patient <- gsub("human_Microglia_RNA_polyA_", "", x$patient)
+pca.info <- merge(x, info, by.x="patient", by.y="Patient.ID")
+plot(pca.info$pc1, pca.info$pc2, cex=0.05, xlab="PC1 (32%)", ylab = "PC2 (17%)")
+pca.f <- pca.info[ pca.info$Sex == "F", ]
+pca.m <- pca.info[ pca.info$Sex == "M", ]
+points(pca.f$pc1, pca.f$pc2, col = "red", cex = 1.6)
+points(pca.m$pc1, pca.m$pc2, col = "blue", cex = 1.6)
+legend(-0.85, -0.45, legend=c("F", "M"), pch = c(1,1), col=c("red", "blue"), cex=1.2)
