@@ -677,6 +677,36 @@ sort(map.res$ambiguous / map.res$V2)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
       1       1       1       1       1       1
 
+###########18 samples including 3 adults
+> map <- read.delim("map.res.human.postnatal.18samp.txt")
+summary(map)
+par( mar=c(8,5,2,2))
+plot(0,0, xlim=c(0,20), ylim=c(0, 7e7), col="white", xlab="", ylab="reads", xaxt = "n" )
+points(1:dim(map)[1], map$V2, pch = 1, col = "black", cex = 1 )
+lines(1:dim(map)[1], map$V2,  col = "black")
+points(1:dim(map)[1], map$V3, pch = 1, col = "red", cex = 1 )
+lines(1:dim(map)[1], map$V3,  col = "red")
+points(1:dim(map)[1], map$lib.size, pch = 1, col = "blue", cex = 1 )
+lines(1:dim(map)[1], map$lib.size,  col = "blue")
+points(1:dim(map)[1], map$no_feature, pch = 1, col = "green", cex = 1 )
+lines(1:dim(map)[1], map$no_feature,  col = "green")
+abline(h = seq(0, 7e7,1e7), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+axis(1, at = seq(1, dim(map)[1], by=1), labels=map$V1, las = 2)
+# legend(10, 7e7, legend=c("raw read", "uniq mapped read", "uniq read in non-overlap exon"), col = c("black", "red", "blue"), lty = 1, cex = 0.8 )
+legend(10, 7e7, legend=c("raw read", "uniq mapped read", "uniq read in non-overlap exon", "no_feature"), col = c("black", "red", "blue", "green"), lty = 1, cex = 0.8 )
+
+par( mar=c(8,5,2,2))
+plot(0,0, xlim=c(0,20), ylim=c(0, 1), col="white", xlab="", ylab="% of uniq mapped read", xaxt = "n" )
+points(1:dim(map)[1], map$lib.size / map$V3, pch = 1, col = "blue", cex = 1 )
+lines(1:dim(map)[1], map$lib.size/map$V3,  col = "blue")
+points(1:dim(map)[1], map$no_feature/map$V3, pch = 1, col = "green", cex = 1 )
+lines(1:dim(map)[1], map$no_feature/map$V3,  col = "green")
+abline(h = seq(0, 1, 0.1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+axis(1, at = seq(1, dim(map)[1], by=1), labels=map$V1, las = 2)
+legend(10, 1, legend=c( "uniq read in non-overlap exon", "no_feature"), col = c( "blue", "green"), lty = 1, cex = 0.8 )
+
 ###########13 samples (using P8_Occipital)
 raw <- read.delim("human_Microglia_RNA-18samp.gene.count.txt")
 #remove 3 adult samples, and only keep P17_Temporal & P8_Occipital
