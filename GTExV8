@@ -1353,3 +1353,31 @@ linyong@fry /lab/page_human_data/gtexV8-reMap-2023$ cp -i /lab/solexa_page/linyo
 
 drwxr-sr-x   2 linyong  page_hd   52 Jun 26 13:06 gtexV8-reMap-2023/
 drwxr-sr-x 637 linyong  page_hd  21K Jun 19 15:33 linyong2/
+
+##################################################
+linyong@fry /lab/page_human_data/linyong2/test-dir$ cat script-test-325
+#
+ls GTEX*counts_gene | head -101 | grep -v GTEX-1IL2U-0626-SM-CE6TA.Aligned. | while read ll
+do
+
+# ll="GTEX-111CU-0526-SM-5EGHK.Aligned.sortedByCoord.out.patched.md.bam.counts_gene"
+f=`echo "$ll" | sed 's/Aligned.sortedByCoord.out.patched.md.bam.counts_gene//' `
+t=` head -1 /lab/solexa_page/linyong/gtex-all-samples.gene.count.orig.txt |  awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print i, $i}' | grep -w "$f" | head -1 | cut -f 1`
+cut -f 1,2,$t /lab/solexa_page/linyong/gtex-all-samples.gene.count.orig.txt > temp-"$f"-cnt
+echo -n "numofdifflines "
+diff "temp-$f-cnt" "$ll" | wc -l
+echo "$ll"
+diff "temp-$f-cnt" "$ll"
+rm "temp-$f-cnt"
+
+done
+###
+
+linyong@fry /lab/page_human_data/linyong2/test-dir$ rm -f out-july-2
+linyong@fry /lab/page_human_data/linyong2/test-dir$ bash script-test-325 > out-july-2
+cat out-july-2 | grep numof  | uniq -c
+    100 numofdifflines  8
+cat out-july-2 | grep '62704a62704,62708' | uniq -c
+    100 62704a62704,62708
+wc -l out-july-2
+1000 out-july-2
