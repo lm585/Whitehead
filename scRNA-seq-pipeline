@@ -2354,3 +2354,59 @@ Heatmap(matrix = as.matrix(mat), show_column_names=F, name="z-socre", row_names_
 > g3 <- g2[ g2$FDR < 0.1 & g2$logFC > 0,]
 > dim(g3)
 [1] 212  10
+
+###########mouse scRNA-seq mg clusters; TAM vs ctrl; F+M;
+> keep <-rowSums(edgeR::cpm(y)>=1) >= 2
+> y<-y[keep,]
+> dim(y)
+[1] 11472     8
+s <- c( rep("f", 4), rep("m",4) )
+tc <- c("c", "c", "t", "t", "c", "c", "t", "t")
+design <- model.matrix(~s + tc)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=3)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+mv -i diff2-1.txt mouse.clusts.micro.8samples.diff2-1.edgeR.txt
+vi mouse.clusts.micro.8samples.diff2-1.edgeR.txt
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine   mouse.clusts.micro.8samples.diff2-1.edgeR.txt M10.geneID-name-chr-type.2.name-first.txt out
+paste  mouse.clusts.micro.8samples.diff2-1.edgeR.txt  out | grep -vw notApplicable |
+awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+print $9;
+for(i = 1; i <= NF; i++)
+{
+ if(i != 9)
+ {
+  print "\t" $i;
+ }
+}
+print "\n"
+}' > mouse.clusts.micro.8samples.diff2-1.edgeR.geneID.txt
+
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    mouse.clusts.micro.8samples.diff2-1.edgeR.geneID.txt  Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip out
+paste  mouse.clusts.micro.8samples.diff2-1.edgeR.geneID.txt  out | grep -vw notApplicable > mouse.clusts.micro.8samples.diff2-1.edgeR.human.gene.name.txt
+cat mouse.clusts.micro.8samples.diff2-1.edgeR.human.gene.name.txt | cut -f 2-8,13 > temp
+head -3 temp       
+/Users/linyongmao/Documents/microglia/make-rnk-genesymble temp mouse.clusts.micro.8samples.diff2-1.edgeR.human.gene.rnk
+rm -f temp-1
+echo -n "all39samp.tumVSctrl.upreg-fdr0d1\tfdr0d1" >> temp-1
+cat "../microglia/all39samp.tumVSctrl.diff2-1.name-type-chr.txt" |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} $2 > 0 && $6 < 0.1 {print "\t" $8}' >> temp-1
+echo >> temp-1
+echo -n "all39samp.tumVSctrl.downreg-fdr0d1\tfdr0d1" >> temp-1
+cat "../microglia/all39samp.tumVSctrl.diff2-1.name-type-chr.txt" |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} $2 < 0 && $6 < 0.1 {print "\t" $8}' >> temp-1
+echo >> temp-1
+
+echo -n "all39samp.tumVSctrl.upreg-fdr0d05\tfdr0d05" >> temp-1
+cat "../microglia/all39samp.tumVSctrl.diff2-1.name-type-chr.txt" |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} $2 > 0 && $6 < 0.05 {print "\t" $8}' >> temp-1
+echo >> temp-1
+echo -n "all39samp.tumVSctrl.downreg-fdr0d05\tfdr0d05" >> temp-1
+cat "../microglia/all39samp.tumVSctrl.diff2-1.name-type-chr.txt" |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} $2 < 0 && $6 < 0.05 {print "\t" $8}' >> temp-1
+echo >> temp-1
+cat temp-1 >> microglia-TAM.gmt
+cp -i microglia-TAM.gmt microglia-TAM.july-2-2023.gmt
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    microglia-TAM.gmt   -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk   mouse.clusts.micro.8samples.diff2-1.edgeR.human.gene.rnk -rpt_label   "mouse.clusts.micro.8samples.fAm.edgeR_TAM.prerank.custom.gmt"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
