@@ -790,3 +790,59 @@ Heatmap(t12, name = "correlation",  col = col_fun, right_annotation=ca, row_dend
 [1] 14808 genes with >= 1cpm; no chrX genes; no chrY;    13 samples
 > plot(pca.info$pc1, pca.info$pc2, cex=0.05, xlab="PC1 (26%)", ylab = "PC2 (18%)")
 > legend(-0.6, -0.3, legend=c("F", "M"), pch = c(1,1), col=c("red", "blue"), cex=1.2)
+##################
+setwd("~/Documents/autism/")
+raw <- read.delim("human_Microglia_RNA-18samp.gene.count.txt")
+raw.samp <- raw[, c(6:7,9:18, 20)]
+# P8_Parietal
+rownames(raw.samp) <- raw$geneID
+dim(raw.samp)
+# [1] 62703    13
+summary( raw.samp[,1] - raw[, 6]  )
+y <- DGEList(counts=raw.samp)
+y <- calcNormFactors(y)
+dim(y)
+summary(y$samples$norm.factors)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.8766  0.9510  1.0106  1.0024  1.0569  1.1434 
+#5 male samples
+keep <-rowSums(edgeR::cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+# [1] 16790    13
+info <- read.delim("human.postnatal.18samp.info")
+info.2 <- info[1:13,]
+cna <- gsub("human_Microglia_RNA_polyA_", "", colnames(y))
+for(i in 1:13) {
+ info.2[i,] = info[ info$Patient.ID == cna[i], ]
+ }
+identical(info.2$Patient.ID, cna)
+design <- model.matrix(~info.2$Sex + info.2$Age)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+gene.name <- raw[, 1:2]
+df.gene <- merge(diff, gene.name, by.x="geneID", by.y="geneID")
+chr <- read.delim("gencode.v42.primary_assembly.noPar.gene-chr-type")
+df.cpm.gene <- merge(df.gene, chr, by.x="geneID", by.y="geneID")
+df.cpm.noX.Y <- df.cpm.gene[ df.cpm.gene$chr != "chrX" & df.cpm.gene$chr != "chrY",]
+dim(df.cpm.noX.Y)
+# [1] 16259    10
+# > write.table(df.cpm.gene, "human_Microglia_rna-postnatal-MvF-diff2-1.name-type-chr.txt", sep="\t", quote=F)
+# > write.table(df.cpm.noX.Y, "human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.name-type-chr.txt", sep="\t", quote=F)
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi human_Microglia_rna-postnatal-MvF-diff2-1.name-type-chr.txt   
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.name-type-chr.txt
+cat  human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} 
+{for(i = 1; i <= 7; i++) 
+   print $i "\t";
+
+ print $7 "\n"; 
+}' > temp
+../microglia/make-rnk-genesymble  temp  human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.rnk
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.rnk -rpt_label   "human_Microglia_rna-postnatal-MvF.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
