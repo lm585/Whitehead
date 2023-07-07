@@ -891,3 +891,20 @@ Heatmap(matrix = mat, show_column_names=F, name="z-socre",  right_annotation=ca,
 a.df <- as.data.frame(log10(a+1))
 ......
 Heatmap(matrix = mat, show_column_names=F, name="log10(cpm+1)",  right_annotation=ca, row_dend_width=unit(15, "mm"), clustering_distance_rows="pearson", clustering_distance_columns ="pearson")
+
+##################age test between F & M
+info <- read.delim("human.postnatal.18samp.info")
+info.2 <- info[1:13,]
+cna <- gsub("human_Microglia_RNA_polyA_", "", colnames(y))
+for(i in 1:13) {
+ info.2[i,] = info[ info$Patient.ID == cna[i], ]
+ }
+identical(info.2$Patient.ID, cna)
+boxplot(info.2$Age ~ info.2$Sex, outcol = "white")
+beeswarm(info.2$Age ~ info.2$Sex, add=T)
+abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ f <- info.2[info.2$Sex =="F",]$Age
+ m <- info.2[info.2$Sex =="M",]$Age
+ wilcox.test(f,m, paired=F, exact=F, conf.int = T)
+ t.test(f,m)
+ t.test(log2(f),log2(m))
