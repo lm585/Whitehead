@@ -886,3 +886,8 @@ ca <- HeatmapAnnotation( sex = mat.df.info$Sex, age = mat.df.info$Age, region = 
 # Heatmap(matrix = mat, show_column_names=F, name="z-socre",  right_annotation=ca, row_dend_width=unit(15, "mm"), )
 Heatmap(matrix = mat, show_column_names=F, name="z-socre",  right_annotation=ca, row_dend_width=unit(15, "mm"), clustering_distance_rows="pearson", clustering_distance_columns ="pearson")
 
+##################heatmap using DEGs' log10(cpm+1)
+> a <- d
+a.df <- as.data.frame(log10(a+1))
+......
+Heatmap(matrix = mat, show_column_names=F, name="log10(cpm+1)",  right_annotation=ca, row_dend_width=unit(15, "mm"), clustering_distance_rows="pearson", clustering_distance_columns ="pearson")
