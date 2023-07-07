@@ -846,3 +846,43 @@ cat  human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.name-type-chr.txt | awk 'BE
 
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.rnk -rpt_label   "human_Microglia_rna-postnatal-MvF.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
 
+##################
+> filt <- df.cpm.noX.Y[ df.cpm.noX.Y$PValue < 1.513847e-02, ]
+dim(filt)
+# [1] 200  10
+d = edgeR::cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g.filt <- a.df[ a.df$id %in% filt$geneID,]
+t1 <- a.df.g.filt[, 1:13]
+mat <- t(as.matrix(t1))
+dim(mat)
+# [1]  13 200
+mat.df <- as.data.frame(mat)
+mat.df$sample <- gsub("human_Microglia_RNA_polyA_", "", rownames(mat.df))
+info <- read.delim("human.postnatal.18samp.info")
+mat.df.info <- merge(mat.df, info, by.x="sample", by.y="Patient.ID")
+dim(mat.df.info)
+# [1]  13 204
+mat <- as.matrix(mat.df.info[, c(2:201)])
+rownames(mat) <- mat.df.info$sample
+dim(mat)
+# [1]  13 200
+# each of 200 genes is z-scored (log10(d+1)) over 13 samples
+col.age <- colorRamp2(c(0,10,20), c("blue","white", "red"))
+brain <- c("yellow", "green", "pink", "black")
+names(brain) <-  unique(mat.df.info$Brain.Region)
+brain
+#   Temporal    Frontal Occipital   Parietal
+#   "yellow"    "green"     "pink"    "black" 
+ca <- HeatmapAnnotation( sex = mat.df.info$Sex, age = mat.df.info$Age, region = mat.df.info$Brain.Region,  which="row", col=list(age = col.age, region = brain, sex = c("F" = "white", "M" = "black")))
+
+# Heatmap(matrix = mat, show_column_names=F, name="z-socre",  right_annotation=ca, row_dend_width=unit(15, "mm"), )
+Heatmap(matrix = mat, show_column_names=F, name="z-socre",  right_annotation=ca, row_dend_width=unit(15, "mm"), clustering_distance_rows="pearson", clustering_distance_columns ="pearson")
+
