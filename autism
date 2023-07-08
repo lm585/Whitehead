@@ -908,3 +908,10 @@ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
  wilcox.test(f,m, paired=F, exact=F, conf.int = T)
  t.test(f,m)
  t.test(log2(f),log2(m))
+##################
+> info.2$col <- "red"
+> info.2[ info.2$Sex == "M",]$col = "blue"
+boxplot(info.2$Age, ylab="Age", xlab = "postnatal donor")
+beeswarm(info.2$Age, add=T, pwcol=info.2$col, cex = 2)
+ legend("topleft", inset = 0.05, legend=c("F", "M"), pch = c(1,1), col=c("red", "blue"), cex=2)
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
