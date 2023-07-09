@@ -3811,3 +3811,17 @@ paste  TAMonly-13tamFromCluster-F-M-diff2-1.txt out > TAMonly-13tamFromCluster-F
 ./make-rnk-genesymble                TAMonly-13tamFromCluster-F-M-diff2-1.name-type-chr.txt  TAMonly-13tamFromCluster-F-M-diff2-1.rnk
 cat TAMonly-13tamFromCluster-F-M-diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} !($10 == "X" || $10 == "Y") ' > TAMonly-13tamFromCluster-F-M-diff2-1.noXYgenes.name-type-chr.txt
 ./make-rnk-genesymble               TAMonly-13tamFromCluster-F-M-diff2-1.noXYgenes.name-type-chr.txt  TAMonly-13tamFromCluster-F-M-diff2-1.noXYgenes.rnk
+
+##################fisher.test
+ #                      up-in-tam-in-mouse           otherwise-in-mouse
+ # up-in-tam-in-human
+ # otherwise-in-human
+> m
+     [,1] [,2]
+[1,]   23   14
+[2,]    1   12
+> fisher.test(m)
+p-value = 0.0008876
+odds ratio
+  18.65113 
+# p = 0.00068, hypergeometric testing
