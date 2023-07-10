@@ -3825,3 +3825,32 @@ p-value = 0.0008876
 odds ratio
   18.65113 
 # p = 0.00068, hypergeometric testing
+
+##################
+#paste gsea.res.combined.july.2023.xlsx into temp
+> raw <- read.delim("temp")
+con1 <- unique(raw$contrast)
+# [1] "all39samp.tumVSctrl"                        "mouse.clusts.micro.8samples.fAm.edgeR_TAM." "TAMonly-F-M.Malepostive.noXY"              "mouse.clusts.micro.4TAMs.MvF.Mpos.noXY"
+
+ h.tam <- raw[ raw$contrast == con1[1],]
+ m.tam <- raw[ raw$contrast == con1[2],]
+ h.sex.tum <- raw[ raw$contrast == con1[3],]
+ m.sex.tum <- raw[ raw$contrast == con1[4],]
+ t1 <- merge(h.tam, m.tam, by.x="NAME", by.y="NAME")
+ t2 <- merge(h.sex.tum, m.sex.tum, by.x="NAME", by.y="NAME")
+ t3 <- merge(t1, t2, by.x="NAME", by.y="NAME" )
+ dim(t3)
+# [1] 49 45
+ res <- data.frame(name = t3$NAME, h.tam.nes = t3$NES.x.x, h.tam.fdr = t3$FDR.q.val.x.x, m.tam.nes = t3$NES.y.x, m.tam.fdr = t3$FDR.q.val.y.x, h.sex.tum.nes = t3$NES.x.y, h.sex.tum.fdr = t3$FDR.q.val.x.y, m.sex.tum.nes = t3$NES.y.y, m.sex.tum.fdr = t3$FDR.q.val.y.y)
+ write.table(res, "temp.2.txt", sep="\t")
+# later opened with excel
+ mat <- res[, c(2,4,6,8)]
+ rownames(mat) <- gsub("HALLMARK", "h", res$name)
+ col_fun = colorRamp2(c(-3.0, -1.5, 1.5, 3.0), c( "blue", "grey90",  "grey90" , "red"))
+ col_fun = colorRamp2(c(-3.5,  0, 3.5), c(  "blue",  "white",  "red"))
+ Heatmap(mat, name="NES", row_names_gp = gpar(fontsize = 6), col=col_fun)
+ Heatmap(seq(3.5,-3.5,-0.5), row_labels=seq(3.5, -3.5, -0.5), col = colorRamp2(c(-3.5,  0, 3.5), c(  "blue",  "white",  "red")), cluster_rows=F, row_names_gp = gpar(fontsize = 9))
+#legend
+### > Heatmap(seq(3.5,-3.5,-0.5), row_labels=seq(3.5, -3.5, -0.5), col = colorRamp2(c(-3.5,  0, 3.5), c(  "blue",  "white",  "red")), cluster_rows=F, row_names_gp = gpar(fontsize = 9))
+
+ col_fun = colorRamp2(c(-3.0, -1.5, 0, 1.5, 3.0), c( "violet", "blue",  "white", "yellow" , "red"))
