@@ -3852,5 +3852,7 @@ con1 <- unique(raw$contrast)
  Heatmap(seq(3.5,-3.5,-0.5), row_labels=seq(3.5, -3.5, -0.5), col = colorRamp2(c(-3.5,  0, 3.5), c(  "blue",  "white",  "red")), cluster_rows=F, row_names_gp = gpar(fontsize = 9))
 #legend
 ### > Heatmap(seq(3.5,-3.5,-0.5), row_labels=seq(3.5, -3.5, -0.5), col = colorRamp2(c(-3.5,  0, 3.5), c(  "blue",  "white",  "red")), cluster_rows=F, row_names_gp = gpar(fontsize = 9))
+> cl <- c("TAMvsCtrl.human", "TAMvsCtrl.mouse", "MvsF.TAM.human", "MvsF.TAM.mouse")
+> Heatmap(mat, name="NES", row_names_gp = gpar(fontsize = 6), col=col_fun, column_labels=cl)
 
  col_fun = colorRamp2(c(-3.0, -1.5, 0, 1.5, 3.0), c( "violet", "blue",  "white", "yellow" , "red"))
