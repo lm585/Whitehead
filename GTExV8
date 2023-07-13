@@ -1502,3 +1502,9 @@ for(i in 1:10) {
 }
 }
 
+ plot(c3$cor ~ ll[[1]], ylab="P-star-htseq.count sample-sample corr", xlab ="Consortium sample-sample corr")
+ y = 1:5
+ x = y
+ abline(lm(y~x))
+ abline(h = seq(-10,10,0.05), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-10,10,0.05), lty = 5, lwd = 0.5, col = "gray")
