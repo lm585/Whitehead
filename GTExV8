@@ -1381,3 +1381,124 @@ cat out-july-2 | grep '62704a62704,62708' | uniq -c
     100 62704a62704,62708
 wc -l out-july-2
 1000 out-july-2
+
+##################C-P-stomach-10-10samp.raw
+using R-script-select-gtex-htseq-samples-in-a-tissue
+#stomach 
+> tissue = file[49,1]
+t2 <- t1[ t1$V2 == tissue, ]
+ t2$id <- gsub("-", ".", t2$V1)
+ t2$id <- paste(t2$id, ".", sep="")
+ raw2 <- raw[, colnames(raw) %in% t2$id ]
+ str1 <- paste(tissue, dim(raw2)[2], sep="\t")
+ cat(str1)
+ cat("\n")
+ rownames(raw2) <- raw$geneID
+> r3 <- raw2[ ,sample(1:dim(raw2)[2], 10 )]
+> write.table(r3, "P-stomach-10samp.raw", sep="\t", quote=F)
+> samp <- colnames(r3)
+> samp
+ [1] "GTEX.1RAZR.1526.SM.EAZ4U." "GTEX.R55C.1026.SM.48FCM." 
+> raw <- read.delim("dir-gtex-website-data/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct", header=T)
+> s2 <- gsub(".$", "", samp)
+> r4 <- raw[,  colnames(raw) %in% s2]
+> rownames(r4) <- raw$Name
+write.table(r4, "C-stomach-10samp.raw", sep="\t", quote=F)
+# 44 PAR_Y genes in the website gene count matrix
+# ENSG00000168939.11_PAR_Y
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  C-stomach-10samp.raw P-stomach-10samp.raw out
+paste C-stomach-10samp.raw out | grep -vw notApplicable > C-P-stomach-10-10samp.raw
+wc -l  C-stomach-10samp.raw P-stomach-10samp.raw C-P-stomach-10-10samp.raw
+   56201 C-stomach-10samp.raw
+   62704 P-stomach-10samp.raw
+   55485 C-P-stomach-10-10samp.raw
+> r1 <- read.delim("C-P-stomach-10-10samp.raw")
+> raw <- r1[, c(2:11, 13:22)]
+> rownames(raw) <- r1$geneID
+> dim(raw)
+# [1] 55484    20
+y <- DGEList(counts=raw)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- edgeR::cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+# [1] 15880    20
+d = edgeR::cpm(y)
+t9 <- as.data.frame(d)
+t10 <- log10(t9 + 1)
+t11 <- cor(t10)
+t12 <- as.data.frame(t11)
+mat <- as.matrix(t12)
+ c1 <- paste("C-", rownames(mat)[1:10], sep="")
+ c2 <- paste("P-", rownames(mat)[11:20], sep="")
+ rownames(mat) <- c(c1,c2)
+ colnames(mat) <- c(c1,c2)
+> Heatmap(mat, name = "correlation", row_order=sort(rownames(mat)), column_order=sort(colnames(mat)), row_names_gp = gpar(fontsize = 8), column_names_gp = gpar(fontsize = 8))
+ c1 <- data.frame(cor = 1:45)
+ c1$cor = -1
+k = 1
+for(i in 1:10) {
+ for(j in 1:10) {
+ if(j > i)
+ {
+   c1$cor[k] = mat[i,j]
+   k <- k+1
+ }
+}
+}
+ ll <- list()
+ ll[[1]] <- c1$cor
+
+c1$cor = -1
+k = 1
+for(i in 11:20) {
+ for(j in 11:20) {
+ if(j > i)
+ { 
+   c1$cor[k] = mat[i,j]
+   k <- k+1
+ }
+}
+}
+ ll[[2]] <- c1$cor
+ identical(rownames(mat), colnames(mat))
+ rownames(mat)
+c2 <- data.frame(cor = 1:10)
+c2$cor = -1
+k = 1
+for(i in 1:10) {
+  c2$cor[k] = mat[i, i+10]
+  k <- k+1
+}
+ll[[3]] <- c2$cor
+ boxplot(ll, ylab=" correlation (r)", xaxt="n", outcol ="white")
+ beeswarm(ll, add = T)
+ abline(h = seq(0,100,0.05), lty = 5, lwd = 0.5, col = "gray")
+ axis(1, at = 1:3, labels=c("Consortium sample-sample", "P-star-htseq.count sample-sample", "C-P same sample"))
+
+ c3 <- data.frame(cor = 1:45)
+ c3$cor = -1
+k = 1
+for(i in 1:10) {
+ for(j in 1:10) {
+ if(j > i)
+ { 
+   r <- gsub("^C-", "", rownames(mat)[i])
+   r <- paste("P-", r, sep="")
+   r <- paste( r, ".", sep="")
+   c <- gsub("^C-", "", colnames(mat)[j])
+   c <- paste("P-", c, sep="")
+   c <- paste( c, ".", sep="")
+
+   c3$cor[k] = mat[ rownames(mat) == r, colnames(mat) == c ][1] 
+   k <- k+1
+ }
+}
+}
+
