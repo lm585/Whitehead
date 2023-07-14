@@ -1471,13 +1471,18 @@ for(i in 11:20) {
  rownames(mat)
 c2 <- data.frame(cor = 1:10)
 c2$cor = -1
+
 k = 1
 for(i in 1:10) {
-  c2$cor[k] = mat[i, i+10]
+   r <- gsub("^C-", "", rownames(mat)[i])
+   r <- paste("P-", r, sep="")
+   r <- paste( r, ".", sep="")
+  c2$cor[k] = mat[ i, colnames(mat) == r ][1]                  
   k <- k+1
 }
 ll[[3]] <- c2$cor
- boxplot(ll, ylab=" correlation (r)", xaxt="n", outcol ="white")
+
+boxplot(ll, ylab=" correlation (r)", xaxt="n", outcol ="white")
  beeswarm(ll, add = T)
  abline(h = seq(0,100,0.05), lty = 5, lwd = 0.5, col = "gray")
  axis(1, at = 1:3, labels=c("Consortium sample-sample", "P-star-htseq.count sample-sample", "C-P same sample"))
