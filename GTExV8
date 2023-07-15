@@ -1513,3 +1513,37 @@ for(i in 1:10) {
  abline(lm(y~x))
  abline(h = seq(-10,10,0.05), lty = 5, lwd = 0.5, col = "gray")
  abline(v = seq(-10,10,0.05), lty = 5, lwd = 0.5, col = "gray")
+##################
+> C.GTEX.1RAZR.1526.SM.EAZ4U <- t10[, "GTEX.1RAZR.1526.SM.EAZ4U"]
+ P.GTEX.1RAZR.1526.SM.EAZ4U <- t10[, "GTEX.1RAZR.1526.SM.EAZ4U."]
+ plot(P.GTEX.1RAZR.1526.SM.EAZ4U ~ C.GTEX.1RAZR.1526.SM.EAZ4U)
+ title("log10(cpm+1); R-squared:  0.8757")
+y22 = 1:5
+x = y22
+abline(lm(y22~x), lwd = 1.5, col="blue")
+ abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ text(0.5, 4, "P-star-htseq.count", pos=4)
+ text(3.5, 1, "Consortium", pos = 4)
+
+###randomly pick 1000 genes with cpm > 0
+> d = edgeR::cpm(y)
+> t9 <- as.data.frame(d)
+ df <- data.frame(t9$GTEX.1RAZR.1526.SM.EAZ4U, t9$GTEX.1RAZR.1526.SM.EAZ4U.)
+####already median of 20 cpm >= 1
+ df2 <- df[ df[,1] > 0 & df[,2] > 0,]
+ dim(df2)
+# [1] 15758     2
+ df3 <- df2[ sample(1:dim(df2)[1], 1000),]
+ plot(log10(df3$t9.GTEX.1RAZR.1526.SM.EAZ4U.) ~ log10(df3$t9.GTEX.1RAZR.1526.SM.EAZ4U), xlab = "consortium, log10(cpm)", ylab = "P-star-htseq.count, log10(cpm)")
+y22 = 1:5
+x = y22
+abline(lm(y22~x), lwd = 1.5, col="blue")
+ abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ x = 1:10
+ y22 <- x + log10(1.5)
+ abline(lm(y22~x),lty=5, lwd = 1, col="red")
+ y22 <- x - log10(1.5)
+ abline(lm(y22~x),lty=5, lwd = 1, col="red")
+ legend("topleft", inset=0.05, legend=c("y=x", "+/- log10(1.5)"), lty = c(1, 5), col = c("blue", "red"))
