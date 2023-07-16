@@ -1637,3 +1637,13 @@ cat temp13
 rm temp1 temp2 temp3 temp11 temp12 temp13 s f2 m s-tr s-tr-1 
 linyong@fry /lab/page_human_data/linyong2$ bash temp-scr-2 | awk 'NF > 9' > map-test-200-files
 
+linyong@fry /lab/page_human_data/linyong2$ cd /lab/solexa_page/linyong/dir-gtex-10/
+linyong@fry /lab/solexa_page/linyong/dir-gtex-10$ bash script-get-feature-count | awk 'NF > 9' >> /lab/page_human_data/linyong2/map-test-200-files
+linyong@fry /lab/page_human_data/linyong2$ cat  map-test-200-files | awk '$1 == $4' | wc -l
+201 #including 1 header line
+cat  map-test-200-files | cut -f 2 | sort | uniq -d |wc
+      0       0       0 #no two #.of.input.reads identical
+cat  map-test-200-files | awk 'NR > 1 {print $3 / $2}' | sort -g | awk 'NR == 100'
+0.933841
+cat  map-test-200-files | awk 'NR > 1 {print $3 / $2}' | sort -g | awk 'NR == 20'
+0.78069
