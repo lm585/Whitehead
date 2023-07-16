@@ -1547,3 +1547,93 @@ abline(lm(y22~x), lwd = 1.5, col="blue")
  y22 <- x - log10(1.5)
  abline(lm(y22~x),lty=5, lwd = 1, col="red")
  legend("topleft", inset=0.05, legend=c("y=x", "+/- log10(1.5)"), lty = c(1, 5), col = c("blue", "red"))
+
+##################sample inputreads Uniquelyreads lib.size        no_feature      ambiguous       too_low_aQual
+#sample inputreads Uniquelyreads  sample	lib.size	no_feature	ambiguous	too_low_aQual	not_alignedalignment_not_unique
+GTEX-1117F-3226-SM-5N9CT.Aligned.sortedByCoord.out.patched.md.bam	40408706	37511071	GTEX-1117F-3226-SM-5N9CT.Aligned.sortedByCoord.out.patched.md.bam	31392486	2078686	4039899	0	794779	2102856
+> sum(x[3:8]) == x[1]
+inputreads == lib.size + no_feature + ambiguous + too_low_aQual + not_aligned + alignment_not_unique
+> sum(x[3], x[4], x[5]) == x[2]
+uniqreads == lib.size + no_feature + ambiguous
+
+linyong@fry /lab/solexa_page/linyong/dir-gtex-10$ rm -f temp1 temp2 temp3 temp11
+-rw-r--r-- 1 linyong systemd-timesync 1.1K Jul 15 23:14 /lab/solexa_page/linyong/dir-gtex-10/script-get-feature-count
+
+linyong@fry /lab/page_human_data/linyong2$ ls | grep "^dir-gtex-[0-9]*" > temp-dir-1
+##rm dir-600 and later dir that are 2nd round remap
+vi temp-dir-1
+linyong@fry /lab/page_human_data/linyong2$ cat temp-scr-01 
+#
+cat temp-dir-1 | while read dir
+do
+ cd "$dir"
+ echo -n "$dir"
+ n=`ls GTEX*counts_gene  | wc -l`
+ e=`grep -i  error out* | wc -l `
+ echo "	$n	$e"
+ cd ..
+done
+linyong@fry /lab/page_human_data/linyong2$ bash temp-scr-01 > map-dir-countsFilesNum-errorNum
+# dir-gtex-147/   20      0
+cat map-dir-countsFilesNum-errorNum | awk '$2 == 20 && $3 == 0' | wc -l
+439
+cat map-dir-countsFilesNum-errorNum | awk '$2 == 20 && $3 == 0' | awk 'NR % 50 == 1' | cut -f 1
+dir-gtex-147/ #this dir not used ; 40 + 20*8 = 200 samples for mapping statis
+dir-gtex-197/
+dir-gtex-249/
+dir-gtex-304/
+dir-gtex-354/
+dir-gtex-406/
+dir-gtex-458/
+dir-gtex-510/
+dir-gtex-561/
+cat map-dir-countsFilesNum-errorNum | awk '$2 == 20 && $3 == 0' | awk 'NR % 50 == 1' | cut -f 1 > map-test-dir
+linyong@fry /lab/page_human_data/linyong2$ cat temp-scr-2
+#
+cat map-test-dir | awk 'NR > 1' | while read dir
+do
+ cd "$dir"
+ bash /lab/solexa_page/linyong/dir-gtex-10/script-get-feature-count
+ cd ..
+done
+
+linyong@fry /lab/page_human_data/linyong2$ cat /lab/solexa_page/linyong/dir-gtex-10/script-get-feature-count
+#
+#
+rm -f temp1 temp2 temp3 temp11
+head GTEX*.STAR.log | grep "==> " | sed 's/.STAR.log <==//' > temp1
+head GTEX*.STAR.log | grep "Number of input reads" | awk '{print $6}'  > temp2
+head GTEX*.STAR.log | grep "Uniquely mapped reads number" | awk '{print $6}' > temp3
+paste temp1 temp2 temp3 > temp11
+wc -l temp1 temp2 temp3 temp11
+
+b=`ls GTEX*counts_gene  | awk 'NR == 1' `
+echo "feature	$b" |  sed 's/.counts_gene//' > s
+echo -n "lib.size	" >> s
+cat  "$b" | awk ' NF == 3' |  awk 'BEGIN {FS = "\t"; s = 0} {
+s += $3;}
+END {print s}' >> s
+
+tail -n 5 "$b" | awk '{print $1 "\t" $2}' | sed 's/__//' >> s
+ls GTEX*counts_gene  | awk 'NR > 1' | while read f
+do
+  echo "$f" |  sed 's/.counts_gene//' > f2
+  cat  "$f" | awk ' NF == 3' |  awk 'BEGIN {FS = "\t"; s = 0} {
+s += $3;}
+END {print s}' >> f2
+
+  tail -n 5 "$f" | awk '{print  $2}' | sed 's/__//' >> f2       
+  paste s f2 > m
+  mv m s
+done
+ls -lh s
+ ~/C++/table-transpose s s-tr
+cat  temp11 | sed 's/==> //' | sort > temp12
+awk 'NR > 1' s-tr | sort  > s-tr-1 ###rm header line
+paste temp12 s-tr-1 > temp13
+ls -lh temp13
+cat temp13
+
+rm temp1 temp2 temp3 temp11 temp12 temp13 s f2 m s-tr s-tr-1 
+linyong@fry /lab/page_human_data/linyong2$ bash temp-scr-2 | awk 'NF > 9' > map-test-200-files
+
