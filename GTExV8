@@ -1647,3 +1647,29 @@ cat  map-test-200-files | awk 'NR > 1 {print $3 / $2}' | sort -g | awk 'NR == 10
 0.933841
 cat  map-test-200-files | awk 'NR > 1 {print $3 / $2}' | sort -g | awk 'NR == 20'
 0.78069
+#############################################################################
+> map <- read.delim("map-test-200-files")
+ par( mar=c(9,5,1,2))
+ plot(0,0, xlim=c(0,205), ylim=c(0, 12e7), col="white", xlab="", ylab="reads", xaxt = "n" )
+ points(1:dim(map)[1], map$inputreads, pch = 1, col = "black", cex = 0.2 )
+ lines(1:dim(map)[1], map$inputreads,  col = "black")
+ points(1:dim(map)[1], map$Uniquelyreads, pch = 1, col = "red", cex = 0.2 )
+ lines(1:dim(map)[1], map$Uniquelyreads,  col = "red")
+ points(1:dim(map)[1], map$lib.size, pch = 1, col = "blue", cex = 0.2 )
+ lines(1:dim(map)[1], map$lib.size,  col = "blue")
+ points(1:dim(map)[1], map$no_feature, pch = 1, col = "green", cex = 0.2 )
+ lines(1:dim(map)[1], map$no_feature,  col = "green")
+ abline(h = seq(0, 20e8,1e7), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100, 1000, 10), lty = 5, lwd = 0.5, col = "gray")
+ axis(1, at = seq(1, dim(map)[1], by=1), labels=gsub(".Aligned.sortedByCoord.out.patched.md.bam", "", map$sample), las = 2, cex.axis=0.5)
+ legend(100, 1.2e8, legend=c("raw read", "uniq mapped read", "uniq read in non-overlap exon", "no_feature"), col = c("black", "red", "blue", "green"), lty = 1, cex = 0.8 )
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % sort -t '        ' +1 -2g map-test-200-files > map-test-200-files-sorted-1
+> map <- read.delim("map-test-200-files-sorted-1")
+......
+ points(1:dim(map)[1], map$not_aligned, pch = 1, col = "green", cex = 0.2 )
+ lines(1:dim(map)[1], map$not_aligned,  col = "green")
+ abline(h = seq(0, 20e8,1e7), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100, 1000, 10), lty = 5, lwd = 0.5, col = "gray")
+ axis(1, at = seq(1, dim(map)[1], by=1), labels=gsub(".Aligned.sortedByCoord.out.patched.md.bam", "", map$sample), las = 2, cex.axis=0.5)
+ legend(100, 1.2e8, legend=c("raw read", "uniq mapped read", "uniq read in non-overlap exon", "not-aligned"), col = c("black", "red", "blue", "green"), lty = 1, cex = 0.8 )
