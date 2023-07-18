@@ -1673,3 +1673,86 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % sort -t '        ' +1 -2g map-tes
  abline(v = seq(-100, 1000, 10), lty = 5, lwd = 0.5, col = "gray")
  axis(1, at = seq(1, dim(map)[1], by=1), labels=gsub(".Aligned.sortedByCoord.out.patched.md.bam", "", map$sample), las = 2, cex.axis=0.5)
  legend(100, 1.2e8, legend=c("raw read", "uniq mapped read", "uniq read in non-overlap exon", "not-aligned"), col = c("black", "red", "blue", "green"), lty = 1, cex = 0.8 )
+
+####################genes in V42 but not in v26, expressed in certain tissue, heatmap
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cut -f 1  C-stomach-10samp.raw  | awk 'NR > 1' > temp-1
+cut -f 1  P-stomach-10samp.raw  | awk 'NR > 1' > temp-2
+cat temp-1 temp-2 | sort | uniq -d > temp-3
+cat temp-2 temp-3 | sort | uniq -u > temp-4
+    7219 temp-4
+vi temp-4
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp-4  gencode.v42.primary_assembly.noPar.gene-chr-type-2 out
+ paste  temp-4  out | grep -v notApplicable  > temp-5
+cut -f 1-2 dir-gtex-website-data/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct > gencodeV26.id.name
+
+> t1 <- read.delim("temp-5")
+ dim(t1)
+# [1] 7219    6
+t2 <- read.delim("gtex-comb-1103samp.gene.count.txt")
+dim(t2)
+# [1] 62703  1105
+t2 <- t2[, 1:42]
+t3 <- merge(t1, t2, by.x="geneID.2", by.y="geneID")
+dim(t3)
+# [1] 7219   47
+ t4 <- read.delim("gencodeV26.id.name")
+ t5 <- t3[ t3$name %in% t4$Description,]
+ dim(t5)
+# [1] 344  47
+ t5 <- t3[ !(t3$name %in% t4$Description),]
+ dim(t5)
+# [1] 6875   47
+ dim(t5[ t5$type =="protein_coding", 1:8])
+# [1] 802   8
+###> write.table(t5[,1:10], "gencode.v42.not.in.v26.6875genes", quote=F, sep="\t")
+t5.orig <- t5
+......
+samp <- read.delim("gtex-htseq.50tiss-10sampPertiss", header=F)
+g.n <- raw[, 1:2]
+......
+###10 samples out of 500 samples
+> keep <-rowSums(cpm(y)>=10) >= 10
+ y<-y[keep,]
+ dim(y)
+# [1] 17459   500
+d = cpm(y)
+a <- d
+b = log10(a+1)
+b.df <- as.data.frame(b)
+ b.filt <- b.df[ rownames(b.df) %in% t5.orig$geneID.2,]
+ dim(b.filt)
+# [1] 248 500
+b.mat <- as.matrix(b.filt)
+b.mat.t <- t(b.mat)
+t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+b.mat.t.df <- as.data.frame(b.mat.t)
+b.mat.t.df$id <- rownames(b.mat.t.df)
+dim(b.mat.t.df)
+t1$id2 <- gsub("-", ".", t1$V1)
+t1$id <- paste(t1$id2, ".", sep="")
+t2 <- merge(b.mat.t.df, t1, by.x="id", by.y="id")
+dim(t2)
+t3 <- read.delim("dir-gtex-website-data/samp-name-T55", header=F)
+head(t3)
+#                            V1 V2
+#1       Adipose - Subcutaneous T1
+#2 Adipose - Visceral (Omentum) T2
+#3                Adrenal Gland T3
+t4 <- merge(t2, t3, by.x="V2", by.y="V1")
+rownames(t4) <- paste( t4$V2.y, gsub("GTEX", "", t4$V1), sep="")
+ mat <- as.matrix(t4[, c(3:250)])
+rowlabel <- data.frame(t4$V2) 
+rowlabel$tissue <- ""
+step = 2
+rowlabel$tissue[ seq(1, dim(t4)[1], step)] <- t4$V2[ seq(1, dim(t4)[1], step)]
+ ca <- HeatmapAnnotation(tissue = t4$V2, which="row", annotation_legend_param = list(grid_height = unit(2, "mm"), grid_width = unit(2, "mm"), labels_gp = gpar(fontsize = 5)))
+ col.g <- colnames(mat)
+for(i in 1:length(col.g)) {
+ col.g[i] <- ""
+ }
+
+for(i in seq(1,length(col.g), 5) ) {
+ col.g[i] <- g.n[ g.n$geneID == colnames(mat)[i], ][1,2]
+ }
+> Heatmap(matrix = mat, show_column_names=T, name="log10(CPM+1)", row_names_gp = gpar(fontsize = 3), right_annotation=ca,  row_labels= rowlabel$tissue, clustering_distance_rows="pearson", clustering_distance_columns="pearson", column_labels=col.g, column_names_gp=gpar(fontsize = 5))
+
