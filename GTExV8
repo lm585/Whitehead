@@ -1747,12 +1747,19 @@ step = 2
 rowlabel$tissue[ seq(1, dim(t4)[1], step)] <- t4$V2[ seq(1, dim(t4)[1], step)]
  ca <- HeatmapAnnotation(tissue = t4$V2, which="row", annotation_legend_param = list(grid_height = unit(2, "mm"), grid_width = unit(2, "mm"), labels_gp = gpar(fontsize = 5)))
  col.g <- colnames(mat)
+
 for(i in 1:length(col.g)) {
  col.g[i] <- ""
  }
 
-for(i in seq(1,length(col.g), 5) ) {
+for(i in seq(1,length(col.g), 1) ) {
  col.g[i] <- g.n[ g.n$geneID == colnames(mat)[i], ][1,2]
  }
+for(i in 1:length(col.g)) {
+ if(grepl("^ENSG", col.g[i]))
+   col.g[i] <- ""
+ }
+
+
 > Heatmap(matrix = mat, show_column_names=T, name="log10(CPM+1)", row_names_gp = gpar(fontsize = 3), right_annotation=ca,  row_labels= rowlabel$tissue, clustering_distance_rows="pearson", clustering_distance_columns="pearson", column_labels=col.g, column_names_gp=gpar(fontsize = 5))
 
