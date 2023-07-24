@@ -9,3 +9,6 @@ library(Matrix.utils)
 
 BiocManager::install("SingleCellExperiment")
 library(SingleCellExperiment)
+
+install.packages("vioplot")
+library(vioplot)
