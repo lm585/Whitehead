@@ -1763,3 +1763,19 @@ for(i in 1:length(col.g)) {
 
 > Heatmap(matrix = mat, show_column_names=T, name="log10(CPM+1)", row_names_gp = gpar(fontsize = 3), right_annotation=ca,  row_labels= rowlabel$tissue, clustering_distance_rows="pearson", clustering_distance_columns="pearson", column_labels=col.g, column_names_gp=gpar(fontsize = 5))
 
+############################################
+linyong@fry /lab/solexa_page/linyong/gencode$ cat gencode.v42.primary_assembly.noPar.annotation.gtf | grep -iw "readthrough_gene" | awk '$3 == "gene"' |wc
+    651   14656  146561
+cat gencode.v42.primary_assembly.noPar.readthrough_gene | cut -f 9 | awk 'BEGIN {FS = ";"} {print $1}' |sed 's/gene_id //' | sed 's/"//g' | sed 's/\.[0-9]*$//' > gencode.v42.primary_assembly.noPar.readthrough_gene.id
+cat gencode.v42.primary_assembly.noPar.readthrough_gene | cut -f 9 | awk 'BEGIN {FS = ";"} {print $1}' |sed 's/gene_id //' | sed 's/"//g' > gencode.v42.primary_assembly.noPar.readthrough_gene.id.2
+
+> keep <-rowSums(cpm(y)>=1) >= 10
+>  y<-y[keep,]
+>  dim(y)
+[1] 27501   500
+> rt.g <- read.delim("gencode.v42.primary_assembly.noPar.readthrough_gene.id.2", header=F)
+> dim(rt.g)
+[1] 651 readthrough genes,   1
+> temp2 <- y$counts[ rownames(y$counts) %in% rt.g$V1,]
+> dim(temp2)
+[1]  95 500
