@@ -915,3 +915,29 @@ boxplot(info.2$Age, ylab="Age", xlab = "postnatal donor")
 beeswarm(info.2$Age, add=T, pwcol=info.2$col, cex = 2)
  legend("topleft", inset = 0.05, legend=c("F", "M"), pch = c(1,1), col=c("red", "blue"), cex=2)
  abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+
+####################
+install.packages("vioplot")
+library(vioplot)
+> df.cpm.gene$sign.log10.p <- log10(df.cpm.gene$PValue)
+for( i in 1:dim(df.cpm.gene)[1]) {
+ if(df.cpm.gene$logFC[i] < 0)
+   df.cpm.gene$sign.log10.p[i] = -df.cpm.gene$sign.log10.p[i]
+ }
+ df.x <- df.cpm.gene[ df.cpm.gene$chr == "chrX",]
+ dim(df.x)
+# [1] 514  11
+ df.x <- df.cpm.gene[ df.cpm.gene$chr == "chrX" & df.cpm.gene$name != "XIST",]
+# g1 <- scan(what="", sep = "\n")
+ length(g1)
+# [1] 10
+ df.x.2 <- df.x[ df.x$name %in% g1,]$sign.log10.p
+ df.x.1 <- df.x[ !(df.x$name %in% g1),]$sign.log10.p
+ df.x.3 <- df.x[ df.x$name %in% g1,]
+ df.x.4 <- df.x.3[ df.x.3$PValue < 0.05,]
+
+ vioplot(df.x.1, df.x.2, names=c("X chr genes excluding XIST & 10 genes", "10 X chr genes likely driving sex difference"))
+ title("", ylab="signed log10 PValue (F vs. M)")
+ text(c(2.1,  2.1, 2.1, 1.9), df.x.4$sign.log10.p, df.x.4$name, col="blue")
+ abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+
