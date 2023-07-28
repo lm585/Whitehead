@@ -35,7 +35,7 @@ do
    echo  "sum(dhyper($x:$k, $m, $n, $k))" > temp-r-script
    echo -n "sum(dhyper($x:$k,$m,$n,$k))	"
    pvalue=`Rscript temp-r-script | awk '{print $2}' `   
-   echo -n "$pvalue	"
+   echo -n "$pvalue"
    echo
  done
 done
