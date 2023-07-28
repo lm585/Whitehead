@@ -1,0 +1,42 @@
+####################
+#
+dir="/Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.prerank.v7.4.GseaPreranked.1688667308546/"
+cd "$dir"
+postsv="gsea_report_for_na_neg_1688667308546.tsv"
+rnkf="/Users/linyongmao/Documents/autism/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.rnk"
+tot=`cat "$rnkf" | wc -l | awk '{print $1}' `
+##echo "$tot"
+echo "path1	path2	LEG1	LEG2	overlap	overlap2minRatio	dhyper	p-value"
+cat "$postsv" | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 < -1.8' | cut -f 1 | while read f
+do
+ cat "$postsv" | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 < -1.8' | cut -f 1 | while read t
+ do
+   echo -n "$f	$t	"
+   fnum=`cat "$f".tsv | awk 'NR > 1' | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 == "Yes" ' | wc -l | awk '{print $1}' `
+   tnum=`cat "$t".tsv | awk 'NR > 1' | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 == "Yes" ' | wc -l | awk '{print $1}' `
+   echo -n "$fnum	$tnum	"
+   cat "$f".tsv | awk 'NR > 1' | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 == "Yes" ' | cut -f 2 > temp-1
+   cat "$t".tsv | awk 'NR > 1' | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 == "Yes" ' | cut -f 2 > temp-2
+   overlap=`cat temp-1 temp-2 | sort | uniq -d | wc -l | awk '{print $1}' `
+   echo -n "$overlap	"
+   if [ "$fnum" -gt "$tnum" ]
+   then
+     min="$tnum"
+   else
+     min="$fnum"
+   fi
+   coeff=`echo | awk '{print '$overlap' / '$min'   }' `
+   echo -n "$coeff	"
+   m=$fnum
+   n=`echo | awk '{print '$tot' - '$fnum'   }' `
+   k=$tnum
+   x=$overlap
+   ###  print "(sum(dhyper(x:k, m, n, k)))"; 
+   echo  "sum(dhyper($x:$k, $m, $n, $k))" > temp-r-script
+   echo -n "sum(dhyper($x:$k,$m,$n,$k))	"
+   pvalue=`Rscript temp-r-script | awk '{print $2}' `   
+   echo -n "$pvalue	"
+   echo
+ done
+done
+
