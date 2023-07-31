@@ -1547,6 +1547,53 @@ abline(lm(y22~x), lwd = 1.5, col="blue")
  y22 <- x - log10(1.5)
  abline(lm(y22~x),lty=5, lwd = 1, col="red")
  legend("topleft", inset=0.05, legend=c("y=x", "+/- log10(1.5)"), lty = c(1, 5), col = c("blue", "red"))
+##########################hallmark pathway genes
+ r1 <- read.delim("C-P-stomach-10-10samp.raw")
+ raw <- r1[, c(2:11, 13:22)]
+ rownames(raw) <- r1$geneID
+ dim(raw)
+# [1] 55484    20
+y <- DGEList(counts=raw)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- edgeR::cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+# [1] 15880    20
+.......
+> g.n <- read.delim("gencode.v42.primary_assembly.noPar.geneID-name.2")
+> t10$geneID <- rownames(t10)
+> t10.g <- merge(t10, g.n, by.x="geneID", by.y="geneID")
+rm -f temp temp-u
+ls HALL*.genes | grep -v temp | while read f
+do
+  cat "$f" >> temp
+done
+
+cat temp | sort | uniq > temp-u
+wc -l temp temp-u
+    7321 temp
+    4383 temp-u
+> h.g <- read.delim("../microglia/temp-u", header=F)
+> t10.g.h <- t10.g[ t10.g$name %in% h.g$V1,]
+> dim(t10.g.h)
+[1] 3881   22
+C.GTEX.1RAZR.1526.SM.EAZ4U <- t10.g.h[, "GTEX.1RAZR.1526.SM.EAZ4U"]
+ P.GTEX.1RAZR.1526.SM.EAZ4U <- t10.g.h[, "GTEX.1RAZR.1526.SM.EAZ4U."]
+plot(P.GTEX.1RAZR.1526.SM.EAZ4U ~ C.GTEX.1RAZR.1526.SM.EAZ4U)
+ title("log10(cpm+1);")
+y22 = 1:5
+x = y22
+abline(lm(y22~x), lwd = 1.5, col="blue")
+ abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ text(0.5, 3, "P-star-htseq.count", pos=4)
+ text(3, 1.5, "Consortium", pos = 4)
 
 ##################sample inputreads Uniquelyreads lib.size        no_feature      ambiguous       too_low_aQual
 #sample inputreads Uniquelyreads  sample	lib.size	no_feature	ambiguous	too_low_aQual	not_alignedalignment_not_unique
