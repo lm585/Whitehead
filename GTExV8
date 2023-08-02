@@ -1326,6 +1326,21 @@ abline(lm(y~x), lwd = 1, col="blue")
 text(2, 20, "y = x", col="blue")
 legend(2, 18, c("F", "M"), pch = c(16,16),col = c("red", "blue" ) )
 
+##########################x-axis consortium; y-axis P-lab
+> par(mar=c(5,6,4,2))
+plot(log2(2*(gene.info$XIST+1)) ~ log2( gene.info$XIST.1+2), xlab="Consortium XIST gene count \n log2(geneCount + 2)", ylab="P-star-htseq XIST gene count \n log2(2 *(geneCount + 1))", ylim=c(0, 20), xlim=c(0, 20), col = "white")
+
+points(log2( g2.f$XIST.1+2), log2(2*(g2.f$XIST+1)), col = "red")
+points(log2( g2.m$XIST.1+2), log2(2*(g2.m$XIST+1)),col = "blue")
+abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+y = 1:5
+x = y
+abline(lm(y~x), lwd = 1, col="blue")
+text(2, 20, "y = x", col="blue")
+legend(2, 18, c("F", "M"), pch = c(16,16),col = c("red", "blue" ) )
+
+
 #############################################################################
 linyong@fry /lab/solexa_page/linyong/autism$ cp -i ../gtex-all-samples.gene.count.txt.gz  .
 linyong@fry /lab/solexa_page/linyong/autism$ gunzip gtex-all-samples.gene.count.txt.gz
