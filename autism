@@ -950,3 +950,12 @@ cat out | awk 'BEGIN {FS = "\t"; OFS = "\t"} $1 > $2 || NR == 1' > temp.txt
  abline(v = seq(-100, 100, 0.05), lty = 5, lwd = 0.5, col = "gray")
 linyongmao@Linyong-Mao-MBP16-2019 autism %  cat out | awk 'BEGIN {FS = "\t"; OFS = "\t"} ($1 > $2 && $8 <= 1e-10) || NR == 1'   | sed 's/HALLMARK_//g' | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $0, -log($8)/log(10)}' > temp2.txt
 ls -lh out temp.txt
+##########################Microbiome Influences Prenatal and Adult Microglia in a Sex-Specific Manner. 
+###DEGs (logFC, FDR) downloaded from the above paper
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat mouse-A2M-SPF-FvsM.diff2-1.txt  | awk 'BEGIN {FS = "\t"; OFS = "\t"} 2^($2) > 1.5 && $3 < 0.05 ' | sort -t '     ' +2 -3g | head -400  | cut -f 4
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat mouse-A2M-SPF-FvsM.diff2-1.txt  | awk 'BEGIN {FS = "\t"; OFS = "\t"} 2^($2) > 1.5 && $3 < 0.05 ' |cut -f 4 > temp
+cat mouse-A2M-SPF-FvsM.diff2-1.txt  | awk 'BEGIN {FS = "\t"; OFS = "\t"} 2^(-$2) > 1.5 && $3 < 0.05 ' | cut -f 4 > temp-2
+##mouse fdr < 0.05, FC > 1.5
+##human raw p-value < 0.05
+cat human_Microglia_rna-postnatal-MvF-diff2-1.name-type-chr.txt |  awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 < 0 && $5 < 0.05 ' |cut -f 7 > temp-3
+
