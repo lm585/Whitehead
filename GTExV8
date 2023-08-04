@@ -1340,6 +1340,57 @@ abline(lm(y~x), lwd = 1, col="blue")
 text(2, 20, "y = x", col="blue")
 legend(2, 18, c("F", "M"), pch = c(16,16),col = c("red", "blue" ) )
 
+##########################cpt1b P-lab vs consortium
+  head -1 gtex-all-samples.gene.count.txt > temp1
+grep -iw cpt1b gtex-all-samples.gene.count.txt | grep -v CHKB >> temp1
+~/Documents/microglia/table-transpose temp1 temp1-transp
+
+head -1 dir-gtex-website-data/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct > temp2
+grep -iw   cpt1b dir-gtex-website-data/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct | grep -v CHKB  >> temp2
+~/Documents/microglia/table-transpose temp2 temp2-transp
+vi temp1-transp
+/Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine  temp1-transp temp2-transp out
+paste  temp1-transp  out > temp1-temp2-CPT1B
+> t1 <- read.delim("temp1-temp2-CPT1B")
+info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+gene.info <- merge(t1, info, by.x="Description", by.y="SAMPID")
+dim(gene.info)
+ par(mar=c(5,6,4,2))
+ plot(log2(2*(gene.info$CPT1B+1)) ~ log2( gene.info$CPT1B.1+2), xlab="Consortium CPT1B gene count \n log2(geneCount + 2)", ylab="P-star-htseq CPT1B gene count \n log2(2 *(geneCount + 1))", ylim=c(0,10), cex=0.5)
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+
+######################boxplot of cpt1b across tissues
+ tis <- read.delim("dir-gtex-website-data/sample-tissue.2colum")
+ head(tis)
+#                          SAMPID                        SMTSD
+# 1      GTEX-1117F-0003-SM-58Q7G                  Whole Blood
+ gene.info.tiss <- merge( gene.info, tis, by.x="Description", by.y="SAMPID")
+ g.brain <- gene.info.tiss[ !grepl("Brain", gene.info.tiss$SMTSD), ]
+ dim(g.brain)
+# [1] 14708    10
+par( mar=c(8,5,2,2))
+a <- boxplot(log2(2*(g.brain$CPT1B+1)) ~ g.brain$SMTSD, xlab="", ylab="P-star-htseq CPT1B gene count \n log2(2 *(geneCount + 1))", xaxt= "n")
+ len <- length(unique(g.brain$SMTSD))
+ axis(1, at = seq(1, len, by = 1), labels=substr( a$names, 1, 32), las=2, cex.axis=0.5)
+ abline(h = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
+
+par( mar=c(8,5,2,2))
+a <- boxplot(log2(g.brain$CPT1B.1+2) ~ g.brain$SMTSD, xlab="", ylab="Consortium CPT1B gene count \n log2(geneCount + 2)", xaxt= "n")
+ len <- length(unique(g.brain$SMTSD))
+ axis(1, at = seq(1, len, by = 1), labels=substr( a$names, 1, 32), las=2, cex.axis=0.5)
+ abline(h = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
+
+###read in CHKB-CPT1B gene count
+> t1 <- read.delim("temp1-transp")
+ g.brain.chkb <- merge(t1, g.brain, by.x="name", by.y="Description")
+ dim(g.brain.chkb)
+# [1] 14708    12
+par( mar=c(8,5,2,2))
+a <- boxplot(log2(2*(g.brain.chkb$CHKB.CPT1B+1)) ~ g.brain.chkb$SMTSD, xlab="", ylab="P-star-htseq CHKB-CPT1B gene count \n log2(2 *(geneCount + 1))", xaxt= "n")
+
 
 #############################################################################
 linyong@fry /lab/solexa_page/linyong/autism$ cp -i ../gtex-all-samples.gene.count.txt.gz  .
