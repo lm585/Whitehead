@@ -1391,6 +1391,18 @@ a <- boxplot(log2(g.brain$CPT1B.1+2) ~ g.brain$SMTSD, xlab="", ylab="Consortium 
 par( mar=c(8,5,2,2))
 a <- boxplot(log2(2*(g.brain.chkb$CHKB.CPT1B+1)) ~ g.brain.chkb$SMTSD, xlab="", ylab="P-star-htseq CHKB-CPT1B gene count \n log2(2 *(geneCount + 1))", xaxt= "n")
 
+> sink("temp.txt")
+
+for(i in 1:length(unique(g.brain.chkb$SMTSD))) {
+ temp <- g.brain.chkb[ g.brain.chkb$SMTSD == sort(unique(g.brain.chkb$SMTSD))[i],]
+ res <- lm(log2(2*(temp$CPT1B.x+1)) ~ log2( temp$CPT1B.1+2))
+ sum <- summary(res)
+ p <- (sum$coefficients[2,4])
+ str <- paste(sort(unique(g.brain.chkb$SMTSD))[i], dim(temp)[1], res$coefficients[1], res$coefficients[2], sum$r.squared, p, sep="\t")
+ cat(str)
+ cat("\n")
+}
+sink()
 
 #############################################################################
 linyong@fry /lab/solexa_page/linyong/autism$ cp -i ../gtex-all-samples.gene.count.txt.gz  .
