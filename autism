@@ -886,6 +886,37 @@ ca <- HeatmapAnnotation( sex = mat.df.info$Sex, age = mat.df.info$Age, region = 
 # Heatmap(matrix = mat, show_column_names=F, name="z-socre",  right_annotation=ca, row_dend_width=unit(15, "mm"), )
 Heatmap(matrix = mat, show_column_names=F, name="z-socre",  right_annotation=ca, row_dend_width=unit(15, "mm"), clustering_distance_rows="pearson", clustering_distance_columns ="pearson")
 
+##########################HALLMARK_INTERFERON_GAMMA_RESPONSE DEGs heatmap
+linyongmao@Linyong-Mao-MBP16-2019 human_Microglia_rna-postnatal-MvF.prerank.v7.4.GseaPreranked.1688667308546 % cat "$f".tsv | awk 'NR > 1' | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 == "Yes" ' | awk '$4 < -1.30103' | wc -l
+      39 genes with p < 0.05 HALLMARK_INTERFERON_GAMMA_RESPONSE
+> a.df.name <- merge( a.df, gene.name, by.x="id", by.y="geneID")
+ g <- read.delim("temp-IFR.genes", header=F)
+ a.df.g <- a.df.name[ a.df.name$name %in% g$V1,]
+ dim(a.df.g)
+# [1] 39 15
+ t1 <- a.df.g[ , c(2:14)]
+ rownames(t1) <- a.df.g$name
+ mat <- as.matrix(t(t1))
+ dim(mat)
+# [1] 13 39
+mat.df <- as.data.frame(mat)
+mat.df$sample <- gsub("human_Microglia_RNA_polyA_", "", rownames(mat.df))
+info <- read.delim("human.postnatal.18samp.info")
+mat.df.info <- merge(mat.df, info, by.x="sample", by.y="Patient.ID")
+dim(mat.df.info)
+ mat <- as.matrix(mat.df.info[, c(2:40)])
+rownames(mat) <- mat.df.info$sample
+dim(mat)
+# each of 39 genes is z-scored (log10(d+1)) over 13 samples, no sex chr genes
+col.age <- colorRamp2(c(0,10,20), c("blue","white", "red"))
+brain <- c("yellow", "green", "pink", "black")
+names(brain) <-  unique(mat.df.info$Brain.Region)
+brain
+#   Temporal    Frontal Occipital   Parietal
+#   "yellow"    "green"     "pink"    "black"
+ca <- HeatmapAnnotation( sex = mat.df.info$Sex, age = mat.df.info$Age, region = mat.df.info$Brain.Region,  which="row", col=list(age = col.age, region = brain, sex = c("F" = "white", "M" = "black")))
+ Heatmap(matrix = mat, show_column_names=T, name="z-socre",  right_annotation=ca, row_dend_width=unit(15, "mm"),  clustering_distance_columns ="pearson", column_names_gp = gpar(fontsize = 7), column_names_side = c("top"))
+
 ##################heatmap using DEGs' log10(cpm+1)
 > a <- d
 a.df <- as.data.frame(log10(a+1))
