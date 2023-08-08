@@ -1,0 +1,62 @@
+#
+#
+
+b=`ls GTEX*counts_gene  | awk 'NR == 1' `
+t=`grep -w "MT-CO1"  "$b" | awk 'NR == 1 {print $3}' `
+if [ "$t" == "" ]
+then
+  t=0
+fi
+
+if [ "$t" -gt 999 ]
+then
+ log=`echo "$b" | sed 's/.counts_gene$//' `
+ echo "feature	$b" |  sed 's/.counts_gene//' > s
+ echo -n "inputreads	" >> s 
+ cat "$log".STAR.log  | grep "Number of input reads" | awk '{print $6}'  >> s 
+ echo -n "Uniqreads	" >> s 
+ cat "$log".STAR.log  | grep "Uniquely mapped reads number" | awk '{print $6}' >> s
+ echo -n "lib.size	" >> s
+ cat  "$b" | awk ' NF == 3' |  awk 'BEGIN {FS = "\t"; s = 0} {
+ s += $3;}
+ END {print s}' >> s
+ 
+ tail -n 5 "$b" | awk '{print $1 "\t" $2}' | sed 's/__//' >> s
+else
+ rm -f s
+ head -7 $0 | while read ll
+ do
+  echo "error	-1" >> s
+ done
+fi
+
+ls GTEX*counts_gene  | awk 'NR > 1' | while read f
+do
+ t=`grep -w "MT-CO1"  "$f" | awk 'NR == 1 {print $3}' `
+ if [ "$t" == "" ]
+ then
+   t=0 
+ fi
+
+ if [ "$t" -gt 999 ]
+ then
+  echo "$f" |  sed 's/.counts_gene//' > f2
+  log=`echo "$f" | sed 's/.counts_gene$//' `
+  cat "$log".STAR.log  | grep "Number of input reads" | awk '{print $6}'  >> f2
+  cat "$log".STAR.log  | grep "Uniquely mapped reads number" | awk '{print $6}' >> f2
+  cat  "$f" | awk ' NF == 3' |  awk 'BEGIN {FS = "\t"; s = 0} {
+   s += $3;}
+   END {print s}' >> f2
+
+  tail -n 5 "$f" | awk '{print  $2}' | sed 's/__//' >> f2       
+  paste s f2 > m
+  mv m s
+ fi
+done
+
+ls -lh s
+ ~/C++/table-transpose s s-tr
+awk 'NR > 1' s-tr | sort  > s-tr-1 ###rm header line
+cat s-tr
+
+rm temp1 temp2 temp3 temp11 temp12 temp13 s f2 m  s-tr-1 
