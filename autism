@@ -923,6 +923,47 @@ a.df <- as.data.frame(log10(a+1))
 ......
 Heatmap(matrix = mat, show_column_names=F, name="log10(cpm+1)",  right_annotation=ca, row_dend_width=unit(15, "mm"), clustering_distance_rows="pearson", clustering_distance_columns ="pearson")
 
+##########################pathway z-score, including sex chr genes if pathway contains sex chr genes
+> keep <-rowSums(edgeR::cpm(y)>=1) >= 4
+> y<-y[keep,]
+> dim(y)
+[1] 16790    13
+d = cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+info <- read.delim("human.postnatal.18samp.info")
+gene.name <- raw[, 1:2]
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, gene.name, by.x="id", by.y="geneID")
+dim(a.df.g)
+# [1] 16790    15
+file <- "../microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes"
+p <- read.delim(file, header=F)
+p.exp <- a.df.g[ a.df.g$name %in% p$V1, ]
+length(p.exp$name)
+# [1] 200 pathway genes ->  179 with cpm >= 1 in >= 4 samples
+mat <- as.matrix(p.exp[, 2:14])
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+res$id <- gsub("human_Microglia_RNA_polyA_", "", res$id)
+res.info <- merge(res, info, by.x="id", by.y="Patient.ID")
+boxplot(res.info$mean ~ res.info$Sex,   ylab = "z-score avg of all pathway genes", outcol = "white")
+beeswarm(res.info$mean ~ res.info$Sex, pch = c(16,16), col = c("red", "blue" ), cex = 1.5, add = T)
+abline(h = seq(-100,100,0.1), lty = 5, lwd = 0.5, col = "gray")
+title(main = gsub(".*microglia/", "", file))
+r.m <- res.info[ res.info$Sex == "M",]
+r.f <- res.info[ res.info$Sex == "F",]
+
+>  g <- read.delim("temp-IFR.genes", header=F)
+>  dim(g)
+[1] 39  1
+> p.exp <- a.df.g[ a.df.g$name %in% g$V1, ]
+
 ##################age test between F & M
 info <- read.delim("human.postnatal.18samp.info")
 info.2 <- info[1:13,]
