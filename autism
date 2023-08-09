@@ -964,6 +964,49 @@ r.f <- res.info[ res.info$Sex == "F",]
 [1] 39  1
 > p.exp <- a.df.g[ a.df.g$name %in% g$V1, ]
 
+##########################sex:age interaction term, collinear
+>  length(p.exp$name)
+[1] 179 INTERFERON_GAMMA_RESPONSE genes with expression in some samples
+ res.info$a <- res.info$Age - mean(res.info$Age)
+ design <- model.matrix(~res.info$Sex + res.info$a + res.info$Sex : res.info$a)
+ lm.res <- lm(res.info$mean ~ res.info$Sex + res.info$Age + res.info$Sex : res.info$Age)
+ lm.sum <- summary(lm.res)
+ temp <- as.data.frame(model.matrix(lm.res))[,2:4]
+ cor(temp)
+ cor.test(temp[,3], temp[,1])
+# t = 2.9109, df = 11, p-value = 0.01417
+#       cor
+# 0.6596387
+
+> library(car)
+> vif(lm.res)
+             res.info$Sex              res.info$Age res.info$Sex:res.info$Age
+                 2.479788                  1.806497                  3.192558
+
+lm.res.0 <- lm(res.info$mean ~ res.info$Sex + res.info$Age)
+anova(lm.res.0, lm.res)
+# Analysis of Variance Table
+# Model 1: res.info$mean ~ res.info$Sex + res.info$Age
+# Model 2: res.info$mean ~ res.info$Sex + res.info$Age + res.info$Sex:res.info$Age
+#   Res.Df    RSS Df Sum of Sq      F  Pr(>F)
+# 1     10 2.6623
+# 2      9 1.4919  1    1.1704 7.0604 0.02617 *
+
+vif(lm.res.0)
+# res.info$Sex res.info$Age
+#     1.001716     1.001716
+
+##########HALLMARK_MTORC1_SIGNALING
+> file <- "../microglia/HALLMARK_MTORC1_SIGNALING.genes"
+187 expressed genes in the pathway
+Analysis of Variance Table
+
+Model 1: res.info$mean ~ res.info$Sex + res.info$Age
+Model 2: res.info$mean ~ res.info$Sex + res.info$Age + res.info$Sex:res.info$Age
+  Res.Df     RSS Df Sum of Sq      F  Pr(>F)
+1     10 2.05981
+2      9 0.92042  1    1.1394 11.141 0.00869 **
+
 ##################age test between F & M
 info <- read.delim("human.postnatal.18samp.info")
 info.2 <- info[1:13,]
