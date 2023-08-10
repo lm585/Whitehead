@@ -1115,3 +1115,19 @@ cat mouse-A2M-SPF-FvsM.diff2-1.txt  | awk 'BEGIN {FS = "\t"; OFS = "\t"} 2^(-$2)
 ##human raw p-value < 0.05
 cat human_Microglia_rna-postnatal-MvF-diff2-1.name-type-chr.txt |  awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 < 0 && $5 < 0.05 ' |cut -f 7 > temp-3
 
+########################NESs MvF and sex:age interaction
+> t1 <- read.delim("temp-1")
+ t2 <- t1[ t1$contrast == "MvFwithInterac", ]
+ t3 <- t1[ t1$contrast == "sex.age.interact", ]
+ dim(t2)
+# [1] 49  9
+ dim(t3)
+# [1] 49  9
+ t4 <- merge(t2, t3, by.x="NAME", by.y="NAME")
+ t5 <- t4[ t4$NES.x < -1.8 & t4$FDR.q.val.x < 0.05,]
+ dim(t5)
+# [1] 32 17
+ t6 <- data.frame( MvF=t5$NES.x, interac = t5$NES.y )
+ rownames(t6) <- t5$NAME
+ summary(t6$MvF - t5$NES.x)
+> Heatmap(as.matrix(t6), name = "NES", cluster_rows=F, cluster_columns=F, column_labels=c("M vs. F", "sex:age \n interaction"), row_order= order(t6$MvF), row_names_gp = gpar(fontsize = 6), width=unit(30, "mm") )
