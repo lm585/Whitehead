@@ -1007,6 +1007,47 @@ Model 2: res.info$mean ~ res.info$Sex + res.info$Age + res.info$Sex:res.info$Age
 1     10 2.05981
 2      9 0.92042  1    1.1394 11.141 0.00869 **
 
+########################sex:age interaction DEGs
+design <- model.matrix(~info.2$Sex + info.2$Age + info.2$Sex : info.2$Age)
+......
+> write.table(df.cpm.gene, "human_Microglia_rna-postnatal-MvF-diff2-1.withInteraction.name-type-chr.txt", sep="\t", quote=F)
+> write.table(df.cpm.noX.Y, "human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.withInteraction.name-type-chr.txt", sep="\t", quote=F)
+#first output coef=2 (Sex)  DEGs,
+> qlf <- glmQLFTest(fit, coef=4)
+>  top2v1 <- topTags(qlf, n = 91234)
+>  write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+>  head(top2v1)
+Coefficient:  info.2$SexM:info.2$Age
+                        logFC   logCPM        F       PValue        FDR
+ENSG00000105697.9   0.5093262 5.305854 42.20916 1.273518e-05 0.08475107
+ENSG00000184588.18  0.2629259 6.222199 40.43680 1.606822e-05 0.08475107
+ENSG00000059804.16  0.3937261 7.208920 38.54832 2.076388e-05 0.08475107
+ENSG00000145147.20 -0.2303984 4.430572 37.29202 2.475525e-05 0.08475107
+ENSG00000171051.10  0.2498092 8.846108 37.15575 2.523856e-05 0.08475107
+ENSG00000137193.14  0.3768706 6.660542 35.64695 3.137641e-05 0.08780165
+
+
+
+
+
+cat  human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.withInteraction.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+{for(i = 1; i <= 7; i++)
+   print $i "\t";
+
+ print $7 "\n";
+}' > temp
+../microglia/make-rnk-genesymble  temp  human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.withInteraction.rnk
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.withInteraction.rnk -rpt_label   "human_Microglia_rna-postnatal-MvF.withInteraction.prerank.v7.4"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+head -1 human_Microglia_rna-postnatal-MvF-diff2-1.name-type-chr.txt human_Microglia_rna-postnatal-MvF-diff2-1.withInteraction.name-type-chr.txt
+for g in `echo KDM6A    KDM5C   SMC1A   ZFX     RBBP7   DDX3X   CDK16   DLG3    USP9X   BCOR    UTY     ZFY     XIST    GLA     TIMP1   SAT1    MPP1`
+do
+ grep -iw $g human_Microglia_rna-postnatal-MvF-diff2-1.name-type-chr.txt
+ grep -iw $g human_Microglia_rna-postnatal-MvF-diff2-1.withInteraction.name-type-chr.txt | cut -f 2-20
+ grep -iw $g human_Microglia_rna-postnatal-interaction-M-Age-diff2-1.name-type-chr.txt | cut -f 2-20
+ echo
+done
+
 ##################age test between F & M
 info <- read.delim("human.postnatal.18samp.info")
 info.2 <- info[1:13,]
