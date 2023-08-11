@@ -1146,3 +1146,18 @@ cat human_Microglia_rna-postnatal-MvF-diff2-1.name-type-chr.txt|  awk 'BEGIN {FS
 cat  human_Microglia_rna-postnatal-MvF-diff2-1.withInteraction.name-type-chr.txt |  awk 'BEGIN {FS = "\t"}  $8 == "chrX" || $8 == "chrY" '  | awk 'BEGIN {FS = "\t"}  $5 < 0.05' |  grep -w chrY | wc -l
       12 genes contained in 17 genes (without interaction term)
 
+#################
+> setwd("~/Documents/autism/")
+ raw <- read.delim("human_Microglia_RNA-18samp.gene.count.txt")
+ gene.name <- raw[, 1:2]
+ chr <- read.delim("gencode.v42.primary_assembly.noPar.gene-chr-type")
+ g.chr <- merge(gene.name, chr, by.x="geneID", by.y="geneID")
+ dim(g.chr)
+# [1] 62703     5
+> write.table(g.chr, "gencode.v42.primary_assembly.noPar.gene-chr-type-name", quote=F, sep="\t")
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat gencode.v42.primary_assembly.noPar.gene-chr-type-name | grep -iw protein_coding | cut -f 2 | sort | uniq > gencode.v42.primary_assembly.noPar.protein_coding.names
+   20025 gencode.v42.primary_assembly.noPar.protein_coding.names
+linyongmao@Linyong-Mao-MBP16-2019 autism % bash script-safari-geneset-overlap-2 > temp
+###safari geneset overlap with hallmark pathway genes (in 20025 protein coding bg)
+
