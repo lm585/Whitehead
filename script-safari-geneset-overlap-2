@@ -1,0 +1,42 @@
+####################
+#
+dir="/Users/linyongmao/Documents/microglia/"
+cd "$dir"
+rnkf="/Users/linyongmao/Documents/autism/gencode.v42.primary_assembly.noPar.protein_coding.names"
+tot=`cat "$rnkf" | wc -l | awk '{print $1}' `
+##echo "$tot"
+cat  /Users/linyongmao/Documents/autism/safari.genes.syndrome | cut -f 2|awk 'NR > 1' > temp-1
+cat "$rnkf"  temp-1 | cut -f 1 |sort | uniq -d > temp-safari-genes
+
+echo "path1	path2	LEG1	LEG2	overlap	overlap2minRatio	dhyper	p-value	overlap-genes"
+ls HALL*.genes | grep -v temp | while read f
+do
+   t="safari.genes.syndrome"
+   echo -n "$f	$t	"
+   fnum=`cat "$f" "$rnkf" |cut -f 1 |sort | uniq -d | wc -l | awk '{print $1}' `
+   tnum=`cat temp-safari-genes | wc -l | awk '{print $1}' `
+   echo -n "$fnum	$tnum	"
+   cat "$f" "$rnkf" |cut -f 1 |sort | uniq -d > temp-1
+   overlap=`cat temp-1 temp-safari-genes | sort | uniq -d | wc -l | awk '{print $1}' `
+   overgenes=`cat temp-1 temp-safari-genes | sort | uniq -d |awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} {print $1 ","}' `
+   echo -n "$overlap	"
+   if [ "$fnum" -gt "$tnum" ]
+   then
+     min="$tnum"
+   else
+     min="$fnum"
+   fi
+   coeff=`echo | awk '{print '$overlap' / '$min'   }' `
+   echo -n "$coeff	"
+   m=$fnum
+   n=`echo | awk '{print '$tot' - '$fnum'   }' `
+   k=$tnum
+   x=$overlap
+   ###  print "(sum(dhyper(x:k, m, n, k)))"; 
+   echo  "sum(dhyper($x:$k, $m, $n, $k))" > temp-r-script
+   echo -n "sum(dhyper($x:$k,$m,$n,$k))	"
+   pvalue=`Rscript temp-r-script | awk '{print $2}' `   
+   echo -n "$pvalue	$overgenes"
+   echo
+done
+
