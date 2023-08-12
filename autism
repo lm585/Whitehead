@@ -923,6 +923,60 @@ a.df <- as.data.frame(log10(a+1))
 ......
 Heatmap(matrix = mat, show_column_names=F, name="log10(cpm+1)",  right_annotation=ca, row_dend_width=unit(15, "mm"), clustering_distance_rows="pearson", clustering_distance_columns ="pearson")
 
+########################heatmap of INTERFERON_GAMMA_RESPONSE DEGs (p < 0.05, model includes interaction term, genes in rows, sample in col)
+> keep <-rowSums(edgeR::cpm(y)>=1) >= 4
+> y<-y[keep,]
+> dim(y)
+[1] 16790    13
+d = edgeR::cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+ gene.name <- raw[, 1:2]
+a.df.name <- merge( a.df, gene.name, by.x="id", by.y="geneID")
+ dim(a.df.name)
+# [1] 16790    15
+linyongmao@Linyong-Mao-MBP16-2019 autism % f="/Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.withInteraction.prerank.v7.4.GseaPreranked.1691634088087/HALLMARK_INTERFERON_GAMMA_RESPONSE.tsv"
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat "$f" | awk 'NR > 1' | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 == "Yes" ' | awk '$4 < -1.30103' | cut -f 2 > "temp-IFR.genes"
+105 genes temp-IFR.genes
+
+ g <- read.delim("temp-IFR.genes", header=F)
+ a.df.g <- a.df.name[ a.df.name$name %in% g$V1,]
+ dim(a.df.g)
+ t1 <- a.df.g[ , c(2:14)]
+ rownames(t1) <- a.df.g$name
+ mat <- as.matrix(t(t1))
+ dim(mat)
+# [1]  13 105
+ mat.df <- as.data.frame(mat)
+ mat.df$sample <- gsub("human_Microglia_RNA_polyA_", "", rownames(mat.df))
+ info <- read.delim("human.postnatal.18samp.info")
+ mat.df.info <- merge(mat.df, info, by.x="sample", by.y="Patient.ID")
+ dim(mat.df.info)
+# [1]  13 109
+  mat <- as.matrix(mat.df.info[, c(2:106)])
+ rownames(mat) <- mat.df.info$sample
+ dim(mat)
+# [1]  13 105
+# each of 105 genes is z-scored (log10(d+1)) over 13 samples, no sex chr genes
+##row genes, column samples
+ mat2 <- t(mat)
+col.age <- colorRamp2(c(0,10,20), c("blue","white", "red"))
+brain <- c("yellow", "green", "pink", "black")
+names(brain) <-  unique(mat.df.info$Brain.Region)
+brain
+ ca <- HeatmapAnnotation( sex = mat.df.info$Sex, age = mat.df.info$Age, region = mat.df.info$Brain.Region,  which="column", col=list(age = col.age, region = brain, sex = c("F" = "white", "M" = "black")))
+> Heatmap(matrix = mat2, show_column_names=T, name="z-socre",  top_annotation=ca, row_dend_width=unit(15, "mm"),  row_names_gp = gpar(fontsize = 3.6), column_names_side = c("top"), clustering_distance_rows="pearson",  column_order = order(mat.df.info$Age),column_split=mat.df.info$Sex )
+##check
+ sum(mat2[11,])
+ sd(mat2[11,])
+ identical(colnames(mat2),  mat.df.info$sample)
+
 ##########################pathway z-score, including sex chr genes if pathway contains sex chr genes
 > keep <-rowSums(edgeR::cpm(y)>=1) >= 4
 > y<-y[keep,]
