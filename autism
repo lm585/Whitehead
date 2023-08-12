@@ -1161,3 +1161,6 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % cat gencode.v42.primary_assembly.noPa
 linyongmao@Linyong-Mao-MBP16-2019 autism % bash script-safari-geneset-overlap-2 > temp
 ###safari geneset overlap with hallmark pathway genes (in 20025 protein coding bg)
 
+###########ggplot2
+> ggplot(res.info, aes(x=Age, y=mean, color = Sex)) + geom_point(size=3) + geom_smooth(se=T, method="lm") + labs(title=gsub(".*microglia/", "", file), y="z-score avg of all pathway genes")
+>  ggplot(res.info, aes(x=Age, y=mean, color = Sex)) + geom_point(size=3) + geom_smooth(se=F) + labs(title=gsub(".*microglia/", "", file), y="z-score avg of all pathway genes")
