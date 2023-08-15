@@ -977,6 +977,15 @@ brain
  sd(mat2[11,])
  identical(colnames(mat2),  mat.df.info$sample)
 
+###########################genes annotated with safari genes
+> saf1 <- read.delim("/Users/linyongmao/Documents/autism/safari.genes.syndrome")
+ saf2 <- read.delim("/Users/linyongmao/Documents/autism/safari.genes.cater1")
+ saf <- data.frame(gene = rownames(mat2), safari = "N")
+ saf[ saf$gene %in% c(saf1$gene.symbol, saf2$gene.symbol), ]$safari = "Y"
+ ca.r <- HeatmapAnnotation(safari = saf$safari, which="row", col=list(safari = c("N" = "white", "Y" = "green")) )
+ ca <- HeatmapAnnotation( sex = mat.df.info$Sex, age = mat.df.info$Age, region = mat.df.info$Brain.Region,  which="column", col=list(age = col.age, region = brain, sex = c("F" = "white", "M" = "black")))
+ Heatmap(matrix = mat2, show_column_names=T, name="z-socre",  top_annotation=ca, right_annotation=ca.r, row_dend_width=unit(15, "mm"),  row_names_gp = gpar(fontsize = 3.6), column_names_side = c("top"), clustering_distance_rows="pearson",  column_order = order(mat.df.info$Age),column_split=mat.df.info$Sex )
+
 ##########################pathway z-score, including sex chr genes if pathway contains sex chr genes
 > keep <-rowSums(edgeR::cpm(y)>=1) >= 4
 > y<-y[keep,]
