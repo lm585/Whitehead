@@ -1232,3 +1232,61 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % bash script-safari-geneset-overlap-2 
 ###########ggplot2
 > ggplot(res.info, aes(x=Age, y=mean, color = Sex)) + geom_point(size=3) + geom_smooth(se=T, method="lm") + labs(title=gsub(".*microglia/", "", file), y="z-score avg of all pathway genes")
 >  ggplot(res.info, aes(x=Age, y=mean, color = Sex)) + geom_point(size=3) + geom_smooth(se=F) + labs(title=gsub(".*microglia/", "", file), y="z-score avg of all pathway genes")
+
+###############################stranded gene level counting vs un-stranded
+> t1 <- read.delim("p8-pari-stranded-nostrand.counts", header=F)
+ raw <- t1[, c(3,6)]
+ rownames(raw) <- t1[, 1]
+y <- DGEList(counts=raw)
+y <- calcNormFactors(y)
+dim(y)
+###V3 stranded, V6 treat as un-stranded
+# $samples
+#    group lib.size norm.factors
+# V3     1 18760700    0.9839285
+# V6     1 18162519    1.0163341
+
+ t2 <- t1[ t1$V3 + t1$V6 > 15,]
+ dim(t2)
+# [1] 17818     6
+ plot(log10(t2$V3+1) , log10(t2$V6+1), xlab="log10(count+1), stranded", ylab = "log10(count+1)")
+y = 1:5
+x = y
+abline(lm(y~x), lwd = 1, col="blue") 
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ hm.g <- read.delim("../microglia/temp-uniq", header=F)
+ t2.hm <- t2[ t2$V2 %in% hm.g$V1,]
+ dim(t2.hm)
+# [1] 3386 expr hallmark genes out of 4383 hm genes;     6
+ plot(log10(t2.hm$V3+1) , log10(t2.hm$V6+1), xlab="log10(count+1), stranded", ylab = "log10(count+1)")
+ dim( t2.hm[ t2.hm$V3 < 10 & t2.hm$V6 > 20,])
+# [1] 38  6
+ dim( t2.hm[ t2.hm$V6 < 10 & t2.hm$V3 > 20,])
+# [1] 4 6
+
+  dim( t2[ t2$V3 < 10 & t2$V6 > 20,])
+# [1] 680   6
+  dim( t2[ t2$V6 < 10 & t2$V3 > 20,])
+# [1] 90  6
+  dim( t2[ t2$V3 < 20 & t2$V6 > 20,])
+# [1] 867   6
+  dim( t2[ t2$V6 < 20 & t2$V3 > 20,])
+# [1] 196   6
+
+#  write.table( t2.hm[ t2.hm$V3 < 10 & t2.hm$V6 > 20, 2], "temp-nostrand", sep="\t", quote=F)
+#  write.table( t2.hm[ t2.hm$V6 < 10 & t2.hm$V3 > 20, 2], "temp-strand", sep="\t", quote=F)
+lm(log10(t2.hm$V6+1) ~ log10(t2.hm$V3+1) )
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi temp-nostrand 
+cat temp-nostrand | while read g
+do
+ echo "$g"
+ grep -iw "$g" ../microglia/HALLMARK*.genes | grep -v temp.gene
+done
+
+cat temp-nostrand | while read g
+do
+ echo "$g"
+ grep -iw "$g" human_Microglia_RNA-18samp.gene.count.txt
+ echo
+done
