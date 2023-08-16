@@ -1290,3 +1290,6 @@ do
  grep -iw "$g" human_Microglia_RNA-18samp.gene.count.txt
  echo
 done
+
+####################
+linyong@fry /lab/solexa_page/linyong/autism$ sbatch slurm-human-mg-rna-seq-2
