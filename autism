@@ -1342,3 +1342,19 @@ abline(h = seq(0, 1, 0.1), lty = 5, lwd = 0.5, col = "gray")
 abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
 axis(1, at = seq(1, dim(map)[1], by=1), labels=gsub(".*polyA_", "", map$feature), las = 2)
 legend(10, 1, legend=c( "uniq read in non-overlap exon", "no_feature"), col = c( "blue", "green"), lty = 1, cex = 0.8 )
+
+################################
+> raw <- read.delim("human_Microglia_RNA-18samp.gene.count.stranded.txt")
+##################normalized with 18 samples
+> df2 <- df.gene[ df.gene$name %in% c("XIST", "DDX3Y"),]
+ df3 <- df2[, c(2:16)]
+ rownames(df3) <- df2[, 17]
+ df4 <- as.data.frame( t(df3))
+ df4$id <- gsub(".*polyA_", "", rownames(df4))
+ info <- read.delim("human.postnatal.18samp.info")
+ df5 <- merge(df4, info, by.x="id", by.y="Patient.ID")
+ ggplot(df5, aes(x=log2(DDX3Y+1), y=log2(XIST+1), color=Sex)) + geom_point(size=2)
+ dim(df5)
+# [1] 15  6
+ dim(y)
+# [1] 62703    18
