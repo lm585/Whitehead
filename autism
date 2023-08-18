@@ -1369,3 +1369,17 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i human_Microglia_RNA-18samp.gene
 
 > ggplot(pca.info, aes(x=pc1, y = pc2, color = Sex, label=patient)) + geom_point(size=2) + labs(y="PC2 (18%)", x="PC1 (23%)") + geom_text( hjust = -0.3, size=2.5)
 > Heatmap(t12, name = "correlation",  col = col_fun, right_annotation=ca, row_dend_width=unit(15, "mm"))
+
+########################13 samples, 5 Males, DEGs, stranded mapping
+> keep <-rowSums(edgeR::cpm(y)>=1) >= 4
+> y<-y[keep,]
+> dim(y)
+[1] 15089    13
+.......
+> dim(df.cpm.noX.Y)
+[1] 14603    10
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % ls -lh *rnk
+-rw-r--r--  1 linyongmao  staff   243K Aug 18 13:15 human_Microglia_rna-postnatal-M.age.interac-diff2-1.noX.Y.interac.strand.rnk
+-rw-r--r--  1 linyongmao  staff   243K Aug 18 13:09 human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk
+-rw-r--r--  1 linyongmao  staff   246K Aug 18 13:50 human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.strand.rnk
