@@ -1400,3 +1400,49 @@ cat human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt |
 cat human_Microglia_rna-postnatal-M.age.interac-diff2-1.interac.strand.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0.05 && NR > 1 && $2 > 0' | cut -f 1 > temp-M:age
 cat human_Microglia_rna-postnatal-M.age.interac-diff2-1.interac.strand.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0.05 && NR > 1 && $2 < 0' | cut -f 1 > temp-F:age
 
+########################F biased gene, but NOT male led interaction
+> m.f <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.name-type-chr.txt")
+ m.age <- read.delim("human_Microglia_rna-postnatal-M.age.interac-diff2-1.noX.Y.interac.strand.name-type-chr.txt")
+ b <- merge(m.f, m.age, by.x="geneID", by.y="geneID")
+ dim(b)
+# [1] 14603    19
+ f.b <- b[ b$logFC.x < 0 & b$PValue.x < 0.05,]
+ summary(f.b)
+### F biased, but NOT male led interaction
+ f.b <- b[ b$logFC.x < 0 & b$PValue.x < 0.05 & !(b$logFC.y > 0 & b$PValue.y < 0.05),]
+ dim(f.b)
+# [1] 724  19
+# F led interaction, or if M-led-interaction, p > 0.1
+ f.b.1 <- f.b[ f.b$logFC.y < 0 | f.b$PValue.y > 0.1, ]
+ dim(f.b.1)
+# [1] 355  19
+ head(f.b.1, n = 40)[,1:14]
+ summary(f.b.1$logFC.y)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.
+# -0.02772  0.05059  0.06547  0.07523  0.08738  0.28064
+ summary(f.b.1$logFC.x)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+# -4.0889 -1.4802 -0.9827 -1.2533 -0.7861 -0.5071
+> write.table(f.b.1$name.x, "temp", quote=F, sep="\t")
+ f.b.m.int <- b[ b$logFC.x < 0 & b$PValue.x < 0.05 & (b$logFC.y > 0 & b$PValue.y < 0.01),]
+ dim(f.b.m.int)
+#[1] 292  19
+> write.table(f.b.m.int$name.x, "temp-1", quote=F, sep="\t")
+ summary(f.b.1$PValue.x)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.
+# 0.001537 0.021219 0.032304 0.030264 0.040980 0.049933
+ summary(f.b.m.int$PValue.x)
+#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.
+# 1.149e-05 7.261e-04 2.155e-03 5.531e-03 5.583e-03 4.283e-02
+> t.test(log10(f.b.1$PValue.x), log10(f.b.m.int$PValue.x))
+
+        Welch Two Sample t-test
+
+data:  log10(f.b.1$PValue.x) and log10(f.b.m.int$PValue.x)
+t = 25.471, df = 360.23, p-value < 2.2e-16
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 1.046040 1.221078
+sample estimates:
+mean of x mean of y
+-1.581678 -2.715237
