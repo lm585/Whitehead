@@ -1383,3 +1383,20 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % ls -lh *rnk
 -rw-r--r--  1 linyongmao  staff   243K Aug 18 13:15 human_Microglia_rna-postnatal-M.age.interac-diff2-1.noX.Y.interac.strand.rnk
 -rw-r--r--  1 linyongmao  staff   243K Aug 18 13:09 human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk
 -rw-r--r--  1 linyongmao  staff   246K Aug 18 13:50 human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.strand.rnk
+
+########################pathway DEGs overlap with safari genes
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi scr-safari-geneset-overlap-1
+linyongmao@Linyong-Mao-MBP16-2019 autism % bash scr-safari-geneset-overlap-1
+cat human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0.05 && NR > 1' | wc -l
+    2921
+cat human_Microglia_rna-postnatal-MvF-diff2-1.strand.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0.05 && NR > 1' | wc -l
+     797
+cat human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0.05 && NR > 1' | grep -w "chr[XY]"|wc -l
+     103
+cat human_Microglia_rna-postnatal-MvF-diff2-1.strand.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0.05 && NR > 1' | grep -w "chr[XY]"| wc -l
+      45
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0.05 && NR > 1 && $2 > 0' | cut -f 1 > temp-MvF
+cat human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0.05 && NR > 1 && $2 < 0' | cut -f 1 > temp-FvM
+cat human_Microglia_rna-postnatal-M.age.interac-diff2-1.interac.strand.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0.05 && NR > 1 && $2 > 0' | cut -f 1 > temp-M:age
+cat human_Microglia_rna-postnatal-M.age.interac-diff2-1.interac.strand.name-type-chr.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0.05 && NR > 1 && $2 < 0' | cut -f 1 > temp-F:age
+
