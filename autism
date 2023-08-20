@@ -1446,3 +1446,11 @@ alternative hypothesis: true difference in means is not equal to 0
 sample estimates:
 mean of x mean of y
 -1.581678 -2.715237
+
+> f.b.1 <- f.b[ f.b$logFC.y < 0 | f.b$PValue.y > 0.25, ]
+>  dim(f.b.1)
+[1] 85 19
+
+> f.b.m.int <- b[ b$logFC.x < 0 & b$PValue.x < 0.05 & (b$logFC.y > 0 & b$PValue.y < 0.005),]
+>  dim(f.b.m.int)
+[1] 162  19
