@@ -1454,3 +1454,39 @@ mean of x mean of y
 > f.b.m.int <- b[ b$logFC.x < 0 & b$PValue.x < 0.05 & (b$logFC.y > 0 & b$PValue.y < 0.005),]
 >  dim(f.b.m.int)
 [1] 162  19
+
+########################NES across three 
+ f1="/Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.interac.strand.prerank.v7.4.GseaPreranked.1692378724023/gsea_report_for_na_neg_1692378724023.tsv"
+  gsea1 <- read.delim(f1)
+ f1="/Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.interac.strand.prerank.v7.4.GseaPreranked.1692378724023/gsea_report_for_na_pos_1692378724023.tsv"
+ gsea2 <- read.delim(f1)
+ gs1 <- bind_rows(gsea1, gsea2)
+ gs1$compare <- "MvF.noX.Y.interac.strand"
+
+ f1="/Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-M.age.interac.noX.Y.strand.prerank.v7.4.GseaPreranked.1692379080419/gsea_report_for_na_pos_1692379080419.tsv"
+ gsea1 <- read.delim(f1)
+ f1="/Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-M.age.interac.noX.Y.strand.prerank.v7.4.GseaPreranked.1692379080419/gsea_report_for_na_neg_1692379080419.tsv"
+ gsea2 <- read.delim(f1)
+ gs2 <- bind_rows(gsea1, gsea2)
+ gs2$compare <- "M.age.interac.noX.Y.strand"
+
+ f1="/Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.strand.prerank.v7.4.GseaPreranked.1692381192086/gsea_report_for_na_pos_1692381192086.tsv"
+ gsea1 <- read.delim(f1)
+ f1="/Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.strand.prerank.v7.4.GseaPreranked.1692381192086/gsea_report_for_na_neg_1692381192086.tsv"
+ gsea2 <- read.delim(f1)
+ gs3 <- bind_rows(gsea1, gsea2)
+ gs3$compare <- "MvF.noX.Y.strand"
+
+ gs.m.1 <- merge(gs1,gs2, by.x="NAME", by.y="NAME")
+ gs.m.2 <- merge(gs.m.1, gs3, by.x="NAME", by.y="NAME")
+ dim(gs.m.2)
+# [1] 49 37
+ colnames(gs.m.2)
+ gs.m.2[, c(1,6,8,13,18,20,25,30,32,37)]
+###NES, fdr, 
+ gs.m.3 <- gs.m.2[, c(1,6,8,18,20,30,32)]
+ write.table(gs.m.3, "temp-1", quote=F, sep="\t")
+#  gs.m.3[ abs(gs.m.3$NES.x) > 1.8 | abs(gs.m.3$NES.y) > 1.8 | abs(gs.m.3$NES) > 1.8, ]
+ dim(gs.m.3[ abs(gs.m.3$NES.x) > 1.8 | abs(gs.m.3$NES.y) > 1.8 | abs(gs.m.3$NES) > 1.8, ])
+# [1] 31  7
+
