@@ -1490,3 +1490,20 @@ mean of x mean of y
  dim(gs.m.3[ abs(gs.m.3$NES.x) > 1.8 | abs(gs.m.3$NES.y) > 1.8 | abs(gs.m.3$NES) > 1.8, ])
 # [1] 31  7
 
+####M-age interact, NOT F biased
+ f.b.m.int <- b[ b$PValue.x > 0.25 & (b$logFC.y > 0 & b$PValue.y < 0.05),]
+ dim(f.b.m.int)
+# [1] 21 19
+> ggplot(res.info, aes(x=Age, y=mean, color = Sex)) + geom_point(size=3) + geom_smooth(se=F) + labs(title=genename, y="log2(cpm+1)")
+
+for g in `echo KDM6A    KDM5C   ZFX     DDX3X     SAT1    MPP1`
+do
+ grep -iw $g human_Microglia_rna-postnatal-MvF-diff2-1.strand.name-type-chr.txt
+ echo
+done
+
+awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 == "X" '  safari.genes.* | cut -f 2| sort | uniq > temp
+> t1 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.strand.name-type-chr.txt")
+ g <- read.delim("temp", header=F)
+ t2 <- t1[ t1$name %in% g$V1,]
+
