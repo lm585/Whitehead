@@ -1361,7 +1361,7 @@ legend(10, 1, legend=c( "uniq read in non-overlap exon", "no_feature"), col = c(
 ###########################13 samples
 linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i human_Microglia_RNA-18samp.gene.count.txt Microglia_RNA-18samp.gene.count.txt
 > raw <- read.delim("human_Microglia_RNA-18samp.gene.count.stranded.txt")
-#remove 3 adult samples, and only keep P17_Temporal & P8_Occipital
+#remove 3 adult samples, and only keep P17_Temporal & P8_Parietal
 #search raw.samp
  raw.samp <- raw[, c(6:7,9:18, 20)]
  dim(raw.samp)
