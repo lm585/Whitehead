@@ -1,0 +1,13 @@
+#
+ t <- read.delim("temp-input-221")
+for(i in 1:dim(t)[1]) {
+ a <- as.numeric( t[i, 3:6])
+ m <- matrix(a,  nrow=2, ncol = 2, byrow=T )
+ fi <- fisher.test(m)
+ t$P.value[i] <- fi$p.value
+ t$log10P [i] <- -log10(fi$p.value)
+ t$oddsratio [i] <- fi$estimate
+}
+
+write.table(t, "temp-geneset-paths-fisher", quote=F, sep="\t")
+
