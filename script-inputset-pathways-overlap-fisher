@@ -29,7 +29,7 @@ do
  echo  "$n1	$n2	$n3	$n4"
 done >> temp-input-221
 
-Rscript Rscript-fisher          
+Rscript R-script-fisher          
 
 cat temp-geneset-paths-fisher| sed '2, $ s/^[0-9][0-9]*	//'   
 
