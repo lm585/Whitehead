@@ -1499,6 +1499,30 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % cat   temp-157g   f.b.no-interac.85ge
 [1] 162  19
 > write.table(f.b.m.int$name.x, "temp-m.int.162g", quote=F, sep="\t")
 
+########################
+bash  script-inputset-pathways-overlap-fisher male.age.int.162g male.age.int.162g temp-file human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk > temp-1
+bash  script-inputset-pathways-overlap-fisher f-b.242g f-b.242g  temp-file human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk > temp-2
+> t1 <- read.delim("temp-1")
+ t2 <- read.delim("temp-2")
+ sum(t1[12, 3:6])
+# [1] 14586
+ t3 <- merge(t1, t2, by.x="pathway", by.y="pathway")
+ dim(t3)
+# [1] 50 17
+ t4 <- t3[ t3$P.value.x < 0.005 | t3$P.value.y < 0.005,]
+ dim(t4)
+# [1] 23 17
+ t4$m.int.vs.f.b.pval = 1
+ t4$m.int.vs.f.odds = 1
+for(i in 1:dim(t4)[1]) {
+ m <- matrix(1:4,  nrow=2, ncol = 2, byrow=T )
+ m[1,] <-as.numeric( t4[i,c(3,4)])
+ m[2,] <-as.numeric( t4[i,c(11,12)])
+ fi <- fisher.test(m)
+ t4$m.int.vs.f.b.pval[i] <- fi$p.value
+ t4$m.int.vs.f.odds[i] <- fi$estimate
+}
+
 ########################NES across three 
  f1="/Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.interac.strand.prerank.v7.4.GseaPreranked.1692378724023/gsea_report_for_na_neg_1692378724023.tsv"
   gsea1 <- read.delim(f1)
