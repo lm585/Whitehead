@@ -1455,6 +1455,50 @@ mean of x mean of y
 >  dim(f.b.m.int)
 [1] 162  19
 
+########################
+> f.b <- b[ b$logFC.x < 0 & b$PValue.x < 0.05 & (b$logFC.y <= 0 | b$PValue.y > 0.25), ]
+> dim(f.b)
+[1] 85 19
+> summary(f.b)
+f.b.no-interac.85genes
+linyongmao@Linyong-Mao-MBP16-2019 autism % ls ../microglia/HA* | grep -v temp > temp-file
+linyongmao@Linyong-Mao-MBP16-2019 autism % bash script-inputset-pathways-overlap-fisher f.b.no-interac.85genes f.b.no-interac.85genes temp-file human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk
+
+m.f <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.name-type-chr.txt")
+ m.age <- read.delim("human_Microglia_rna-postnatal-M.age.interac-diff2-1.noX.Y.interac.strand.name-type-chr.txt")
+ b <- merge(m.f, m.age, by.x="geneID", by.y="geneID")
+ dim(b)
+# [1] 14603    19
+ t <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.strand.name-type-chr.txt")
+ b.1 <- merge(b, t, by.x="geneID", by.y="geneID")
+ b.2 <- b.1[ b.1$logFC < 0 & b.1$PValue < 0.05,]
+ dim(b.2)
+# [1] 466  28
+ summary(b.2$logFC.x)
+####check M vs. F resulting from the interact model
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.
+# -8.94950 -1.83108 -1.23873 -1.52103 -0.82108 -0.09201
+ summary(b.2$PValue.x)
+#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.
+# 0.0000115 0.0040002 0.0210210 0.0746520 0.0782002 0.9998948
+ b.3 <- b.2[ b.2$PValue.x >= 0.05,]
+# only F biased by non-interact model
+ dim(b.3)
+# [1] 157  28
+#in b.3, PValue.x increase, logFC.y likely becomes negative
+#PValue.y increase, logFC.y likely becomes positive 
+ b.4 <- b.3[ b.3$PValue.y < 0.25,]
+ summary(b.4$logFC.y)
+# F:age interaction, not M:age
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.
+# -0.62985 -0.16385 -0.11082 -0.15860 -0.07944 -0.06070
+> write.table(b.3$name.x, "temp-157g", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat   temp-157g   f.b.no-interac.85genes  >  temp-242g
+>  f.b.m.int <- b[ b$logFC.x < 0 & b$PValue.x < 0.05 & (b$logFC.y > 0 & b$PValue.y < 0.005),]
+>  dim(f.b.m.int)
+[1] 162  19
+> write.table(f.b.m.int$name.x, "temp-m.int.162g", quote=F, sep="\t")
+
 ########################NES across three 
  f1="/Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.interac.strand.prerank.v7.4.GseaPreranked.1692378724023/gsea_report_for_na_neg_1692378724023.tsv"
   gsea1 <- read.delim(f1)
