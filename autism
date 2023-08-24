@@ -1575,3 +1575,10 @@ awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 == "X" '  safari.genes.* | cut -f 2| sort 
  g <- read.delim("temp", header=F)
  t2 <- t1[ t1$name %in% g$V1,]
 
+########################
+> t1 <- read.delim("../../Downloads/ChEA_2022_table(7).txt")
+ t2 <- read.delim("../../Downloads/ChEA_2022_table(8).txt")
+ t3 <- merge(t1, t2, by.x="Term", by.y="Term")
+ dim(t3)
+# [1] 717  17
+> t4 <- t3[ t3$P.value.x < 1e-4,c(1,2,3,4,7,10:12,15)]
