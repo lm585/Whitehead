@@ -1582,3 +1582,52 @@ awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 == "X" '  safari.genes.* | cut -f 2| sort 
  dim(t3)
 # [1] 717  17
 > t4 <- t3[ t3$P.value.x < 1e-4,c(1,2,3,4,7,10:12,15)]
+
+#############################################################################
+########################pathway level z-score
+raw <- read.delim("human_Microglia_RNA-18samp.gene.count.stranded.txt")
+#remove 3 adult samples, and only keep P17_Temporal & P8_Parietal
+#search raw.samp
+ raw.samp <- raw[, c(6:7,9:18, 20)]
+ dim(raw.samp)
+# [1] 62703    13
+rownames(raw.samp) <- raw$geneID
+dim(raw.samp)
+# [1] 62703    13
+summary( raw.samp[,1] - raw[, 6]  )
+y <- DGEList(counts=raw.samp)
+y <- calcNormFactors(y)
+dim(y)
+summary(y$samples$norm.factors)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+# 0.8766  0.9510  1.0106  1.0024  1.0569  1.1434
+#5 male samples
+keep <-rowSums(edgeR::cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+# [1] 15089    13
+d = edgeR::cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+info <- read.delim("human.postnatal.18samp.info")
+gene.name <- raw[, 1:2]
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, gene.name, by.x="id", by.y="geneID")
+dim(a.df.g)
+ file <- "../microglia/HALLMARK_MITOTIC_SPINDLE.genes"
+p <- read.delim(file, header=F)
+p.exp <- a.df.g[ a.df.g$name %in% p$V1, ]
+length(p.exp$name)
+# [1] 200 pathway genes ->  179 with cpm >= 1 in >= 4 samples
+mat <- as.matrix(p.exp[, 2:14])
+res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+res$id <- gsub("human_Microglia_RNA_polyA_", "", res$id)
+res.info <- merge(res, info, by.x="id", by.y="Patient.ID")
+ ggplot(res.info, aes(x=Age, y=mean, color = Sex)) + geom_point(size=3) + geom_smooth(se=F) + labs(title=gsub(".*microglia/", "", file), y="z-score avg of all pathway genes")
+
