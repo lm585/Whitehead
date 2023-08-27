@@ -1949,3 +1949,64 @@ dim(cpt.m)
  vioplot(cpt.7$CPT1B ~ cpt.7$SEX, xlab="", ylab="P-star-htseq CPT1B gene, CPM", col="white" )
  abline(h = seq(-100,100,0.2), lty = 5, lwd = 0.5, col = "gray")
 
+########################cpt1b, cpm, F vs. M plot
+Heart - Left Ventricle	432 samples (GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct)
+>  t2$id <- gsub("-", ".", t2$V1)
+  raw2 <- raw[, colnames(raw) %in% t2$id ]
+  str1 <- paste(tissue, dim(raw2)[2], sep="\t")
+  cat(str1)
+# Heart - Left Ventricle	432
+  cat("\n")
+ rownames(raw2) <- raw$Name
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+# [1] 13615   432
+> summary(y$samples$lib.size)
+     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+ 10186939  56820733  66039240  69412333  79500352 162805706 
+> summary(y$samples$norm.factors)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.2594  0.9297  1.0752  1.0404  1.1934  2.1442 
+######
+ d = edgeR::cpm(y)
+ a <- d
+ gene.name <- raw[, 1:2]
+ a.df <- as.data.frame(a)
+ a.df$id <- row.names(a.df)
+ a.df.g <- merge(a.df, gene.name, by.x="id", by.y="Name")
+ dim(a.df.g)
+# [1] 13615   434
+ cpt <- a.df.g[ a.df.g$Description == "CPT1B",]
+ dim(cpt)
+# [1]   1 434
+ rownames(cpt) <- cpt$Description
+ cpt.2 <- as.matrix(cpt[, 2:(dim(y)[2]+1)])
+ dim(cpt.2)
+# [1]   1 432
+ cpt.3 <- as.data.frame( t(cpt.2))
+ cpt.3$sid <- rownames(cpt.3)
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ cpt.7 <- merge(cpt.3, info, by.x="sid", by.y="sid")
+ dim(cpt.7)
+# [1] 432   8
+ cpt.f <- cpt.7[ cpt.7$SEX == 2, ]
+ cpt.m <- cpt.7[ cpt.7$SEX == 1, ] 
+ t.test(cpt.f$CPT1B, cpt.m$CPT1B)
+ t.test(log10(cpt.f$CPT1B + 1), log10(cpt.m$CPT1B+1))
+ dim(cpt.f)
+# [1] 138   8
+ dim(cpt.m)
+# [1] 294   8
+ cpt.7$SEX <- factor(cpt.7$SEX, levels=c(2,1), labels=c("F", "M"))
+ vioplot(cpt.7$CPT1B ~ cpt.7$SEX, xlab="", ylab="Consortium CPT1B gene, CPM", col="white" )
+ abline(h = seq(-100,1000,20), lty = 5, lwd = 0.5, col = "gray")
