@@ -2010,3 +2010,29 @@ print(dim(y))
  cpt.7$SEX <- factor(cpt.7$SEX, levels=c(2,1), labels=c("F", "M"))
  vioplot(cpt.7$CPT1B ~ cpt.7$SEX, xlab="", ylab="Consortium CPT1B gene, CPM", col="white" )
  abline(h = seq(-100,1000,20), lty = 5, lwd = 0.5, col = "gray")
+
+########################DEGs, plab-star-htseq-gene-count
+> y.cn <- colnames(y)
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ info.2 <- head(info, n= dim(y)[2])
+for(i in 1:dim(y)[2]) {
+ t1 <- info[ info$sid == y.cn[i],]
+ info.2[i,] <- t1[1,]
+ }
+ design <- model.matrix( ~ info.2$SEX)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+gene.name <- raw[, 1:2]
+df.gene <- merge(diff, gene.name, by.x="geneID", by.y="geneID")
+chr <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type")
+df.cpm.gene <- merge(df.gene, chr, by.x="geneID", by.y="geneID")
+write.table(df.cpm.gene, "diff2-1.txt", sep="\t", quote = F)
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i  diff2-1.txt diff2-1-left-ventricle-FvsM.txt
+
