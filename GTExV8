@@ -2044,3 +2044,37 @@ do
 done >> temp.txt
 grep -iw cpt1b  diff2-1-left-ventricle-FvsM.consortium.txt >> temp.txt
 
+######################## map-stat-17350.samples.txt 
+linyong@fry /lab/solexa_page/linyong$ vi scr-map-stat
+linyong@fry /lab/solexa_page/linyong$ cat scr-map-stat
+#
+ls | grep ^dir-gtex- | while read dir
+do
+ cd "$dir"
+ bash /lab/solexa_page/linyong/script-get-feature-count-02
+ cd ..
+done
+linyong@fry /lab/solexa_page/linyong$ bash scr-map-stat > temp.map-stat.txt
+linyong@fry /lab/page_human_data/linyong2$ cat /lab/solexa_page/linyong/temp.map-stat.txt temp.map-stat.txt > temp.txt
+linyong@fry /lab/page_human_data/linyong2$ cat /lab/solexa_page/linyong/temp.map-stat.txt temp.map-stat.txt | awk 'NF < 8'
+error   error   error   error   error   error   error
+-1      -1      -1      -1      -1      -1      -1
+error   error   error   error   error   error   error
+-1      -1      -1      -1      -1      -1      -1
+GTEX-1JJ6O-1426-SM-CY8HT.Aligned.sortedByCoord.out.patched.md.bam       38864534        36606739        29299051        3725025 3582663 0
+GTEX-RWS6-1726-SM-47JXP.Aligned.sortedByCoord.out.patched.md.bam        31109583        29219570        23628865        2781298 2809407 0
+GTEX-ZAJG-0826-SM-5PNVA.Aligned.sortedByCoord.out.patched.md.bam        35636636        33532458        27947981        1859792 3724685 0
+GTEX-ZAK1-0626-SM-5HL8E.Aligned.sortedByCoord.out.patched.md.bam        36727552        34311212        27704975        3623170 2983067 0
+GTEX-ZQG8-0926-SM-57WFF.Aligned.sortedByCoord.out.patched.md.bam        42416175        39816623        31588270        4595606 3632747 0
+GTEX-ZVZP-0726-SM-59HKA.Aligned.sortedByCoord.out.patched.md.bam        32968593        30500272        24463767        3039866 2996639 0
+
+##############modified script-get-feature-count-02, run again,
+feature inputreads      Uniqreads       lib.size        no_feature      ambiguous       too_low_aQual   not_aligned     alignment_not_unique
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  map-stat-17350.samples.txt | awk '$2 - $3 - $9 - $8 - $7 == 0' | wc -l
+   17351
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  map-stat-17350.samples.txt | awk ' $3 - $4 - $5 - $6 == 0' | wc -l
+   17351
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  map-stat-17350.samples.txt | cut -f 7 | uniq -c  
+   1 too_low_aQual
+17350 0
+
