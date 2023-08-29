@@ -2035,4 +2035,12 @@ chr <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type")
 df.cpm.gene <- merge(df.gene, chr, by.x="geneID", by.y="geneID")
 write.table(df.cpm.gene, "diff2-1.txt", sep="\t", quote = F)
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i  diff2-1.txt diff2-1-left-ventricle-FvsM.txt
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i diff2-1.txt diff2-1-left-ventricle-FvsM.consortium.txt
+
+head -1 diff2-1-left-ventricle-FvsM.consortium.txt > temp.txt
+for g in `echo KDM6A    KDM5C   SMC1A   ZFX     RBBP7   DDX3X   CDK16   DLG3    USP9X   BCOR    UTY     ZFY     XIST    GLA     TIMP1   SAT1    MPP1`
+do
+ grep -iw $g   diff2-1-left-ventricle-FvsM.consortium.txt
+done >> temp.txt
+grep -iw cpt1b  diff2-1-left-ventricle-FvsM.consortium.txt >> temp.txt
 
