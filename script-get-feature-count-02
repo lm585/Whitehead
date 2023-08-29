@@ -24,7 +24,7 @@ then
  tail -n 5 "$b" | awk '{print $1 "\t" $2}' | sed 's/__//' >> s
 else
  rm -f s
- head -7 $0 | while read ll
+ head -9 $0 | while read ll
  do
   echo "error	-1" >> s
  done
