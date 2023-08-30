@@ -2078,3 +2078,19 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  map-stat-17350.samples.txt |
    1 too_low_aQual
 17350 0
 
+#############################################################################
+> ms <- read.delim("map-stat-17350.samples.txt")
+ ms.1 <- ms[, c(2:4)]
+ colnames(ms.1) <- c("raw reads", "uniq reads", "lib.size")
+ vioplot(ms.1/1e6, ylim=c(0, 150), ylab="million read pairs")
+ abline(h = seq(-100,1000,10), lty = 5, lwd = 0.5, col = "gray")
+ dim(ms.1)
+# [1] 17350     3
+ ms.2 <- data.frame( ms$feature)
+ ms.2[,1] <- ms$Uniqreads / ms$inputreads
+ ms.2[,2] <-  ms$lib.size / ms$Uniqreads 
+ ms.2[,3] <-  ms$ambiguous / ms$Uniqreads
+ ms.2[,4] <-  ms$no_feature / ms$Uniqreads
+ colnames(ms.2) <- c("uniq / raw", "lib.size / uniq", "ambiguous / uniq", "no_feature / uniq")
+ vioplot(ms.2)
+ abline(h = seq(-100,1000,0.1), lty = 5, lwd = 0.5, col = "gray")
