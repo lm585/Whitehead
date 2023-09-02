@@ -2115,6 +2115,12 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat "gencode.v42.not.in.v26.6875g
 [1] 500  27
 > write.table(t4, "temp-2", sep="\t", quote=F)
 
+ a <- boxplot(t5$cpm ~ t5$t4.V2,  xlab="", ylab="P-star-htseq CHKB-CPT1B, CPM", xaxt= "n")
+  len <- length(unique(t5$t4.V2))
+ axis(1, at = seq(1, len, by = 1), labels=substr( a$names, 1, 32), las=2, cex.axis=0.3)
+ abline(h = seq(0,100,0.2), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
+
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % for g in `cat temp-2 | head -1 | cut -f 3-117`
 do
  grep -w "$g" "gencode.v42.not.in.v26.6875genes" | head -1
