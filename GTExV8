@@ -2125,3 +2125,18 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % for g in `cat temp-2 | head -1 | 
 do
  grep -w "$g" "gencode.v42.not.in.v26.6875genes" | head -1
 done
+
+#############################################################################
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat   gencode.v26.primary_assembly.annotation.gtf    | awk 'BEGIN {FS = "\t"; OFS = "\t";} NF > 6 && $3 == "gene"' > temp-gene
+   58278 temp-gene
+cut -f 9  temp-gene |  awk 'BEGIN {FS = "\;"} {print $1}' | sed 's/gene_id //' | sed 's/"//g' |sort | uniq > temp-gene-2
+cat gencodeV26.id.name | cut -f 1 |awk 'NR > 1' |sort | uniq > temp-const-gene
+cat temp-gene-2 temp-const-gene | sort | uniq -d | wc -l
+   56200
+   58278 temp-gene-2
+   56200 temp-const-gene
+######removed 2078 genes in consortium gene-count file
+cat temp-gene-2 temp-const-gene | sort | uniq -u > temp-u
+cat   gencode.v26.primary_assembly.annotation.gtf    | awk 'BEGIN {FS = "\t"; OFS = "\t";} NF > 6 && $3 == "transcript" ' > temp-transc
+  199391 temp-transc
+
