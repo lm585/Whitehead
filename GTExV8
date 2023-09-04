@@ -1917,8 +1917,35 @@ Heart - Left Ventricle  428samples
 > summary(y$samples$norm.factors)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.2245  0.8977  1.0726  1.0547  1.2345  2.2914
-#####
- d = edgeR::cpm(y)
+###############################################################################################
+ setwd("/Users/linyongmao/Documents/dir-GTExV8/")
+raw <- read.delim("gtex-all-samples.gene.count.txt", header=T)
+dim(raw)
+t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+file <- read.delim("gtex-54tiss.txt", header=F)
+index = 33
+tissue = file[index,1]
+ t2 <- t1[ t1$V2 == tissue, ]
+ t2$id <- gsub("-", ".", t2$V1)
+ t2$id <- paste(t2$id, ".", sep="")
+ raw2 <- raw[, colnames(raw) %in% t2$id ]
+ str1 <- paste(tissue, dim(raw2)[2], sep="\t")
+ cat(str1)
+ cat("\n")
+ rownames(raw2) <- raw$geneID
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+# [1] 13643   428
+d = edgeR::cpm(y)
  a <- d
  gene.name <- raw[, 1:2]
  a.df <- as.data.frame(a)
