@@ -1631,3 +1631,29 @@ res$id <- gsub("human_Microglia_RNA_polyA_", "", res$id)
 res.info <- merge(res, info, by.x="id", by.y="Patient.ID")
  ggplot(res.info, aes(x=Age, y=mean, color = Sex)) + geom_point(size=3) + geom_smooth(se=F) + labs(title=gsub(".*microglia/", "", file), y="z-score avg of all pathway genes")
 
+#############################################################################
+t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.strand.prerank.v7.4.GseaPreranked.1692381192086/HALLMARK_INTERFERON_GAMMA_RESPONSE.tsv")
+
+ t2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-M.age.interac.noX.Y.strand.prerank.v7.4.GseaPreranked.1692379080419/HALLMARK_INTERFERON_GAMMA_RESPONSE.tsv")
+ MvF.m.age <- merge(t1, t2, by.x="SYMBOL", by.y = "SYMBOL")
+ dim(MvF.m.age)
+# [1] 178  13
+ plot(MvF.m.age$RANK.METRIC.SCORE.x, MvF.m.age$RANK.METRIC.SCORE.y, xlab="MvF.noX.Y.strand.no-interact-in-model", ylab="M.age.interact")
+ abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100, 100, 0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = 0)
+ abline(v = 0)
+ abline(h = -log10(0.25), col="blue", lty = 5, lwd = 0.5)
+ abline(v = log10(0.05), col="blue")
+ abline(h = -log10(0.05), col="blue")
+ t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.interac.strand.prerank.v7.4.GseaPreranked.1692378724023/HALLMARK_INTERFERON_GAMMA_RESPONSE.tsv")
+MvF.m.age.mVf2 <- merge(MvF.m.age, t1 , by.x="SYMBOL", by.y = "SYMBOL")
+ sort(MvF.m.age.mVf2[ MvF.m.age.mVf2$RANK.METRIC.SCORE < -2 & MvF.m.age.mVf2$RANK.METRIC.SCORE.y > 2,]$SYMBOL)
+#  [1] "B2M"     "BST2"    "CASP1"   "CD40"    "CD69"    "CDKN1A"  "CXCL10"  "FPR1"    "HLA-A"   "HLA-B"   "ICAM1"   "IFIT1"   "IFIT2"   "IFITM3"  "IL6"     "IRF1"
+# [17] "ISG15"   "LAP3"    "LY6E"    "MARCHF1" "MTHFD2"  "OASL"    "P2RY14"  "PDE4B"   "PIM1"    "PSME1"   "PTPN2"   "SOCS3"   "TNFSF10" "TRIM21"  "VAMP8"
+ t3 <- sort(MvF.m.age.mVf2[ MvF.m.age.mVf2$RANK.METRIC.SCORE < -2 & MvF.m.age.mVf2$RANK.METRIC.SCORE.y > 2,]$SYMBOL)
+ length(t3)
+# [1] 31
+ t4 <- MvF.m.age.mVf2[ (MvF.m.age.mVf2$RANK.METRIC.SCORE.x < log10(0.05) | MvF.m.age.mVf2$RANK.METRIC.SCORE < -2) & MvF.m.age.mVf2$RANK.METRIC.SCORE.y < -log10(0.25),]
+ length(sort(t4$SYMBOL))
+# [1] 11
