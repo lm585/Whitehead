@@ -2167,3 +2167,50 @@ cat temp-gene-2 temp-const-gene | sort | uniq -u > temp-u
 cat   gencode.v26.primary_assembly.annotation.gtf    | awk 'BEGIN {FS = "\t"; OFS = "\t";} NF > 6 && $3 == "transcript" ' > temp-transc
   199391 temp-transc
 
+#######################################age_value, body_mass_index
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat gtex-981subjects-tsvs/subject.tsv | cut -f 46,148,224 | head -20
+
+source_subject_id       participant_id  submitter_id
+GTEX-YB5E       GTEX-YB5E       GTEX-YB5E
+GTEX-14A6H      GTEX-14A6H      GTEX-14A6H
+GTEX-14PHW      GTEX-14PHW      GTEX-14PHW
+cat gtex-981subjects-tsvs/subject.tsv | cut -f 46,148,224 | awk '$1 == $2' | wc -l
+     981
+cat gtex-981subjects-tsvs/subject.tsv | cut -f 46,148,224 | awk '$1 == $3' | wc -l
+     981
+cat gtex-981subjects-tsvs/subject.tsv | cut -f 46 | sort | uniq -d | wc
+       0       0       0
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat gtex-981subjects-tsvs/subject.tsv | head -1 | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print i, $i}'
+16      age_value
+31      body_mass_index
+46      source_subject_id
+106     height
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  "dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt" | wc -l
+   22952
+
+SUBJID  SAMPID  SUBJID  SEX     AGE     DTHHRDY
+GTEX-1117F      GTEX-1117F-0003-SM-58Q7G        GTEX-1117F      2       60-69   4
+GTEX-1117F      GTEX-1117F-0003-SM-5DWSB        GTEX-1117F      2       60-69   4
+GTEX-1117F      GTEX-1117F-0003-SM-6WBT7        GTEX-1117F      2       60-69   4
+
+cat  "dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt" | awk 'BEGIN {FS = "\t"} $1 == $3' | wc -l
+   22952
+cat  "dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt" | cut -f 1,5 | sort | uniq | wc -l
+     981
+cat  "dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt" | cut -f 1 | sort | uniq | wc -l
+     981
+
+> info2 <- read.delim("gtex-981subjects-tsvs/subject.tsv")
+ info3 <- info2[, c(16,31,46, 106)]
+ summary(info3)
+ cpt.9 <- merge(cpt.7, info3, by.x="SUBJID", by.y="source_subject_id")
+ dim(cpt.9)
+# [1] 428  12
+ vioplot(cpt.9$age_value ~ cpt.9$SEX, xlab="", ylab="age", col="white" )
+ abline(h = seq(-100,100,2), lty = 5, lwd = 0.5, col = "gray")
+ cpt.f <- cpt.9[ cpt.9$SEX == "F", ]
+ cpt.m <- cpt.9[ cpt.9$SEX == "M", ]
+ t.test(cpt.f$age_value, cpt.m$age_value)
+ wilcox.test(cpt.f$age_value, cpt.m$age_value)
+ 
