@@ -2237,3 +2237,36 @@ bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    f
  abline(h = seq(-100,1000,1), lty = 5, lwd = 0.5, col = "gray")
  abline(h = 0, col="blue")
 
+#############################################################################
+> deg <- read.delim("diff2-1-left-ventricle-FvsM.txt")
+ layout(matrix(1:8, 2, 4, byrow=T) )
+for(index in 1:length(fao)) {
+# index = 1
+# fao sorted on p-value (F or M biased)
+ pval <- deg[ deg$name == fao[index],][1,5]
+ ratio <- 2^(deg[ deg$name == fao[index],][1,2])
+ if(ratio >= 1) {
+ str <- paste(fao[index], ", p-value=", format(pval, digits=3), "\n F/M =", round(ratio, digits = 3), sep="")
+cpt <- a.df.g[ a.df.g$name == fao[index],]
+ rownames(cpt) <- cpt$name
+ cpt.2 <- as.matrix(cpt[, 2:429])
+ cpt.3 <- as.data.frame( t(cpt.2))
+ dim(cpt.3)
+# [1] 428   1
+ cpt.3$sid <- rownames(cpt.3)
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ cpt.7 <- merge(cpt.3, info, by.x="sid", by.y="sid")
+ dim(cpt.7)
+# [1] 428   8
+ cpt.f <- cpt.7[ cpt.7$SEX == 2, ]
+ cpt.m <- cpt.7[ cpt.7$SEX == 1, ]
+dim(cpt.f)
+dim(cpt.m)
+ cpt.7$SEX <- factor(cpt.7$SEX, levels=c(2,1), labels=c("F", "M"))
+ vioplot(cpt.7[,2] ~ cpt.7$SEX, xlab="", ylab="P-star-htseq  CPM", col=c("white", "gray") )
+ title(main = str, cex.main = 1)
+# abline(h = seq(-100,100,0.2), lty = 5, lwd = 0.5, col = "gray")
+}
+}
