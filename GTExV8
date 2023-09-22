@@ -2270,3 +2270,49 @@ dim(cpt.m)
 # abline(h = seq(-100,100,0.2), lty = 5, lwd = 0.5, col = "gray")
 }
 }
+
+#############################################################################
+############################gencode.v42.primary_assembly.noPar.protein coding genes (no readthrough_gene) + xist .gtf
+linyong@fry /lab/solexa_page/linyong$ cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | awk 'BEGIN {FS = "\t"; OFS = "\t";} $3 == "gene" {print $1, $4, $5, $9} ' > temp
+vi temp
+cp temp temp2
+bedtools intersect -wa -wb -a temp -b temp2 -sorted  > temp-temp2
+cat temp-temp2 | awk '$4 != $8' | cut -f 4 | sort | uniq | wc -l
+40391 genes, each overlaps some other gene(s) to some extent
+
+cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | awk 'BEGIN {FS = "\t"; OFS = "\t";} $3 == "gene" ' | grep  protein_coding |grep -v "readthrough_gene" > temp
+cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | awk 'BEGIN {FS = "\t"; OFS = "\t";} $3 == "gene" ' | grep -i xist >> temp
+cat temp  | awk 'BEGIN {FS = "\t"; OFS = "\t";} $3 == "gene" {print $1, $4, $5, $9} ' > temp1
+vi temp1
+cp temp1 temp2
+wc -l temp1 temp2
+  19386 temp1
+  19386 temp2
+
+bedtools intersect -wa -wb -a temp1 -b temp2 > temp-temp2
+cat temp-temp2 | awk '$4 != $8' | cut -f 4 | sort | uniq | wc -l
+5295 genes, each overlaps some other protein_coding gene(s) to some extent
+cat temp-temp2 | awk '$4 != $8' | cut -f 4 | sort | uniq -c | awk '$1 == 1' | wc -l
+4443
+
+gene_id "ENSG00000244731.10"; gene_type "protein_coding"; gene_name "C4A"
+cat temp-temp2 | grep "ENSG00000244731.10"
+chr6    31982057        32002681        ENSG00000244731.10      chr6    31982057        32002681        ENSG00000244731.10
+
+gene_id "ENSG00000224389.9"; gene_type "protein_coding"; gene_name "C4B"
+cat temp-temp2 | grep "ENSG00000224389.9"
+chr6    32014795        32035418        ENSG00000224389.9       chr6    32014795        32035418        ENSG00000224389.9
+
+gene_id "ENSG00000125730.18"; gene_type "protein_coding"; gene_name "C3"; 
+cat temp-temp2 | grep "ENSG00000125730.18" | awk '$4 != $8'
+chr19   6677704 6730562 ENSG00000125730.18      chr19   6729914 6737580 ENSG00000125734.16 (GPR108; G protein-coupled receptor 108)
+
+
+cat temp1 |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+ {
+     print $1 "\t" "macs2" "\t" "peak" "\t"  $2 "\t" $3 "\t" "." "\t" "+"  "\t" "."  "\t" "peak_id=\"" $4  "\"" "\n";
+ }' > gencode.v42.primary_assembly.noPar.protein.xist.gtf
+
+wc -l gencode.v42.primary_assembly.noPar.protein.xist.gtf
+19386 gencode.v42.primary_assembly.noPar.protein.xist.gtf
+
