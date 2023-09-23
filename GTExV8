@@ -2168,6 +2168,17 @@ cat   gencode.v26.primary_assembly.annotation.gtf    | awk 'BEGIN {FS = "\t"; OF
   199391 temp-transc
 
 #######################################age_value, body_mass_index
+linyong@fry ~$ /home/linyong/.local/bin/pfb to -i    "export_2023-09-18T20 27 57.avro" tsv
+Creating ./tsvs/program.tsv
+Creating ./tsvs/project.tsv
+Creating ./tsvs/subject.tsv
+Creating ./tsvs/reference_file.tsv
+Creating ./tsvs/sample.tsv
+Creating ./tsvs/sequencing.tsv
+Done, created 7 files under: ./tsvs/
+
+linyong@fry /lab/solexa_page/linyong$ mv -i  tsvs gtex-981subjects-tsvs
+
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat gtex-981subjects-tsvs/subject.tsv | cut -f 46,148,224 | head -20
 
 source_subject_id       participant_id  submitter_id
