@@ -2316,3 +2316,89 @@ cat temp1 |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
 wc -l gencode.v42.primary_assembly.noPar.protein.xist.gtf
 19386 gencode.v42.primary_assembly.noPar.protein.xist.gtf
 
+#############################################################################
+############################GTEx v8 PE mapping statistics
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools view GTEX-11GSO-0003-SM-6WBTR.cram | awk '$3 ==  "chrX"' |  awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 != 83 && $2 != 163) && $5 >= 20'  > temp-chrx.sam &
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat temp-chrx.sam | wc -l
+14,658,190
+
+cat temp-chrx.sam | cut -f 5 | sort | uniq -c | sort -g | tail -n 6
+  23384 47
+  58775 48
+  62247 27
+  91601 55
+ 199219 40
+13,946,927 60 mapQ
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools view GTEX-11GSO-0003-SM-6WBTR.cram | awk '$3 ==  "chr1"' |  awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 != 83 && $2 != 163) && $5 >= 60'  | head -2000000 | cut -f 5 | uniq -c
+2000000 60 mapQ
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools view GTEX-11GSO-0003-SM-6WBTR.cram | awk '$3 ==  "chr1"' |  awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 != 83 && $2 != 163) && $5 >= 60'  | head -200000 | cut -f 6 | sort | uniq -c | awk '$1 >= 160'
+    177 138M13S
+    255 146M5S
+    180 147M4S
+    165 148M3S
+    595 149M2S
+ 181929 151M
+    556 2S149M
+    169 3S148M
+    223 4S147M
+    265 5S146M
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools view GTEX-11GSO-0003-SM-6WBTR.cram | awk '$3 ==  "chr1"' |  awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 != 83 && $2 != 163) && $5 >= 60'  | head -200000 | cut -f 9 | sort | uniq -c | sort -g | tail -n 6
+   2043 -412
+   2047 -409
+   2059 407 bp library insert size
+   2061 409
+   2070 412
+   2077 -407
+ 
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat temp-chrx.sam | awk 'BEGIN {FS = "\t";} $6 ~ /^[0-9]*M[0-9][0-9][0-9]*S$/' > temp.sam
+cat temp-chrx.sam | awk 'BEGIN {FS = "\t";} $6 ~ /^[0-9][0-9][0-9]*S[0-9]*M$/' >> temp.sam
+sort  temp.sam > temp.2.sam
+rm -f temp.sam 
+cat temp.2.sam  | awk 'BEGIN {FS = "\t";} $5 >= 60' > temp.3.sam
+rm -f temp.2.sam 
+
+samtools view GTEX-11GSO-0003-SM-6WBTR.cram -H > temp.4.sam
+cat temp.3.sam >> temp.4.sam
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ htseq-count  --mode=intersection-strict  --nonunique=none  --stranded=no --idattr=peak_id  --format=sam  --order=name --type=peak temp.4.sam  /lab/solexa_page/linyong/gencode.v42.primary_assembly.noPar.protein.xist.gtf > temp.10S10M.readcount
+
+19386 GFF lines processed.
+Warning: Read H03CRALXX140919:7:1101:10064:21667 claims to have an aligned mate which could not be found in an adjacent line.
+400000 alignment record pairs processed.
+Warning: 392800 reads with missing mate encountered.
+445395 alignment record pairs processed.
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat temp.3.sam | cut -f 1 | uniq | wc -l
+445395
+gene_id: ENSG00000229807.13 xist
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools view GTEX-11GSO-0003-SM-6WBTR.cram -H > temp.4.sam
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat  temp.3.sam | awk 'BEGIN {FS = "\t";} $4 > 32097677 && $4 < 32339609' >> temp.4.sam
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat  temp.3.sam | awk 'BEGIN {FS = "\t";} $4 > 32097677 && $4 < 32339609' | cut -f 1 | uniq | wc -l
+548
+
+rm -f temp.4.sam
+samtools view GTEX-11GSO-0003-SM-6WBTR.cram -H > temp.4.sam
+ cat  temp.3.sam | awk 'BEGIN {FS = "\t";} $4 > 32097677 && $4 < 32339609' | head -50 >> temp.4.sam
+htseq-count  --mode=intersection-strict  --nonunique=none  --stranded=no --idattr=peak_id  --format=sam  --order=name --type=peak temp.4.sam  /lab/solexa_page/linyong/gencode.v42.primary_assembly.noPar.protein.xist.gtf > temp.10S10M.readcount
+tail temp.10S10M.readcount
+grep ENSG00000198947.18 temp.10S10M.readcount
+
+__not_aligned:
+-------------
+H03CRALXX140919:7:1101:19554:49742	163	chrX	32192809	60	138M13S	=	32193073	415
+H03CRALXX140919:7:1101:20061:6073	163	chrX	32134012	60	127M24S	=	32134273	412
+H03CRALXX140919:7:1101:2055:46965	163	chrX	32333145	60	93M58S	=	32333145	93
+H03CRALXX140919:7:1102:18742:37753	147	chrX	32327268	60	26S125M	=	32327268	-125
+H03CRALXX140919:7:1102:20924:58410	147	chrX	32268664	60	22S129M	=	32268666	-127
+H03CRALXX140919:7:1103:15057:40900	163	chrX	32133806	60	126M25S	=	32134087	432
+
+
+ENSG00000198947.18	1
+-------------------------
+H03CRALXX140919:7:1101:2055:46965	83	chrX	32333145	60	58S93M	=	32333145	-93
+H03CRALXX140919:7:1101:8003:23020	99	chrX	32099827	60	136M15S	=	32100096	420
+H03CRALXX140919:7:1102:18742:37753	99	chrX	32327268	60	125M26S	=	32327268	125
+H03CRALXX140919:7:1102:20924:58410	99	chrX	32268666	60	127M24S	=	32268664	127
+
