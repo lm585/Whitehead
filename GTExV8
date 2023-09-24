@@ -2415,3 +2415,9 @@ H03CRALXX140919:7:1101:8003:23020	99	chrX	32099827	60	136M15S	=	32100096	420
 H03CRALXX140919:7:1102:18742:37753	99	chrX	32327268	60	125M26S	=	32327268	125
 H03CRALXX140919:7:1102:20924:58410	99	chrX	32268666	60	127M24S	=	32268664	127
 
+cat temp-chrx.sam | awk 'BEGIN {FS = "\t";} $5 >= 60 && $6 ~/^[0-9]*M[0-9][0-9]D[0-9]*M$/' | sort 
+/^[0-9]*M[0-9][0-9]I[0-9]*M$/  
+86M10D65M
+124M10I17M
+those reads with middle indel can be counted for (assigned to)  a gene
+
