@@ -2456,3 +2456,18 @@ y
 # b     1      200    0.7071068
 
 edgeR::cpm(y)
+
+################################################################
+cram="GTEX-11GSO-0003-SM-6WBTR.cram"
+f=`echo "$cram" | sed 's/.cram$//' `
+samtools view "$cram" |  awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 != 83 && $2 != 163) && $5 >= 60' | head -212345 > "$f".1.sam
+
+15806 ENSG00000188157.15 5396
+15832 ENSG00000188290.11   79
+
+19387           __no_feature 41832
+19388            __ambiguous   144
+19389        __too_low_aQual     0
+19390          __not_aligned     0
+19391 __alignment_not_unique     0
+19392               total.RP 99433
