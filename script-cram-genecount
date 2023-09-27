@@ -1,5 +1,12 @@
 #
-cram="GTEX-11GSO-0003-SM-6WBTR.cram"
+if [ $# -lt 1 ]
+then
+  echo $0 "	cram-file"
+  echo $#
+  exit 1
+fi
+
+cram="$1"
 f=`echo "$cram" | sed 's/.cram$//' `
 samtools view "$cram" |  awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 != 83 && $2 != 163) && $5 >= 60' | head -212345 > "$f".1.sam
 cut -f 1 "$f".1.sam | sort | uniq -d > temp-read-paired
@@ -9,13 +16,14 @@ wc -l temp-read-paired
 ls -lh "$f".1.sam "$f".2.sam
 rm "$f".1.sam 
 wc -l "$f".2.sam
-
+tot=`wc -l "$f".2.sam | awk '{print $1/2}'`
 samtools view "$cram" -H > "$f".3.sam
 cat  "$f".2.sam >> "$f".3.sam
-rm "$f".2.sam
+rm "$f".2.sam  "$cram"
 
 samtools view -b -S  -o "$f".1.bam  "$f".3.sam
 rm "$f".3.sam
+ls -lh "$f".1.bam
 samtools sort -n -@ 6 -o "$f".name-sorted.bam "$f".1.bam 
 rm "$f".1.bam
 ls -lh "$f".name-sorted.bam 
@@ -24,6 +32,8 @@ echo "should be 222444/2"
 samtools view "$f".name-sorted.bam | head -40 | cut -f 1-9
 
 htseq-count  --mode=intersection-strict  --nonunique=all  --stranded=no --idattr=peak_id  --format=bam  --order=name --type=peak  "$f".name-sorted.bam   /lab/solexa_page/linyong/gencode.v42.primary_assembly.noPar.protein.xist.gtf > "$f".strictmode.nonuniq.readcount
+echo "total.RP	$tot" >> "$f".strictmode.nonuniq.readcount
 tail "$f".strictmode.nonuniq.readcount
 
 rm "$f".name-sorted.bam temp-read-paired
+
