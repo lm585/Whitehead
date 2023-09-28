@@ -2471,3 +2471,53 @@ samtools view "$cram" |  awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 !
 19390          __not_aligned     0
 19391 __alignment_not_unique     0
 19392               total.RP 99433
+
+#############################################################################
+############################filtering gtf file based gene types and transcript types
+linyong@fry /lab/solexa_page/linyong$ cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | grep -iw ddx3x | awk '$3 == "transcript"' | grep -o "transcript_type.\{30\}" | sort| uniq -c
+     14 transcript_type "nonsense_mediated_decay"; tr
+      3 transcript_type "protein_coding_CDS_not_defin
+     23 transcript_type "protein_coding"; transcript_
+     29 transcript_type "retained_intron"; transcript
+
+cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | grep -iw ddx3x | awk '$3 == "transcript"' | grep "transcript_type \"protein_coding\";"
+chrX	HAVANA	gene	41333348	41364472	.	+	.	gene_id "ENSG00000215301.11"; gene_type "protein_coding"; gene_name "DDX3X"; level 2; hgnc_id "HGNC:2745"; havana_gene "OTTHUMG00000021369.22";
+
+chrX	HAVANA	transcript	41333348	41350287	.	+	.	gene_id "ENSG00000215301.11"; transcript_id "ENST00000629496.3"; gene_type "protein_coding"; gene_name "DDX3X"; transcript_type "protein_coding"; transcript_name "DDX3X-217"; level 2; protein_id "ENSP00000487224.1"; transcript_support_level "5"; hgnc_id "HGNC:2745"; tag "alternative_5_UTR"; tag "non_submitted_evidence"; tag "basic"; tag "appris_principal_4"; tag "CCDS"; ccdsid "CCDS43931.1"; havana_gene "OTTHUMG00000021369.22"; havana_transcript "OTTHUMT00000481647.3";
+
+chrX	HAVANA	exon	41333348	41333699	.	+	.	gene_id "ENSG00000215301.11"; transcript_id "ENST00000629496.3"; gene_type "protein_coding"; gene_name "DDX3X"; transcript_type "protein_coding"; transcript_name "DDX3X-217"; exon_number 1; exon_id "ENSE00003771363.1"; level 2; protein_id "ENSP00000487224.1"; transcript_support_level "5"; hgnc_id "HGNC:2745"; tag "alternative_5_UTR"; tag "non_submitted_evidence"; tag "basic"; tag "appris_principal_4"; tag "CCDS"; ccdsid "CCDS43931.1"; havana_gene "OTTHUMG00000021369.22"; havana_transcript "OTTHUMT00000481647.3";
+
+chrX	HAVANA	UTR	41347717	41350287	.	+	.	gene_id "ENSG00000215301.11"; transcript_id "ENST00000629496.3"; gene_type "protein_coding"; gene_name "DDX3X"; transcript_type "protein_coding"; transcript_name "DDX3X-217"; exon_number 18; exon_id "ENSE00003830364.1"; level 2; protein_id "ENSP00000487224.1"; transcript_support_level "5"; hgnc_id "HGNC:2745"; tag "alternative_5_UTR"; tag "non_submitted_evidence"; tag "basic"; tag "appris_principal_4"; tag "CCDS"; ccdsid "CCDS43931.1"; havana_gene "OTTHUMG00000021369.22"; havana_transcript "OTTHUMT00000481647.3";
+
+chrX	HAVANA	CDS	41341484	41341616	.	+	2	gene_id "ENSG00000215301.11"; transcript_id "ENST00000629496.3"; gene_type "protein_coding"; gene_name "DDX3X"; transcript_type "protein_coding"; transcript_name "DDX3X-217"; exon_number 5; exon_id "ENSE00003572608.1"; level 2; protein_id "ENSP00000487224.1"; transcript_support_level "5"; hgnc_id "HGNC:2745"; tag "alternative_5_UTR"; tag "non_submitted_evidence"; tag "basic"; tag "appris_principal_4"; tag "CCDS"; ccdsid "CCDS43931.1"; havana_gene "OTTHUMG00000021369.22"; havana_transcript "OTTHUMT00000481647.3";
+
+linyong@fry /lab/solexa_page/linyong$ cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | grep  "gene_id.*gene_id" | wc
+      0       0       0
+cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | grep  "transcript_id.*transcript_id" | wc
+      0       0       0
+linyong@fry /lab/solexa_page/linyong$ cat gencode.v42.primary_assembly.noPar.protein.xist.gtf | cut -f 9 | sed 's/peak_id=/     gene_id /' > temp-gene-ids-131pm
+
+linyong@fry /lab/solexa_page/linyong$ cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | awk '$3 == "transcript"' | grep "transcript_type \"protein_coding\";"  | cut -f 9 | awk 'BEGIN {FS = ";"} {print $2}'  > temp-transcriptid-140pm
+
+geneID-input-file 'gene_id "ENSG00000215301.11"'      protein coding genes, xist
+transcript-ip-file 'transcript_id "ENST00000629496.3"'       transcript_type "protein_coding"; 
+
+if field #3 is a gene, then gene_id xxxxxx contained in the geneID-input-file
+else
+  gene_id in the file && transcript_id in second file 
+
+---------------------------
+linyong@fry /lab/solexa_page/linyong$ /lab/solexa_page/linyong/gtex-dna/process-gtf-1  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf  temp-gene-ids-131pm temp-transcriptid-140pm out
+linyong@fry /lab/solexa_page/linyong$ wc -l out
+2094423 out
+sort gencode/gencode.v42.primary_assembly.noPar.annotation.gtf  out | uniq -d | wc -l
+2094423
+linyong@fry /lab/solexa_page/linyong$ cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | grep -iw ddx3x | awk '$3 != "transcript"' | grep -o "transcript_type.\{30\}" | sort| uniq -c
+    463 transcript_type "nonsense_mediated_decay"; tr
+     14 transcript_type "protein_coding_CDS_not_defin
+    766 transcript_type "protein_coding"; transcript_
+    298 transcript_type "retained_intron"; transcript
+
+linyong@fry /lab/solexa_page/linyong$  cat out| grep -iw ddx3x | awk '$3 != "transcript"' | grep -o "transcript_type.\{30\}" | sort| uniq -c
+    766 transcript_type "protein_coding"; transcript_
+
