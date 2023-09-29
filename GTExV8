@@ -2507,17 +2507,26 @@ else
   gene_id in the file && transcript_id in second file 
 
 ---------------------------
+linyong@fry /lab/solexa_page/linyong$ cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | grep "gene_id \"ENSG000002298
+07.13\";" | awk '$3 == "transcript"' | grep  "transcript_type \"lncRNA\"" | cut -f 9 | awk 'BEGIN {FS = ";"} {print $2}'  >> temp-transcriptid-140pm
 linyong@fry /lab/solexa_page/linyong$ /lab/solexa_page/linyong/gtex-dna/process-gtf-1  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf  temp-gene-ids-131pm temp-transcriptid-140pm out
-linyong@fry /lab/solexa_page/linyong$ wc -l out
-2094423 out
+wc -l out
+2094614 out
 sort gencode/gencode.v42.primary_assembly.noPar.annotation.gtf  out | uniq -d | wc -l
-2094423
-linyong@fry /lab/solexa_page/linyong$ cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | grep -iw ddx3x | awk '$3 != "transcript"' | grep -o "transcript_type.\{30\}" | sort| uniq -c
+2094614
+cat  gencode/gencode.v42.primary_assembly.noPar.annotation.gtf | grep -iw ddx3x | awk '$3 != "transcript"' | grep -o "transcript_type.\{30\}" | sort| uniq -c
     463 transcript_type "nonsense_mediated_decay"; tr
      14 transcript_type "protein_coding_CDS_not_defin
     766 transcript_type "protein_coding"; transcript_
     298 transcript_type "retained_intron"; transcript
-
-linyong@fry /lab/solexa_page/linyong$  cat out| grep -iw ddx3x | awk '$3 != "transcript"' | grep -o "transcript_type.\{30\}" | sort| uniq -c
+cat out | grep -iw ddx3x | awk '$3 != "transcript"' | grep -o "transcript_type.\{30\}" | sort| uniq -c
     766 transcript_type "protein_coding"; transcript_
+cat out | grep -iw xist | awk '$3 != "transcript"' |  head
+chrX    HAVANA  exon    73841382        73843533        .       -       .       gene_id "ENSG00000229807.13"; transcript_id "ENST00000669898.1"; gene_type "lncRNA"; gene_name "XIST"; transcript_type "lncRNA"; transcript_name "XIST-230"; exon_number 1; exon_id "ENSE00003871931.1"; level 2; hgnc_id "HGNC:12810"; tag "TAGENE"; havana_gene "OTTHUMG00000021839.13"; havana_transcript "OTTHUMT00000517260.2";
+
+cat out | grep -i "readthrough" | wc
+    319
+cat out | grep -i "stop_codon_readthrough" | wc
+    319
+linyong@fry /lab/solexa_page/linyong$ mv -i out  gencode.v42.primary_assembly.noPar.protein.xist.exons.gtf
 
