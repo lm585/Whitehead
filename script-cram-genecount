@@ -8,7 +8,7 @@ fi
 
 cram="$1"
 f=`echo "$cram" | sed 's/.cram$//' `
-samtools view "$cram" |  awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 != 83 && $2 != 163) && $5 >= 60' | head -212345 > "$f".1.sam
+samtools view "$cram" |  awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 != 83 && $2 != 163) && $5 >= 60' > "$f".1.sam
 cut -f 1 "$f".1.sam | sort | uniq -d > temp-read-paired
 wc -l temp-read-paired
 
