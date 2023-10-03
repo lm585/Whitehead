@@ -2530,3 +2530,44 @@ cat out | grep -i "stop_codon_readthrough" | wc
     319
 linyong@fry /lab/solexa_page/linyong$ mv -i out  gencode.v42.primary_assembly.noPar.protein.xist.exons.gtf
 
+############################
+> t1 <- read.delim("out-GTEX-OIZI-1026-SM-CLTGE.strictmode.nonuniq.geneintv.readcount", header=F)
+ t2 <- read.delim("gencode.v42.primary_assembly.noPar.protein.xist.gtf", header=F)
+ t2$V10 <- gsub("peak_id=", "", t2$V9)
+ t3 <- merge(t1, t2, by.x="V1", by.y="V10")
+ dim(t3)
+# [1] 19386    11
+ t3$geneL <- t3$V5 - t3$V4 + 1
+
+> dim(t3[ t3$V2.x == 0,])
+[1] 371  12
+> res <- lm(t3$V2.x ~ t3$geneL)
+> summary(res)
+
+Call:
+lm(formula = t3$V2.x ~ t3$geneL)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-155690    -719     777    1415   65929
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)
+(Intercept) -1.609e+03  3.805e+01  -42.29   <2e-16 ***
+t3$geneL     1.541e-01  2.535e-04  607.92   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4716 on 19384 degrees of freedom
+Multiple R-squared:  0.9502,    Adjusted R-squared:  0.9502
+F-statistic: 3.696e+05 on 1 and 19384 DF,  p-value: < 2.2e-16
+
+ plot(t3$geneL, t3$V2.x, xlab="gene L (bp)", ylab="gene interval RP count")
+ abline(lm(t3$V2.x ~ t3$geneL), lwd = 1, col="blue")
+ abline(h = seq(0, 10e5, 1e5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(0, 2e7, 5e5), lty = 5, lwd = 0.5, col = "gray")
+> summary(t3$V2.x * 301/ t3$geneL)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+   0.00   25.10   31.26   34.36   39.97 8414.38
+g <- c("ENSG00000244731.10", "ENSG00000224389.9", "ENSG00000125730.18")
+ t.g <- t3[ t3$V1 %in% g,]
