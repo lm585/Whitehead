@@ -2569,5 +2569,19 @@ F-statistic: 3.696e+05 on 1 and 19384 DF,  p-value: < 2.2e-16
 > summary(t3$V2.x * 301/ t3$geneL)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
    0.00   25.10   31.26   34.36   39.97 8414.38
+> t6 <- t3[  t3$V2.x > 100,]
+> summary(t6$V2.x * 301/ t6$geneL)
+    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+   0.327   26.058   32.007   35.958   40.650 8414.379 
+sex == 1, male
+> t6 <- t3[ t3$V1.y == "chrX" & t3$V2.x > 100,]
+> summary(t6$V2.x * 301/ t6$geneL)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   5.25   15.27   18.83   18.97   22.39   63.33 
+> t6 <- t3[ t3$V1.y == "chrY" & t3$V2.x > 100,]
+> summary(t6$V2.x * 301/ t6$geneL)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  6.049  19.008  19.741  19.192  21.496  22.908 
+
 g <- c("ENSG00000244731.10", "ENSG00000224389.9", "ENSG00000125730.18")
  t.g <- t3[ t3$V1 %in% g,]
