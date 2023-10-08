@@ -1,0 +1,41 @@
+#!/bin/bash
+# Configuration values for SLURM job submission.
+# One leading hash ahead of the word SBATCH is not a comment, but two are.
+#SBATCH --job-name="DNA-cram-count" # friendly name for job.
+#SBATCH --nodes=1                      # ensure cores are on one node
+#SBATCH --ntasks=1                     # run a single task
+#SBATCH --cpus-per-task=4              # number of cores/threads requested. sort bam according to read name
+#SBATCH --mem=40gb                      # memory requested.
+#SBATCH --partition=20                 # partition (queue) to use
+#SBATCH --output out-dir-cram-oct08
+#SBATCH --mail-type=ALL               # send email on job start/finish.
+#SBATCH --mail-user=linyong@wi.mit.edu
+
+# This is the actual section for commands to run
+
+# Uncomment the last line to email output file to specified address.
+# Slurm doesn't do this automatically, regardless of the mail-type setting above.
+#/usr/bin/mail -s "$SLURM_JOB_NAME $SLURM_JOB_ID" your_username@wi.mit.edu < friendlyname-${SLURM_JOB_ID}.out
+
+t=1
+while [ "$t"  -le 50 ]
+do
+ echo "---------------------------"
+ cat /lab/solexa_page/linyong/genome-bam-only-file-manifest.json  | head -1 > temp.json
+ cat /lab/solexa_page/linyong/genome-bam-only-file-manifest.json  | awk 'NR > 1 + ('$t' - 1) *6  && NR <= 1 + '$t' * 6' | sed 's/},/}/' >> temp.json
+ cat /lab/solexa_page/linyong/genome-bam-only-file-manifest.json  | tail -n 1 >> temp.json
+ cat temp.json
+ rm *.cram
+ /lab/solexa_page/linyong/gen3-client-sep23 download-multiple --profile=gtexv8expire_oct27   --manifest=temp.json --protocol=s3 --no-prompt
+ f=`ls | grep -i "^gtex.*.cram$" | head -1`
+ echo "$f"
+ f2=`echo "$f" | sed 's/.cram$//' `
+
+ bash /lab/solexa_page/linyong/gtex-dna/script-cram-genecount-02  "$f" > "$f2".gene.exon.depth
+ rm "$f"
+ rm "$f2".cram.crai
+
+ t=`expr $t + 1`
+
+done
+
