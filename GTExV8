@@ -2585,3 +2585,16 @@ sex == 1, male
 
 g <- c("ENSG00000244731.10", "ENSG00000224389.9", "ENSG00000125730.18")
  t.g <- t3[ t3$V1 %in% g,]
+
+###########################################################################
+linyong@fry /lab/solexa_page/linyong/gtex-dna-test$ grep -i "c3.*geneIntv" *depth > temp1
+grep -i "chrom.*chr1        " *depth > temp2
+paste temp[12]  | cut -f 1,14 | awk '$1 != $2'|wc
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-oct2023$ cp /lab/solexa_page/linyong/gtex-dna-test/slurm-gtexv8-pipeline-DNA-download-genecount-02 ./
+vi slurm-gtexv8-pipeline-DNA-download-genecount-02
+#SBATCH --output out-dir-cram-oct08
+t=1
+while [ "$t"  -le 50 ]
+linyong@fry /lab/solexa_page/linyong/gtex-dna-oct2023$ sbatch slurm-gtexv8-pipeline-DNA-download-genecount-02
+
