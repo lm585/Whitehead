@@ -2598,3 +2598,24 @@ t=1
 while [ "$t"  -le 50 ]
 linyong@fry /lab/solexa_page/linyong/gtex-dna-oct2023$ sbatch slurm-gtexv8-pipeline-DNA-download-genecount-02
 
+################################################################
+linyong@fry /lab/solexa_page/linyong/gtex-genome-tsvs$ cat subject.tsv | cut -f 46,106,204 > temp-1
+linyong@fry /lab/solexa_page/linyong/gtex-981subjects-tsvs$ cat subject.tsv | cut -f 46,106,204 > temp-1
+source_subject_id       height  unit_height
+GTEX-YB5E       68.0    in
+GTEX-14A6H      74.0    in
+
+linyong@fry /lab/solexa_page/linyong/gtex-981subjects-tsvs$ wc -l /lab/solexa_page/linyong/gtex-genome-tsvs/temp-1 /lab/solexa_page/linyong/gtex-981subjects-tsvs/temp-1
+  839 /lab/solexa_page/linyong/gtex-genome-tsvs/temp-1
+  982 /lab/solexa_page/linyong/gtex-981subjects-tsvs/temp-1
+cat /lab/solexa_page/linyong/gtex-genome-tsvs/temp-1 /lab/solexa_page/linyong/gtex-981subjects-tsvs/temp-1 | sort | uniq -d | wc -l
+839
+
+linyong@fry /lab/solexa_page/linyong/gtex-transcriptome-tsvs$ cat subject.tsv | cut -f 46,106,204 > temp-1
+linyong@fry /lab/solexa_page/linyong$ wc -l /lab/solexa_page/linyong/gtex-transcriptome-tsvs/temp-1 /lab/solexa_page/linyong/gtex-981subjects-tsvs/temp-1
+  949 /lab/solexa_page/linyong/gtex-transcriptome-tsvs/temp-1
+  982 /lab/solexa_page/linyong/gtex-981subjects-tsvs/temp-1
+linyong@fry /lab/solexa_page/linyong$ cat /lab/solexa_page/linyong/gtex-transcriptome-tsvs/temp-1 /lab/solexa_page/linyong/gtex-981subjects-tsvs/temp-1 | sort | uniq -d | wc -l
+949
+linyong@fry /lab/solexa_page/linyong/gtex-981subjects-tsvs$  cat subject.tsv | cut -f 46,106,204 > gtex-981donor-height.txt
+
