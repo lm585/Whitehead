@@ -2619,3 +2619,52 @@ linyong@fry /lab/solexa_page/linyong$ cat /lab/solexa_page/linyong/gtex-transcri
 949
 linyong@fry /lab/solexa_page/linyong/gtex-981subjects-tsvs$  cat subject.tsv | cut -f 46,106,204 > gtex-981donor-height.txt
 
+####################################################################
+Heart - Left Ventricle  428
++  med$logic[i] <- median(d[i,]) >= 0.5
+> print(dim(y))
+[1] 15298   428
+......
+> for(i in 1:dim(y)[2]) {
++  t1 <- info[ info$sid == y.cn[i],]
+.......
+ t5 <- read.delim("gtex-981subjects-tsvs/subject.tsv")
+ info3 <- t5[, c(16,31,46, 106)]
+ summary(info3)
+ info.2$ageV = 0
+ info.2$bmi = 0
+ info4 <- merge(info.2, info3, by.x="SUBJID", by.y="source_subject_id")
+ dim(info4)
+# [1] 428  12
+for(i in 1:dim(y)[2]) {
+ t1 <- info.2[i,]$SUBJID
+ info.2[i,]$ageV = info4[ info4$SUBJID == t1,]$age_value[1]
+ info.2[i,]$bmi = info4[ info4$SUBJID == t1,]$body_mass_index[1]
+ }
+ identical(info.2$sid, y.cn)
+ design <- model.matrix( ~ info.2$SEX + info.2$ageV + info.2$bmi)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+gene.name <- raw[, 1:2]
+df.gene <- merge(diff, gene.name, by.x="geneID", by.y="geneID")
+chr <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type")
+df.cpm.gene <- merge(df.gene, chr, by.x="geneID", by.y="geneID")
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i  diff2-1.txt diff2-1-left-ventricle-FvsM.age-bmi-covar.txt
+# diff2-1-left-ventricle-FvsM.age-bmi-covar.2.txt
+cat diff2-1-left-ventricle-FvsM.age-bmi-covar.2.txt  | awk 'BEGIN {FS = "\t"} !($8 == "chrX" || $8 == "chrY")'   > temp1
+
+cat temp1 | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+{for(i = 1; i <= 7; i++)
+   print $i "\t";
+
+ print $7 "\n";
+}' > temp
+../microglia/make-rnk-genesymble  temp   diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    fao.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk   diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk  -scoring_scheme classic  -rpt_label   "left-ventricle-FvsM.noX.Y.age-bmi-covar-weight0-FAO"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
