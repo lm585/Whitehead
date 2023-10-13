@@ -2668,3 +2668,19 @@ cat temp1 | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
 ../microglia/make-rnk-genesymble  temp   diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk
 
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    fao.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk   diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk  -scoring_scheme classic  -rpt_label   "left-ventricle-FvsM.noX.Y.age-bmi-covar-weight0-FAO"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+################################################################################
+Skin - Sun Exposed (Lower leg)  698
++  med$logic[i] <- median(d[i,]) >= 0.5
++ }
+> ####median >= 1 for pathway genes
+> y<-y[med$logic,]
+> print(dim(y))
+[1] 18312   698
+> df.cpm.gene[ df.cpm.gene$name %in% c("DDX3X", "DDX3Y"),]
+                  geneID      logFC   logCPM          F       PValue          FDR  name  chr strand           type
+908   ENSG00000067048.17 -8.6235068 6.004004 10359.4750 0.000000e+00 0.000000e+00 DDX3Y chrY      + protein_coding
+14447 ENSG00000215301.11  0.4293785 8.373848   287.9503 2.481522e-54 1.336519e-51 DDX3X chrX      + protein_coding
+> y[,1:11]
+
+> write.table(df.cpm.gene, "diff2-1-Skin-SunExposed-FvsM.age-bmi-covar.txt", quote=F, sep="\t")
