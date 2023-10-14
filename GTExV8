@@ -2684,3 +2684,16 @@ Skin - Sun Exposed (Lower leg)  698
 > y[,1:11]
 
 > write.table(df.cpm.gene, "diff2-1-Skin-SunExposed-FvsM.age-bmi-covar.txt", quote=F, sep="\t")
+
+#############################################################
+> f <- read.delim("diff2-1-Skin-SunExposed-FvsM.age-bmi-covar.noX.Y.rnk", header=F)
+ fao.name <- df.cpm.gene[ df.cpm.gene$geneID %in% fao,]$name
+ f2 <- f[ f$V1 %in% fao.name,]
+ dim(f2)
+a =  dim(f2 [ f2$V2 > 0,])[1]
+b = dim(f2 [ f2$V2 < 0,])[1]
+c = dim(f [ f$V2 > 0,])[1] - a
+d = dim(f [ f$V2 < 0,])[1] - b
+fis <- matrix(c(a,b,c,d), nrow=2, ncol=2, byrow=T )
+fis
+ fisher.test(fis)
