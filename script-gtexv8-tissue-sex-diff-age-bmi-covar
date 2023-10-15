@@ -1,0 +1,82 @@
+ setwd("/Users/linyongmao/Documents/dir-GTExV8/")
+raw <- read.delim("gtex-all-samples.gene.count.txt", header=T)
+dim(raw)
+t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+file <- read.delim("gtex-54tiss.txt", header=F)
+ index = 32
+tissue = file[index,1]
+ t2 <- t1[ t1$V2 == tissue, ]
+ t2$id <- gsub("-", ".", t2$V1)
+ t2$id <- paste(t2$id, ".", sep="")
+ raw2 <- raw[, colnames(raw) %in% t2$id ]
+ str1 <- paste(tissue, dim(raw2)[2], sep="\t")
+ cat(str1)
+ cat("\n")
+ rownames(raw2) <- raw$geneID
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.5
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+
+ y.cn <- colnames(y)
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ info.2 <- head(info, n= dim(y)[2])
+for(i in 1:dim(y)[2]) {
+ t1 <- info[ info$sid == y.cn[i],]
+ info.2[i,] <- t1[1,]
+ }
+ t5 <- read.delim("gtex-981subjects-tsvs/subject.tsv")
+ info3 <- t5[, c(16,31,46, 106)]
+ summary(info3)
+ info.2$ageV = 0
+ info.2$bmi = 0
+ info4 <- merge(info.2, info3, by.x="SUBJID", by.y="source_subject_id")
+ dim(info4)
+# [1] 429  12
+for(i in 1:dim(y)[2]) {
+ t1 <- info.2[i,]$SUBJID
+ info.2[i,]$ageV = info4[ info4$SUBJID == t1,]$age_value[1]
+ info.2[i,]$bmi = info4[ info4$SUBJID == t1,]$body_mass_index[1]
+ }
+ identical(info.2$sid, y.cn)
+ design <- model.matrix( ~ info.2$SEX + info.2$ageV + info.2$bmi)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+# write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+gene.name <- raw[, 1:2]
+df.gene <- merge(diff, gene.name, by.x="geneID", by.y="geneID")
+chr <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type")
+df.cpm.gene <- merge(df.gene, chr, by.x="geneID", by.y="geneID")
+ head(top2v1)
+ y[,1:11]
+ write.table(df.cpm.gene, "diff2-1.txt", sep="\t", quote=F)
+#################################################################
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i diff2-1.txt diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt
+vi diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt
+
+cat diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt  | awk 'BEGIN {FS = "\t"} !($8 == "chrX" || $8 == "chrY")'   > temp1
+
+cat temp1 | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+{for(i = 1; i <= 7; i++)
+   print $i "\t";
+
+ print $7 "\n";
+}' > temp
+../microglia/make-rnk-genesymble  temp   diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.noX.Y.rnk
+
+ grep -iw "ddx3[xy]"  diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt 
+grep -iw "ddx3[xy]"  diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt | cut -f 7,8
+
