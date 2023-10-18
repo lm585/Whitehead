@@ -2697,3 +2697,35 @@ d = dim(f [ f$V2 < 0,])[1] - b
 fis <- matrix(c(a,b,c,d), nrow=2, ncol=2, byrow=T )
 fis
  fisher.test(fis)
+
+######################################################################################
+linyong@fry /lab/solexa_page/linyong$  ~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chr6 31982057 32002681  > c4a.dna.fa
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools view -b   GTEX-11GSO-0003-SM-6WBTR.cram chr6:31982057-32002681 > temp.c4a.bam
+samtools index  temp.c4a.bam
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools mpileup -q 20 -o out -f /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  -d 1234567 --output-MQ   --output-QNAME  temp.c4a.bam
+[mpileup] 1 samples in 1 input files
+[mpileup] Combined max depth is above 1M. Potential memory hog!
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp.pileup | awk '{print NR "\t" $2 - 31982057 + 1}' > out
+> t1 <- read.delim("out", header=F)
+> plot(t1, pch = 16, cex=0.1)
+> abline(h = seq(0,18000,200), lty = 5, lwd = 0.5, col = "gray")
+> abline(v = seq(0,18000,100), lty = 5, lwd = 0.5, col = "gray")
+
+ t1 <- read.delim("temp.q0.pileup", header=F)
+ plot(t1$V2, t1$V4,  pch = 1, cex = 0.5, xlab= "C4A position", ylab="mpileup -q 0", col= "blue")
+ abline(h = seq(0,18000,5), lty = 5, lwd = 0.5, col = "gray")
+ t2 <- read.delim("temp.pileup", header=F)
+ t3 <- merge(t1, t2, by.x ="V2", by.y = "V2")
+ dim(t3)
+# [1] 3485   15
+ plot(t3$V2, t3$V4.x,  col="white", xlab= "C4A DNA chr position", ylab="mpileup")
+ points(t3$V2, t3$V4.x, col="red")
+ points(t3$V2, t3$V4.y, col="blue")
+  abline(h = seq(0,18000,5), lty = 5, lwd = 0.5, col = "gray")
+ 
+ abline(v = seq(0,41234000,500), lty = 5, lwd = 0.5, col = "gray")
+ legend(31994000, 80, c("mapq 0", "mapq 20"), pch = c(16,16),col = c("red", "blue" ) )
+
