@@ -2729,3 +2729,78 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp.pileup | awk '{print NR 
  abline(v = seq(0,41234000,500), lty = 5, lwd = 0.5, col = "gray")
  legend(31994000, 80, c("mapq 0", "mapq 20"), pch = c(16,16),col = c("red", "blue" ) )
 
+###################simulation data
+################################generate reads from c4a locus only
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ ~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chr6  31982057  32003681   > temp.c4a.dna.plus1kbp.fa
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat script-get-reads-c4a
+#chr6 31982057 32002681 (20625-bp) . + . gene_id "ENSG00000244731.10"; gene_type "protein_coding"; gene_name "C4A"; 
+
+
+a=1
+
+while [ "$a" -lt 20625 ]
+do
+ e=`expr "$a" + 149`
+ echo ">c4a.$a-$e"
+  ~/C++/reSeqPrintChrRegion.fq temp.c4a.dna.plus1kbp.fa out chr6 "$a" "$e" | awk 'NR == 2'
+ a=`expr "$a" + 5000`
+done
+----------------------------------------------------------------
+bash script-get-reads-c4a > temp.c4a.dna.reads.fa
+bwa mem -t 4 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa   temp.c4a.dna.reads.fa > temp.sam
+## [M::process] read 138 sequences (20700 bp)...
+cat temp.sam | grep "^c4a" | cut -f 3 | uniq -c
+#     138 chr6
+cat temp.sam | grep "^c4a" | cut -f 4 | sort -n
+# 31982207 .. 32035044
+cat temp.sam | grep "^c4a" | awk '$4 > 32014795' | wc -l
+# 64 reads in c4b locus
+cat temp.sam | grep "^c4a" | cut -f 5 | sort -n | uniq -c
+    128 0
+      7 8
+      1 26
+      1 43
+      1 54
+cat temp.sam | grep "^c4a" | awk '$5 > 0'
+cat temp.sam | grep "^c4a" | awk '$5 > 0' | cut -f 1-9,11-100
+c4a.12301-12450	0	chr6	31994357	8	150M	*	0	0	*	NM:i:0	MD:Z:150	AS:i:150	XS:i:145	XA:Z:chr6,+32027095,150M,1;  (1 mismatch)
+c4a.14551-14700	0	chr6	31996607	26	150M	*	0	0	*	NM:i:0	MD:Z:150	AS:i:150	XS:i:138	XA:Z:chr6,+32029345,11M1I138M,2;
+c4a.14401-14550	0	chr6	31996457	43	150M	*	0	0	*	NM:i:0	MD:Z:150	AS:i:150	XS:i:130	XA:Z:chr6,+32029195,150M,4;
+c4a.13951-14100	0	chr6	31996007	54	150M	*	0	0	*	NM:i:0	MD:Z:150	AS:i:150	XS:i:125	XA:Z:chr6,+32028745,150M,5; (5 mismatch)
+
+
+samtools view  GTEX-11GSO-0003-SM-6WBTR.cram chr6:31982057-32002681 >  temp.c4a.sam
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat temp.c4a.sam  | cut -f 5 | sort -n | uniq -c
+   7100 0
+      1 1
+     17 3
+      1 4
+      5 5
+     42 6
+      1 7
+     18 9
+     12 15
+     10 21
+      1 25
+    494 27
+      8 39
+    139 40
+      3 41
+      1 42
+      1 43
+      6 44
+     22 45
+     46 46
+      1 47
+      1 50
+      1 51
+      6 54
+      3 57
+    173 60
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat temp.c4a.sam  | awk '$5 >= 20' |wc -l
+916
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat temp.c4a.sam  | awk '$5 >= 20' |cut -f 1 | sort | uniq -u | wc -l
+8 (3 mates mapped to chr3/2/11; 2 mates with mapQ = 0; 3 mates mapped with insert size 33269-bp, 33297-bp, 33024-bp
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat temp.c4a.sam  | awk '$5 >= 20' |cut -f 1 | sort | uniq -d | wc -l
+454
