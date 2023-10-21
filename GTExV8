@@ -2804,3 +2804,31 @@ linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat temp.c4a.sam  | awk '$5 >= 20
 8 (3 mates mapped to chr3/2/11; 2 mates with mapQ = 0; 3 mates mapped with insert size 33269-bp, 33297-bp, 33024-bp
 linyong@fry /lab/solexa_page/linyong/gtex-dna$ cat temp.c4a.sam  | awk '$5 >= 20' |cut -f 1 | sort | uniq -d | wc -l
 454
+
+####################################################liver, sex diff, BMI / age as covar
+                  geneID     logFC   logCPM         F    PValue       FDR name  chr strand           type
+13394  ENSG00000224389.9 0.1951779 7.546203 1.5227584 0.2184858 0.6060490  C4B chr6      + protein_coding 
+14202 ENSG00000244731.10 0.1669817 7.381534 0.8640129 0.3536111 0.7156702  C4A chr6      + protein_coding
+
+Liver
+C4A
+cpm.female.mean = 177.317
+cpm.male.mean = 162.3954
+
+C4B
+cpm.female.mean = 202.18
+cpm.male.mean = 180.66
+
+
+
+
+ t6 <- as.data.frame(cpm(y))
+ t7 <- t6[ c("ENSG00000224389.9"), info.2$SEX ==2]
+ t8 <- as.data.frame(t(t7))
+ dim(t8)
+ summary(t8[,1])
+
+  t7 <- t6[ c("ENSG00000224389.9"), info.2$SEX ==1]
+ t8 <- as.data.frame(t(t7))
+ dim(t8)
+ summary(t8[,1])
