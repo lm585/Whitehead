@@ -2837,3 +2837,38 @@ cpm.male.mean = 180.66
  t8 <- as.data.frame(t(t7))
  dim(t8)
  summary(t8[,1])
+
+############################################################mouse RNA-seq read length
+linyong@fry /lab/solexa_page/linyong$ cat script-read-length
+#
+ls  /lab/page_scratch/helen/lukas/mouse/GB/*_2.fastq | while read ll
+do
+  head -400000 "$ll" | awk 'NR % 4 == 2 {print length($0) }' | sort -n | tail -n 1
+
+done
+
+linyong@fry /lab/solexa_page/linyong$ bash script-read-length | wc
+     79 fastq PE files;     79     293
+
+linyong@fry /lab/solexa_page/linyong$ bash script-read-length | sort -n | uniq -c
+      2 42
+      2 50
+     13 76
+      6 80
+     18 100
+      9 101
+      3 126
+      9 150
+     17 151-bp , read length
+
+linyong@fry /lab/solexa_page/linyong$ cat script-read-length-2
+#
+ls  /lab/page_scratch/helen/lukas/mouse/GB/*.fastq | grep -v "_[12].fastq" | while read ll
+do
+  head -400000 "$ll" | awk 'NR % 4 == 2 {print length($0) }' | sort -n | tail -n 1
+
+done
+linyong@fry /lab/solexa_page/linyong$ bash script-read-length-2 | sort -n | uniq -c
+      1 36
+     10 50-bp, SE RNA-seq
+
