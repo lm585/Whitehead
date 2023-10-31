@@ -2891,3 +2891,44 @@ linyong@fry /lab/solexa_page/linyong/mouse-genome$ cat slurm-wi-star-genome-inde
 
 STAR  --runMode genomeGenerate  --genomeDir /lab/solexa_page/linyong/dir-star-genome-index-mouse-oh150    --genomeFastaFiles  Mus_musculus.GRCm39.dna.primary_assembly.fa   --sjdbGTFfile gencode.vM31.primary_assembly.annotation.gtf   --sjdbOverhang 150 --runThreadN 16
 
+################################################################modify mouse fasta file: 1 -> chr1
+linyong@fry /lab/solexa_page/linyong/mouse-helen-lukas-heart$  grep -n ">" ../mouse-genome/Mus_musculus.GRCm39.dna.primary_assembly.fa
+cat ../mouse-genome/Mus_musculus.GRCm39.dna.primary_assembly.fa | sed '1, 43866282 s/>/>chr/ ' > ../mouse-genome/Mus_musculus.GRCm39.dna.primary_assembly.chr.fa
+vi ../mouse-genome/Mus_musculus.GRCm39.dna.primary_assembly.chr.fa
+cat /lab/solexa_page/linyong/mouse-genome/gencode.vM31.primary_assembly.annotation.gtf | cut -f 1 | sort | uniq > temp-1
+grep ">" ../mouse-genome/Mus_musculus.GRCm39.dna.primary_assembly.chr.fa | sed 's/ .*//' | sed 's/>//' | while read ll; do echo -n "$ll   "; grep -w "$ll" temp-1 | wc -l; done
+
+grep ">" ../mouse-genome/Mus_musculus.GRCm39.dna.primary_assembly.chr.fa | sed 's/ .*//' | sed 's/>//' | while read ll; do echo -n "$ll   "; grep -w "$ll" temp-1 | wc -l; done | awk '$2 == 0'
+GL456233.2   0
+GL456359.1   0
+GL456360.1   0
+GL456366.1   0
+GL456367.1   0
+GL456368.1   0
+GL456370.1   0
+GL456378.1   0
+GL456379.1   0
+GL456382.1   0
+GL456383.1   0
+GL456387.1   0
+GL456389.1   0
+GL456390.1   0
+GL456392.1   0
+GL456394.1   0
+GL456396.1   0
+JH584300.1   0
+JH584301.1   0
+JH584302.1   0
+MU069434.1   0
+MU069435.1   0
+
+grep ">" ../mouse-genome/Mus_musculus.GRCm39.dna.primary_assembly.chr.fa | sed 's/ .*//' | sed 's/>//' | while read ll; do echo -n "$ll   "; grep -w "$ll" temp-1 | wc -l; done | awk '$2 == 0' | sort | awk '{print $1}' | while read g; do grep -i "$g" /lab/solexa_page/linyong/mouse-genome/gencode.vM31.primary_assembly.annotation.gtf ; done
+
+linyong@fry /lab/solexa_page/linyong$ cat dir-star-genome-index-mouse-oh150-chr/chrNameLength.txt | sed 's/chr//' > temp
+diff temp dir-star-genome-index-mouse-oh150-chr/chrNameLength.txt
+linyong@fry /lab/solexa_page/linyong$ diff temp dir-star-genome-index-mouse-oh150/chrNameLength.txt
+20c20
+< M     16299
+---
+> MT    16299
+
