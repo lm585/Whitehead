@@ -7,30 +7,30 @@
 #SBATCH --cpus-per-task=5              # number of cores/threads requested.
 #SBATCH --mem=80gb                      # memory requested.
 #SBATCH --partition=20                 # partition (queue) to use
-#SBATCH --output "out-oct-29"   # name of output file.  %j is jobid
+#SBATCH --output "out-nov-1"   # name of output file.  %j is jobid
 #SBATCH --mail-type=ALL               # send email on job start/finish.
 #SBATCH --mail-user=linyong@wi.mit.edu
 
 #
 
 
-ls  /lab/page_scratch/helen/lukas/mouse/GB/*_2.fastq |  awk 'NR > 0 && NR <= 1' | while read ll
+ls  /lab/page_scratch/helen/lukas/mouse/GB/*_2.fastq |  awk 'NR > 1 && NR <= 10' | while read ll
 do
  pre=`echo "$ll" | sed 's/_2.fastq//' `
  rm Aligned.out.bam
 
- STAR --runThreadN 4 --outFilterMultimapNmax 20  --genomeDir /lab/solexa_page/linyong/dir-star-genome-index-mouse-oh150 --readFilesIn "$pre"_1.fastq  "$pre"_2.fastq  --outSAMtype BAM Unsorted --outSAMunmapped Within --outSAMattributes Standard
+ STAR --runThreadN 4 --outFilterMultimapNmax 20  --genomeDir /lab/solexa_page/linyong/dir-star-genome-index-mouse-oh150-chr --readFilesIn "$pre"_1.fastq  "$pre"_2.fastq  --outSAMtype BAM Unsorted --outSAMunmapped Within --outSAMattributes Standard
  f=` echo "$ll" | sed 's/_2.fastq//' | sed 's#.*/mouse/GB/##' `
  cat Log.final.out > "$f.STAR.log"
  htseq-count  --mode=union --stranded=no --idattr=gene_id --format=bam --additional-attr=gene_name --order=name --type=exon  Aligned.out.bam /lab/solexa_page/linyong/mouse-genome/gencode.vM31.primary_assembly.annotation.gtf  > "$f.counts_gene"
- htseq-count  --mode=union --stranded=reverse --idattr=gene_id --format=bam --additional-attr=gene_name --order=name --type=exon  Aligned.out.bam  /lab/solexa_page/linyong/mouse-genome/gencode.vM31.primary_assembly.annotation.gtf  > "$f.stranded.counts-gene"
- htseq-count  --mode=union --stranded=yes --idattr=gene_id --format=bam --additional-attr=gene_name --order=name --type=exon  Aligned.out.bam  /lab/solexa_page/linyong/mouse-genome/gencode.vM31.primary_assembly.annotation.gtf  > "$f.stranded.same.counts-gene"
+ htseq-count  --mode=union --stranded=reverse --idattr=gene_id --format=bam --additional-attr=gene_name --order=name --type=exon  Aligned.out.bam  /lab/solexa_page/linyong/mouse-genome/gencode.vM31.primary_assembly.annotation.gtf  > "$f.stranded.counts_gene"
+ htseq-count  --mode=union --stranded=yes --idattr=gene_id --format=bam --additional-attr=gene_name --order=name --type=exon  Aligned.out.bam  /lab/solexa_page/linyong/mouse-genome/gencode.vM31.primary_assembly.annotation.gtf  > "$f.stranded.same.counts_gene"
  echo -n "un-strand	" >> "$f.STAR.log"
- grep -w ACTB  "$f.counts_gene" >> "$f.STAR.log"
+ grep -iw ACTB  "$f.counts_gene" | grep -v ps1 >> "$f.STAR.log"
  echo -n "strand-reverse	" >> "$f.STAR.log"
- grep -w ACTB  "$f.stranded.counts-gene" >> "$f.STAR.log"
+ grep -iw ACTB  "$f.stranded.counts_gene" | grep -v ps1 >> "$f.STAR.log"
  echo -n "strand-yes	"  >> "$f.STAR.log"
- grep -w ACTB  "$f.stranded.same.counts-gene" >> "$f.STAR.log"
+ grep -iw ACTB  "$f.stranded.same.counts_gene" | grep -v ps1 >> "$f.STAR.log"
 
  rm Aligned.out.bam
  
