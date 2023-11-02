@@ -2674,6 +2674,18 @@ cat temp1 | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
 
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    fao.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk   diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk  -scoring_scheme classic  -rpt_label   "left-ventricle-FvsM.noX.Y.age-bmi-covar-weight0-FAO"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
 
+#####################################
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat diff2-1-left-ventricle-FvsM.age-bmi-covar.2.txt  | awk 'BEGIN {FS = "\t"} !($8 == "chrX" || $8 == "chrY")'   | grep -w protein_coding > temp1
+cut -f 10 temp1 | sort | uniq -c | sort -n
+cat temp1 | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+{for(i = 1; i <= 7; i++)
+   print $i "\t";
+
+ print $7 "\n";
+}' > temp
+ ../microglia/make-rnk-genesymble  temp   diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.protein_coding.rnk
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    fao.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk    diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.protein_coding.rnk -scoring_scheme classic  -rpt_label   "left-ventricle-FvsM.noX.Y.age-bmi-covar-weight0-FAO-protein_coding"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
 ################################################################################
 Skin - Sun Exposed (Lower leg)  698
 +  med$logic[i] <- median(d[i,]) >= 0.5
