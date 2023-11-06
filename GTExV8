@@ -2966,3 +2966,25 @@ info.2 from heart-atri
 >  raw2 <- raw[, colnames(raw) %in% info.atr$sid ]
 > dim(raw2)
 [1] 62703   380
+
+###############################MASH.beta vs P-lab
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp-muscle
+> t1 <- read.delim("temp-muscle")
+ head(t1)
+ t2 <- read.delim("diff2-1-muscle-FvsM.age-bmi-covar.noX.Y.rnk", header=F)
+ t3 <- merge(t1, t2, by.x=colnames(t1)[2], by.y="V1")
+ dim(t3)
+# [1] 333   7; t2-.rnk already removed x/y chr linked genes
+ cor1 <- cor.test(t3$MASH.beta, t3$V2, method="spearman")
+ par( mar=c(6,6,2,2))
+ plot(t3$MASH.beta, t3$V2, xlab="MASH.beta (PMID: 32913072)", ylab="signed log10(p-value) \n F vs M, P-Lab")
+ abline(lm(t3$V2 ~ t3$MASH.beta), lwd = 1, col="blue")
+
+ abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,0.2), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = 0)
+ abline(v = 0)
+title(main=paste("muscle: ", "r=",round(cor1$estimate, digits = 3), " p=", format(cor1$p.value, digits=3), " (Spearman)", sep =""))
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp-heart-aa
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp-heart-lv
