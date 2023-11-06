@@ -2947,3 +2947,22 @@ linyong@fry /lab/solexa_page/linyong$ diff temp dir-star-genome-index-mouse-oh15
 ---
 > MT    16299
 
+###############################overlapped donors between muscle and heart
+> dim(info.2)
+[1] 799   9
+> head(info.2)
+      SUBJID                   SAMPID   SUBJID.1 SEX   AGE DTHHRDY                       sid ageV   bmi
+1 GTEX-113JC GTEX-113JC-2726-SM-5EGIS GTEX-113JC   2 50-59       2 GTEX.113JC.2726.SM.5EGIS.   53 27.99
+2 GTEX-11DXY GTEX-11DXY-2726-SM-5GID2 GTEX-11DXY   1 60-69       2 GTEX.11DXY.2726.SM.5GID2.   62 20.67
+3 GTEX-12WSD GTEX-12WSD-0526-SM-5EQ6F GTEX-12WSD   2 60-69       2 GTEX.12WSD.0526.SM.5EQ6F.   64 31.24
+> info.muscle <- info.2
+......
+info.2 from heart-atri
+> info.atr <- info.2[ info.2$SUBJID %in% info.muscle$SUBJID, ]
+> dim(info.atr)
+[1] 380 (overlapped donors between 429 heart-atri & 799 muscle);  9
+> dim(raw)
+[1] 62703 17352
+>  raw2 <- raw[, colnames(raw) %in% info.atr$sid ]
+> dim(raw2)
+[1] 62703   380
