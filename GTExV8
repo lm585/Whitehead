@@ -2988,3 +2988,17 @@ title(main=paste("muscle: ", "r=",round(cor1$estimate, digits = 3), " p=", forma
 
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp-heart-aa
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp-heart-lv
+
+######################################fisher test 
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp-heart-aa| awk 'BEGIN {FS = "\t"; OFS = "\t"} $3 != "chrX" && $3 != "chrY" && $4 > 0' | cut -f 2 | sort | uniq| grep -vi HUGO_gene_id | awk 'NF == 1' |wc -l
+     193
+cat temp-heart-aa| awk 'BEGIN {FS = "\t"; OFS = "\t"} $3 != "chrX" && $3 != "chrY" && $4 > 0' | cut -f 2 | sort | uniq| grep -vi HUGO_gene_id | awk 'NF == 1' > temp-up
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat fao.gmt| grep -iw fao | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 3; i <= NF; i++) print  $i}' | sort | uniq > genes-fao
+head temp-file
+../dir-GTExV8/genes-fao
+../microglia/HALLMARK_ADIPOGENESIS.genes
+../microglia/HALLMARK_ALLOGRAFT_REJECTION.genes
+../microglia/HALLMARK_ANDROGEN_RESPONSE.genes
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % bash  script-inputset-pathways-overlap-fisher  temp-up  heart-aa-up-genes  temp-file diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.noX.Y.rnk
+
