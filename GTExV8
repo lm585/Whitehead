@@ -3002,3 +3002,32 @@ head temp-file
 
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % bash  script-inputset-pathways-overlap-fisher  temp-up  heart-aa-up-genes  temp-file diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.noX.Y.rnk
 
+##################################c3 c4a chr read length, depth
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-oct102023$ cat GTEX-11ZTT-0003-SM-6WBU4.gene.exon.depth | head -600 | grep -i c4[ab] | grep -iv exon
+
+cat GTEX-11ZTT-0003-SM-6WBU4.gene.exon.depth | head -600 | grep -w chrom |grep -w chr[0-9][0-9]* | sort -t '\t' +10 -11g | awk 'NR == 11'
+
+header  geneID  geneName        header  #rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+GTEX-11ZTT-0003-SM-6WBU4        geneID  geneName        chrom   chr8    1       145138636       32102398        144533056       99.5828 32.832  255     56.6
+### chr-len * depth / numreads = read-len
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-oct102023$ echo | awk '{print  145138636 * 32.832 / 32102398}'
+148.437
+
+GTEX-11ZTT-0003-SM-6WBU4        geneID  geneName        chrom   chrX    1       156040895       33870350        154561837       99.0521 32.2191 255     55.1
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-oct102023$ echo | awk '{print  156040895 * 32.2191 / 33870350 }'
+148.434
+
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-oct102023$ cat GTEX-11ZTT-0003-SM-6WBU4.gene.exon.depth | head -600 | grep -i c4[ab] | grep -iv exon
+GTEX-11ZTT-0003-SM-6WBU4        ENSG00000244731.10      C4A     geneIntv        chr6    31982057        32002681        5522    20625   100     39.6296 255     2
+.61
+GTEX-11ZTT-0003-SM-6WBU4        geneID  C4A-C4B geneIntv        chr6    31982057        32035418        14464   53362   100     40.3379 255     8.21
+
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-oct102023$  echo | awk '{print 20625 * 39.6296 / 5522}'
+148.019
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-oct102023$ echo | awk '{print 53362 * 40.3379 / 14464}'
+148.819
+
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-oct102023$ cat GTEX-11ZTT-0003-SM-6WBU4.gene.exon.depth | head -600 | grep -i c3 | grep -iv exon
+GTEX-11ZTT-0003-SM-6WBU4        ENSG00000125730.18      C3      geneIntv        chr19   6677704 6730562 12598   52268   98.8819 34.8137 255     58.9
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-oct102023$ echo | awk '{print (6730562 - 6677704) * 34.8137 / 12598}'
+146.069
