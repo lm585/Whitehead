@@ -3031,3 +3031,49 @@ linyong@fry /lab/page_human_data/linyong2/gtex-dna-oct102023$ cat GTEX-11ZTT-000
 GTEX-11ZTT-0003-SM-6WBU4        ENSG00000125730.18      C3      geneIntv        chr19   6677704 6730562 12598   52268   98.8819 34.8137 255     58.9
 linyong@fry /lab/page_human_data/linyong2/gtex-dna-oct102023$ echo | awk '{print (6730562 - 6677704) * 34.8137 / 12598}'
 146.069
+
+#############################################################
+> t1 <- read.delim("diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt")
+> scan fao genes
+ t2 <- t1[ t1$chr != "chrX" & t1$chr != "chrY",]
+ dim(t2)
+# [1] 16162    10
+fatty <- read.delim("../microglia/HALLMARK_FATTY_ACID_METABOLISM.genes", header=F)
+ t2$categ <- "NA"
+for (i in 1:dim(t2)[1]) {
+ if(t2[i,]$FDR > 0.05)
+ {
+  t2[i,]$categ = "N.S."
+  if(t2[i,]$name %in% fao)
+    t2[i,]$categ = "N.S.fao-20"
+  if(t2[i,]$name %in% fatty$V1)
+    t2[i,]$categ = "N.S.hallmark-fa-metab"
+  if(t2[i,]$name %in% fao & t2[i,]$name %in% fatty$V1)
+    t2[i,]$categ = "N.S.fa-overlapped"
+ }
+ else
+ {
+  t2[i,]$categ = "Sig"
+  if(t2[i,]$name %in% fao)
+    t2[i,]$categ = "Sig.fao-20"
+  if(t2[i,]$name %in% fatty$V1)
+    t2[i,]$categ = "Sig.hallmark-fa-metab"
+  if(t2[i,]$name %in% fao & t2[i,]$name %in% fatty$V1)
+    t2[i,]$categ = "Sig.fa-overlapped"
+
+ }
+}
+
+ unique(t2$categ)
+ ggplot(t2, aes(x=logFC, y = -log10(PValue), color = categ)) + geom_point(size=1)
+ sort(unique(t2$categ))[c(2:4, 6:8)]
+# [1] "N.S.fa-overlapped"     "N.S.fao-20"            "N.S.hallmark-fa-metab" "Sig.fa-overlapped"     "Sig.fao-20"            "Sig.hallmark-fa-metab"
+ t3 <- t2[ t2$categ %in% sort(unique(t2$categ))[c(2:4, 6:8)], ]
+ dim(t3)
+# [1] 138  11
+ cat1 <- sort(unique(t2$categ))[c(2:4, 6:8)]
+ cat1
+# [1] "N.S.fa-overlapped"     "N.S.fao-20"            "N.S.hallmark-fa-metab" "Sig.fa-overlapped"     "Sig.fao-20"            "Sig.hallmark-fa-metab"
+ col1 = c("grey60", "brown", "grey10", "green", "blue", "red")
+ggplot(t3, aes(x=logFC, y = -log10(PValue), color = categ)) + geom_point(size=2) + scale_color_manual(breaks=cat1, values=col1)
+
