@@ -3083,3 +3083,27 @@ ggplot(t3, aes(x=logFC, y = -log10(PValue), color = categ)) + geom_point(size=2)
 library(ggrepel)
  ggplot(t3, aes(x=logFC, y = -log10(PValue), color = categ, label = name)) + geom_point(size=1) + scale_color_manual(breaks=cat1, values=col1) + labs(title="heart-AA: FA metab genes", x = "log2FC (F vs. M)") + geom_text_repel(show.legend=F, data=t4, size=2.2, max.overlaps=100, min.segment.length = 0.4)
 
+ ggplot(t3, aes(x=logFC, y = -log10(PValue), color = categ)) + geom_point(size=2) + scale_color_manual(breaks=cat1, values=col1) + labs(title="heart-AA: FA metab genes", x = "log2FC (F vs. M)")
+
+##############################genome-wide genes volcano plot
+ t1 <- read.delim("diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt")
+ t2 <- t1[ t1$chr != "chrX" & t1$chr != "chrY",]
+ dim(t2)
+# [1] 16162    10
+fatty <- read.delim("../microglia/HALLMARK_FATTY_ACID_METABOLISM.genes", header=F)
+ t2$categ <- "NA"
+for (i in 1:dim(t2)[1]) {
+ if(t2[i,]$FDR > 0.05)
+ {
+  t2[i,]$categ = "N.S."
+ }
+ else
+ {
+  t2[i,]$categ = "Sig. (FRD < 0.05)"
+ }
+}
+ unique(t2$categ)
+cat1 <- sort(unique(t2$categ))
+ col1 = c( "grey10",  "red")
+ ggplot(t2, aes(x=logFC, y = -log10(PValue), color = categ)) + geom_point(size=1) + scale_color_manual(breaks=cat1, values=col1) + labs(title="heart-AA: autosomal genes", x = "log2FC (F vs. M)")
+
