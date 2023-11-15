@@ -3118,3 +3118,31 @@ cat1 <- sort(unique(t2$categ))
  t4 <- t3[ sample(1:dim(t3)[1], 138), ]
 
  ggplot(t4, aes(x=logFC, y = -log10(PValue), color = categ)) + geom_point(size=2) + scale_color_manual(breaks=cat1, values=col1) + labs(title="heart-AA: FA metab genes", x = "log2FC (F vs. M)")
+
+############################bar plot
+> t1 <- read.delim("mash-heart-aa-up-genes.51GO")
+ t2 <- read.delim("mash-heart-lv-up-genes.51GO")
+ paths <- t1$pathway[c(1,18)]
+###second 2 is # of pathways (columns), first 2 # of tissues
+ pva <- data.frame(matrix(NA, 2, 2))
+ li <- list(t1,t2)
+ for(i in 1:length(paths)) {
+  for(j in 1:length(li)){
+ tem <- li[[j]]
+ rownames(pva)[j] = tem$test.set[1]
+ colnames(pva)[i] = paths[i]
+ pva[j,i] =tem[ tem$pathway == paths[i],]$log10P
+ }
+}
+
+############################below is plot for only 1 tissue. The above pva d.f. is for 2tiss x 2paths 
+ nam <- colnames(pva)
+ nam <- gsub(".*/", "", nam)
+ nam <- gsub("genes-fao", "FAO 20 genes", nam)
+
+ par( mar=c(6,16,2,2))
+ barplot(as.matrix( pva), horiz=T, beside=T, xlim=c(0, 4), xlab="-log10(p-value)", yaxt = "n")
+ axis(side=2, at = seq(1.5, 8, by=2), labels=nam, las =1, cex.axis = 0.8)
+ text(pva[1,] , seq(1.5, 8, by=2), paste("OR=", format(or[1,], digits=3), sep=""), pos=4)
+ abline(v= -log10(0.05), lty = 5, lwd = 0.5, col = "blue" )
+ text(-log10(0.05), 2.5, "p=0.05", pos=4, col="blue")
