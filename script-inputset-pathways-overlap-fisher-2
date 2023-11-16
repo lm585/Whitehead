@@ -1,0 +1,36 @@
+####################
+if [ $# -lt 3 ]
+then
+  echo $0 "		input.gene.set.file(no header)		input.set.description		pathwaygenes.list.file		bg-genes-file(noHeader)"
+  echo "genes in each file should be unique and CAPPed"
+  exit 1
+fi
+
+cat  "$1" "$4" |cut -f 1 | sort | uniq > temp-combined-uniq
+rnkf="temp-combined-uniq"
+tot=`cat "$rnkf" | wc -l | awk '{print $1}' `
+##echo "$tot"
+cat "$rnkf"  "$1"  | cut -f 1 |sort | uniq -d > temp-safari-genes
+safa=`cat temp-safari-genes | wc -l | awk '{print $1}' ` 
+echo "test.set	pathway	input-overlap	input-notoverlap	noninput-overlap	noninput-nonoverlap	P-value	log10P	oddsratio" > temp-input-221
+
+cat "$3" | while read f
+do
+ echo -n "$2	$f	"
+ cat "$f" "$rnkf"  | cut -f 1 |sort | uniq -d > temp-pathway
+ path=`cat temp-pathway | wc -l | awk '{print $1}'  `
+ ###temp-safari-genes 300 genes, temp-pathway 200 genes, bg 15000 genes;
+ ###n1=50 (overlap safari and interferon); n2 = 300-50=250;
+ ###n3=(15000 - 300) && 200 = 150  (overlap non-safari and interferon); n4=15000 -150 = 14850
+ ### 50/250 vs. 150/14850
+ n1=`cat temp-safari-genes temp-pathway | sort | uniq -d | wc -l | awk '{print $1}' `
+ n2=`expr $safa - $n1`
+ n3=`expr $path - $n1`
+ n4=`expr $tot - $safa - $n3`
+ echo  "$n1	$n2	$n3	$n4"
+done >> temp-input-221
+
+Rscript R-script-fisher          
+
+cat temp-geneset-paths-fisher| sed '2, $ s/^[0-9][0-9]*	//'   
+
