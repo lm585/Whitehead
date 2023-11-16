@@ -3001,6 +3001,7 @@ head temp-file
 ../microglia/HALLMARK_ANDROGEN_RESPONSE.genes
 
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % bash  script-inputset-pathways-overlap-fisher  temp-up  heart-aa-up-genes  temp-file diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.noX.Y.rnk
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i script-inputset-pathways-overlap-fisher script-inputset-pathways-overlap-fisher-2
 
 ##################################c3 c4a chr read length, depth
 linyong@fry /lab/page_human_data/linyong2/gtex-dna-oct102023$ cat GTEX-11ZTT-0003-SM-6WBU4.gene.exon.depth | head -600 | grep -i c4[ab] | grep -iv exon
