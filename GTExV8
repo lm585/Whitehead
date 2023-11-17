@@ -3136,6 +3136,29 @@ cat1 <- sort(unique(t2$categ))
  }
 }
 
+ nam <- colnames(pva)
+ nam <- gsub(".*/", "", nam)
+ nam <- gsub("genes-fao", "FAO 20 genes", nam)
+ par( mar=c(6,16,2,2))
+ barplot(as.matrix( pva), horiz=T, beside=T, xlim=c(0, 5.5), xlab="-log10(p-value)", yaxt = "n", col=c("green",  "red"))
+ axis(side=2, at = seq(2, 5, by=3), labels=nam, las =1, cex.axis = 0.7)
+
+ or <- data.frame(matrix(NA, 2, 2))
+ for(i in 1:length(paths)) {
+  for(j in 1:length(li)){
+ tem <- li[[j]]
+ rownames(or)[j] = tem$test.set[1]
+ colnames(or)[i] = paths[i]
+ or[j,i] =tem[ tem$pathway == paths[i],]$oddsratio
+ }
+}
+
+ text(pva[1,] , c(1.5, 4.5), paste("OR=", format(or[1,], digits=3), sep=""), pos=4, col = "green")
+ text(pva[2,] , c(2.5, 5.5), paste("OR=", format(or[2,], digits=3), sep=""), pos=4, col = "red")
+ abline(v= -log10(0.05), lty = 5, lwd = 0.5, col = "blue" )
+ text(-log10(0.05), 3.5, "p=0.05", pos=4, col="blue")
+ legend(4, 5.5, rownames(pva), fill=c("green", "red"), cex = 0.6, inset = 0.05)
+
 ############################below is plot for only 1 tissue. The above pva d.f. is for 2tiss x 2paths 
  nam <- colnames(pva)
  nam <- gsub(".*/", "", nam)
