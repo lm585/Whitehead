@@ -3170,3 +3170,46 @@ cat1 <- sort(unique(t2$categ))
  text(pva[1,] , seq(1.5, 8, by=2), paste("OR=", format(or[1,], digits=3), sep=""), pos=4)
  abline(v= -log10(0.05), lty = 5, lwd = 0.5, col = "blue" )
  text(-log10(0.05), 2.5, "p=0.05", pos=4, col="blue")
+
+###############################barplot NES, two pathways (column), two tissues (rows)
+> t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/Heart-Atrial-Appendage-FvsM.noX.Y.age-bmi-covar-weight0-FAO.GseaPreranked.1698075308261/gsea_report_for_na_pos_1698075308261.tsv")
+ t2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.noX.Y.age-bmi-covar-weight0-FAO.GseaPreranked.1697054041002/gsea_report_for_na_pos_1697054041002.tsv")
+ paths <- t1$NAME[c(3,4)]
+ paths <- c(paths[2], paths[1])
+
+ t1$test.set = "heart-AA-F-biased"
+ t2$test.set = "heart-LV-F-biased"
+
+ pva <- data.frame(matrix(NA, 2, 2))
+ li <- list(t1,t2)
+ for(i in 1:length(paths)) {
+  for(j in 1:length(li)){
+ tem <- li[[j]]
+ rownames(pva)[j] = tem$test.set[1]
+ colnames(pva)[i] = paths[i]
+ pva[j,i] =tem[ tem$NAME == paths[i],]$NES
+ }
+}
+
+ nam <- colnames(pva)
+ nam <- gsub(".*/", "", nam)
+ nam <- gsub("FAO", "FAO 20 genes", nam)
+
+ or <- data.frame(matrix(NA, 2, 2))
+ li <- list(t1,t2)
+ for(i in 1:length(paths)) {
+  for(j in 1:length(li)){
+ tem <- li[[j]]
+ rownames(or)[j] = tem$test.set[1]
+ colnames(or)[i] = paths[i]
+ or[j,i] =tem[ tem$NAME == paths[i],]$FDR.q.val
+ }
+}
+
+ par( mar=c(6,16,2,2))
+ barplot(as.matrix( pva), horiz=T, beside=T, xlim=c(0, 5.5), xlab="NES (F vs. M)", yaxt = "n", col=c("green",  "red"))
+ axis(side=2, at = seq(2, 5, by=3), labels=nam, las =1, cex.axis = 0.7)
+ text(pva[1,] , c(1.5, 4.5), paste("FDR=", format(or[1,], digits=3), sep=""), pos=4, col = "green")
+ text(pva[2,] , c(2.5, 5.5), paste("FDR=", format(or[2,], digits=3), sep=""), pos=4, col = "red")
+ legend(4, 6, rownames(pva), fill=c("green", "red"), cex = 0.6, inset = 0.05)
+
