@@ -2967,6 +2967,43 @@ info.2 from heart-atri
 > dim(raw2)
 [1] 62703   380
 
+################################overlap among heart-aa, heart-lv, muscle
+
+script-gtexv8-tissue-sex-diff-age-bmi-covar
+-------------------------------------------
+> dim(info.2)
+[1] 428   7
+> info.LV <- info.2
+......
+> info.mus <- info.2
+......
+> info.atr <- info.2[ (info.2$SUBJID %in% info.mus$SUBJID) & (info.2$SUBJID %in% info.LV$SUBJID), ]
+> dim(info.atr)
+[1] 270   7
+dim(raw)
+t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+file <- read.delim("gtex-54tiss.txt", header=F)
+ index = 32
+tissue = file[index,1]
+ t2 <- t1[ t1$V2 == tissue, ]
+ t2$id <- gsub("-", ".", t2$V1)
+ t2$id <- paste(t2$id, ".", sep="")
+ raw2 <- raw[, colnames(raw) %in% info.atr$sid ]
+ str1 <- paste(tissue, dim(raw2)[2], sep="\t")
+ cat(str1)
+ cat("\n")
+# Heart - Atrial Appendage      270
+# 87 F; 183 M; 
+>  rownames(raw2) <- raw$geneID
+> y <- DGEList(counts=raw2)
+> y <- calcNormFactors(y)
+> med <- data.frame(y$counts[,1])
+> med$logic <- TRUE
+
+.......
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i diff2-1.txt  diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.aa-LV-mus-270.txt
+diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.aa-LV-mus-270.noX.Y.rnk
+
 ###############################MASH.beta vs P-lab
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp-muscle
 > t1 <- read.delim("temp-muscle")
