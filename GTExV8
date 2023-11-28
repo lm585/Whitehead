@@ -3255,3 +3255,15 @@ cat1 <- sort(unique(t2$categ))
  text(pva[2,] , c(2.5, 5.5), paste("FDR=", format(or[2,], digits=3), sep=""), pos=4, col = "red")
  legend(4, 6, rownames(pva), fill=c("green", "red"), cex = 0.6, inset = 0.05)
 
+##########################################################################
+
+ls /lab/page_human_data/linyong2/gtex-dna-nov082023/*.gene.exon.depth | wc -l
+80
+ls /lab/page_human_data/linyong2/gtex-dna-oct102023/*.gene.exon.depth | wc -l
+708
+ls  /lab/solexa_page/linyong/gtex-dna-oct2023/*.gene.exon.depth | wc -l
+50
+
+cat /lab/solexa_page/linyong/genome-bam-only-file-manifest.json |grep  "file_name" |wc
+    838    1676   41612
+    "file_name": "GTEX-11LCK-0002-SM-6WBSW.cram",
