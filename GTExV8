@@ -3267,3 +3267,47 @@ ls  /lab/solexa_page/linyong/gtex-dna-oct2023/*.gene.exon.depth | wc -l
 cat /lab/solexa_page/linyong/genome-bam-only-file-manifest.json |grep  "file_name" |wc
     838    1676   41612
     "file_name": "GTEX-11LCK-0002-SM-6WBSW.cram",
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % head temp.txt
+GTEX-111YS-0004-SM-6WBTN        chr19   32.8933 chr21   33.02   chrX    16.5161 chrY    14.1011
+GTEX-113IC-0001-SM-DLIPU        chr12   40.5283 chr8    40.6177 chrX    20.3759 chrY    17.5418
+GTEX-113JC-0001-SM-6WBTD        chr7    34.6051 chr1    34.6447 chrX    33.9567 chrY    2.29488
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp.txt | sort -t ' ' +2 -3g > temp.sort.txt
+> dp <- read.delim("temp.sort.txt", header=F)
+ dim(dp)
+# [1] 838   9
+ summary(dp)
+ plot(0,0, xlim=c(0, 850), ylim=c(0, 80), col="white", xlab="donor", ylab="seq depth")
+ points(1:dim(dp)[1], dp$V5, pch = 1, col = "red", cex = 0.5)
+ points(1:dim(dp)[1], dp$V3, pch = 1, col = "black", cex = 0.5)
+ abline(h = seq(0, 100, 5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100, 1000, 100), lty = 5, lwd = 0.5, col = "gray")
+ legend(0, 80, legend=c("rank #11 autosomal chr depth", "rank #12 autosomal chr depth"), col = c("red", "black"), pch = 1, cex = 1)
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $6, $7 * 2 * 2/ ($3 + $5), $8, $9 * 2 * 2/ ($3 + $5) }' |sort -t '  ' +2 -3g > temp.sex-chr.1.txt
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % head temp.sex-chr.1.txt
+GTEX-13RTL-0826-SM-DO3WZ        chrX    0.921223        chrY    0.556425
+GTEX-11DYG-0004-SM-6WBTB        chrX    0.923365        chrY    0.823456
+GTEX-1QAET-1426-SM-DLT2N        chrX    0.927738        chrY    0.653464
+> dps <- read.delim("temp.sex-chr.1.txt", head = F)
+ summary(dps)
+ dim(dps)
+# [1] 838   5
+ plot(0,0, xlim=c(0, 850), ylim = c(0,3), col="white", xlab="donor", ylab="copy #")
+ points(1:dim(dps)[1], dps$V3, pch = 1, col = "black", cex = 0.5)
+ points(1:dim(dps)[1], dps$V5, pch = 1, col = "red", cex = 0.5)
+ abline(h = seq(0, 100, 0.25), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(0, 1000, 100), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = 558, lty = 5, lwd = 0.5, col = "blue")
+ legend(0, 3, legend=c("chrY", "chrX"), col = c("red", "black"), pch = 1, cex = 1)
+
+> head(dps[ dps$V3 > 1.5, ])
+#                           V1   V2      V3   V4        V5
+# 558 GTEX-1269C-1826-SM-DO3X2 chrX 1.65363 chrY 0.0481691
+# 559  GTEX-OHPL-2626-SM-DO3X3 chrX 1.73175 chrY 0.0790194
+# 560  GTEX-YJ8O-1026-SM-DMRPU chrX 1.76430 chrY 0.0820557
+> 558/838
+# [1] 0.6658711
+> dps.f <- dps[ dps$V3 > 1.5, ]
+ dps.m <- dps[ dps$V3 <= 1.5, ]
+
