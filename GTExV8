@@ -3284,6 +3284,8 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp.txt | sort -t ' ' +2 -3g
  abline(v = seq(-100, 1000, 100), lty = 5, lwd = 0.5, col = "gray")
  legend(0, 80, legend=c("rank #11 autosomal chr depth", "rank #12 autosomal chr depth"), col = c("red", "black"), pch = 1, cex = 1)
 
+linyong@fry /lab/solexa_page/linyong/gtex-dna-test$ bash script-cnv-01 > temp.txt
+
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $6, $7 * 2 * 2/ ($3 + $5), $8, $9 * 2 * 2/ ($3 + $5) }' |sort -t '  ' +2 -3g > temp.sex-chr.1.txt
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % head temp.sex-chr.1.txt
 GTEX-13RTL-0826-SM-DO3WZ        chrX    0.921223        chrY    0.556425
