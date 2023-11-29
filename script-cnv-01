@@ -1,0 +1,17 @@
+#
+ls /lab/page_human_data/linyong2/gtex-dna-nov082023/*.gene.exon.depth > temp-gene.exon.depth-file
+ls /lab/page_human_data/linyong2/gtex-dna-oct102023/*.gene.exon.depth >> temp-gene.exon.depth-file
+ls  /lab/solexa_page/linyong/gtex-dna-oct2023/*.gene.exon.depth       >> temp-gene.exon.depth-file
+wc temp-gene.exon.depth-file
+
+cat temp-gene.exon.depth-file | while read ll
+do
+ s=`echo "$ll" | sed 's/.*\///' | sed 's/.gene.exon.depth//' `
+ d1=`cat "$ll" | awk 'BEGIN {FS = "\t"} $4 == "chrom" ' | head -22 | sort -t '	' +10 -11g | awk 'NR == 11' | cut -f 5,11 `
+ d2=`cat "$ll" | awk 'BEGIN {FS = "\t"} $4 == "chrom" ' | head -22 | sort -t '	' +10 -11g | awk 'NR == 12' | cut -f 5,11 `
+ x=`cat "$ll" | awk 'BEGIN {FS = "\t"} $4 == "chrom" ' | grep -w chrX | cut -f 5,11`
+ y=`cat "$ll" | awk 'BEGIN {FS = "\t"} $4 == "chrom" ' | grep -w chrY | cut -f 5,11`
+ echo "$s	$d1	$d2	$x	$y"
+
+done
+
