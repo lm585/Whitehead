@@ -11,7 +11,10 @@ do
  d2=`cat "$ll" | awk 'BEGIN {FS = "\t"} $4 == "chrom" ' | head -22 | sort -t '	' +10 -11g | awk 'NR == 12' | cut -f 5,11 `
  x=`cat "$ll" | awk 'BEGIN {FS = "\t"} $4 == "chrom" ' | grep -w chrX | cut -f 5,11`
  y=`cat "$ll" | awk 'BEGIN {FS = "\t"} $4 == "chrom" ' | grep -w chrY | cut -f 5,11`
- echo "$s	$d1	$d2	$x	$y"
+ c3=`cat "$ll" | grep -w C3 | grep -w geneIntv |head -1 | cut -f 5,11`
+ c4a=`cat "$ll" | grep "	C4A	" | grep -w geneIntv |head -1 | cut -f 5,11`
+ c4b=`cat "$ll" | grep "	C4B	" | grep -w geneIntv |head -1 | cut -f 5,11`
+ echo "$s	$d1	$d2	$x	$y	C3	$c3	C4A	$c4a	C4B	$c4b"
 
 done
 
