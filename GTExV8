@@ -3267,6 +3267,9 @@ ls  /lab/solexa_page/linyong/gtex-dna-oct2023/*.gene.exon.depth | wc -l
 cat /lab/solexa_page/linyong/genome-bam-only-file-manifest.json |grep  "file_name" |wc
     838    1676   41612
     "file_name": "GTEX-11LCK-0002-SM-6WBSW.cram",
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-test$ bash script-cnv-01 > temp.txt
+
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % head temp.txt
 GTEX-111YS-0004-SM-6WBTN        chr19   32.8933 chr21   33.02   chrX    16.5161 chrY    14.1011
 GTEX-113IC-0001-SM-DLIPU        chr12   40.5283 chr8    40.6177 chrX    20.3759 chrY    17.5418
@@ -3284,7 +3287,6 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp.txt | sort -t ' ' +2 -3g
  abline(v = seq(-100, 1000, 100), lty = 5, lwd = 0.5, col = "gray")
  legend(0, 80, legend=c("rank #11 autosomal chr depth", "rank #12 autosomal chr depth"), col = c("red", "black"), pch = 1, cex = 1)
 
-linyong@fry /lab/solexa_page/linyong/gtex-dna-test$ bash script-cnv-01 > temp.txt
 
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $6, $7 * 2 * 2/ ($3 + $5), $8, $9 * 2 * 2/ ($3 + $5) }' |sort -t '  ' +2 -3g > temp.sex-chr.1.txt
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % head temp.sex-chr.1.txt
