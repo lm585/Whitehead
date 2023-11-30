@@ -3315,3 +3315,33 @@ GTEX-1QAET-1426-SM-DLT2N        chrX    0.927738        chrY    0.653464
 > dps.f <- dps[ dps$V3 > 1.5, ]
  dps.m <- dps[ dps$V3 <= 1.5, ]
 
+##################################################################################
+linyong@fry /lab/solexa_page/linyong/gtex-dna-test$ bash script-cnv-01 > temp.txt
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $10, $12 * 2 * 2/ ($3 + $5)}' | sort -t '   ' +2 -3g > temp.c3.txt
+==> temp.txt <==
+GTEX-111YS-0004-SM-6WBTN        chr19   32.8933 chr21   33.02   chrX    16.5161 chrY    14.1011 C3      chr19   34.0805 C4A     chr6    39.7287 C4B     chr6    39.5554
+
+==> temp.c3.txt <==
+GTEX-NPJ8-0004-SM-CLTG5 C3      0.639854
+
+> t1 <- read.delim("temp.c3.txt", header=F)
+ dim(t1)
+# [1] 838   3
+ summary(t1$V3)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#  0.6399  2.0034  2.1788  2.1645  2.3351  3.1338
+ plot(0,0, xlim=c(0, 850), ylim = c(0,4), col="white", xlab="donor", ylab="C3 gene copy #")
+ points(1:dim(t1)[1], t1$V3, pch = 1, col = "black", cex = 1)
+  abline(h = seq(0, 100, 0.5), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = seq(0, 1000, 50), lty = 5, lwd = 0.5, col = "gray")
+
+> med <- median(t1$V3)
+ plot(0,0, xlim=c(0, 850), ylim = c(0,4), col="white", xlab="donor", ylab="C3 gene copy #")
+ points(1:dim(t1)[1], t1$V3/med * 2, pch = 1, col = "black", cex = 1)
+ abline(h = seq(0, 100, 0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(0, 1000, 50), lty = 5, lwd = 0.5, col = "gray")
+
+ boxplot(t1$V3/med * 2,outcol="white", ylab="C3 gene copy #")
+ beeswarm(t1$V3/med * 2, add=T, cex=0.4)
+ abline(h = seq(0, 100, 0.5), lty = 5, lwd = 0.5, col = "gray")
+
