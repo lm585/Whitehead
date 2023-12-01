@@ -2892,6 +2892,16 @@ linyong@fry /lab/solexa_page/linyong$ bash script-read-length-2 | sort -n | uniq
       1 36
      10 50-bp, SE RNA-seq
 
+linyong@fry /lab/solexa_page/linyong/mouse-helen-lukas-heart$ cat script-1 
+#
+ls *.STAR.log | while read ll
+do
+ l1=`cat "$ll" | grep "Average input read length" | awk '{print $6}' `
+ l2=`cat "$ll" | grep "Average mapped length" | awk '{print $5}' `
+ m1=`cat "$ll" | grep "Uniquely mapped reads %"   | awk '{print $6}' `
+ echo "$ll	$l1	$l2	$m1"
+done
+
 ######################################################################
 linyong@fry /lab/solexa_page/linyong/mouse-genome$ cat slurm-wi-star-genome-index-mouse 
 #!/bin/bash
