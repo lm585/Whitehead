@@ -3355,3 +3355,26 @@ GTEX-NPJ8-0004-SM-CLTG5 C3      0.639854
  beeswarm(t1$V3/med * 2, add=T, cex=0.4)
  abline(h = seq(0, 100, 0.5), lty = 5, lwd = 0.5, col = "gray")
 
+###################################################################
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, "C4-tot", ($15 + $18) * 2 * 2/ ($3 + $5)}'  | sort -t '     ' +2 -3g > temp.c4.txt
+
+> t2 <- read.delim("temp.c4.txt", header=F)
+ dim(t2)
+# [1] 838   3
+ summary(t2$V3)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   1.622   3.755   4.527   4.537   5.279  11.308
+
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cp -i temp.txt cnv.dna.depth.gtex.donors.txt
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % head  cnv.dna.depth.gtex.donors.txt
+GTEX-111YS-0004-SM-6WBTN        chr19   32.8933 chr21   33.02   chrX    16.5161 chrY    14.1011 C3      chr19   34.0805 C4A     chr6    39.7287 C4B     chr6    39.5554
+GTEX-113IC-0001-SM-DLIPU        chr12   40.5283 chr8    40.6177 chrX    20.3759 chrY    17.5418 C3      chr19   40.5403 C4A     chr6    35.0843 C4B     chr6    36.1179
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat cnv.dna.depth.gtex.donors.txt  | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, "C4-tot", ($15 + $18) * 2 * 2/ ($3 + $5)}'  | sort -t '       ' +2 -3g > temp.c4.txt
+
+> hist(t2$V3, breaks=seq(0.05,12.05,0.1), xlab="C4A+C4B copy #", probability=T, main="GTEx v8 donors")
+ abline(v = seq(0, 1000, 1), lty = 5, lwd = 0.5, col = "blue")
+ d <- density(t2$V3, bw = 0.1)
+ lines(d$x, d$y, col="red")
