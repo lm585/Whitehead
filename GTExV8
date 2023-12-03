@@ -3378,3 +3378,132 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat cnv.dna.depth.gtex.donors.txt
  abline(v = seq(0, 1000, 1), lty = 5, lwd = 0.5, col = "blue")
  d <- density(t2$V3, bw = 0.1)
  lines(d$x, d$y, col="red")
+
+#######################################################c4a-c4b-total cn ~ gene expression
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat cnv.dna.depth.gtex.donors.txt  | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, "C4-tot", ($15 + $18) * 2 * 2/ ($3 + $5)}'  | sort -t '       ' +2 -3g > temp.c4.txt
+>  t2 <- read.delim("temp.c4.txt", header=F)
+ summary(t2)
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ t3 <- merge(t2, info, by.x="V1", by.y="SAMPID")
+ dim(t3)
+# [1] 838   9
+ c4.cn <- t3
+###cmds from script-gtexv8-tissue-sex-diff-age-bmi-covar
+###Liver	226
+
+diff <- as.data.frame(cpm(y))
+gene.name <- raw[, 1:2]
+ gene.name[ gene.name$name %in% c("C4A", "C4B"),]
+#                   geneID name
+# 25277  ENSG00000224389.9  C4B
+# 37237 ENSG00000244731.10  C4A
+
+ g1 <- gene.name[ gene.name$name %in% c("C4A", "C4B"),]$geneID
+ g2 <- as.data.frame( t(diff[ rownames(diff) %in% g1,]))
+ str(g2)
+ g2$sample <- rownames(g2)
+ g3 <- merge(g2, info, by.x="sample", by.y="sid")
+ dim(g3)
+ g4 <- merge(g3, c4.cn, by.x="SUBJID", by.y="SUBJID")
+ dim(g4)
+# [1] 208  17
+# > 208/226
+# [1] 0.920354
+ g4$C4.tot.exp <-  g4$ENSG00000224389.9 + g4$ENSG00000244731.10
+ cor.test(g4$V3, log10(g4$ENSG00000244731.10), method="spearman" )
+ cor.test(g4$V3, log10(g4$ENSG00000244731.10) )
+ cor.test(g4$V3, log10(g4$ENSG00000224389.9), method="spearman" )
+ cor.test(g4$V3, log10(g4$ENSG00000224389.9) )
+ cor.test(g4$V3, log10(g4$C4.tot.exp), method="spearman" )
+ cor.test(g4$V3, log10(g4$C4.tot.exp))
+
+> cor.test(g4$V3, log10(g4$ENSG00000244731.10), method="spearman" )
+S = 1182606, p-value = 0.002208
+0.2114825 
+
+> cor.test(g4$V3, log10(g4$ENSG00000244731.10) )
+t = 4.0553, df = 206, p-value = 7.099e-05
+0.2719035 
+
+> cor.test(g4$V3, log10(g4$ENSG00000224389.9), method="spearman" )
+S = 1422348, p-value = 0.4586
+0.05163143 
+
+> cor.test(g4$V3, log10(g4$ENSG00000224389.9) )
+t = 0.52337, df = 206, p-value = 0.6013
+0.03644036 
+
+> cor.test(g4$V3, log10(g4$C4.tot.exp), method="spearman" )
+S = 1320500, p-value = 0.08547
+0.1195399 
+
+> cor.test(g4$V3, log10(g4$C4.tot.exp))
+t = 1.6992, df = 206, p-value = 0.09079
+0.1175687 
+
+#####################################################Brain - Frontal Cortex (BA9)	209
+	Spearman's rank correlation rho
+
+data:  g4$V3 and log10(g4$ENSG00000244731.10)
+S = 697084, p-value = 0.00357
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.2195656 
+
+	Pearson's product-moment correlation
+
+data:  g4$V3 and log10(g4$ENSG00000244731.10)
+t = 3.5797, df = 173, p-value = 0.0004466
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.118895 0.395541
+sample estimates:
+      cor 
+0.2626065 
+#####################################################Brain - Anterior cingulate cortex (BA24)	176
+	Spearman's rank correlation rho
+
+data:  g4$V3 and log10(g4$ENSG00000244731.10)
+S = 446164, p-value = 0.05727
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.1572207 
+
+	Pearson's product-moment correlation
+
+data:  g4$V3 and log10(g4$ENSG00000244731.10)
+t = 2.1636, df = 145, p-value = 0.03213
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.01539097 0.32930886
+sample estimates:
+      cor 
+0.1768436 
+
+##################################################Muscle - Skeletal	799
+##################################################C4B not expressed
+	Spearman's rank correlation rho
+
+data:  g4$V3 and g4$ENSG00000244731.10
+S = 46058574, p-value = 7.626e-08
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.2011757 
+
+	Pearson's product-moment correlation
+
+data:  g4$V3 and log10(g4$ENSG00000244731.10 + 1)
+t = 3.1206, df = 700, p-value = 0.001879
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.04351613 0.18949077
+sample estimates:
+      cor 
+0.1171361 
+
+
