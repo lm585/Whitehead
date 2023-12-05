@@ -14,7 +14,9 @@ do
  c3=`cat "$ll" | grep -w C3 | grep -w geneIntv |head -1 | cut -f 5,11`
  c4a=`cat "$ll" | grep "	C4A	" | grep -w geneIntv |head -1 | cut -f 5,11`
  c4b=`cat "$ll" | grep "	C4B	" | grep -w geneIntv |head -1 | cut -f 5,11`
- echo "$s	$d1	$d2	$x	$y	C3	$c3	C4A	$c4a	C4B	$c4b"
+ c4a_exon=`cat "$ll" | grep -w C4A | grep -w 31996600 | sort | uniq | head -1 | cut -f 3-13 `
+ c4b_exon=`cat "$ll" | grep -w C4B | grep -w 32029338 | sort | uniq | head -1 | cut -f 3-13 `
+ echo "$s	$d1	$d2	$x	$y	C3	$c3	C4A	$c4a	C4B	$c4b	$c4a_exon	$c4b_exon"
 
 done
 
