@@ -3019,6 +3019,55 @@ tissue = file[index,1]
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i diff2-1.txt  diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.aa-LV-mus-270.txt
 diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.aa-LV-mus-270.noX.Y.rnk
 
+##################################get cpm values for lukas
+> dim(info.aa0)
+[1] 429   9
+> dim(info.LV)
+[1] 428   9
+> dim(info.mus)
+[1] 799   9
+
+> c3 <- as.data.frame( cpm(y))
+ c3$id <- rownames(c3)
+ gene.name <- raw[, 1:2]
+ c4 <- merge(c3, gene.name, by.x="id", by.y="geneID")
+ dim(c4)
+# [1] 16642   272
+ write.table(c4, "temp1", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp1
+upload temp1
+rename temp1
+"CPM.shared270donors.Heart-Atrial-Appendage.txt"
+Heart - Left Ventricle 15249 genes
+CPM.shared270donors.Heart-Left-Ventricle.txt
+Muscle - Skeletal       270 14714-genes
+CPM.shared270donors.Muscle-Skeletal.txt
+############################R code ###
+ cpm <- read.delim("../../Downloads/CPM.Heart-Left-Ventricle.txt")
+ dim(cpm) 
+# [1] 15298   430
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ t=dim(cpm)[2]
+ cpm.info <- data.frame(donor= colnames(cpm)[2:(t-1)] )
+ cpm.info$sex = "S"
+for(i in 1:length(cpm.info$donor)) {
+  cpm.info$sex[i] = info[ info$sid == cpm.info$donor[i],  ][1,4]
+}
+ cpm.info$sex <- factor(cpm.info$sex, levels=c(2,1), labels=c("Female", "Male"))
+ write.table(cpm.info, "temp-cpm-LV-donor.sex.txt", sep="\t", quote=F)
+###testing purpose
+ vioplot( t(cpm[ cpm$name == "DDX3Y", 2:(t-1)]) ~ cpm.info$sex)
+
+###
+ layout(matrix(1:4, 2, 2, byrow=T) )
+   boxplot( t(cpm[ cpm$name == "CPT1A", 2:(t-1)]) ~ cpm.info$sex)
+  boxplot( t(cpm[ cpm$name == "CPT1B", 2:(t-1)]) ~ cpm.info$sex)
+  boxplot( t(cpm[ cpm$name == "ECHS1", 2:(t-1)]) ~ cpm.info$sex)
+  boxplot( t(cpm[ cpm$name == "ACADL", 2:(t-1)]) ~ cpm.info$sex)
+
+
 ###############################MASH.beta vs P-lab
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp-muscle
 > t1 <- read.delim("temp-muscle")
