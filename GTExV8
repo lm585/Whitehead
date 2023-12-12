@@ -3578,3 +3578,52 @@ c4b exon cn
 ###############################
 > g4$c4a.der <- (g4$V3 - 0.9518 - 0.5927 * g4$V13 ) / 0.7734
 g4$c4b.der <-   (g4$V3 - 0.9518 - 0.7734 * g4$V8 ) / 0.5927 
+
+########################################boxplot FAO-gene-set FATTY_ACID_METABOLISM genes' ranks in 3 tissues
+> f <- "/Users/linyongmao/Documents/dir-GTExV8/diff2-1-muscle-FvsM.age-bmi-covar.aa-LV-mus-270.noX.Y.rnk"
+ str <- paste("cat", f, " | sort -t \'", "\'", "+1 -2gr", " > temp1", sep="\t")
+ system(str)
+ t1 <- read.delim("temp1", header=F)
+ t1$r.1 <- 1:dim(t1)[1]
+ t1$rank <- t1$r.1 / dim(t1)[1]
+ summary(t1)
+>  fao <- scan(what="", sep = "\n")
+ f="/Users/linyongmao/Documents//microglia/HALLMARK_FATTY_ACID_METABOLISM.genes"
+ fat <- read.delim(f, header=F)
+ li <- list()
+ li[[1]] <- t1[ t1$V1 %in% fao,]$rank
+ names(li)[1] <- "muscle FAO"
+ li[["muscle h_FA_metab"]] <- t1[ t1$V1 %in% fat$V1,]$rank
+
+f <- "/Users/linyongmao/Documents/dir-GTExV8/diff2-1-left-ventricle-FvsM.age-bmi-covar.aa-LV-mus-270.noX.Y.rnk"
+ str <- paste("cat", f, " | sort -t \'", "\'", "+1 -2gr", " > temp1", sep="\t")
+ system(str)
+ t1 <- read.delim("temp1", header=F)
+ t1$r.1 <- 1:dim(t1)[1]
+ t1$rank <- t1$r.1 / dim(t1)[1]
+ summary(t1)
+ li[["LV FAO"]] <- t1[ t1$V1 %in% fao,]$rank
+ li[["LV h_FA_metab"]] <- t1[ t1$V1 %in% fat$V1,]$rank
+
+f <- "/Users/linyongmao/Documents/dir-GTExV8/diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.aa-LV-mus-270.noX.Y.rnk"
+ str <- paste("cat", f, " | sort -t \'", "\'", "+1 -2gr", " > temp1", sep="\t")
+ system(str)
+ t1 <- read.delim("temp1", header=F)
+ t1$r.1 <- 1:dim(t1)[1]
+ t1$rank <- t1$r.1 / dim(t1)[1]
+ summary(t1)
+ li[["AA FAO"]] <- t1[ t1$V1 %in% fao,]$rank
+ li[["AA h_FA_metab"]] <- t1[ t1$V1 %in% fat$V1,]$rank
+
+ par( mar=c(6,8,2,2))
+ boxplot(li, horizontal=T, xlab="rank normalized by expr. genes", yaxt="n")
+ axis(side=2, at = 1:6, labels=names(li), las =1, cex.axis = 0.8)
+ abline(v = seq(0,100,0.1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = 0.5,  col = "blue")
+> t.test(li[[1]], mu=0.5)
+t.test(li[[2]], mu=0.5)
+t.test(li[[3]], mu=0.5)
+t.test(li[[4]], mu=0.5)
+t.test(li[[5]], mu=0.5)
+t.test(li[[6]], mu=0.5)
+> wilcox.test(li[[1]], mu=0.5)
