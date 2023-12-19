@@ -3627,3 +3627,14 @@ t.test(li[[4]], mu=0.5)
 t.test(li[[5]], mu=0.5)
 t.test(li[[6]], mu=0.5)
 > wilcox.test(li[[1]], mu=0.5)
+
+#############################################################################
+> plot(res.2$mean ~ res.2$age_value, xlab = "age", ylab="pathway-level z-score of 20 FAO genes", col="white")
+ points(res.m$mean ~ res.m$age_value, col="purple4")
+ abline(lm(res.m$mean ~ res.m$age_value), col="purple4")
+ points(res.f$mean ~ res.f$age_value, col="orange")
+ abline(lm(res.f$mean ~ res.f$age_value), col= "orange")
+ legend(20, -1.8, col=c("orange", "purple4"), c("Female", "Male"), pch = c(1, 1))
+> res.2$sex = factor(res.2$SEX, levels=c(1,2), labels=c("Male", "Female"))
+> write.table( res.2[, c(1,2,3,12)], "temp.LV-pathway-z-score-fao20genes.txt", sep="\t", quote=F )
+
