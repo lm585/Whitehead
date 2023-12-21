@@ -3638,3 +3638,61 @@ t.test(li[[6]], mu=0.5)
 > res.2$sex = factor(res.2$SEX, levels=c(1,2), labels=c("Male", "Female"))
 > write.table( res.2[, c(1,2,3,12)], "temp.LV-pathway-z-score-fao20genes.txt", sep="\t", quote=F )
 
+#############################################################################
+t1="../microglia/HALLMARK_APOPTOSIS.genes"
+t2 <- read.delim(t1, header=F)
+fao <- t2$V1
+
+ gene.name <- raw[, 1:2]
+ head(gene.name)
+#               geneID     name
+# 1 ENSG00000000003.15   TSPAN6
+###a is z-score of log10(cpm+1)
+ dim(a)
+ a.df <- as.data.frame(a)
+ a.df$id <- row.names(a.df)
+ a.df.g <- merge(a.df, gene.name, by.x="id", by.y="geneID")
+ dim(a.df.g)
+ p.exp <- a.df.g[ a.df.g$name %in% fao, ]
+ length(p.exp$name)
+# [1] 20
+ mat <- as.matrix(p.exp[, 2:429])
+ dim(mat)
+# [1]  20 428
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+ dim(res)
+# [1] 428   2
+ head(res)
+ summary(res)
+ p.exp[, 430]
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+  info$sid <-  gsub("-", ".", info$SAMPID)
+  info$sid <-  paste( info$sid, ".", sep="")
+  t5 <- read.delim("gtex-981subjects-tsvs/subject.tsv")
+  info3 <- t5[, c(16,31,46, 106)]
+  info4 <- merge(info, info3, by.x="SUBJID", by.y="source_subject_id")
+ dim(info4)
+# [1] 22951    10
+ head(info4)
+#       SUBJID                        SAMPID   SUBJID.1 SEX   AGE DTHHRDY                            sid age_value body_mass_index height
+# 1 GTEX-1117F      GTEX-1117F-0003-SM-58Q7G GTEX-1117F   2 60-69       4      GTEX.1117F.0003.SM.58Q7G.        66           32.12     66
+ res.2 <- merge(res, info4, by.x="id", by.y="sid")
+ dim(res.2)
+# [1] 428  11
+ head(res.2)
+ res.f <- res.2[ res.2$SEX == 2,]
+ res.m <- res.2[ res.2$SEX == 1,]
+ dim(res.f)
+# [1] 137  11
+ dim(res.m)
+# [1] 291  11
+ lr <- lm(res.f$mean ~ res.f$age_value)
+ lr.1 <- summary(lr)
+ lr.1
+ lr <- lm(res.m$mean ~ res.m$age_value)
+ lr.1 <- summary(lr)
+ lr.1
+
+ lr <- lm(res.2$mean ~ res.2$age_value)
+ lr.1 <- summary(lr)
+ lr.1
