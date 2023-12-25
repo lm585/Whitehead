@@ -3696,3 +3696,67 @@ fao <- t2$V1
  lr <- lm(res.2$mean ~ res.2$age_value)
  lr.1 <- summary(lr)
  lr.1
+
+#####################################################The 270 donors shared among all three tissues – LV, AA and muscle
+###########################metadata 
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat gtex-981subjects-tsvs/subject.tsv | cut -f 21| sort | uniq -c
+   2 
+   3 ['American_20_Indian_20_or_20_Alaska_20_Native']
+  12 ['Asian']
+ 124 ['Black_20_or_20_African_20_American']
+   8 ['Unknown']
+ 832 ['White']
+   1 ancestry
+
+> info3 <- t5[, c(16,21, 31,46, 106, 122)]
+dim(info3)
+summary(info3)
+ info.2$ageV = 0
+ info.2$bmi = 0
+ info.2$ancestry = "NA"
+ info.2$im.death = "NA"
+ info4 <- merge(info.2, info3, by.x="SUBJID", by.y="source_subject_id")
+ dim(info4)
+# [1] 429  12
+for(i in 1:dim(y)[2]) {
+ t1 <- info.2[i,]$SUBJID
+ info.2[i,]$ageV = info4[ info4$SUBJID == t1,]$age_value[1]
+ info.2[i,]$bmi = info4[ info4$SUBJID == t1,]$body_mass_index[1]
+ info.2[i,]$ancestry = info4[ info4$SUBJID == t1,]$ancestry.y[1]
+ info.2[i,]$im.death = info4[ info4$SUBJID == t1,]$immediate_cause_of_death[1]
+ }
+ identical(info.2$sid, y.cn)
+ info.f <- info.2[ info.2$SEX == 2,]
+ info.m <- info.2[ info.2$SEX == 1,]
+ dim(info.f)
+# [1] 87 10
+ dim(info.m)
+# [1] 183  10
+> write.table(info.2, "temp", sep="\t", quote=F)
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat gtex-981subjects-tsvs/subject.tsv | head -1 | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print i, $i}'  | grep -i death | grep -i cause
+85	first_cause_of_death
+122	immediate_cause_of_death
+####130	last_cause_of_death
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat gtex-981subjects-tsvs/subject.tsv | cut -f 130 | grep -i heart | wc -l
+       0
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat gtex-981subjects-tsvs/subject.tsv | cut -f 122 | grep -i heart | wc -l
+      93
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat gtex-981subjects-tsvs/subject.tsv | cut -f 85 | grep -i heart | wc -l 
+      16
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat gtex-981subjects-tsvs/subject.tsv | cut -f 122 | grep -i heart | sort | uniq -c
+  82 heart disease
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat gtex-981subjects-tsvs/subject.tsv | cut -f 122 | sort | uniq -c | sort -g | awk '$1 > 9'
+  23 cerebrovascular/stroke
+  24 cerebral vascular accident
+  30 Head Trauma
+  37 cva/stroke
+  44 Anoxia
+  59 head trauma
+  65 CVA
+  82 heart disease
+  95 anoxia
+  97 cardiac arrest
+
