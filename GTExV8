@@ -3749,6 +3749,14 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat gtex-981subjects-tsvs/subjec
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat gtex-981subjects-tsvs/subject.tsv | cut -f 122 | grep -i heart | sort | uniq -c
   82 heart disease
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat gtex-981subjects-tsvs/subject.tsv | cut -f 122 | sort | uniq -c | sort -g | awk '$1 > 9'
+  10 trauma
+  11 arrest; cardiac
+  11 stroke
+  13 respiratory failure
+  13 vascular cerebral accident
+  14 cva
+  17 
+  19 respiratory disease
   23 cerebrovascular/stroke
   24 cerebral vascular accident
   30 Head Trauma
@@ -3759,4 +3767,5 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat gtex-981subjects-tsvs/subjec
   82 heart disease
   95 anoxia
   97 cardiac arrest
+
 
