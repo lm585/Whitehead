@@ -3768,4 +3768,38 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat gtex-981subjects-tsvs/subjec
   95 anoxia
   97 cardiac arrest
 
+#############################################################################
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat age-bmi-ancestry-death.LV.428donor.txt| cut -f 4,11 |awk '$1 == 1' |grep -i "heart" | wc -l
+      35
+cat age-bmi-ancestry-death.LV.428donor.txt| cut -f 4,11 |awk '$1 == 1' |grep -i "cardi[ao]" | wc -l    
+      63
+291 male
+(35 + 63) / 291 = 0.3367698
+
+cat age-bmi-ancestry-death.LV.428donor.txt| cut -f 4,11 |awk '$1 == 2' |grep -i "heart" | wc -l
+       7
+cat age-bmi-ancestry-death.LV.428donor.txt| cut -f 4,11 |awk '$1 == 2' |grep -i "cardi[ao]" | wc -l
+       8
+137 female
+15 / 137 = 0.1094891
+
+> res.info$death = "NA"
+ t1 <- grep("heart", res.info$im.death, ignore.case=T)
+ res.info[t1,]$death = "heart disease"
+ res.info[ res.info$death == "heart disease",]
+ dim(res.info[ res.info$death == "heart disease",])
+# [1] 42 13
+ t1 <- grep("cardia", res.info$im.death, ignore.case=T)
+ res.info[t1,]$death = "cardi"
+ t1 <- grep("cardio", res.info$im.death, ignore.case=T)
+ res.info[t1,]$death = "cardi"
+ dim(res.info[ res.info$death == "cardi",])
+# [1] 71 13
+ (res.info[ res.info$death == "cardi",10:13])
+ res.info$cater = paste(res.info$SEX, res.info$death, sep="_")
+ boxplot(res.info$mean ~ res.info$cater, col=c(rep("purple4", 3), rep("orange", 3)))
+
+res.info$death2 = res.info$death
+res.info[ res.info$death == "cardi",]$death2 = "heart disease"
+res.info$cater2 = paste(res.info$SEX, res.info$death2, sep="_")
 
