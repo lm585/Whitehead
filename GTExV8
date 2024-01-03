@@ -3834,3 +3834,44 @@ info.2$death = "NA"
  length(t4)
  t.test(t1, t3)
  t.test(t2, t4)
+###############################barplot NES, five pathways (column), two stat model (rows)
+> t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/Heart-Atrial-Appendage-FvsM.noX.Y.age-bmi-Hdisease-covar-weight0-FAO.GseaPreranked.1704216422963/gsea_report_for_na_pos_1704216422963.tsv")
+ t2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/Heart-Atrial-Appendage-FvsM.noX.Y.age-bmi-covar-weight0-FAO.GseaPreranked.1698075308261/gsea_report_for_na_pos_1698075308261.tsv")
+  paths <- t2$NAME[1:5]
+ paths
+# [1] "HALLMARK_OXIDATIVE_PHOSPHORYLATION" "HALLMARK_ADIPOGENESIS"              "HALLMARK_FATTY_ACID_METABOLISM"     "FAO"
+ t1$test.set = "heart-AA-H-dis-covar"
+ t2$test.set = "heart-AA"
+ pva <- data.frame(matrix(NA, 2, 5))
+ li <- list(t1,t2)
+ for(i in 1:length(paths)) {
+  for(j in 1:length(li)){
+ tem <- li[[j]]
+ rownames(pva)[j] = tem$test.set[1]
+ colnames(pva)[i] = paths[i]
+ pva[j,i] =tem[ tem$NAME == paths[i],]$NES
+ }
+}
+
+pva
+ nam <- colnames(pva)
+ nam <- gsub(".*/", "", nam)
+ nam <- gsub("FAO", "FAO 20 genes", nam)
+
+ or <- data.frame(matrix(NA, 2, 5))
+ li <- list(t1,t2)
+ for(i in 1:length(paths)) {
+  for(j in 1:length(li)){
+ tem <- li[[j]]
+ rownames(or)[j] = tem$test.set[1]
+ colnames(or)[i] = paths[i]
+ or[j,i] =tem[ tem$NAME == paths[i],]$FDR.q.val
+ }
+}
+ par( mar=c(6,16,2,2))
+ barplot(as.matrix( pva), horiz=T, beside=T,  xlab="NES (F vs. M)", yaxt = "n", col=c("green",  "red"))
+ axis(side=2, at = seq(2, 14, by=3), labels=nam, las =1, cex.axis = 0.7)
+ text(pva[1,] , seq(1.5, 1.5+3*4, by=3), paste("FDR=", format(or[1,], digits=3), sep=""), pos=4, col = "green")
+ text(pva[2,] , seq(2.5, 2.5+3*4, by=3), paste("FDR=", format(or[2,], digits=3), sep=""), pos=4, col = "red")
+ legend(5.5, 11, rownames(pva), fill=c("green", "red"), cex = 0.6, inset = 0.05)
+
