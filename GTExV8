@@ -3803,3 +3803,34 @@ res.info$death2 = res.info$death
 res.info[ res.info$death == "cardi",]$death2 = "heart disease"
 res.info$cater2 = paste(res.info$SEX, res.info$death2, sep="_")
 
+#############################################################boxplot pathway-level z-score F_heart_disease, F_others, M_heart_disease, M_others
+> head(info.2, n = 2)
+#       SUBJID                   SAMPID   SUBJID.1 SEX   AGE DTHHRDY                       sid ageV   bmi  ancestry       im.death
+# 1 GTEX-113JC GTEX-113JC-2726-SM-5EGIS GTEX-113JC   2 50-59       2 GTEX.113JC.2726.SM.5EGIS.   53 27.99 ['White']            CVA
+# 2 GTEX-11DXY GTEX-11DXY-2726-SM-5GID2 GTEX-11DXY   1 60-69       2 GTEX.11DXY.2726.SM.5GID2.   62 20.67 ['White'] cardiac arrest
+
+info.2$death = "NA"
+ t1 <- grep("heart", info.2$im.death, ignore.case=T)
+ info.2[t1,]$death = "heart disease"
+# [1] 42 13
+ t1 <- grep("cardia", info.2$im.death, ignore.case=T)
+ info.2[t1,]$death = "heart disease"
+ t1 <- grep("cardio", info.2$im.death, ignore.case=T)
+ info.2[t1,]$death = "heart disease"
+
+ dim(info.2[ info.2$death == "heart disease",])
+ res.info <- merge(res, info.2, by.x="id", by.y="sid")
+ summary(res.info)
+ res.info$cater <- paste(res.info$SEX, res.info$death, sep="_")
+ boxplot(res.info$mean ~ res.info$cater, col=c(rep("purple4", 2), rep("orange", 3)))
+ abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ t1 <- res.info[ res.info$cater == "1_heart disease",]$mean
+ length(t1)
+ t2 <- res.info[ res.info$cater == "1_NA",]$mean
+ length(t2)
+ t3 <- res.info[ res.info$cater == "2_heart disease",]$mean
+ length(t3)
+ t4 <- res.info[ res.info$cater == "2_NA",]$mean
+ length(t4)
+ t.test(t1, t3)
+ t.test(t2, t4)
