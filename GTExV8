@@ -3919,3 +3919,13 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i temp2 gencodeV26.id.v42.nam
 [1] 35431     3
 > dim(left.gene)
 [1] 34960    11
+
+> write.table(left.gene[,c(2,9,10)], "temp1", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp1
+cat temp1 |  awk 'BEGIN {FS = "\t"} !($3 == "chrX" || $3 == "chrY") && $1 != "NA" ' > temp2
+cat temp2 | awk 'BEGIN {FS = "\t"; OFS = "\t";} {print $2, 999, 0,0,$1, 0, $2, $2 }' > temp3
+../microglia/make-rnk-genesymble.2 temp3 mash.Heart-Atrial-Appendage-FvsM.noX.Y.rnk
+
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    fao.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk   diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk  -scoring_scheme classic  -rpt_label   "left-ventricle-FvsM.noX.Y.age-bmi-covar-weight0-FAO"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
