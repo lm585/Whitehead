@@ -3875,3 +3875,47 @@ pva
  text(pva[2,] , seq(2.5, 2.5+3*4, by=3), paste("FDR=", format(or[2,], digits=3), sep=""), pos=4, col = "red")
  legend(5.5, 11, rownames(pva), fill=c("green", "red"), cex = 0.6, inset = 0.05)
 
+###############################genecode v26 v42 conversion, mash
+> mash <- read.delim("~/Downloads/GTEx_Analysis_v8_sbgenes/effect_size.tsv")
+>  summary(mash[, c(28:29, 34)])
+ Heart_Atrial_Appendage Heart_Left_Ventricle Muscle_Skeletal
+ Min.   :-1.792         Min.   :-2.277       Min.   :-2.543
+ 1st Qu.:-0.012         1st Qu.:-0.014       1st Qu.:-0.020
+ Median : 0.000         Median : 0.000       Median : 0.000
+ Mean   : 0.002         Mean   : 0.001       Mean   : 0.000
+ 3rd Qu.: 0.012         3rd Qu.: 0.014       3rd Qu.: 0.019
+ Max.   : 9.398         Max.   : 8.742       Max.   : 9.571
+ NA's   :12237          NA's   :14078        NA's   :14400
+> dim(mash)
+[1] 35431    44
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat ~/Downloads/GTEx_Analysis_v8_sbgenes/effect_size.tsv | cut -f 1 | sed 's/ENSG[0-9]*//' |sort | uniq
+.1
+.10
+.11
+.12
+...
+.9
+
+ left <- mash[,c(28:29, 34)]
+ left$id <- rownames(left)
+> write.table(left, "temp1", quote=F, sep="\t")
+vi temp1
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % /Users/linyongmao/Documents/microglia/scrnaseq-metaannot-combine    temp1  gencode.v42.primary_assembly.noPar.geneID-name.2 out
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % paste   temp1    out | grep -vw notApplicable | wc
+   34961  209766 3034552
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % paste   temp1    out | grep -vw notApplicable > temp2
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i temp2 gencodeV26.id.v42.name
+ t1 <- read.delim("gencodeV26.id.v42.name")
+ t2 <- read.delim("gencode.v42.primary_assembly.noPar.gene-chr-type.2")
+ t3 <- merge(t1, t2, by.x="geneID", by.y="geneID")
+ dim(t3)
+[1] 34960     9
+> dim(t1)
+[1] 34960     6
+> dim(t2)
+[1] 62703     4
+> left.gene <- merge(left, t3, by.x="id", by.y="id")
+> dim(left)
+[1] 35431     3
+> dim(left.gene)
+[1] 34960    11
