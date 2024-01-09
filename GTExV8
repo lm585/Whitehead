@@ -3972,3 +3972,42 @@ cat temp2b | awk 'BEGIN {FS = "\t"; OFS = "\t";}  {print $3, $1, 999, 999, $2, $
 
 cut -f 2 mash.lfsr.muscle-FvsM.noX.Y.rnk | sort -g | uniq -c | head
 cut -f 2 mash.lfsr.muscle-FvsM.noX.Y.rnk | sort -g | uniq -c | tail
+
+#############################################################################
+> f1 = "file:///Users/linyongmao/gsea_home/output/microgliaSex/mash.lfsr.left-ventricle-FvsM.noX.Y.weight0-FAO.GseaPreranked.1704697827899/gsea_report_for_na_neg_1704697827899.tsv"
+ p <- read.delim(f1)
+ paths <- p$NAME
+> f="mash.lfsr.left-ventricle-FvsM.noX.Y.rnk"
+str <- paste("cat", f, " | sort -t \'", "\'", "+1 -2gr", " > temp1", sep="\t")
+ system(str)
+ t1 <- read.delim("temp1", header=F)
+ t1$r.1 <- 1:dim(t1)[1]
+ t1$rank <- t1$r.1 / dim(t1)[1]
+ summary(t1)
+ t1.rank <- t1
+ li <- list()
+
+for(i in 1:length(paths)) {
+ f <- paste("/Users/linyongmao/Documents//microglia/", paths[i], ".genes", sep ="")
+ fat <- read.delim(f, header=F)
+ li[[i]] <- t1.rank[ t1.rank$V1 %in% fat$V1,]$rank
+ names(li)[i] <- paths[i]
+}
+
+ par( mar=c(6,10,2,2))
+  boxplot(li, horizontal=T, xlab="rank normalized by expr. genes", yaxt="n")
+  axis(side=2, at = 1:length(paths), labels=names(li), las =1, cex.axis = 0.5)
+  abline(v = seq(0,100,0.05), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = 0.5,  col = "blue")
+ text(0.1, 1:length(paths) + 0.2, paste("NES=", format(p$NES, digits=2), sep="" ), pos = 4, col="blue", cex = 0.7 )
+ title(main = "mash.lfsr.left-ventricle-FvsM.noX.Y.rnk")
+
+p$t.test = 999
+p$est = 999
+for(i in 1:length(paths)) {
+ test <- t.test(li[[i]], mu=0.5)
+ p$t.test[i] <- test$p.value
+ p$est[i] <- test$estimate
+}
+
+ p[, c(1,4,6:8,13,14)]
