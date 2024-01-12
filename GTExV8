@@ -4011,3 +4011,8 @@ for(i in 1:length(paths)) {
 }
 
  p[, c(1,4,6:8,13,14)]
+
+#########################################################################################################################
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat /Users/linyongmao/Downloads/GOBP_FATTY_ACID_BIOSYNTHETIC_PROCESS.v2023.2.Hs.gmt >> fao.gmt
+
