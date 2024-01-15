@@ -4016,3 +4016,19 @@ for(i in 1:length(paths)) {
 
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat /Users/linyongmao/Downloads/GOBP_FATTY_ACID_BIOSYNTHETIC_PROCESS.v2023.2.Hs.gmt >> fao.gmt
 
+####################################################x="P-lab NES, left-ventricle-FvsM.age-bmi-covar.noX.Y", y = "NES, mash.lfsr.left-ventricle-FvsM.noX.Y"
+ t1 <- merge(plab.lv, mash.lv, by.x="NAME", by.y="NAME")
+ head(t1)
+#                                   NAME       GS.br..follow.link.to.MSigDB.x GS.DETAILS.x SIZE.x        ES.x     NES.x NOM.p.val.x FDR.q.val.x FWER.p.val.x
+# 1                                  FAO                                  FAO  Details ...     20  0.35796925  1.915233 0.005940594 0.018437775        0.190
+ dim(t1)
+# [1] 52-pathways 23 fields
+#top 6 positive and  negative pathways from one approach
+n1 <- t1[ t1$NES.x > 2.5 | t1$NES.x < -3,]$NAME
+#top 6 postive and  negative pathways from 2nd approach
+n2 <- t1[ t1$NES.y > 2.4 | t1$NES.y < -1.8,]$NAME
+n3 <- unique( c(n1, n2))
+t2 <- t1[ t1$NAME %in% n3,]
+t3 <- t2[ abs(t2$NES.x) > 1.7 & abs(t2$NES.y) > 1.7,]
+> ggplot(t1, aes(x=NES.x, y=NES.y, label=NAME) ) + geom_point(size=1) + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1) + labs(x="P-lab NES, left-ventricle-FvsM.age-bmi-covar.noX.Y", y = "NES, mash.lfsr.left-ventricle-FvsM.noX.Y") + geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue")
+
