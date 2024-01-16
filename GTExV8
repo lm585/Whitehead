@@ -4032,3 +4032,20 @@ t2 <- t1[ t1$NAME %in% n3,]
 t3 <- t2[ abs(t2$NES.x) > 1.7 & abs(t2$NES.y) > 1.7,]
 > ggplot(t1, aes(x=NES.x, y=NES.y, label=NAME) ) + geom_point(size=1) + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1) + labs(x="P-lab NES, left-ventricle-FvsM.age-bmi-covar.noX.Y", y = "NES, mash.lfsr.left-ventricle-FvsM.noX.Y") + geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue")
 
+#############################################################################
+> t1 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk", header=F)
+ t2 <- read.delim("mash.lfsr.left-ventricle-FvsM.noX.Y.rnk", header=F)
+ p.mash <- merge(t1, t2, by.x="V1", by.y="V1")
+ dim(p.mash)
+# [1] 14388     3
+ dim(t1)
+# [1] 14783     2
+ dim(t2)
+# [1] 20455     2
+ g <- read.delim("/Users/linyongmao/Documents/microglia/fao.genes", header=F)
+ p.mash.g <- p.mash[ p.mash$V1 %in% g$V1,]
+ dim(p.mash.g)
+ cor1 <- cor.test(p.mash.g$V2.x, p.mash.g$V2.y,method="pearson")
+ tit = paste("FAO 20 genes: ", "r=",round(cor1$estimate, digits = 3), ", p=", format(cor1$p.value, digits=3), " (Pearson)", sep ="")
+> ggplot(p.mash.g, aes(x=V2.x, y=V2.y, label=V1) ) + geom_point(size=1.5, col="red") + geom_smooth(se=T, method="lm") + geom_text_repel(show.legend=T, data=p.mash.g, size=2.2, max.overlaps=100, min.segment.length = 0.1) + geom_hline(yintercept=0, col="black", size = 0.25) + geom_vline(xintercept=0, col="black", size=0.25) + labs(x="P-lab signed log10(p-value), left-ventricle-FvsM.age-bmi-covar", y = "signed log10(p-value), mash.lfsr.left-ventricle-FvsM", title=tit) + scale_x_continuous(breaks=seq(-5, 6, 1), limits=c(-6,6)) + scale_y_continuous(breaks=seq(
+-5, 6, 1), limits=c(-6,6))
