@@ -4017,7 +4017,14 @@ for(i in 1:length(paths)) {
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat /Users/linyongmao/Downloads/GOBP_FATTY_ACID_BIOSYNTHETIC_PROCESS.v2023.2.Hs.gmt >> fao.gmt
 
 ####################################################x="P-lab NES, left-ventricle-FvsM.age-bmi-covar.noX.Y", y = "NES, mash.lfsr.left-ventricle-FvsM.noX.Y"
- t1 <- merge(plab.lv, mash.lv, by.x="NAME", by.y="NAME")
+ t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-fa-syn-mash.lfsr.left-ventricle-FvsM.noX.Y.weight0-FAO.GseaPreranked.1705100521041/gsea_report_for_na_pos_1705100521041.tsv")
+ t2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-fa-syn-mash.lfsr.left-ventricle-FvsM.noX.Y.weight0-FAO.GseaPreranked.1705100521041/gsea_report_for_na_neg_1705100521041.tsv")
+ mash.lv <- rbind(t1,t2)
+ t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-fa-syn-left-ventricle-FvsM.noX.Y.age-bmi-covar-weight0-FAO.GseaPreranked.1705102308759/gsea_report_for_na_pos_1705102308759.tsv")
+ t2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-fa-syn-left-ventricle-FvsM.noX.Y.age-bmi-covar-weight0-FAO.GseaPreranked.1705102308759/gsea_report_for_na_neg_1705102308759.tsv")
+ plab.lv <- rbind(t1, t2)
+
+t1 <- merge(plab.lv, mash.lv, by.x="NAME", by.y="NAME")
  head(t1)
 #                                   NAME       GS.br..follow.link.to.MSigDB.x GS.DETAILS.x SIZE.x        ES.x     NES.x NOM.p.val.x FDR.q.val.x FWER.p.val.x
 # 1                                  FAO                                  FAO  Details ...     20  0.35796925  1.915233 0.005940594 0.018437775        0.190
@@ -4031,6 +4038,7 @@ n3 <- unique( c(n1, n2))
 t2 <- t1[ t1$NAME %in% n3,]
 t3 <- t2[ abs(t2$NES.x) > 1.7 & abs(t2$NES.y) > 1.7,]
 > ggplot(t1, aes(x=NES.x, y=NES.y, label=NAME) ) + geom_point(size=1) + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1) + labs(x="P-lab NES, left-ventricle-FvsM.age-bmi-covar.noX.Y", y = "NES, mash.lfsr.left-ventricle-FvsM.noX.Y") + geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue")
+> ggplot(t1, aes(x=NES.x, y=NES.y, label=NAME) ) + geom_point(size=1) + geom_text_repel(show.legend=T, data=t2, size=2.2, max.overlaps=100, min.segment.length = 0.1) + labs(x="P-lab NES, left-ventricle-FvsM.age-bmi-covar.noX.Y", y = "NES, mash.lfsr.left-ventricle-FvsM.noX.Y") + geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue") + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red") + scale_x_continuous(breaks=seq(-10, 10, 1), minor_breaks=NULL)
 
 #############################################################################
 > t1 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk", header=F)
