@@ -4038,7 +4038,10 @@ n3 <- unique( c(n1, n2))
 t2 <- t1[ t1$NAME %in% n3,]
 t3 <- t2[ abs(t2$NES.x) > 1.7 & abs(t2$NES.y) > 1.7,]
 > ggplot(t1, aes(x=NES.x, y=NES.y, label=NAME) ) + geom_point(size=1) + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1) + labs(x="P-lab NES, left-ventricle-FvsM.age-bmi-covar.noX.Y", y = "NES, mash.lfsr.left-ventricle-FvsM.noX.Y") + geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue")
-> ggplot(t1, aes(x=NES.x, y=NES.y, label=NAME) ) + geom_point(size=1) + geom_text_repel(show.legend=T, data=t2, size=2.2, max.overlaps=100, min.segment.length = 0.1) + labs(x="P-lab NES, left-ventricle-FvsM.age-bmi-covar.noX.Y", y = "NES, mash.lfsr.left-ventricle-FvsM.noX.Y") + geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue") + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red") + scale_x_continuous(breaks=seq(-10, 10, 1), minor_breaks=NULL)
+> ggplot(t1, aes(x=NES.x, y=NES.y, label=NAME) ) + geom_point(size=1) + geom_text_repel(show.legend=T, data=t2, size=2.2, max.overlaps=100, min.segment.length = 0.1) 
++ labs(x="P-lab NES, left-ventricle-FvsM.age-bmi-covar.noX.Y", y = "NES, mash.lfsr.left-ventricle-FvsM.noX.Y") + geom_hline(yintercept=0, col="blue") 
++ geom_vline(xintercept=0, col="blue") + geom_text_repel(show.legend=T, data=t3 (t3 refers to a single point), size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red") 
++ scale_x_continuous(breaks=seq(-10, 10, 1), minor_breaks=NULL)
 
 #############################################################################
 > t1 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk", header=F)
