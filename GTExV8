@@ -4070,3 +4070,24 @@ t3 <- t2[ abs(t2$NES.x) > 1.7 & abs(t2$NES.y) > 1.7,]
 # 3671   ENSG00000109819.8             0.04669970           7.973397e-02 PPARGC1A  chr4
 > t5 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.2.txt")
 > tem <- t5[ t5$name %in% g,]
+
+#############################################################################
+> info3 <- t5[, c(16,21, 31,46, 106, 85, 120, 122, 125, 126, 127, 130)]
+#   age_value  ancestry body_mass_index source_subject_id height   first_cause_of_death icd10_cause_of_death immediate_cause_of_death interval_to_death_first_cause
+ info5 <- merge(info.2, info3, by.x="SUBJID", by.y="source_subject_id")
+ dim(info.2)
+# [1] 429   7
+ dim(info3)
+# [1] 981  12
+ dim(info5)
+# [1] 429  18
+> write.table(info5, "heart-aa-metadata-deaths.txt", quote=F, sep="\t")
+# heart-lv-metadata-deaths.txt
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cut -f 1 heart-aa-metadata-deaths.txt   heart-lv-metadata-deaths.txt | sort |  uniq -d | wc -l
+     298
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cut -f 1 heart-aa-metadata-deaths.txt   heart-lv-metadata-deaths.txt | sort |  uniq -u | wc -l
+     263
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cut -f 1 heart-aa-metadata-deaths.txt   heart-lv-metadata-deaths.txt | sort |  uniq  | wc -l
+     561
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cut -f  1,4,8,10,12-18 heart-aa-metadata-deaths.txt   heart-lv-metadata-deaths.txt |  sort | uniq | sort -r > temp.causedeath.txt
+
