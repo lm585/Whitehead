@@ -4121,3 +4121,25 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cut -f  1,4,8,10,12-18 heart-aa-m
 [1] 0.4261168
 > (137 - 101)/137
 [1] 0.2627737
+
+#############################################################################
+> t7 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk", header=F)
+ t8 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.Hdiseas-filt-268.noX.Y.rnk", header = F)
+ t9 <- merge(t7, t8, by.x="V1",by.y="V1")
+> dim(t9)
+[1] 14727     3
+> dim(t7)
+[1] 14783     2
+> dim(t8)
+[1] 14833     2
+
+> plot(t9$V2.x, t9$V2.y, xlab="signed log10(p-value) (F vs. M), heart-LV all samples (n = 428)", ylab="signed log10(p-value), disease filtered samples (n=268)")
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,2), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = 0,   col = "blue")
+ abline(v = 0, , col = "blue")
+ abline(lm(t9$V2.y ~ t9$V2.x), col="blue")
+> g <- read.delim("genes-fao", header=F)
+ t10 <- t9[ t9$V1 %in% g$V1,]
+ t10[ t10$V2.x * t10$V2.y > 0,]
+> ggplot(t10, aes(x=V2.x, y=V2.y, label=V1)) + geom_point(size=1.5, col="red") + geom_smooth(se=T, method="lm") + geom_text_repel(show.legend=T, data=t10, size=2.2, max.overlaps=100, min.segment.length = 0.1) + geom_hline(yintercept=0, col="black", size = 0.25) + geom_vline(xintercept=0, col="black", size=0.25) + labs(x="signed log10(p-value) (F vs. M), heart-LV all samples (n = 428)", y = "signed log10(p-value), disease filtered samples (n=268)")
