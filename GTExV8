@@ -4141,6 +4141,34 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cut -f  1,4,8,10,12-18 heart-aa-m
 [1] 16620   248
 
 #############################################################################
+boxplot pathway z-score ~ Female-heart-disease
+> res.info$diseas = "Heart-disease"
+
+for(i in 1:dim(res.info)[1]) {
+ id <- res.info[i,]$SUBJID
+ if(id %in% h.diseas.id$SUBJID)
+   res.info[i,]$diseas = "others"
+}
+ dim(res.info[ res.info$diseas == "others",])
+# [1] 248   9
+ dim(res.info[ res.info$diseas == "Heart-disease",])
+# [1] 181   9
+ res.info$sex.diseas <- paste(res.info$SEX, res.info$diseas, sep="_")
+length(grep("2_", res.info$sex.diseas))
+# [1] 136
+ length(grep("^1_", res.info$sex.diseas))
+# [1] 293
+> boxplot(res.info$mean ~ res.info$sex.diseas, ylab="FAO 20-geneset z-score ( heart-AA)", col=c("purple", "purple", "orange", "orange"))
+ t1.h <- res.info[ res.info$sex.diseas == "1_Heart-disease",]$mean
+ t1.o <- res.info[ res.info$sex.diseas == "1_others",]$mean
+ t2.h <- res.info[ res.info$sex.diseas == "2_Heart-disease",]$mean
+ t2.o <- res.info[ res.info$sex.diseas == "2_others",]$mean
+ t.test(t1.h, t1.o)
+ t.test(t2.h, t2.o)
+ t.test(t1.h, t2.h)
+ t.test(t1.o, t2.o)
+
+#############################################################################
 > t7 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk", header=F)
  t8 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.Hdiseas-filt-268.noX.Y.rnk", header = F)
  t9 <- merge(t7, t8, by.x="V1",by.y="V1")
