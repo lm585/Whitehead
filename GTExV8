@@ -4122,6 +4122,24 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cut -f  1,4,8,10,12-18 heart-aa-m
 > (137 - 101)/137
 [1] 0.2627737
 
+> t1 <- read.delim("heart-aa-metadata-deaths.txt")
+> dim(t1)
+[1] 429  18
+> t2 <- read.delim("GTEx_LA_AA_tissue_filtered.txt", header=F)
+>  t3 <- t1[ t1$SUBJID %in% t2$V1,]
+>  dim(t3)
+[1] 248  18
+>  dim(t3[ t3$SEX == 1,])
+[1] 156  18
+>  dim(t3[ t3$SEX == 2,])
+[1] 92 18
+>  raw2 <- raw[, colnames(raw) %in% t3$sid ]
+>  dim(raw2)
+[1] 62703   248
+......
+> print(dim(y))
+[1] 16620   248
+
 #############################################################################
 > t7 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk", header=F)
  t8 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.Hdiseas-filt-268.noX.Y.rnk", header = F)
