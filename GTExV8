@@ -4091,3 +4091,33 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cut -f 1 heart-aa-metadata-deaths
      561
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cut -f  1,4,8,10,12-18 heart-aa-metadata-deaths.txt   heart-lv-metadata-deaths.txt |  sort | uniq | sort -r > temp.causedeath.txt
 
+#############################################################################
+> t1 <- read.delim("heart-lv-metadata-deaths.txt")
+ t2 <- read.delim("GTEx_LA_AA_tissue_filtered.txt", header=F)
+ t3 <- t1[ t1$SUBJID %in% t2$V1,]
+ dim(t3)
+# [1] 268  18
+ head(t3, n = 10)
+ dim(t3[ t3$SEX == 1,])
+# [1] 167  18
+ dim(t3[ t3$SEX == 2,])
+# [1] 101  18
+  101/268
+# [1] 0.3768657
+ dim(t1[ t1$SEX == 1,])
+# [1] 291  18
+ dim(t1[ t1$SEX == 2,])
+# [1] 137  18
+ 137 / 428
+# [1] 0.3200935
+  raw2 <- raw[, colnames(raw) %in% t3$sid ]
+ dim(raw2)
+# [1] 62703   268
+......
+> print(dim(y))
+[1] 15352   268
+
+> (291-167)/291
+[1] 0.4261168
+> (137 - 101)/137
+[1] 0.2627737
