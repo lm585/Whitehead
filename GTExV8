@@ -4205,3 +4205,36 @@ length(grep("2_", res.info$sex.diseas))
 g <- read.delim("genes-fao", header=F)
  t10 <- t9[ t9$V1 %in% g$V1,]
  t10[ t10$V2.x * t10$V2.y < 0,]
+#############################################################################
+##################sample-sample correlation
+Heart - Left Ventricle  428
+
+d = cpm(y)
+t9 <- as.data.frame(d)
+t10 <- log10(t9 + 1)
+ t10$id <- rownames(t10)
+ dim(t10)
+# [1] 15298   429
+ chr <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type")
+ t11 <- merge(t10, chr, by.x="id", by.y="geneID")
+ t12 <- t11[ t11$chr != "chrX" & t11$chr != "chrY",]
+ dim(t12)
+# [1] 14786   432
+t13 <- t12[ , 2:429]
+ t14 <- cor(t13)
+ t15 <- as.data.frame(t14)
+ mat <- as.matrix(t15)
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+ print(summary( res$mean))
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#  0.7619  0.9094  0.9241  0.9151  0.9297  0.9415
+ res <- data.frame(id = colnames(mat), mean = (colSums(mat) - 1) / 428)
+ summary(res$mean)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#  0.7595  0.9071  0.9218  0.9128  0.9274  0.9392
+ ol <- boxplot(res$mean)
+ dim(res[ res$mean <= ol$stats[1],])
+# [1] 43  2
+ol$stats[1]
+# [1] 0.8769241
+> write.table(res, "lv-sample-samp-cor.txt", quote=F, sep="\t")
