@@ -4238,3 +4238,10 @@ t13 <- t12[ , 2:429]
 ol$stats[1]
 # [1] 0.8769241
 > write.table(res, "lv-sample-samp-cor.txt", quote=F, sep="\t")
+
+###############################################################
+"CD36", "PPARA", "PPARGC1A"
+
+cat fao.orig.gmt  | grep -i wdtc1 | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 3; i <= NF; i++) print  $i}' > temp2
+168 temp2
+
