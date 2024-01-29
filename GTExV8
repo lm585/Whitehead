@@ -4245,3 +4245,13 @@ ol$stats[1]
 cat fao.orig.gmt  | grep -i wdtc1 | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 3; i <= NF; i++) print  $i}' > temp2
 168 temp2
 
+#############################################################################
+> dim(res.3)
+[1] 428  11
+> head(res.3, n =11)
+       SUBJID                        id        mean                   SAMPID   SUBJID.1 SEX   AGE DTHHRDY age_value body_mass_index height
+1  GTEX-111FC GTEX.111FC.0826.SM.5GZWO.  0.09688571 GTEX-111FC-0826-SM-5GZWO GTEX-111FC   1 60-69       1        61           25.06   73.0
+
+>  res.3$SEX <- factor(res.3$SEX, levels=c(2,1), labels=c("F", "M"))
+> ggplot(res.3, aes(x=age_value, y=mean, color = SEX)) + geom_point(size=1) + scale_color_manual(breaks=c("F", "M"), values=c("orange", "purple")) + geom_smooth(se=F) + labs(x= "age", y="FAO geneset z-score")
+> ggplot(res.3, aes(x=age_value, y=mean, color = SEX)) + geom_point(size=1) + scale_color_manual(breaks=c("F", "M"), values=c("orange", "purple")) + geom_smooth(se=F, method="lm") + labs(x= "age", y="FAO geneset z-score")
