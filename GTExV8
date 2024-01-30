@@ -4253,5 +4253,8 @@ cat fao.orig.gmt  | grep -i wdtc1 | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 
 1  GTEX-111FC GTEX.111FC.0826.SM.5GZWO.  0.09688571 GTEX-111FC-0826-SM-5GZWO GTEX-111FC   1 60-69       1        61           25.06   73.0
 
 >  res.3$SEX <- factor(res.3$SEX, levels=c(2,1), labels=c("F", "M"))
-> ggplot(res.3, aes(x=age_value, y=mean, color = SEX)) + geom_point(size=1) + scale_color_manual(breaks=c("F", "M"), values=c("orange", "purple")) + geom_smooth(se=F) + labs(x= "age", y="FAO geneset z-score")
-> ggplot(res.3, aes(x=age_value, y=mean, color = SEX)) + geom_point(size=1) + scale_color_manual(breaks=c("F", "M"), values=c("orange", "purple")) + geom_smooth(se=F, method="lm") + labs(x= "age", y="FAO geneset z-score")
+> ggplot(res.3, aes(x=age_value, y=mean, group=SEX, color = SEX)) + geom_point(shape=21, size = 1) + geom_smooth(aes(fill = SEX)) + labs(x= "age", y="FAO geneset z-score")  + scale_color_manual(breaks=c("F", "M"), values=c("orange", "purple")) + scale_fill_manual(breaks=c("F", "M"), values=c("orange", "purple")) +
+  scale_y_continuous( limits=c(-2.5,1.5))
+
+>  ggplot(res.lv.fas, aes(x=age_value, y=mean, group=SEX, color = SEX)) + geom_point(shape=21, size = 1) + geom_smooth(aes(fill = SEX)) + labs(x= "age", y="GO_FAS geneset z-score")  + scale_color_manual(breaks=c("F", "M"), values=c("orange", "purple")) + scale_fill_manual(breaks=c("F", "M"), values=c("orange", "purple")) +
+  scale_y_continuous( limits=c(-2.5,1.5))
