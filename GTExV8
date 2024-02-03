@@ -4258,3 +4258,30 @@ cat fao.orig.gmt  | grep -i wdtc1 | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 
 
 >  ggplot(res.lv.fas, aes(x=age_value, y=mean, group=SEX, color = SEX)) + geom_point(shape=21, size = 1) + geom_smooth(aes(fill = SEX)) + labs(x= "age", y="GO_FAS geneset z-score")  + scale_color_manual(breaks=c("F", "M"), values=c("orange", "purple")) + scale_fill_manual(breaks=c("F", "M"), values=c("orange", "purple")) +
   scale_y_continuous( limits=c(-2.5,1.5))
+
+#####################################################################################
+####heart disease (Lukas annot) age distri 
+r1 <- res.info[ res.info$SEX == 1 & res.info$diseas != "others",]
+ dim(r1)
+# [1] 124  13
+ hist(r1$age_value, breaks=seq(0, 100, 5), main="LV 124 male donors Heart-disease")
+  abline(v = seq(0, 1000, 10), lty = 5, lwd = 0.5, col = "blue")
+ abline(h = seq(0, 1000, 5), lty = 5, lwd = 0.5, col = "blue")
+
+> t1 <- data.frame(breaks = h1$breaks[2:21], M_H_dis = h1$counts)
+>  h1 <- hist(r1$age_value, breaks=seq(0, 100, 5), main="LV 124 male donors Heart-disease")
+> t1$M_all_donor <- h1$counts
+> plot(t1$breaks, t1$M_H_dis / t1$M_all_donor)
+>   abline(v = seq(0, 1000, 10), lty = 5, lwd = 0.5, col = "grey")
+>  abline(h = seq(0, 1000, 0.05), lty = 5, lwd = 0.5, col = "grey")
+> t1$F_H_dis <- h1$counts
+> plot(t1$breaks, t1$M_H_dis / t1$M_all_donor, ylim=c(0, 0.7), xlab="age breaks", ylab="H_disease / all_donors", col="purple")
+> points(t1$breaks, t1$F_H_dis / t1$F_all_donor, col="orange")
+> t2 <- t1[ t1$breaks <= 45,]
+> colSums(t2)
+     breaks     M_H_dis M_all_donor     F_H_dis F_all_donor
+        225          10          47          10          31
+> t2 <- t1[ t1$breaks <= 40,]
+> colSums(t2)
+     breaks     M_H_dis M_all_donor     F_H_dis F_all_donor
+        180           6          34           7          21
