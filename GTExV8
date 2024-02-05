@@ -4285,3 +4285,13 @@ r1 <- res.info[ res.info$SEX == 1 & res.info$diseas != "others",]
 > colSums(t2)
      breaks     M_H_dis M_all_donor     F_H_dis F_all_donor
         180           6          34           7          21
+
+#################################################################
+> info5 <- info4[ info4$age_value <= 45,]
+> dim(info5)
+[1] 78 12
+>  raw2 <- raw[, colnames(raw) %in% info5$sid ]
+...
+> y<-y[med$logic,]
+> print(dim(y))
+[1] 15419    78
