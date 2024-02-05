@@ -4294,4 +4294,14 @@ r1 <- res.info[ res.info$SEX == 1 & res.info$diseas != "others",]
 ...
 > y<-y[med$logic,]
 > print(dim(y))
-[1] 15419    78
+[1] 15419    78 (F = 31, M = 47)
+######
+> info.3 <- info.2[ info.2$ageV >= 55 & info.2$ageV < 60,]
+> dim(info.3[ info.3$SEX == 1,])
+[1] 55  9
+> dim(info.3[ info.3$SEX == 2,])
+[1] 20  9
+...
+> y<-y[med$logic,]
+> print(dim(y))
+[1] 15360    75
