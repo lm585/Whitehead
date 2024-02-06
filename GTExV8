@@ -4305,3 +4305,35 @@ r1 <- res.info[ res.info$SEX == 1 & res.info$diseas != "others",]
 > y<-y[med$logic,]
 > print(dim(y))
 [1] 15360    75
+######
+> info.3 <- info.2[ (info.2$ageV >= 55 & info.2$ageV < 60) | info.2$ageV <= 45,]
+>  dim(info.3[ info.3$SEX == 1,])
+[1] 102   9
+>  dim(info.3[ info.3$SEX == 2,])
+[1] 51  9
+> raw2 <- raw[, colnames(raw) %in% info.3$sid ]
+...
+> y<-y[med$logic,]
+> print(dim(y))
+[1] 15376   153
+...
+> info.2$sex.cat <- factor(info.2$SEX, levels=c(1,2), labels=c( "1M", "2F"))
+> info.2$menop = "yes"
+for(i in 1:dim(info.2)[1]) { 
+ if(info.2[i,]$ageV < 46)
+   info.2[i,]$menop = "no" 
+}
+> dim(info.2[info.2$menop == "yes",])
+[1] 75 11
+> dim(info.2[info.2$menop == "no",])
+[1] 78 11
+>  design <- model.matrix( ~ info.2$sex.cat + info.2$menop + info.2$bmi + info.2$sex.cat : info.2$menop)
+   (Intercept) info.2$sex.cat2F info.2$menopyes info.2$bmi info.2$sex.cat2F:info.2$menopyes
+1            1                0               1      22.92                                0
+2            1                1               1      24.97                                1
+3            1                1               0      29.75                                0
+4            1                0               1      26.60                                0
+5            1                0               1      32.82                                0
+6            1                0               0      26.32                                0
+...
+> qlf <- glmQLFTest(fit, coef=5)
