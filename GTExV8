@@ -4337,3 +4337,36 @@ for(i in 1:dim(info.2)[1]) {
 6            1                0               0      26.32                                0
 ...
 > qlf <- glmQLFTest(fit, coef=5)
+################################################
+> info5 <- merge(info, info3, by.x="SUBJID", by.y="source_subject_id")
+> dim(info5)
+[1] 22951    10
+> head(info5)
+      SUBJID                        SAMPID   SUBJID.1 SEX   AGE DTHHRDY                            sid age_value body_mass_index height
+1 GTEX-1117F      GTEX-1117F-0003-SM-58Q7G GTEX-1117F   2 60-69       4      GTEX.1117F.0003.SM.58Q7G.        66           32.12     66
+
+> res.info <- merge(res, info5, by.x="id", by.y="sid")
+> res.info.2 <- res.info[ res.info$age_value <= 45 | (res.info$age_value >= 55 & res.info$age_value < 60),]
+> dim(res.info.2)
+[1] 153  11
+res.info.2$meno = "NA"
+for(i in 1:dim(res.info.2)[1]) {
+ if(res.info.2$age_value[i] < 50)
+   res.info.2$meno[i] = "before_menop"
+ else
+   res.info.2$meno[i] = "menopause"
+}
+
+ res.info.2$sex.cat <- factor(res.info.2$SEX, levels=c(2,1), labels=c("F", "M"))
+ res.info.2$sex_menop <- paste( res.info.2$sex.cat, res.info.2$meno, sep="_")
+> res.info.2$sex_menop2 <- factor(res.info.2$sex_menop, levels= c("M_before_menop", "F_before_menop", "M_menopause", "F_menopause" ), labels=c("M(age <= 45)", "F(age <= 45)", "M [55, 60)", "F [55, 60)"))
+ boxplot(res.info.2$mean ~ res.info.2$sex_menop2, main="ZFX", ylab="CPM", ylim=c(5, 40), col=c("purple", "orange"))
+  abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+ lev= c("M_before_menop", "F_before_menop", "M_menopause", "F_menopause" )
+ t1=1:4
+t1[1] = dim( res.info.2[res.info.2$sex_menop == lev[1],])[1]
+t1[2] = dim( res.info.2[res.info.2$sex_menop == lev[2],])[1]
+t1[3] = dim( res.info.2[res.info.2$sex_menop == lev[3],])[1]
+t1[4] = dim( res.info.2[res.info.2$sex_menop == lev[4],])[1]
+t1
+ text(x=1:4, y=40, paste("N=",t1, sep=""))
