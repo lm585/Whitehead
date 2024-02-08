@@ -4370,3 +4370,28 @@ t1[3] = dim( res.info.2[res.info.2$sex_menop == lev[3],])[1]
 t1[4] = dim( res.info.2[res.info.2$sex_menop == lev[4],])[1]
 t1
  text(x=1:4, y=40, paste("N=",t1, sep=""))
+
+#################################################
+ t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.age-bmi-covar.ageLE45.noX.Y-weight0-FAO.GseaPreranked.1707104648992/gsea_report_for_na_neg_1707104648992.tsv")
+ t2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.age-bmi-covar.ageLE45.noX.Y-weight0-FAO.GseaPreranked.1707104648992/gsea_report_for_na_pos_1707104648992.tsv")
+ age45 <- rbind(t1,t2)
+ t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.age-bmi-covar.age55_59.noX.Y-weight0-FAO.GseaPreranked.1707164595920/gsea_report_for_na_pos_1707164595920.tsv")
+ t2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.age-bmi-covar.age55_59.noX.Y-weight0-FAO.GseaPreranked.1707164595920/gsea_report_for_na_neg_1707164595920.tsv")
+ age55 <- rbind(t1, t2)
+ t3 <- merge(age45, age55, by.x="NAME", by.y="NAME")
+ dim(t3)
+# [1] 52 23
+> t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/diff2-1-left-ventricle-FvsM.bmi-covar.F-menopause-interact.noX.Y-weight0-FAO.GseaPreranked.1707330833849/gsea_report_for_na_pos_1707330833849.tsv")
+> t2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/diff2-1-left-ventricle-FvsM.bmi-covar.F-menopause-interact.noX.Y-weight0-FAO.GseaPreranked.1707330833849/gsea_report_for_na_neg_1707330833849.tsv")
+> sex.men <- rbind(t1, t2)
+> dim(sex.men)
+[1] 52 12
+t4 <- merge(t3, sex.men, by.x="NAME", by.y="NAME")
+> t4$NES.diff <- t4$NES.y - t4$NES.x
+> t5 <- t4[ t4$NES > 2 | t4$NES < -2,]
+ggplot(t4, aes(x=NES.diff, y=NES, label=NAME) ) + geom_point(size=1) + labs(x="NES diff between [55, 59] and age <= 45", y="sex:menop interaction NES", title="heart-LV") +
+    geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue") +
+     scale_x_continuous(breaks=seq(-6, 6, 1), minor_breaks=NULL) +
+   geom_text_repel(show.legend=T, data=t5, size=2.2, max.overlaps=100, min.segment.length = 0.1) +
+ geom_smooth(se=T, method="lm")
+
