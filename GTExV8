@@ -4427,3 +4427,25 @@ for(i in 1:dim(res.info.2)[1]) {
  pva <- format(t1$PValue, digits=3)
  boxplot(res.info.2$mean ~ res.info.2$sex_menop2, main=paste(g1, ": interaction F/M =",rat, ", pval=", pva, sep=""), ylab="CPM",  col=c("purple", "orange"))
   abline(h = seq(-100,100,10), lty = 5, lwd = 0.5, col = "gray")
+
+############################################# RIN number, Total Ischemic time for a sample
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ t <- read.delim("/Users/linyongmao/Documents/dir-GTExV8/dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt")
+ t1 <- data.frame(t$SAMPID, t$SMRIN, t$SMTSISCH)
+ t2 <- merge(info, t1, by.x="SAMPID", by.y="t.SAMPID")
+ info <- t2
+......
+ summary(info.2)
+     SEX           AGE               DTHHRDY         t.SMRIN        t.SMTSISCH         sid                    
+ Min.   :1.00   Length:428         Min.   :0.000   Min.   :5.100   Min.   :  55.0   Length:428        
+ 1st Qu.:1.00   Class :character   1st Qu.:0.000   1st Qu.:6.300   1st Qu.: 179.0   Class :character  
+ Median :1.00   Mode  :character   Median :0.000   Median :7.250   Median : 492.5   Mode  :character  
+ Mean   :1.32                      Mean   :1.054   Mean   :7.253   Mean   : 554.8                     
+ 3rd Qu.:2.00                      3rd Qu.:2.000   3rd Qu.:8.100   3rd Qu.: 859.0                     
+ Max.   :2.00                      Max.   :4.000   Max.   :9.400   Max.   :1737.0                     
+                                   NA's   :1                                                
+
+ summary(info.2)
+ info.2$isch <- log10(info.2$t.SMTSISCH)
+ design <- model.matrix( ~ info.2$SEX + info.2$ageV + info.2$bmi + info.2$isch + info.2$t.SMRIN)
+
