@@ -4449,3 +4449,59 @@ for(i in 1:dim(res.info.2)[1]) {
  info.2$isch <- log10(info.2$t.SMTSISCH)
  design <- model.matrix( ~ info.2$SEX + info.2$ageV + info.2$bmi + info.2$isch + info.2$t.SMRIN)
 
+################################################################
+> print(dim(y))
+[1] 15298   428
+d = cpm(y)
+a <- log10(d+1)
+a.df <- as.data.frame(a)
+a.df[1:6,1:6]
+......
+get sex info for each sample according to the y sample order
+ identical(info.2$sid, colnames(y))
+ identical(info.2$sid, colnames(a.df))
+ resid2 <- a.df
+for(i in 1:dim(a.df)[1] ) {
+ t1 <- data.frame(y = t(a.df[i,]), sex = info.2$SEX )
+ t2 <- lm(t1[,1] ~ sex, data=t1)
+ t3 <- resid(t2)
+ resid2[i,] <- t3
+
+}
+ r3 <- t(resid2)
+###PCA
+ pca <- prcomp(r3, center = TRUE, scale. = TRUE)
+boxplot(pca$x[,1:20])
+ s <- summary(pca)
+s$importance[,1:10]
+#                             PC1      PC2      PC3      PC4      PC5      PC6      PC7      PC8      PC9     PC10
+# Standard deviation     66.97269 41.66762 32.66448 24.78981 21.87155 21.32555 19.56760 17.30709 15.74531 13.78309
+# Proportion of Variance  0.29320  0.11349  0.06975  0.04017  0.03127  0.02973  0.02503  0.01958  0.01621  0.01242
+# Cumulative Proportion   0.29320  0.40669  0.47643  0.51661  0.54788  0.57760  0.60263  0.62221  0.63842  0.65084
+
+ p1 <- as.data.frame( pca$x[,1:10])
+ p1$id <- rownames(p1)
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ t5 <- read.delim("gtex-981subjects-tsvs/subject.tsv")
+ info3 <- t5[, c(16,31,46, 106)]
+ info4 <- merge(info, info3, by.x="SUBJID", by.y="source_subject_id")
+ dim(info4)
+# [1] 22951    10
+ t <- read.delim("/Users/linyongmao/Documents/dir-GTExV8/dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt")
+ t1 <- data.frame(t$SAMPID, t$SMRIN, t$SMTSISCH)
+ info5 <- merge(info4, t1, by.x="SAMPID", by.y="t.SAMPID")
+ dim(info5)
+# [1] 22951    12
+ p2 <- merge(p1, info5, by.x ="id", by.y="sid")
+ dim(p2)
+# [1] 428  22
+> cor.test(p2$PC1, p2$SEX)
+t = -2.2652e-14, df = 426, p-value = 1
+          cor 
+-1.097477e-15 
+> cor.test(p2$PC1, p2$t.SMRIN)
+t = -24.828, df = 426, p-value < 2.2e-16
+      cor 
+-0.768986 
