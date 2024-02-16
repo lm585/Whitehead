@@ -4505,3 +4505,10 @@ t = -2.2652e-14, df = 426, p-value = 1
 t = -24.828, df = 426, p-value < 2.2e-16
       cor 
 -0.768986 
+###########################################################################################
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat diff2-1-muscle-FvsM.age-bmi-covar.txt | head -40 | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} {print "+info.2$PC" NR}'
+
+> design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index +info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6+info.2$PC7+info.2$PC8+info.2$PC9+info.2$PC10+info.2$PC11+info.2$PC12+info.2$PC13+info.2$PC14+info.2$PC15+info.2$PC16+info.2$PC17+info.2$PC18+info.2$PC19+info.2$PC20+info.2$PC21+info.2$PC22+info.2$PC23+info.2$PC24+info.2$PC25+info.2$PC26+info.2$PC27+info.2$PC28+info.2$PC29+info.2$PC30+info.2$PC31+info.2$PC32+info.2$PC33+info.2$PC34+info.2$PC35+info.2$PC36+info.2$PC37+info.2$PC38+info.2$PC39+info.2$PC40)
+
+> design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index +info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6+info.2$PC7+info.2$PC8+info.2$PC9+info.2$PC10+info.2$PC11+info.2$PC12+info.2$PC13+info.2$PC14+info.2$PC15+info.2$PC16+info.2$PC17+info.2$PC18+info.2$PC19+info.2$PC20+info.2$PC21+info.2$PC22+info.2$PC23+info.2$PC24+info.2$PC25+info.2$PC26+info.2$PC27+info.2$PC28+info.2$PC29+info.2$PC30+info.2$PC31+info.2$PC32+info.2$PC33+info.2$PC34+info.2$PC35+info.2$PC36+info.2$PC37+info.2$PC38+info.2$PC39+info.2$PC40 + info.2$t.SMRIN + log10(info.2$t.SMTSISCH) )
+
