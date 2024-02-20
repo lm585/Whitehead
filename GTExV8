@@ -4395,7 +4395,7 @@ ggplot(t4, aes(x=NES.diff, y=NES, label=NAME) ) + geom_point(size=1) + labs(x="N
    geom_text_repel(show.legend=T, data=t5, size=2.2, max.overlaps=100, min.segment.length = 0.1) +
  geom_smooth(se=T, method="lm")
 
-> write.table(t4[ c(1,6,7,17,18, 26, 28, 29, 30)], "temp.txt", quote=F, sep="\t")
+> write.table(t4[, c(1,6,7,17,18, 26, 28, 29, 30)], "temp.txt", quote=F, sep="\t")
 
 ####################################HEART-LV F/M * age <= 45/age [55,59] interaction boxplot, CPM ~ age
  g1 <- "COMP"
