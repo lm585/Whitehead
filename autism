@@ -1686,3 +1686,20 @@ do
  wc -l "$f"  "$id".kept.sam
 
 done
+
+#########################################################################################
+linyong@fry /lab/solexa_page/linyong/cyno-data$ cat script-select-readss-2
+#
+
+ls L*.kept.sam | while read f
+do
+ id=`echo "$f" | sed 's/.kept.sam//' `
+ echo "$id"
+ cut -f 1 "$f" | sort | uniq -d > temp.paired.reads-ID
+ /lab/solexa_page/linyong/getSam-ID  temp.paired.reads-ID "$f" > "$id".mapQ.paired.sam
+ ls -lh  "$id".sam  "$id".kept.sam "$id".mapQ.paired.sam
+ wc -l "$id".sam  "$id".kept.sam "$id".mapQ.paired.sam
+ 
+done
+
+
