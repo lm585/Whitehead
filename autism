@@ -1657,3 +1657,19 @@ MvF.m.age.mVf2 <- merge(MvF.m.age, t1 , by.x="SYMBOL", by.y = "SYMBOL")
  t4 <- MvF.m.age.mVf2[ (MvF.m.age.mVf2$RANK.METRIC.SCORE.x < log10(0.05) | MvF.m.age.mVf2$RANK.METRIC.SCORE < -2) & MvF.m.age.mVf2$RANK.METRIC.SCORE.y < -log10(0.25),]
  length(sort(t4$SYMBOL))
 # [1] 11
+#############################################################################
+
+linyong@fry /lab/solexa_page/linyong/cyno-data$ cat script-cyno-atac-seq-bwa-feb-20-2024
+#
+#
+
+for id in `echo L16_6692  L16_6701   L16_6704   L16_6707   L16_6720   L16_6723`
+do
+ ls -lh "/lab/solexa_public/Page/231129_WIGTC-NOVASEQ1B_BHNFK2DRX3/FASTQ/$id"*fastq.gz
+ echo
+  f1=`ls "/lab/solexa_public/Page/231129_WIGTC-NOVASEQ1B_BHNFK2DRX3/FASTQ/$id"*fastq.gz | head -1`
+  f2=`ls "/lab/solexa_public/Page/231129_WIGTC-NOVASEQ1B_BHNFK2DRX3/FASTQ/$id"*fastq.gz | awk 'NR == 2' `
+  bwa mem -t 14 /lab/solexa_page/linyong/cyno-genome/GCF_012559485_plus_Y.fna "$f1" "$f2" > "$id".sam
+done
+
+
