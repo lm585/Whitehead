@@ -1673,3 +1673,16 @@ do
 done
 
 
+#######################################################################################
+linyong@fry /lab/solexa_page/linyong/cyno-data$ cat script-select-readss
+#
+
+ls L*.sam | while read f
+do
+ id=`echo "$f" | sed 's/.sam//' `
+ echo "$id"
+ awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 != 83 && $2 != 163) && $5 == 60'  "$f" > "$id".kept.sam
+ ls -lh "$f"  "$id".kept.sam
+ wc -l "$f"  "$id".kept.sam
+
+done
