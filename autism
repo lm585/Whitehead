@@ -1702,4 +1702,15 @@ do
  
 done
 
+####################################################################################
+linyong@fry /lab/solexa_page/linyong/cyno-data$ cat script-sam2bam
+#
+
+ls L*.mapQ.paired.sam | while read f
+do
+ id=`echo "$f" | sed 's/.sam//' `
+ samtools view -b -S  -t /lab/solexa_page/linyong/cyno-genome/GCF_012559485_plus_Y.fna.fai -o "$id".bam  "$f"
+ ls -lh "$id".bam "$f" 
+done
+
 
