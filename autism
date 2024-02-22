@@ -1713,4 +1713,14 @@ do
  ls -lh "$id".bam "$f" 
 done
 
+########################################################################################
+linyong@fry /lab/solexa_page/linyong/cyno-data$ cat   script-macs2-01 
+#
+ls L*.mapQ.paired.bam | while read f
+do
+ id=`echo "$f" | sed 's/.bam//' `
+ macs2 callpeak -f BAMPE -t "$f" -g 2.74e9 --keep-dup all --outdir dir-macs2-defalt-param-2024-2-22  -n "$id" --tempdir "/tmp"   
+
+done
+
 
