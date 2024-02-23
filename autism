@@ -1739,3 +1739,7 @@ cat  conserved.6samp.peaks | sed 's/.mapQ.paired_peak.*//' | sort | uniq -c | he
 cat temp-*.overlap | sed 's/.mapQ.paired_peak_[0-9]*$//' | cut -f 4,8 | sort | uniq | cut -f 1 | uniq -c |  awk '$1 >= 9' |  awk 'BEGIN {OFS = "\t";} {print $2}' | wc -l
 121417
 
+###cat temp-*.overlap | field 1-8
+NC_052256.1	60449112	60449474	L16_6723.mapQ.paired_peak_9997	NC_052256.1	60449120	60449290	L16_6208.mapQ.paired_peak_48463
+NC_052256.1	60449112	60449474	L16_6723.mapQ.paired_peak_9997	NC_052256.1	60448984	60449201	L16_6209.mapQ.paired_peak_116051
+NC_052256.1	60449112	60449474	L16_6723.mapQ.paired_peak_9997	NC_052256.1	60449316	60449402	L16_6209.mapQ.paired_peak_116052
