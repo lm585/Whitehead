@@ -1724,3 +1724,6 @@ do
 done
 
 
+########################################################################################
+for each sample, overlap with the other samples' peaks. peak 2 peak overlap
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ cat ../script-peak-overlap
