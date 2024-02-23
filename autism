@@ -1727,3 +1727,15 @@ done
 ########################################################################################
 for each sample, overlap with the other samples' peaks. peak 2 peak overlap
 linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ cat ../script-peak-overlap
+
+#############################################################################
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ ls temp-*.overlap |wc -l
+90
+cat temp-*.overlap | sed 's/.mapQ.paired_peak_[0-9]*$//' | cut -f 4,8 | sort | uniq | cut -f 1 | uniq -c |  awk '$1 >= 5' |  awk 'BEGIN {OFS = "\t";} {print $2}' > conserved.6samp.peaks
+wc -l conserved.6samp.peaks
+425221 conserved.6samp.peaks
+cat  conserved.6samp.peaks | sed 's/.mapQ.paired_peak.*//' | sort | uniq -c | head -20
+
+cat temp-*.overlap | sed 's/.mapQ.paired_peak_[0-9]*$//' | cut -f 4,8 | sort | uniq | cut -f 1 | uniq -c |  awk '$1 >= 9' |  awk 'BEGIN {OFS = "\t";} {print $2}' | wc -l
+121417
+
