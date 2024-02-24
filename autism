@@ -1759,3 +1759,22 @@ linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$
 bedtools intersect -a temp-gene.bed -b conserved.10samp.peaks.coord -wa -wb  > temp.gene.2kbp.peak
 cat temp.gene.2kbp.peak | cut -f 4 | sort | uniq -c | wc -l
 10590 genes whose promoters overlap with conserv peaks 
+
+###
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ sort -t '      ' +0 -1 +1 -2n conserved.10samp.peaks.coord > conserved.10samp.peaks.coord.sorted
+
+bedtools merge -d 100 -i  conserved.10samp.peaks.coord.sorted >  conserved.10samp.peaks.coord.sorted.merged
+wc -l conserved.10samp.peaks.coord.sorted.merged
+12504 conserved.10samp.peaks.coord.sorted.merged
+
+cat  conserved.10samp.peaks.coord.sorted.merged |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+ {
+   print $1 "\t" "macs2" "\t" "peak" "\t"  $2 "\t" $3 "\t" "." "\t" "+"  "\t" "."  "\t" "peak_id=\"" $1 "@@@" $2 "@@@" $3  "\"" "\n";
+ }' > conserved.10samp.peaks.coord.sorted.merged.gtf
+
+head conserved.10samp.peaks.coord.sorted.merged.gtf
+NC_052255.1     macs2   peak    35206   36313   .       +       .       peak_id="NC_052255.1@@@35206@@@36313"
+NC_052255.1     macs2   peak    59400   60663   .       +       .       peak_id="NC_052255.1@@@59400@@@60663"
+
+cat ../script-peak-read-count
+
