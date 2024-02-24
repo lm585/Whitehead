@@ -1743,3 +1743,19 @@ cat temp-*.overlap | sed 's/.mapQ.paired_peak_[0-9]*$//' | cut -f 4,8 | sort | u
 NC_052256.1	60449112	60449474	L16_6723.mapQ.paired_peak_9997	NC_052256.1	60449120	60449290	L16_6208.mapQ.paired_peak_48463
 NC_052256.1	60449112	60449474	L16_6723.mapQ.paired_peak_9997	NC_052256.1	60448984	60449201	L16_6209.mapQ.paired_peak_116051
 NC_052256.1	60449112	60449474	L16_6723.mapQ.paired_peak_9997	NC_052256.1	60449316	60449402	L16_6209.mapQ.paired_peak_116052
+
+###
+ls L*.mapQ.paired_peaks.xls | wc -l
+cat L*.mapQ.paired_peaks.xls  | awk 'BEGIN {FS = "\t";} NF > 5' | sort -t '    ' +9 -10 > temp-1
+sort +0 -1  conserved.10samp.peaks > temp-2
+join -t '      ' -1 1 -2 10 temp-2 temp-1 -o "2.1,2.2,2.3,2.10" > conserved.10samp.peaks.coord
+wc -l conserved.10samp.peaks.coord
+# 121417 conserved.10samp.peaks.coord
+####make gene promoter (+/- 2kbp from TSS) in bed format
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ bash script-gene-bed
+
+-rw-r--r-- 1 linyong systemd-timesync 5738540 Feb 24 12:52 temp-gene.bed
+
+bedtools intersect -a temp-gene.bed -b conserved.10samp.peaks.coord -wa -wb  > temp.gene.2kbp.peak
+cat temp.gene.2kbp.peak | cut -f 4 | sort | uniq -c | wc -l
+10590 genes whose promoters overlap with conserv peaks 
