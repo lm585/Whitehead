@@ -1778,3 +1778,22 @@ NC_052255.1     macs2   peak    59400   60663   .       +       .       peak_id=
 
 cat ../script-peak-read-count
 
+######
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ cat out-cyno-atac-seq-peakreadcount-2024-2-24-149p  | awk 'NF == 1'  | sort | uniq -c
+     10 500000 read pairs next to each other in the bam file
+
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ bash temp-s1
+vi s
+mv -i s cyno-atac-mg-10samp-conserv10.readcount
+
+> setwd("../autism/")
+ t <- read.delim("cyno-atac-mg-10samp-conserv10.readcount", row.names=1)
+rawCount <- t
+group <- factor(rep(1, 10))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+ d = cpm(y)
+ a <- log10(d+1)
+ a.df <- as.data.frame(a)
+ c1 <- as.data.frame(cor(a.df))
+ summary(c1)
