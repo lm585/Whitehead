@@ -1797,3 +1797,53 @@ y <- calcNormFactors(y)
  a.df <- as.data.frame(a)
  c1 <- as.data.frame(cor(a.df))
  summary(c1)
+
+###
+ col_fun = colorRamp2(c(0.4,0.7,1), c( "blue", "white",  "red"))
+ Heatmap(c1, name = "correlation")
+> t1 <- data.frame(id = rownames(a.df), var = a.df[,1])
+for(i in 1:dim(a.df)[1])
+{
+ t1$var[i] = var(as.numeric(a.df[i,]))
+}
+
+ info <- data.frame(sex = c(1,1,1,0,0,1,0,1,0,1))
+t1$sex.cor = -999
+for(i in 1:dim(a.df)[1])
+{
+  d1 <-  data.frame(y = t(a.df[i,]), sex = info$sex )
+  d2 <-  lm(d1[,1] ~ d1$sex)
+  d3 <- summary(d2)
+  t1$sex.cor[i] = d3$r.squared
+}
+
+> sum(t1$var)
+[1] 694.7368
+> sum(t1$var * t1$sex.cor)
+[1] 62.14254
+> sum(t1$var * t1$sex.cor) / sum(t1$var)
+[1] 0.08944761
+> info$id <- colnames(a.df)
+> info$batch <- c(rep(0,4), rep(1, 6))
+> info
+   sex       id batch
+1    1 L16_6204     0
+2    1 L16_6205     0
+3    1 L16_6208     0
+4    0 L16_6209     0
+5    0 L16_6692     1
+6    1 L16_6701     1
+7    0 L16_6704     1
+8    1 L16_6707     1
+9    0 L16_6720     1
+10   1 L16_6723     1
+
+t1$batch.cor = -999
+for(i in 1:dim(a.df)[1])
+{
+  d1 <-  data.frame(y = t(a.df[i,]), sex = info$batch)
+  d2 <-  lm(d1[,1] ~ d1$sex)
+  d3 <- summary(d2)
+  t1$batch.cor[i] = d3$r.squared
+}
+
