@@ -1847,3 +1847,73 @@ for(i in 1:dim(a.df)[1])
   t1$batch.cor[i] = d3$r.squared
 }
 
+###
+ resid2 <- a.df
+for(i in 1:dim(a.df)[1] ) {
+d1 <-  data.frame(y = t(a.df[i,]), sex = info$sex )
+d2 <-  lm(d1[,1] ~ d1$sex)
+d3 <- resid(d2)
+resid2[i,] <- d3
+}
+
+ r3 <- t(resid2)
+
+                            PC1      PC2      PC3      PC4      PC5      PC6      PC7      PC8          PC9         PC10
+Standard deviation     68.65411 46.58700 43.16860 36.31121 30.18019 26.51366 21.35069 19.19798 1.628669e-13 9.795077e-14
+Proportion of Variance  0.37695  0.17357  0.14903  0.10545  0.07284  0.05622  0.03646  0.02948 0.000000e+00 0.000000e+00
+Cumulative Proportion   0.37695  0.55052  0.69956  0.80500  0.87785  0.93407  0.97052  1.00000 1.000000e+00 1.000000e+00
+
+> identical(colnames(a.df), p1$id)
+[1] TRUE
+p1= PC1..10 coordinates 
+
+t1$pc1.cor = -999
+for(i in 1:dim(a.df)[1])
+{
+  d1 <-  data.frame(y = t(a.df[i,]), sex = p1$PC1)
+  d2 <-  lm(d1[,1] ~ d1$sex)
+  d3 <- summary(d2)
+  t1$pc1.cor[i] = d3$r.squared
+}
+
+t1$pc2.cor = -999
+for(i in 1:dim(a.df)[1])
+{
+  d1 <-  data.frame(y = t(a.df[i,]), sex = p1$PC2)
+  d2 <-  lm(d1[,1] ~ d1$sex)
+  d3 <- summary(d2)
+  t1$pc2.cor[i] = d3$r.squared
+}
+
+> write.table(p2, "cyno-atac-mg-10samp-conserv10.sex.batch.PCA.txt", sep="\t", quote=F)
+
+> identical(colnames(y), p2$id)
+design <- model.matrix( ~ p2$sex + p2$batch + p2$PC1 + p2$PC2)
+ y <- estimateDisp(y,design)
+ fit <- glmQLFit(y, design)
+ qlf <- glmQLFTest(fit, coef=2)
+ top2v1 <- topTags(qlf, n = 91234)
+ y[,1:10]
+head(top2v1)
+ t2 <- read.delim("cyno-atac-mg-10samp-conserv10.overlap.promoter.gene", header=F)
+ diff <- as.data.frame(top2v1)
+ diff$geneID <- rownames(diff)
+ df.gene <- merge(diff, t2, by.x="geneID", by.y="V6")
+ dim(diff)
+# [1] 12504 peaks     6
+ dim(df.gene)
+# [1] 10853    11
+# 10590 genes whose promoters overlap with merged conserv peaks
+  write.table(df.gene, "diff2-1.txt", sep="\t", quote=F)
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi diff2-1.txt                                                         
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat diff2-1.txt| awk 'NR > 1' | cut -f 1 | sort | uniq | wc -l          
+    8544 uniq peaks overlapped with gene promoter
+linyongmao@Linyong-Mao-MBP16-2019 autism %  cat diff2-1.txt| awk 'NR > 1' | cut -f 7 | sort | uniq | wc -l  
+   10590 uniq genes
+cat diff2-1.txt| awk 'NR > 1' |wc -l
+   10853
+linyongmao@Linyong-Mao-MBP16-2019 autism %  cat diff2-1.txt| awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 < 0 && $5 < 0.05' | cut -f 7 > temp-1
+linyongmao@Linyong-Mao-MBP16-2019 autism %  cat diff2-1.txt| awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 > 0 && $5 < 0.05' | cut -f 7 | sort | uniq > temp-2
+
+
