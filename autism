@@ -1917,3 +1917,24 @@ linyongmao@Linyong-Mao-MBP16-2019 autism %  cat diff2-1.txt| awk 'BEGIN {FS = "\
 linyongmao@Linyong-Mao-MBP16-2019 autism %  cat diff2-1.txt| awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 > 0 && $5 < 0.05' | cut -f 7 | sort | uniq > temp-2
 
 
+######
+t <- read.delim("cyno-atac-mg-10samp-conserv10.readcount", row.names=1)
+rawCount <- t
+group <- factor(rep(1, 10))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+###filter low read count peaks?
+identical(colnames(y), p2$id)
+design <- model.matrix( ~ p2$sex +  p2$PC1 + p2$PC2)
+ y <- estimateDisp(y,design)
+ fit <- glmQLFit(y, design)
+ qlf <- glmQLFTest(fit, coef=2)
+ top2v1 <- topTags(qlf, n = 91234)
+y[,1:10]
+head(top2v1)
+ t2 <- read.delim("cyno-atac-mg-10samp-conserv10.overlap.promoter.gene", header=F)
+ diff <- as.data.frame(top2v1)
+ diff$geneID <- rownames(diff)
+ df.gene <- merge(diff, t2, by.x="geneID", by.y="V6")
+ dim(df.gene)
+ dim(df.gene[ df.gene$PValue < 0.05,])
