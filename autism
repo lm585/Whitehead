@@ -1938,3 +1938,18 @@ head(top2v1)
  df.gene <- merge(diff, t2, by.x="geneID", by.y="V6")
  dim(df.gene)
  dim(df.gene[ df.gene$PValue < 0.05,])
+  write.table(df.gene, "diff2-1.txt", sep="\t", quote=F)
+
+linyongmao@Linyong-Mao-MBP16-2019 autism %  cat  cyno-atac-mg-10samp-conserv10.pc1_3.covar.diff2-1.txt|  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+{for(i = 1; i <= 7; i++)
+   print $i "\t";
+
+ print $7 "\n";
+}' | grep -v "^NC_052275\.1@@@" > temp
+../microglia/make-rnk-genesymble  temp   cyno-atac-mg-10samp-conserv10.pc1_3.covar.noX.Y.rnk
+vi cyno-atac-mg-10samp-conserv10.pc1_3.covar.noX.Y.rnk
+
+ cat  cyno-atac-mg-10samp-conserv10.pc1_3.covar.diff2-1.txt| awk 'NR > 1' | sort -t '   ' +4 -5g | head -500 | awk 'BEGIN {FS = "\t";} $2 > 0' | grep -v "^NC_052275\.1@@@"  | cut -f 7 | sed 's/gene_id //' |sort | uniq > temp-f
+
+cat  cyno-atac-mg-10samp-conserv10.pc1_3.covar.diff2-1.txt| awk 'NR > 1' | sort -t '    ' +4 -5g | head -500 | awk 'BEGIN {FS = "\t";} $2 < 0' | grep -v "^NC_052275\.1@@@"  | cut -f 7 | sed 's/gene_id //' |sort | uniq > temp-m
+
