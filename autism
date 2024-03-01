@@ -1953,3 +1953,26 @@ vi cyno-atac-mg-10samp-conserv10.pc1_3.covar.noX.Y.rnk
 
 cat  cyno-atac-mg-10samp-conserv10.pc1_3.covar.diff2-1.txt| awk 'NR > 1' | sort -t '    ' +4 -5g | head -500 | awk 'BEGIN {FS = "\t";} $2 < 0' | grep -v "^NC_052275\.1@@@"  | cut -f 7 | sed 's/gene_id //' |sort | uniq > temp-m
 
+######
+> diff.pc1..3 <- diff
+ t2 <- merge(diff.batch, diff.pc1..3, by.x="geneID", by.y="geneID")
+ dim(t2)
+# [1] 12504    11
+ t3 <- lm(t2$logFC.y ~ t2$logFC.x)
+ summary(t3)
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept) -0.006634   0.002444  -2.714  0.00666 **
+t2$logFC.x   0.939330   0.005950 157.864  < 2e-16 ***
+
+R = 0.8160434
+Multiple R-squared:  0.6659,    Adjusted R-squared:  0.6659
+F-statistic: 2.492e+04 on 1 and 12502 DF,  p-value: < 2.2e-16
+
+> plot(t2$logFC.x, t2$logFC.y, xlab="logFC (F vs M, batch as covar)", ylab="logFC (F vs M, PC1+PC2+PC3 as covar)")
+abline(lm(t2$logFC.y ~ t2$logFC.x), lwd = 1, col="blue")
+ abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+abline(h = 0)
+ abline(v = 0)
