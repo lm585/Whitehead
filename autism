@@ -1976,3 +1976,37 @@ abline(lm(t2$logFC.y ~ t2$logFC.x), lwd = 1, col="blue")
  abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
 abline(h = 0)
  abline(v = 0)
+
+#########boxplot peak cpm with batch effect
+ t <- read.delim("cyno-atac-mg-10samp-conserv10.readcount", row.names=1)
+ rawCount <- t
+ group <- factor(rep(1, 10))
+ y <- DGEList(counts=rawCount,group=group)
+ y <- calcNormFactors(y)
+d = cpm(y)
+a <- d ##a <- log2(d+1)
+###a is log2(cpm+1)
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+ t2 <- read.delim("cyno-atac-mg-10samp-conserv10.overlap.promoter.gene", header=F)
+ a.df.g <- merge(a.df, t2, by.x="id", by.y="V6")
+ dim(a.df.g)
+# [1] 10853    16
+ geneid <- "ZFX"
+ p.exp <- a.df.g[ a.df.g$V1 == paste("gene_id", geneid, sep=" "),]
+ head( p.exp)
+ mat <- as.matrix(p.exp[, 2:11])
+
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+ info <- read.delim("cyno-atac-mg-10samp-conserv10.sex.batch.PCA.txt")
+ res.info <- merge(res, info, by.x="id", by.y="id")
+ res.info$SEX <- factor(res.info$sex, levels=c(1, 0), labels=c("F", "M"))
+ res.info$col <- factor(res.info$batch, levels=c(1, 0), labels=c("green", "red"))
+
+ boxplot(res.info$mean ~ res.info$SEX, xlab="sex", ylab = "norm. peak read count")
+ beeswarm(res.info$mean ~ res.info$SEX, pwcol=res.info$col, add=T)
+ t1 <- df.gene[ df.gene$V1  == paste("gene_id", geneid, sep=" "),]
+ head(t1)
+ str <- paste(geneid, ", F/M=", round( 2^t1$logFC[1], digits= 2 ), ", p=", format(t1$PValue[1], digits=3), sep="")
+ str
+ title(main=str)
