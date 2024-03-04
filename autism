@@ -2023,3 +2023,10 @@ do
 
 done
 
+#######
+ls *up.bdg | sed 's/.mapQ.paired.B.SPMR_treat_pileup.bdg//' | while read q
+do
+  bedGraphToBigWig "$q".mapQ.paired.B.SPMR_treat_pileup.bdg  ../dir-macs2-defalt-param/chrom.sizes "$q".mapQ.paired.B.SPMR_treat_pileup.bw
+  echo $q
+done
+
