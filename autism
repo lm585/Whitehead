@@ -2010,3 +2010,16 @@ a.df$id <- row.names(a.df)
  str <- paste(geneid, ", F/M=", round( 2^t1$logFC[1], digits= 2 ), ", p=", format(t1$PValue[1], digits=3), sep="")
  str
  title(main=str)
+
+##########################################################################
+linyong@fry /lab/solexa_page/linyong/cyno-data$ cat script-macs2-02 
+#
+ls L*.mapQ.paired.bam | while read f
+do
+ id=`echo "$f" | sed 's/.bam//' `
+## macs2 callpeak -f BAMPE -t "$f" -g 2.53e9 --keep-dup all --outdir dir-macs2-defalt-param2  -n "$id".B.SPMR  --tempdir "/tmp"   -B --SPMR  
+ macs2 callpeak -f BAMPE -t "$f" -g 2.74e9 --keep-dup all --outdir dir-macs2-defalt-param-2024-2-22 -n "$id".B.SPMR --tempdir "/tmp"   -B --SPMR
+
+
+done
+
