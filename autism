@@ -2046,3 +2046,21 @@ linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$
         <Track attributeKey="Reference sequence" clazz="org.broad.igv.track.SequenceTrack" fontSize="10" id="Reference sequence" name="Reference sequence" sequenceTranslationStrandValue="POSITIVE" shouldShowTranslation="false" visible="true"/>
         <Track attributeKey="GCF_012559485.2_MFA1912RKSv2_genomic.gtf" clazz="org.broad.igv.track.FeatureTrack" colorScale="ContinuousColorScale;0.0;12534.0;255,255,255;0,0,178" displayMode="EXPANDED" fontSize="10" groupByStrand="false" id="/lab/page_genomes/Macaca_fascicularis/genome/assemblies/GCF_012559485/GCF_012559485.2_MFA1912RKSv2_genomic.gtf" name="GCF_012559485.2_MFA1912RKSv2_genomic.gtf" visible="true"/>
 
+############################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat  human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt | awk 'NR > 1' | sort -t '   '  +4 -5g | head -500 | awk 'BEGIN {FS = "\t";} $2 < 0 && $8 != "chrX" && $8 != "chrY" ' | cut -f 7 | sort | uniq > temp-f-model.interac
+grep "^RP[LS][0-9]" temp-f-model.interac | wc
+      18      18     110
+grep -v "^RP[LS][0-9]" temp-f-model.interac > temp-f-model.interac.2
+cat  human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt | awk 'NR > 1' | sort -t '   '  +4 -5g | head -500 | awk 'BEGIN {FS = "\t";} $2 > 0 && $8 != "chrX" && $8 != "chrY" ' | cut -f 7 | sort | uniq > temp-m-model.interac
+ 167 temp-m-model.interac
+
+cat human_Microglia_rna-postnatal-MvF-diff2-1.strand.name-type-chr.txt |  awk 'NR > 1' | sort -t '   '  +4 -5g | head -500 | awk 'BEGIN {FS = "\t";} $2 < 0 && $8 != "chrX" && $8 != "chrY" ' | cut -f 7 | sort | uniq > temp-f-model.no-interac
+grep -v "^RP[LS][0-9]"  temp-f-model.no-interac > temp-f-model.no-interac.2
+
+     305 temp-f-model.interac
+     287 temp-f-model.interac.2
+     292 temp-f-model.no-interac
+     285 temp-f-model.no-interac.2
+
+    167 temp-m-model.interac
+    176 temp-m-model.no-interac
