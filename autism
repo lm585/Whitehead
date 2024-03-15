@@ -2064,3 +2064,22 @@ grep -v "^RP[LS][0-9]"  temp-f-model.no-interac > temp-f-model.no-interac.2
 
     167 temp-m-model.interac
     176 temp-m-model.no-interac
+
+#############################################
+#####gene promoter only peaks
+> t1 <- read.delim("cyno-atac-mg-10samp-conserv10.pc1_3.covar.diff2-1.txt")
+> t2 <- t1[ grep("NC_052275.1@@@", t1$geneID),]
+> dim(t2)
+[1] 286  11
+> t3 <- t2[ t2$logFC >= 0,]
+> dim(t3)
+[1] 172  11
+> t3$rat <- 2^t3$logFC
+ t4 <- t2[ t2$logFC < 0,]
+ dim(t4)
+# [1] 114  11
+ t4$rat <- -2^(-t4$logFC)
+ head(t4, n = 20)
+ t5 <- rbind(t3, t4)
+> hist(t5$rat, breaks=seq(-3,3, 0.1),  xlab="", ylab="# of peaks on X chr", main="cyno-atac-mg-10samp-conserv10.pc1_3.covar.diff2-1.txt")
+
