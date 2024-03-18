@@ -2083,3 +2083,14 @@ grep -v "^RP[LS][0-9]"  temp-f-model.no-interac > temp-f-model.no-interac.2
  t5 <- rbind(t3, t4)
 > hist(t5$rat, breaks=seq(-3,3, 0.1),  xlab="", ylab="# of peaks on X chr", main="cyno-atac-mg-10samp-conserv10.pc1_3.covar.diff2-1.txt")
 
+#########
+> t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-M.age.interac.noX.Y.strand.prerank.v7.4.GseaPreranked.1692379080419/HALLMARK_INTERFERON_GAMMA_RESPONSE.tsv")
+ t2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.interac.strand.prerank.v7.4.GseaPreranked.1692378724023/HALLMARK_INTERFERON_GAMMA_RESPONSE.tsv")
+ t3 <- merge(t2, t1, by.x="SYMBOL", by.y="SYMBOL")
+ par( mar=c(8,8,2,2))
+ plot(t3$RANK.METRIC.SCORE.x, t3$RANK.METRIC.SCORE.y, xlab="signed log10(p-val) \n(sex bias; negative being F bias)", ylab="signed log10(p-val) \n (sex:age interaction; M:age biased)")
+ abline(v=0)
+ abline(h=0)
+ y= t3$RANK.METRIC.SCORE.y
+ x =  t3$RANK.METRIC.SCORE.x
+ abline(lm(y~x), lwd = 1, col="blue")
