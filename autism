@@ -2005,6 +2005,8 @@ a.df$id <- row.names(a.df)
 
  boxplot(res.info$mean ~ res.info$SEX, xlab="sex", ylab = "norm. peak read count")
  beeswarm(res.info$mean ~ res.info$SEX, pwcol=res.info$col, add=T)
+ df.gene <- read.delim("cyno-atac-mg-10samp-conserv10.pc1_3.covar.diff2-1.txt")
+ 
  t1 <- df.gene[ df.gene$V1  == paste("gene_id", geneid, sep=" "),]
  head(t1)
  str <- paste(geneid, ", F/M=", round( 2^t1$logFC[1], digits= 2 ), ", p=", format(t1$PValue[1], digits=3), sep="")
