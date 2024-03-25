@@ -1,0 +1,117 @@
+ setwd("/Users/linyongmao/Documents/dir-GTExV8/")
+raw <- read.delim("gtex-all-samples.gene.count.txt", header=T)
+dim(raw)
+t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+file <- read.delim("gtex-54tiss.txt", header=F)
+ index = 32
+tissue = file[index,1]
+ t2 <- t1[ t1$V2 == tissue, ]
+ t2$id <- gsub("-", ".", t2$V1)
+ t2$id <- paste(t2$id, ".", sep="")
+ raw2 <- raw[, colnames(raw) %in% t2$id ]
+ str1 <- paste(tissue, dim(raw2)[2], sep="\t")
+ cat(str1)
+ cat("\n")
+rownames(raw2) <- raw$geneID
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.5
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+d = cpm(y)
+a <- log10(d+1)
+a.df <- as.data.frame(a)
+a.df[1:6,1:6]
+ y.cn <- colnames(y)
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ info.2 <- head(info, n= dim(y)[2])
+for(i in 1:dim(y)[2]) {
+ t1 <- info[ info$sid == y.cn[i],]
+ info.2[i,] <- t1[1,]
+ }
+###get sex info for each sample according to the y sample order
+ identical(info.2$sid, colnames(y))
+ identical(info.2$sid, colnames(a.df))
+ resid2 <- a.df
+for(i in 1:dim(a.df)[1] ) {
+ t1 <- data.frame(y = t(a.df[i,]), sex = info.2$SEX )
+ t2 <- lm(t1[,1] ~ sex, data=t1)
+ t3 <- resid(t2)
+ resid2[i,] <- t3
+
+}
+ r3 <- t(resid2)
+  dim(info.2[ info.2$SEX == 1,])
+# [1] 293   7
+  dim(info.2[ info.2$SEX == 2,])
+# [1] 136   7
+136 * 2 * 0.1 - 6
+# [1] 21.2
+
+###PCA
+ pca <- prcomp(r3, center = TRUE, scale. = TRUE)
+boxplot(pca$x[,1:20])
+ s <- summary(pca)
+s$importance[,1:20]
+p1 <- as.data.frame( pca$x[,1:100])
+ p1$id <- rownames(p1)
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ t5 <- read.delim("gtex-981subjects-tsvs/subject.tsv")
+ info3 <- t5[, c(16,31,46, 106)]
+ info4 <- merge(info, info3, by.x="SUBJID", by.y="source_subject_id")
+ dim(info4)
+# [1] 22951    10
+ t <- read.delim("/Users/linyongmao/Documents/dir-GTExV8/dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt")
+ t1 <- data.frame(t$SAMPID, t$SMRIN, t$SMTSISCH)
+ info5 <- merge(info4, t1, by.x="SAMPID", by.y="t.SAMPID")
+ dim(info5)
+# [1] 22951    12
+ p2 <- merge(p1, info5, by.x ="id", by.y="sid")
+ dim(p2)
+# [1] 429 112
+cor.test(p2$PC1, p2$SEX)
+cor.test(p2$PC1, p2$t.SMRIN)
+cor.test(p2$PC1, log10(p2$t.SMTSISCH))
+
+ info.2 <- p2
+ for(i in 1:dim(y)[2]) {
+  t1 <- p2[ p2$id == colnames(y)[i],]
+  info.2[i,] <- t1[1,]
+  }
+ dim(info.2)
+ y[,1:20]
+
+ identical(info.2$id, colnames(y))
+
+design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN + log10(info.2$t.SMTSISCH) + 
+info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6+info.2$PC7+info.2$PC8+info.2$PC9+info.2$PC10+info.2$PC11+info.2$PC12+info.2$PC13+info.2$PC14+info.2$PC15+info.2$PC16+info.2$PC17+info.2$PC18+info.2$PC19+info.2$PC20+info.2$PC21 )
+
+ dim(design)
+# [1] 429  27
+ head(design)
+
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+# write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+gene.name <- raw[, 1:2]
+df.gene <- merge(diff, gene.name, by.x="geneID", by.y="geneID")
+chr <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type")
+df.cpm.gene <- merge(df.gene, chr, by.x="geneID", by.y="geneID")
+ head(top2v1)
+ y[,1:11]
+ write.table(df.cpm.gene, "diff2-1.txt", sep="\t", quote=F)
+
