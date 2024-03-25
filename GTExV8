@@ -4541,3 +4541,25 @@ linyong@fry /lab/solexa_page/linyong$ grep -i "_PAR_Y" /lab/solexa_page/linyong/
  t3 <-as.data.frame( t(t2))
  dim(t3[ t3$IL9R > 15,])
 
+#######################################
+> dim(info.2[ info.2$SEX == 1,])
+[1] 291   7
+> dim(info.2[ info.2$SEX == 2,])
+[1] 137   7
+>  137 * 2 * 0.1 - 6
+[1] 21.4
+covariates:
+sex
+age
+BMI
+RIN
+SISCH
+intercept (lm)
+
+
+design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN + log10(info.2$t.SMTSISCH) + 
+info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6+info.2$PC7+info.2$PC8+info.2$PC9+info.2$PC10+info.2$PC11+info.2$PC12+info.2$PC13+info.2$PC14+info.2$PC15+info.2$PC16+info.2$PC17+info.2$PC18+info.2$PC19+info.2$PC20+info.2$PC21 )
+
+ dim(design)
+# [1] 428  27
+ head(design)
