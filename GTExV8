@@ -4593,3 +4593,6 @@ for(i in 1:dim(a.df)[1])
   t1$sex.cor[i] = d3$r.squared
 }
 
+> summary(t1$sex.cor)
+> summary(t1$var)
+> sum(t1$var * t1$sex.cor) / sum(t1$var)
