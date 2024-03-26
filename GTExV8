@@ -4563,3 +4563,33 @@ info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6+info.2$PC7+inf
  dim(design)
 # [1] 428  27
  head(design)
+
+##################data variation explained by sex
+> y.cn <- colnames(y)
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ info.2 <- head(info, n= dim(y)[2])
+for(i in 1:dim(y)[2]) {
+ t1 <- info[ info$sid == y.cn[i],]
+ info.2[i,] <- t1[1,]
+ }
+###get sex info for each sample according to the y sample order
+ identical(info.2$sid, colnames(y))
+ identical(info.2$sid, colnames(a.df))
+
+t1 <- data.frame(id = rownames(a.df), var = a.df[,1])
+for(i in 1:dim(a.df)[1])
+{
+ t1$var[i] = var(as.numeric(a.df[i,]))
+}
+
+t1$sex.cor = -999
+for(i in 1:dim(a.df)[1])
+{
+  d1 <-  data.frame(y = t(a.df[i,]), sex = info.2$SEX )
+  d2 <-  lm(d1[,1] ~ d1$sex)
+  d3 <- summary(d2)
+  t1$sex.cor[i] = d3$r.squared
+}
+
