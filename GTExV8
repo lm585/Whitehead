@@ -4619,3 +4619,16 @@ F-statistic: 4.692 on 21 and 406 DF,  p-value: 1.472e-10
 
 > 0.1953^(1/2)
 [1] 0.4419276
+
+#############################################
+> t1 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.noX.Y.rnk", header=F)
+ t2 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-RIN-ischem-PC1-21-covar.noX.Y.rnk", header=F)
+ t3 <- merge(t1, t2, by.x="V1", by.y="V1")
+ dim(t3)
+[1] 14783     3
+> plot(t3$V2.x, t3$V2.y, cex= 0.5, xlab="signed log10(pval),age-bmi-covar.noX.Y", ylab="signed log10(pval), age-bmi-RIN-ischem-PC1-21-covar.noX.Y")
+ abline(h = seq(-100,100,10), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = 0, col="blue")
+ abline(v = 0, col="blue")
+
