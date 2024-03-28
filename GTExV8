@@ -4632,3 +4632,9 @@ F-statistic: 4.692 on 21 and 406 DF,  p-value: 1.472e-10
  abline(h = 0, col="blue")
  abline(v = 0, col="blue")
 
+> t4 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-RIN-ischem-PC1-21-covar.txt")
+ t5 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.2.txt")
+ t6 <- merge( t5, t4,by.x="geneID", by.y="geneID")
+
+ dim(t6)
+# [1] 15298    19
