@@ -4638,3 +4638,15 @@ F-statistic: 4.692 on 21 and 406 DF,  p-value: 1.472e-10
 
  dim(t6)
 # [1] 15298    19
+ t7 <- t6[ t6$chr.x != "chrX" & t6$chr.x != "chrY",]
+ dim(t7)
+# [1] 14786    19
+> plot(t7$logFC.x, t7$logFC.y, xlab="logFC, FvsM age-bmi-covar", ylab="logFC, age-bmi-RIN-ischem-PC1-21-covar")
+ x1 = 1:5
+ y1=x1
+ abline(lm(y1 ~ x1), col="blue")
+ abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(h=0)
+ abline(v=0)
+ text(-1.5,1.2, "y=x line", col="blue")
