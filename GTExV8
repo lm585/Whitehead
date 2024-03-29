@@ -4615,6 +4615,9 @@ for(i in 1:dim(a.df)[1])
 
 > ggplot(p5, aes(x=t.SMRIN, y = PC1)) + geom_point(size= 1, shape = 21) + geom_smooth(se=T, method="lm") + labs(title="r= -0.7689", x = "RIN", y="PC1 (29.3%)")
 
+> vioplot(p5$PC1 ~ p5$death, ylab="PC1", xlab = "possible cause of death", xaxt = "n", main="r= 0.2902, p= 9.398e-10")
+  axis(1, at = c(1,2), labels=c("others", "heart related"), las=1)
+
 > d1 <- lm( p5$death ~ p5$PC1+p5$PC2+p5$PC3+p5$PC4+p5$PC5+p5$PC6+p5$PC7+p5$PC8+p5$PC9+p5$PC10+p5$PC11+p5$PC12+p5$PC13+p5$PC14+p5$PC15+p5$PC16+p5$PC17+p5$PC18+p5$PC19+p5$PC20+p5$PC21  )
 > summary(d1)
 Multiple R-squared:  0.1953,    Adjusted R-squared:  0.1537
