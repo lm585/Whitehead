@@ -4683,3 +4683,14 @@ Brain - Hypothalamus    202
 > design <- model.matrix( ~ info.2$SEX + info.2$age_value +
 + info.2$PC1+info.2$PC2 )
 
+##########
+> info6 <- info5[ info5$age_value >= 55 & info5$age_value < 60,]
+Brain - Hypothalamus    33 samples within the above range
+18681 genes with median >= 0.5,     26 M, 7 F;
+##7 Females, 7 variables
+> design <- model.matrix( ~ info.2$SEX + info.2$age_value +
++ info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5 )
+
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat diff2-1-Hypothalamus-FvsM.age-PC1-5-covar.age55-59.txt | awk 'BEGIN {FS = "\t"} !($8 == "chrX" || $8 == "chrY")'  | sort -t '      ' +4 -5g | head -500 |  awk 'BEGIN {FS = "\t"} $2 > 0' | cut -f 7
+
