@@ -4656,3 +4656,30 @@ F-statistic: 4.692 on 21 and 406 DF,  p-value: 1.472e-10
  abline(h=0)
  abline(v=0)
  text(-1.5,1.2, "y=x line", col="blue")
+
+############################################################
+>  index = 16
+Brain - Hypothalamus    202
++  med$logic[i] <- median(d[i,]) >= 0.5
+> print(dim(y))
+[1] 18447   202
+>   dim(info.2[ info.2$SEX == 1,])
+[1] 147   7
+>   dim(info.2[ info.2$SEX == 2,])
+[1] 55  7
+> info6 <- info5[ info5$age_value <= 45,]
+###......
+ dim(raw)
+ t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+ file <- read.delim("gtex-54tiss.txt", header=F)
+  index = 16
+ tissue = file[index,1]
+  t2 <- t1[ t1$V2 == tissue, ]
+  t2$id <- gsub("-", ".", t2$V1)
+  t2$id <- paste(t2$id, ".", sep="")
+  raw2 <- raw[, colnames(raw) %in% t2$id & colnames(raw) %in% info6$sid]
+
+###18863 genes with median cpm >= 0.5;    15samples (4 F, 11 M <= 45 years old)
+> design <- model.matrix( ~ info.2$SEX + info.2$age_value +
++ info.2$PC1+info.2$PC2 )
+
