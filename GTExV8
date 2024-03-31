@@ -4694,3 +4694,15 @@ Brain - Hypothalamus    33 samples within the above range
 
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat diff2-1-Hypothalamus-FvsM.age-PC1-5-covar.age55-59.txt | awk 'BEGIN {FS = "\t"} !($8 == "chrX" || $8 == "chrY")'  | sort -t '      ' +4 -5g | head -500 |  awk 'BEGIN {FS = "\t"} $2 > 0' | cut -f 7
 
+#########
+Brain - Hypothalamus    202
+[1] 18447 expressed genes,   202
+147 male, 55 female                  
+> s$importance[,1:6]
+                            PC1      PC2      PC3      PC4      PC5      PC6
+Standard deviation     59.96759 41.15805 39.43753 31.89466 31.32077 25.98823
+Proportion of Variance  0.19494  0.09183  0.08431  0.05515  0.05318  0.03661
+Cumulative Proportion   0.19494  0.28677  0.37109  0.42623  0.47941  0.51602
+> design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN + log10(info.2$t.SMTSISCH) +
+ info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6 )
+
