@@ -4706,3 +4706,25 @@ Cumulative Proportion   0.19494  0.28677  0.37109  0.42623  0.47941  0.51602
 > design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN + log10(info.2$t.SMTSISCH) +
  info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6 )
 
+Delayed puberty (HP:0000823) / Hypogonadotrophic hypogonadism (HP:0000044)
+PUS1 LEPR GNRH1 NR0B1 TBX3 KISS1 PCSK1 TACR3 
+Delayed puberty (HP:0000823): PUS1 LEPR GNRH1 NR0B1 TBX3
+Hypogonadotrophic hypogonadism (HP:0000044): KISS1;PCSK1;TACR3;GNRH1;NR0B1
+
+##################
+Brain - Hypothalamus    202
++  med$logic[i] <- median(d[i,]) >= 0.1
+> print(dim(y))
+[1] 24465   202
+> s$importance[,1:10]
+                            PC1      PC2      PC3      PC4      PC5      PC6      PC7      PC8      PC9     PC10
+Standard deviation     64.00678 44.94054 42.43793 34.47961 34.08877 28.75642 26.83672 25.51257 23.21841 22.39146
+Proportion of Variance  0.16746  0.08255  0.07361  0.04859  0.04750  0.03380  0.02944  0.02660  0.02204  0.02049
+Cumulative Proportion   0.16746  0.25001  0.32363  0.37222  0.41972  0.45352  0.48296  0.50956  0.53160  0.55209
+design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN + log10(info.2$t.SMTSISCH) +
+ info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6 )
+>  dim(design)
+[1] 202  12
+   23637 temp
+   23591 (some genes consolidated) diff2-1-Hypothalamus-FvsM.age-bmi-RIN-ischem-PC1-6-covar.cpm0.1.noX.Y.rnk
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  diff2-1-Hypothalamus-FvsM.age-bmi-RIN-ischem-PC1-6-covar.cpm0.1.txt | awk 'BEGIN {FS = "\t"} !($8 == "chrX" || $8 == "chrY")'  | sort -t '        '  +4 -5g | head -500 |  awk 'BEGIN {FS = "\t"} $2 > 0' | cut -f 7 | grep -vw name | sort | uniq > temp-f-2
