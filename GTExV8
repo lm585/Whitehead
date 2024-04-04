@@ -4773,3 +4773,36 @@ ALAS2
 summary(t2)
 summary(t3)
  t.test(t2, t3)
+
+####################################################include SMTSISCH (pos/negative values) as covar; remove 9 samples with SMTSISCH ==
+NA
+> samp.na <- info.2[is.na( info.2$t.SMTSISCH) ,]$id
+ samp.na
+  raw2 <- raw[, colnames(raw) %in% t2$id & !(colnames(raw)  %in% samp.na)]
+Whole Blood     746
++  med$logic[i] <- median(d[i,]) >= 0.1
+> print(dim(y))
+[1] 19202   746
+496 M; 250 F
+                            PC1      PC2      PC3      PC4      PC5      PC6      PC7      PC8      PC9     PC10
+Standard deviation     69.73716 44.12750 37.36748 32.44707 23.68985 21.48876 18.46261 18.18311 16.90570 16.34993
+Proportion of Variance  0.25327  0.10141  0.07272  0.05483  0.02923  0.02405  0.01775  0.01722  0.01488  0.01392
+Cumulative Proportion   0.25327  0.35468  0.42739  0.48222  0.51145  0.53550  0.55325  0.57047  0.58535  0.59927
+> s$importance[,40:46] 
+                          PC40     PC41    PC42     PC43     PC44     PC45     PC46
+Standard deviation     6.53537 6.455712 6.36592 6.288039 6.054017 6.007447 5.950522
+Proportion of Variance 0.00222 0.002170 0.00211 0.002060 0.001910 0.001880 0.001840
+Cumulative Proportion  0.74376 0.745940 0.74805 0.750100 0.752010 0.753890 0.755740
+> cor.test(p2$PC1, (p2$t.SMTSISCH))
+       cor
+-0.7405844
+
+        Spearman's rank correlation rho
+       rho
+-0.7394633
+
+> design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN  +    info.2$t.SMTSISCH +   
+
++ 
+>  dim(design)
+[1] 746  50
