@@ -4728,3 +4728,28 @@ design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index
    23637 temp
    23591 (some genes consolidated) diff2-1-Hypothalamus-FvsM.age-bmi-RIN-ischem-PC1-6-covar.cpm0.1.noX.Y.rnk
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  diff2-1-Hypothalamus-FvsM.age-bmi-RIN-ischem-PC1-6-covar.cpm0.1.txt | awk 'BEGIN {FS = "\t"} !($8 == "chrX" || $8 == "chrY")'  | sort -t '        '  +4 -5g | head -500 |  awk 'BEGIN {FS = "\t"} $2 > 0' | cut -f 7 | grep -vw name | sort | uniq > temp-f-2
+
+#########################################
+Whole Blood     755
++  med$logic[i] <- median(d[i,]) >= 0.1
+> print(dim(y))
+[1] 19204   755
+501 M; 254 F
+ 254 * 2 * 0.1 - 6 = 44
+                            PC1      PC2      PC3      PC4      PC5      PC6      PC7      PC8      PC9     PC10
+Standard deviation     69.57922 44.20115 37.48689 32.69581 23.83401 21.46801 18.36810 18.24586 16.85916 16.29494
+Proportion of Variance  0.25210  0.10174  0.07318  0.05567  0.02958  0.02400  0.01757  0.01734  0.01480  0.01383
+Cumulative Proportion   0.25210  0.35383  0.42701  0.48268  0.51226  0.53625  0.55382  0.57116  0.58596  0.59979 
+                           PC42     PC43     PC44     PC45    PC46
+Standard deviation     6.368879 6.270157 6.027326 5.986372 5.95461
+Proportion of Variance 0.002110 0.002050 0.001890 0.001870 0.00185
+Cumulative Proportion  0.747720 0.749770 0.751660 0.753530 0.75537
+> summary(p2$t.SMTSISCH)
+    Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+-1287.00   -90.75   339.50   336.03   726.00  1401.00        9 
+design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN  +                           
+info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6+info.2$PC7+info.2$PC8+info.2$PC9+info.2$PC10+info.2$PC11+info.2$PC12+info.2$PC13+info.2$PC14+info.2$PC15+info.2$PC16+info.2$PC17+info.2$PC18+info.2$PC19+info.2$PC20+info.2$PC21  +
+info.2$PC22+info.2$PC23+info.2$PC24+info.2$PC25+info.2$PC26+info.2$PC27+info.2$PC28+info.2$PC29+info.2$PC30+info.2$PC31+info.2$PC32+info.2$PC33+info.2$PC34+info.2$PC35+info.2$PC36+info.2$PC37+info.2$PC38+info.2$PC39+info.2$PC40+info.2$PC41+info.2$PC42+info.2$PC43+info.2$PC44  )
+>  dim(design)
+[1] 755  49
+not including log10(info.2$t.SMTSISCH)
