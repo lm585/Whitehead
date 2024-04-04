@@ -4753,3 +4753,23 @@ info.2$PC22+info.2$PC23+info.2$PC24+info.2$PC25+info.2$PC26+info.2$PC27+info.2$P
 >  dim(design)
 [1] 755  49
 not including log10(info.2$t.SMTSISCH)
+
+######
+ALAS2
+
+ name="KDM6A"
+ id <- gene.name[ gene.name$name == name,]
+ id
+ info.2$sex <- factor( info.2$SEX, levels=c(2,1), labels=c("Female", "Male" ))
+ t1 <- a.df[ rownames(a.df) == id[1,1],]
+ t1[,1:11]
+ t1 <- as.numeric(a.df[ rownames(a.df) == id[1,1],])
+ boxplot(t1 ~ info.2$sex, xlab="", ylab="log2(CPM+1)", main=name)
+>  abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ t2 <- t1[ info.2$SEX == 2]
+ length(t2)
+ t3 <- t1[ info.2$SEX == 1]
+ length(t3)
+summary(t2)
+summary(t3)
+ t.test(t2, t3)
