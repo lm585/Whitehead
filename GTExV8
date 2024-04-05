@@ -4806,3 +4806,45 @@ Cumulative Proportion  0.74376 0.745940 0.74805 0.750100 0.752010 0.753890 0.755
 + 
 >  dim(design)
 [1] 746  50
+
+######
+> df2 <- read.delim("diff2-1-blood-FvsM.age-bmi-RIN-PC1-44-covar.cpm0.1.txt")
+ dim(df2)
+# [1] 19204    10
+ df3 <- merge(df2, df.cpm.gene, by.x="geneID", by.y="geneID")
+ dim(df3)
+# [1] 19183    19
+ dim(df.cpm.gene)
+# [1] 19202    10
+
+df3$logP.x = -999
+df3$logP.y = -999
+for(i in 1:dim(df3)[1])
+{
+ if(df3$PValue.x[i] == 0 | df3$PValue.y[i] == 0)
+ {
+  print(df3[i,]);
+  cat("\n")
+ } 
+ else 
+ {
+  a=1
+  b=1
+  if(df3$logFC.x[i] < 0)
+    a = -1
+  if(df3$logFC.y[i] < 0)
+    b = -1
+  df3$logP.x[i] = a * (-log10(df3$PValue.x[i]))
+  df3$logP.y[i] = b * (-log10(df3$PValue.y[i]))
+ }
+}
+
+ df4 <- df3[ df3$logP.x > -900,]
+ dim(df4[ (df4$logP.y - df4$logP.x) > 2,])
+# [1] 1979   21
+ dim(df4[ (df4$logP.x - df4$logP.y) > 2,])
+# [1] 39 21
+ dim(df4[ abs(df4$logP.y - df4$logP.x) > 2 & (df4$logFC.x * df4$logFC.y < 0),])
+# [1]  0 21
+> plot(df4$logP.x, df4$logP.y, xlim=c(-100,100), ylim=c(-100,100))
+
