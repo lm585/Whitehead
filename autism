@@ -2096,3 +2096,44 @@ grep -v "^RP[LS][0-9]"  temp-f-model.no-interac > temp-f-model.no-interac.2
  y= t3$RANK.METRIC.SCORE.y
  x =  t3$RANK.METRIC.SCORE.x
  abline(lm(y~x), lwd = 1, col="blue")
+
+#############################################################################
+ t <- read.delim("cyno-atac-mg-10samp-conserv10.readcount", row.names=1)
+ t1 <- t[, c(5:10)]
+ rawCount <- t1
+ group <- factor(rep(1, 6))
+ y <- DGEList(counts=rawCount,group=group)
+ y <- calcNormFactors(y)
+ p1 <- read.delim("cyno-atac-mg-10samp-conserv10.sex.batch.PCA.txt")
+ p2 <- p1[ p1$batch == 1,]
+ identical( colnames(y), p2$id)
+# [1] TRUE
+ age <- c(24, 24, 24,13, 13, 22)
+ p2$age = age
+ d = cpm(y)
+ a <- log10(d+1)
+ a.df <- as.data.frame(a)
+ t1 <- data.frame(id = rownames(a.df), var = a.df[,1])
+t1$sex.cor = -999
+for(i in 1:dim(a.df)[1])
+{
+  d1 <-  data.frame(y = t(a.df[i,]), sex = p2$age )
+  d2 <-  lm(d1[,1] ~ d1$sex)
+  d3 <- summary(d2)
+  t1$sex.cor[i] = d3$r.squared
+}
+ summary(t1$sex.cor)
+
+                            PC1      PC2      PC3      PC4          PC5          PC6
+Standard deviation     67.96100 63.55768 46.95310 40.51086 1.447262e-13 8.859638e-14
+Proportion of Variance  0.36938  0.32306  0.17631  0.13125 0.000000e+00 0.000000e+00
+Cumulative Proportion   0.36938  0.69244  0.86875  1.00000 1.000000e+00 1.000000e+00
+
+> p1 <- as.data.frame( pca$x[,1:6])
+  p1$id <- rownames(p1)
+ identical(p1$id, p2$id)
+ colnames(p1) <- paste("six", colnames(p1), sep=".")
+ p3 <- cbind(p2, p1)
+
+
+> design <- model.matrix( ~ p2$sex + p2$age )
