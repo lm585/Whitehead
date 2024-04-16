@@ -2137,3 +2137,29 @@ Cumulative Proportion   0.36938  0.69244  0.86875  1.00000 1.000000e+00 1.000000
 
 
 > design <- model.matrix( ~ p2$sex + p2$age )
+
+#############################################################################
+ a.df$id <- row.names(a.df)
+ t2 <- read.delim("cyno-atac-mg-10samp-conserv10.overlap.promoter.gene", header=F)
+  a.df.g <- merge(a.df, t2, by.x="id", by.y="V6")
+  dim(a.df.g)
+# [1] 10853    12
+# [1] 10853    16
+  geneid <- "ZFX"
+  p.exp <- a.df.g[ a.df.g$V1 == paste("gene_id", geneid, sep=" "),]
+  head( p.exp)
+  mat <- as.matrix(p.exp[, 2:7])
+ 
+  res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+  info <- p2
+  res.info <- merge(res, info, by.x="id", by.y="id")
+  res.info$SEX <- factor(res.info$sex, levels=c(1, 0), labels=c("F", "M"))
+ boxplot(res.info$mean ~ res.info$SEX, xlab="sex", ylab = "norm. peak read count")
+ beeswarm(res.info$mean ~ res.info$SEX,  add=T)
+ df.gene <- read.delim("cyno-atac-mg-10samp-conserv10.6samplesOnly.age.covar.diff2-1.txt")
+
+ t1 <- df.gene[ df.gene$V1  == paste("gene_id", geneid, sep=" "),]
+ head(t1)
+ str <- paste(geneid, ", F/M=", round( 2^t1$logFC[1], digits= 2 ), ", p=", format(t1$PValue[1], digits=3), sep="")
+ str
+ title(main=str)
