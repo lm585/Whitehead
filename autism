@@ -2170,3 +2170,27 @@ Cumulative Proportion   0.36938  0.69244  0.86875  1.00000 1.000000e+00 1.000000
  abline(h = -log10(0.05), col = "blue")
  abline(v = 0)
  text(1.7, -log10(0.05) + 0.03, "p=0.05", col="blue" )
+#############################################################################
+nine samples excluding L16_6208
+>  t <- read.delim("cyno-atac-mg-10samp-conserv10.readcount", row.names=1)
+ rawCount <- t[, c(1:2, 4:10)]
+ group <- factor(rep(1, 9))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+ d = cpm(y)
+ a <- log10(d+1)
+ a.df <- as.data.frame(a)
+ p1 <- read.delim("cyno-atac-mg-10samp-conserv10.sex.batch.PCA.txt")
+ p2 <- p1[ p1$id != "L16_6208", c(1,12,13)]
+ identical( colnames(y), p2$id)
+ identical( colnames(a.df), p2$id)
+......
+> identical(p2$id, rownames(pca$x))
+ p3 <- cbind(p2, pca$x[,1:3])
+ age <- c(31, 29, 26, c(24, 24, 24,13, 13, 22))
+ p3$age <- age
+#####sample swap, not sure about the age of first two samples
+ age <- c(29, 31, 26, c(24, 24, 24,13, 13, 22))
+ p3$age2 <- age
+ cor(p3[,c(2:8)])
+> write.table(p3, "cyno-atac-mg-10samp-conserv10.sex.batch.age.9samps.3PCA.txt", sep="\t", quote=F)
