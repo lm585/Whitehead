@@ -2194,3 +2194,21 @@ y <- calcNormFactors(y)
  p3$age2 <- age
  cor(p3[,c(2:8)])
 > write.table(p3, "cyno-atac-mg-10samp-conserv10.sex.batch.age.9samps.3PCA.txt", sep="\t", quote=F)
+
+ identical(colnames(y),p3$id)
+ design <- model.matrix( ~ p3$sex + p3$PC1 + p3$PC2)
+
+> t1 <- read.delim("cyno-atac-mg-10samp-conserv10.6samplesOnly.age.covar.noX.Y.rnk", header=F)
+ t2 <- read.delim("cyno-atac-mg-10samp-conserv10.9samplesOnly.pc1_2.covar.noX.Y.rnk", header=F)
+ t3 <- merge(t1, t2, by.x="V1", by.y="V1")
+ dim(t3)
+# [1] 10308     3
+ plot(t3$V2.x, t3$V2.y)
+  abline(h = seq(-100, 100, 0.5), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = seq(-100, 100, 0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = 0, col="blue")
+  abline(v = 0, col="blue")
+data:  t3$V2.x and t3$V2.y
+t = 72.278, df = 10306, p-value < 2.2e-16
+      cor
+0.5799888
