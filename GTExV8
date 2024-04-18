@@ -4877,3 +4877,16 @@ Cells - EBV-transformed lymphocytes     174
  abline(v = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
  abline(h=0)
  abline(v=0)
+
+> lcl <- read.delim("Andrianna-LCL.deltaExi.txt")
+ dim(lcl)
+# [1] 341   6
+ t1 <- (df.cpm.gene[ df.cpm.gene$chr == "chrX",])
+ dim(t1)
+# [1] 668  10
+ t2 <- merge(lcl, t1, by.x="Gene", by.y="name")
+ dim(t2)
+# [1] 335  15
+> t3 <- t2[ abs( t2$logFC) >= 0.5 | abs(t2$deltaEx >= 0.5),]
+> ggplot(t2, aes(x=deltaEx, y = logFC, color = region, label = Gene)) + geom_point(size=1.5) + labs( x = "LCL deltaEx (Adrianna San Roman)", y="GTEx V8 LCL log2FC (F vs. M)", title="335 expressed X genes") + geom_hline(yintercept=0, col="black") + geom_vline(xintercept=0) + xlim(-0.5,1.5) + ylim(-1, 2) + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1)
+
