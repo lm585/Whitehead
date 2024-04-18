@@ -4848,3 +4848,32 @@ for(i in 1:dim(df3)[1])
 # [1]  0 21
 > plot(df4$logP.x, df4$logP.y, xlim=c(-100,100), ylim=c(-100,100))
 
+#############################################################################
+Cells - EBV-transformed lymphocytes     174
++  med$logic[i] <- median(d[i,]) >= 0.1
+> print(dim(y))
+[1] 21742   174
+> design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN + (info.2$t.SMTSISCH) +
+ info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6)
+
+###
+> lcl <- read.delim("temp-san")
+> head(lcl)
+    Gene   x_pval x_adj_pval   deltaEx
+1  KDM5C 6.13e-58   2.09e-55 0.7299753
+> dim(lcl)
+# [1] 406   4
+ t1 <- (df.cpm.gene[ df.cpm.gene$chr == "chrX",])
+ dim(t1)
+# [1] 668  10
+ t2 <- merge(lcl, t1, by.x="Gene", by.y="name")
+ dim(t2)
+# [1] 375  13
+ t3 <- t2[ !is.na(t2$deltaEx), ]
+> plot(t3$deltaEx, t3$logFC, ylim=c(-1, 2), xlim=c(-0.5,1.5))
+    Gene   x_pval x_adj_pval  deltaEx             geneID    logFC   logCPM        F        PValue           FDR  chr strand   type
+353 XIST 1.04e-38   5.89e-37 1.159831 ENSG00000229807.13 10.67081 7.524678 4353.624 2.450541e-120 6.659959e-117 chrX      - lncRNA
+ abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(h=0)
+ abline(v=0)
