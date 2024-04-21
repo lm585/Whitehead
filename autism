@@ -2212,3 +2212,27 @@ data:  t3$V2.x and t3$V2.y
 t = 72.278, df = 10306, p-value < 2.2e-16
       cor
 0.5799888
+
+#############################################################################
+> a
+[1]  6  8  2 12
+> m <- matrix(a,  nrow=2, ncol = 2, byrow=T )
+>  fi <- fisher.test(m)
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi temp-hd-human
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi temp-hd-mouse
+     305 temp-f-model.interac
+ls  temp-1 temp-2 > temp-paths
+   14586 temp-3
+bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-f-model.interac F-biased-microglia   temp-paths temp-3
+
+cat temp-hd-human | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0' | awk '$5 < -0.1' | cut -f 1  | awk 'NR > 1' | sort | uniq > temp-1
+     407 temp-1
+cat temp-hd-human | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 > 0' | awk '$5 > 0.1' | cut -f 1  | awk 'NR > 1' | sort | uniq > temp-2
+     453 temp-2
+
+cat  human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt | awk 'NR > 1' |  awk 'BEGIN {FS = "\t";} $8 != "chrX" && $8 != "chrY" ' | cut -f 7 | sort | uniq >  temp-3
+   14586 temp-3
+                       pathway-genes         non-pathway-genes
+sig-genes-input        28                    277   (sum=305)
+non-sig-gens-in        349                   13932 (sum=14281)
+                       377(temp-1 && bg genes)
