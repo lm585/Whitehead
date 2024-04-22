@@ -2236,3 +2236,12 @@ cat  human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt 
 sig-genes-input        28                    277   (sum=305)
 non-sig-gens-in        349                   13932 (sum=14281)
                        377(temp-1 && bg genes)
+
+######
+> t1 <- read.delim("../autism/HD-snRNA-test.dat")
+ lm1 <- lm(t1$zfx ~ t1$disease + t1$sex)
+ summary(lm1)
+t1$diseasehd  6.714e-15  1.187e+00    0.00        1
+
+>  lm1 <- lm(t1$zfx ~ t1$disease)
+t1$diseasehd   -5.714      3.539  -1.615    0.118
