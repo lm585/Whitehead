@@ -2245,3 +2245,10 @@ t1$diseasehd  6.714e-15  1.187e+00    0.00        1
 
 >  lm1 <- lm(t1$zfx ~ t1$disease)
 t1$diseasehd   -5.714      3.539  -1.615    0.118
+
+######
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat  safari.genes | cut -f 2 | awk 'NR > 1' | sort | uniq > temp-safari.genes
+cat safari.genes.cater1 | cut -f 2 | awk 'NR > 1' | sort | uniq > temp-safari.genes.cater1
+cat safari.genes.syndrome  | cut -f 2 | awk 'NR > 1' | sort | uniq > temp-safari.genes.syndrome
+ls temp-safari.genes  temp-safari.genes.cater1 temp-safari.genes.syndrome >  temp-paths 
+bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-m-model.interac M-biased-microglia   temp-paths temp-3
