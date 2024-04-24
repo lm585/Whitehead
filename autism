@@ -2252,3 +2252,26 @@ cat safari.genes.cater1 | cut -f 2 | awk 'NR > 1' | sort | uniq > temp-safari.ge
 cat safari.genes.syndrome  | cut -f 2 | awk 'NR > 1' | sort | uniq > temp-safari.genes.syndrome
 ls temp-safari.genes  temp-safari.genes.cater1 temp-safari.genes.syndrome >  temp-paths 
 bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-m-model.interac M-biased-microglia   temp-paths temp-3
+
+#############################################################################
+> t1 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.name-type-chr.txt")
+t2 <- t1[1,]
+ t2$logFC = -8
+ t2$PValue = 0.04
+ t2$name="PValue = 0.05"
+ggplot(t1, aes(x=logFC, y = -log10(PValue), label = name))  + geom_point(size=1) + labs( x = "log2FC (M vs. F)") + geom_hline(yintercept=-log10(0.05), col="blue") + geom_text(data=t2, col="blue")
+
+> g <- read.delim("../microglia/temp", header=F)
+ t3 <- t1[ t1$name %in% g$V1,]
+ dim(t3)
+# [1] 3097   10
+ t4 <- t1[ !(t1$name %in% g$V1),]
+ dim(t4)
+# [1] 11506    10
+ t3$class <- "HALLMARK genes"
+ t4$class <- "others"
+ t5 <- rbind(t3, t4)
+ dim(t5)
+# [1] 14603    11
+ ggplot(t5, aes(x=logFC, y = -log10(PValue), label = name, col=class))  + geom_point(shape=21, size=1) + labs( x = "log2FC (M vs. F)") + geom_hline(yintercept=-log10(0.05), col="blue") + geom_text(data=t2, col="blue") + theme(legend.position = "bottom")
+
