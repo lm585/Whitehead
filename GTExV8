@@ -4901,3 +4901,34 @@ lm(formula = t3$logFC ~ t3$deltaEx)
 Multiple R-squared:  0.5183,    Adjusted R-squared:  0.5168
 r = 0.7199304
 p = 1.563e-52
+
+t3$sp1 <- -log10(t3$x_pval)
+t3$sp2 <- -log10(t3$PValue)
+for (i in 1:dim(t3)[1])
+{
+ if(t3$deltaEx[i] < 0)
+   t3$sp1[i] <- log10(t3$x_pval[i])
+ if(t3$logFC[i] < 0)
+   t3$sp2[i] <- log10(t3$PValue[i])
+}
+
+head(t3, n=20)
+
+> ggplot(t3, aes(x=sp1, y=sp2)) + geom_point(size=1, col="brown1", shape=1) + labs( x = "LCL deltaEx signed log10(PValue)", y="GTEx V8 LCL signed log10(PValue) (F vs. M)", title="321 expressed NPX genes")  + geom_hline(yintercept=0, col="black") + geom_vline(xintercept=0) +  geom_smooth(se=T, method="lm")
+
+t3$fdr1 <- -log10(t3$x_adj_pval)
+t3$fdr2 <- -log10(t3$FDR)
+for (i in 1:dim(t3)[1])
+{
+ if(t3$deltaEx[i] < 0)
+   t3$fdr1[i] <- log10(t3$x_adj_pval[i])
+ if(t3$logFC[i] < 0)
+   t3$fdr2[i] <- log10(t3$FDR[i])
+}
+
+head(t3, n=20)
+ t4 <- t3[  abs(t3$fdr1) <= 10 & abs(t3$fdr2) <= 10,]
+ dim(t4)
+# [1] 302  19
+ dim(t3)
+# [1] 321  19
