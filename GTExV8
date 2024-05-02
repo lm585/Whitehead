@@ -4965,3 +4965,25 @@ fis <- matrix(c(1,12,39,269), nrow=2, ncol=2, byrow=T )
 p-value = 1
 odds ratio
  0.5756047
+
+###############################mash, effect size, LFSR
+> eff.p.g <- merge(eff.p, t3, by.x="id", by.y="id")
+...
+> t2.2 <- t2[ !is.na(t2$Cells_EBV.transformed_lymphocytes.x),]
+ t3 <- t2.2[ abs( t2.2$deltaEx) >= 0.5 | abs(t2.2$Cells_EBV.transformed_lymphocytes.x) >= 0.3,]
+ dim(t3)
+[1] 30 18
+> ggplot(t2, aes(x=deltaEx, y = Cells_EBV.transformed_lymphocytes.x, color = region, label = Gene)) + geom_point(size=1.5) + labs( x = "LCL deltaEx (Adrianna San Roman)", y="Cells_EBV.transformed_lymphocytes.effect-size", title="337 expressed X genes") + geom_hline(yintercept=0, col="black") + geom_vline(xintercept=0) + ylim(-1, 1) + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1)
+
+t3 <- t2[ t2$region == "NPX" & t2$Gene != "XIST" & !is.na(t2$Cells_EBV.transformed_lymphocytes.x),]
+dim(t3)
+# [1] 322  18
+ t3$fdr1 <- -log10(t3$x_adj_pval)
+t3$fdr2 <- -log10(t3$Cells_EBV.transformed_lymphocytes.y)
+for (i in 1:dim(t3)[1])
+{
+ if(t3$deltaEx[i] < 0)
+   t3$fdr1[i] <- log10(t3$x_adj_pval[i])
+ if(t3$Cells_EBV.transformed_lymphocytes.x[i] < 0)
+   t3$fdr2[i] <- log10(t3$Cells_EBV.transformed_lymphocytes.y[i])
+}
