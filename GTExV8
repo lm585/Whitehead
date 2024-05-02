@@ -4987,3 +4987,24 @@ for (i in 1:dim(t3)[1])
  if(t3$Cells_EBV.transformed_lymphocytes.x[i] < 0)
    t3$fdr2[i] <- log10(t3$Cells_EBV.transformed_lymphocytes.y[i])
 }
+
+
+         pathway       non-pathway
+gtex-fdr      33          8
+gtex-non-fdr  25        256
+
+> fis <- matrix(c(33,8,25,256), nrow=2, ncol=2, byrow=T )
+p-value < 2.2e-16
+odds ratio
+  41.20613
+
+
+                  pathway-male-bias       non-pathway
+gtex-fdr-male-bias      2                    12
+gtex-non-fdr           38                   270
+
+> fis <- matrix(c(2,12,38,270), nrow=2, ncol=2, byrow=T )
+p-value = 0.6881
+odds ratio 
+  1.183533
+
