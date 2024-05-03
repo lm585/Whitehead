@@ -2275,3 +2275,13 @@ ggplot(t1, aes(x=logFC, y = -log10(PValue), label = name))  + geom_point(size=1)
 # [1] 14603    11
  ggplot(t5, aes(x=logFC, y = -log10(PValue), label = name, col=class))  + geom_point(shape=21, size=1) + labs( x = "log2FC (M vs. F)") + geom_hline(yintercept=-log10(0.05), col="blue") + geom_text(data=t2, col="blue") + theme(legend.position = "bottom")
 
+#######################################################################
+mapping mouse microglia prenatal and 2-month-old mice RNA-seq
+  --readFilesCommand zcat
+@1/1
+CTCTAGAGGGAGCCCAGCCTCCTGAGGAAGCCTGGGAAACAGCTGTTCAG
++
+BBBFFFFFFFFFFFIFIIIIIIIIIIIIIIIIIIIIIIIIIIIIIFIIII
+
+linyong@fry /lab/solexa_page/linyong/autism/dir-mouse-rna-seq/paired$ sbatch slurm-mouse-heart-rnaseq-genecount-03
+
