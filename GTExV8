@@ -5008,3 +5008,42 @@ p-value = 0.6881
 odds ratio 
   1.183533
 
+#######################################################################
+> t1 <- read.delim("diff2-1-LCL-FvsM.age-bmi-RIN-ischem-PC1-6-covar.cpm0.1.txt")
+ dim(eff.p.g)
+# [1] 34960    13
+ dim(t1)
+# [1] 21742    10
+# by gene symbol
+ t2 <- merge(t1, eff.p.g, by.x="name", by.y="name")
+ dim(t2)
+# [1] 21602    22
+ t3 <- t2[ !is.na(t2$Cells_EBV.transformed_lymphocytes.x),]
+ dim(t3)
+# [1] 20097    22
+t3$fdr1 <- -log10(t3$FDR)
+t3$fdr2 <- -log10(t3$Cells_EBV.transformed_lymphocytes.y)
+for (i in 1:dim(t3)[1])
+{
+ if(t3$logFC[i] < 0)
+   t3$fdr1[i] <- log10(t3$FDR[i])
+ if(t3$Cells_EBV.transformed_lymphocytes.x[i] < 0)
+   t3$fdr2[i] <- log10(t3$Cells_EBV.transformed_lymphocytes.y[i])
+}
+
+ t4 <- t3[ t3$Cells_EBV.transformed_lymphocytes.y != 0,]
+ dim(t4)
+# [1] 20095    24
+data:  t4$fdr1 and t4$fdr2
+      cor
+0.7871715
+     rho
+0.3491185
+
+> t5 <- t4[ t4$chr.x == "chrX",]
+ dim(t5)
+[1] 630  24
+t6 <- t5[ t5$FDR >= 1e-10 & t5$Cells_EBV.transformed_lymphocytes.y > 1e-21,]
+  dim(t6)
+# [1] 608  24
+
