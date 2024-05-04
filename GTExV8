@@ -5047,3 +5047,12 @@ t6 <- t5[ t5$FDR >= 1e-10 & t5$Cells_EBV.transformed_lymphocytes.y > 1e-21,]
   dim(t6)
 # [1] 608  24
 
+##################################abline
+ x=10
+ abline(h = seq(-1000, 1000, x), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-1000, 1000, x), lty = 5, lwd = 0.5, col = "gray")
+ abline(v=0)
+ abline(h=0)
+
+# abline(h = c(-log10(0.05), log10(0.05)), col="blue")
+# abline(v = c(-log10(0.05), log10(0.05)), col="blue")
