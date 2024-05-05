@@ -5031,7 +5031,18 @@ for (i in 1:dim(t3)[1])
    t3$fdr2[i] <- log10(t3$Cells_EBV.transformed_lymphocytes.y[i])
 }
 
- t4 <- t3[ t3$Cells_EBV.transformed_lymphocytes.y != 0,]
+t3$pv1 <- -log10(t3$PValue.x)
+t3$pv2 <- -log10(t3$PValue.y)
+for (i in 1:dim(t3)[1])
+{
+ if(t3$logFC.x[i] < 0)
+   t3$pv1[i] <- log10(t3$PValue.x[i])
+ if(t3$logFC.y[i] < 0)
+   t3$pv2[i] <- log10(t3$PValue.y[i])
+}
+
+
+t4 <- t3[ t3$Cells_EBV.transformed_lymphocytes.y != 0,]
  dim(t4)
 # [1] 20095    24
 data:  t4$fdr1 and t4$fdr2
