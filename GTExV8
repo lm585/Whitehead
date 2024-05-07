@@ -5095,3 +5095,14 @@ for (i in 1:dim(t3)[1])
    t3$pv1.0[i] <- log10(t3$PValue[i])
 }
 
+########################################################
+Pituitary       283
+204 M; 79 F
++  med$logic[i] <- median(d[i,]) >= 0.1
+> print(dim(y))
+[1] 27035   283
+ 79  * 2 * 0.1 - 6 = 9.8 (10 PCs as covar)
+> design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN + log10(info.2$t.SMTSISCH) +
++ info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6+info.2$PC7+info.2$PC8+info.2$PC9+info.2$PC10)
+>  dim(design)
+[1] 283  16
