@@ -2285,3 +2285,14 @@ BBBFFFFFFFFFFFIFIIIIIIIIIIIIIIIIIIIIIIIIIIIIIFIIII
 
 linyong@fry /lab/solexa_page/linyong/autism/dir-mouse-rna-seq/paired$ sbatch slurm-mouse-heart-rnaseq-genecount-03
 
+#######################################################################
+linyong@fry /lab/solexa_page/linyong/mouse-genome$  cat gencode.vM31.primary_assembly.annotation.gtf | awk '$3 == "gene"' | cut -f 1,7 > temp-1
+linyong@fry /lab/solexa_page/linyong/mouse-genome$  cat gencode.vM31.primary_assembly.annotation.gtf | awk '$3 == "gene"' | cut -f 9 | awk 'BEGIN {FS = ";"; OFS = "\t"} {print $1, $2, $3}' > temp-2
+paste temp-1 temp-2 > temp-3
+cat temp-3 | awk '{print NF}' | uniq
+5
+mv temp-3  gencode.vM31.mouse-id-chr-name
+cat  gencode.vM31.mouse-id-chr-name | cut -f 1 | sort | uniq -c
+     37 chrM
+   2645 chrX
+   1594 chrY
