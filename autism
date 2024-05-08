@@ -2285,6 +2285,50 @@ BBBFFFFFFFFFFFIFIIIIIIIIIIIIIIIIIIIIIIIIIIIIIFIIII
 
 linyong@fry /lab/solexa_page/linyong/autism/dir-mouse-rna-seq/paired$ sbatch slurm-mouse-heart-rnaseq-genecount-03
 
+######
+> t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
+ raw.samp <- t1[, c(9:12)]
+ dim(raw.samp)
+# [1] 56980     4
+ rownames(raw.samp) <- t1$geneID
+ y <- DGEList(counts=raw.samp)
+ y <- calcNormFactors(y)
+ y$samples
+           group lib.size norm.factors
+SRR6366231     1 22568111    0.9800655
+SRR6366232     1 21573099    0.9772444
+SRR6366236     1 24785582    1.0270853
+SRR6366237     1 29217740    1.0165652
+
+ keep <-rowSums(edgeR::cpm(y)>=0.5) >= 2
+ y<-y[keep,]
+ dim(y)
+# [1] 15238     4
+ d = cpm(y)
+ a <- as.data.frame(d)
+ b = log2(a+1)
+ t2 <- read.delim("../dir-GTExV8/gencode.vM31.mouse-id-chr-name")
+ b$id <- rownames(b)
+ t3 <- merge(b, t2, by.x="id", by.y="geneID")
+> g1 <- <- scan(what="", sep = "\n")
+Actb
+Itgam
+P2ry12
+Tmem119
+Cx3cr1
+Ccr2
+Cd3d
+Ms4a1
+> t4 <- t3[ t3$name %in% g1,]
+ t5 <- t4[,c(2:5)]
+ rownames(t5) <- t4[,9]
+ t6 <- as.data.frame( t(t5))
+ t7 <- t6[, c(2,3,5,8,7,6,4,1)]
+ boxplot(t7, outcol="white", ylab="log2(cpm+1)")
+ beeswarm(t7, add=T, cex = 1, col = "red" )
+ abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+
 #######################################################################
 linyong@fry /lab/solexa_page/linyong/mouse-genome$  cat gencode.vM31.primary_assembly.annotation.gtf | awk '$3 == "gene"' | cut -f 1,7 > temp-1
 linyong@fry /lab/solexa_page/linyong/mouse-genome$  cat gencode.vM31.primary_assembly.annotation.gtf | awk '$3 == "gene"' | cut -f 9 | awk 'BEGIN {FS = ";"; OFS = "\t"} {print $1, $2, $3}' > temp-2
