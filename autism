@@ -2304,7 +2304,74 @@ SRR6366237     1 29217740    1.0165652
  y<-y[keep,]
  dim(y)
 # [1] 15238     4
- d = cpm(y)
+ 
+> info <- data.frame(sex = c(1,1,0,0))
+  design <- model.matrix( ~ info$sex)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+ t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
+ gene.name <- t1[, 1:2]
+ df.gene <- merge(diff, gene.name, by.x="geneID", by.y="geneID")
+ t2 <- read.delim("../dir-GTExV8/gencode.vM31.mouse-id-chr-name")
+ t3 <- merge(df.gene, t2, by.x="geneID", by.y="geneID")
+ dim(t3)
+# [1] 15238    11
+  head(top2v1)
+  write.table(t3, "diff2-1.txt", sep="\t", quote=F)
+ y
+
+> t4 <- read.delim("../microglia-mouse/M10.geneID-name-chr-type.2.name-first.txt")
+ dim(t4)
+# [1] 48440     5
+ df.cpm.gene <- t3
+ t5 <- merge(df.cpm.gene, t4, by.x="name.x", by.y="geneID")
+ dim(t5)
+# [1] 13857    15
+     name.x                geneID      logFC    logCPM          F       PValue          FDR chr.x strand         type.x name.y chr.y                 ID
+8239  Nfkb1 ENSMUSG00000028163.18 -0.1996375  8.087156   4.178701 7.371070e-02 1.802606e-01  chr3      - protein_coding  Nfkb1  chr3 ENSMUSG00000028163
+8240  Nfkb2 ENSMUSG00000025225.16  0.4853682  5.947340  21.449084 1.505069e-03 1.377432e-02 chr19      + protein_coding  Nfkb2 chr19 ENSMUSG00000025225
+
+ t6 <- read.delim("../microglia-mouse/Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip")
+ dim(t6)
+# [1] 19341     3
+#                   ID Gene.Symbol                                                                Gene.Title
+# 1 ENSMUSG00000000001       GNAI3             G protein subunit alpha i3 [Source:HGNC Symbol;Acc:HGNC:4387]
+ t7 <- merge(t5, t6, by.x="ID", by.y="ID")
+ dim(t7)
+# [1] 11847    17
+
+ df.cpm.gene$id <- gsub("\\.[0-9][0-9]*", "", df.cpm.gene$geneID)
+ t8 <- merge(df.cpm.gene, t6, by.x="id", by.y="ID")
+ dim(t8)
+# [1] 12380    14
+ t9 <- t8[ t8$chr != "chrX" & t8$chr != "chrY", c(1,3:7,2,13)]
+ dim(t9)
+# [1] 11992     8
+ write.table(t9, "temp", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi ../dir-GTExV8/temp
+ ../microglia/make-rnk-genesymble  ../dir-GTExV8/temp out
+  11817 out
+cat out | grep -i xist
+cat out | grep -i ddx3y
+mv -i  out  mouse-mg-rnaseq-Thion.diff2-1.noXY.rnk
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i  ../dir-GTExV8/diff2-1.txt mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.txt
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat  mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.txt| awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 1e-8 '|grep -w chrY
+cat  mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.txt| awk 'BEGIN {FS = "\t"; OFS = "\t"} $6 < 0.005 && $8 != "chrX" && $8 != "chrY" ' | wc -l
+     889
+&& $2 > 0' | wc -l
+     788
+ && $2 < 0' | wc -l
+     101
+cat  mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.txt| awk 'BEGIN {FS = "\t"; OFS = "\t"} $6 < 0.0005 && $8 != "chrX" && $8 != "chrY" && $2 > 0' | cut -f 7 > temp-f
+     380 temp-f
+
+#########
+d = cpm(y)
  a <- as.data.frame(d)
  b = log2(a+1)
  t2 <- read.delim("../dir-GTExV8/gencode.vM31.mouse-id-chr-name")
