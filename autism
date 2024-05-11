@@ -2418,3 +2418,49 @@ cat temp-f-bias-mouse-mg-rnaseq-Thion.981genes.txt temp-f-model.interac | sort |
      37 chrM
    2645 chrX
    1594 chrY
+
+#######################################################################
+>  gs1$compare <- "MvF.noX.Y.interac.strand"
+
+> f1="file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Thion.diff2-1.noXY.FvsM.h.all.v7.4.GseaPreranked.1715381458566/gsea_report_for_na_pos_1715381458566.tsv"
+ gsea1 <- read.delim(f1)
+ f1="file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Thion.diff2-1.noXY.FvsM.h.all.v7.4.GseaPreranked.1715381458566/gsea_report_for_na_neg_1715381458566.tsv"
+ gsea2 <- read.delim(f1)
+ gs2 <- rbind(gsea1,gsea2)
+ gs2$compare <- "mouse-mg-rnaseq-Thion.FvsM"
+ gs2$NES <- -gs2$NES
+
+ gs3 <- merge(gs1, gs2, by.x="NAME", by.y="NAME")
+ dim(gs3)
+# [1] 49 25
+ dim(gs1)
+# [1] 49 13
+ dim(gs2)
+# [1] 50 13
+ data.frame(1:25, colnames(gs3))
+ gs4 <- gs3[, c(1,4,6,8,13,16,18,20,25)]
+ head(gs4)
+ plot(gs4$NES.y, gs4$NES.x, xlab = "mouse-mg-rnaseq-Thion.MvsF", ylab="human.MvF.noX.Y.interac.strand")
+> gs4[ gs4$NES.x * gs4$NES.y < 0 & (gs4$FDR.q.val.x < 0.05 & gs4$FDR.q.val.y < 0.05),]
+ dim(gs4[  gs4$NES.x < -1.8 & gs4$NES.y < -1.8,])
+# [1] 7 9
+ dim(gs4[  !gs4$NES.x < -1.8 & gs4$NES.y < -1.8,])
+# [1] 4 9
+ dim(gs4[  gs4$NES.x < -1.8 & !gs4$NES.y < -1.8,])
+# [1] 22  9
+ dim(gs4[  !gs4$NES.x < -1.8 & !gs4$NES.y < -1.8,])
+# [1] 16  9
+                     
+                     f-bias-human       other-human-pathways
+f-bias-path-mouse       7                    4
+other-mouse-paths       22                  16->17
+  fis <- matrix(c(7,4,22,17), nrow=2, ncol=2, byrow=T )
+  fisher.test(fis)
+p-value = 0.7412
+odds ratio   1.344243
+
+        Spearman's rank correlation rho
+data:  gs4$NES.x and gs4$NES.y
+S = 19636, p-value = 0.9902
+         rho -0.001836735
+
