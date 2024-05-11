@@ -2404,6 +2404,17 @@ cat temp-3 | awk '{print NF}' | uniq
 5
 mv temp-3  gencode.vM31.mouse-id-chr-name
 cat  gencode.vM31.mouse-id-chr-name | cut -f 1 | sort | uniq -c
+
+########################################################################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat  mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.humanname.txt   |  awk 'NR > 1' | sort -t ' ' +5 -6g | head -500 | awk 'BEGIN {FS = "\t";} $3 > 0 && $9 != "chrX" && $9 != "chrY" '  |  cut -f 13 | sort | uniq > temp-f-bias-mouse-mg-rnaseq-Thion.459genes.txt
+     459 temp-f-bias-mouse-mg-rnaseq-Thion.459genes.txt
+     305 temp-f-model.interac
+cat temp-f-bias-mouse-mg-rnaseq-Thion.459genes.txt temp-f-model.interac | sort | uniq -d | wc
+      28
+
+ cat  mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.humanname.txt   | awk 'BEGIN {FS = "\t";} $3 > 0 && $9 != "chrX" && $9 != "chrY" && $7 < 0.01' |  cut -f 13 | sort | uniq > temp-f-bias-mouse-mg-rnaseq-Thion.981genes.txt
+cat temp-f-bias-mouse-mg-rnaseq-Thion.981genes.txt temp-f-model.interac | sort | uniq -d | wc
+      40   
      37 chrM
    2645 chrX
    1594 chrY
