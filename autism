@@ -2468,21 +2468,21 @@ S = 19636, p-value = 0.9902
     459 temp-f-bias-mouse-mg-rnaseq-Thion.459genes.txt
     305 temp-f-model.interac
 
-cat  human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt | awk 'NR > 1'  | cut -f 7 | sort | uniq  > temp
-cat  mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.humanname.txt   |  awk 'NR > 1' | cut -f 13 | sort  | uniq  > temp1
+cat  human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt | awk 'NR > 1 && $8 != "chrX" && $8 != "chrY" '  | cut -f 7 | sort | uniq  > temp
+cat  mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.humanname.txt   |  awk 'NR > 1 && $9 != "chrX" && $9 != "chrY" ' | cut -f 13 | sort  | uniq  > temp1
 wc -l temp temp1
-   15072 temp
-   12187 temp1
-cat temp temp1  | sort | uniq -d | wc -l
-   10304
+   14586 temp
+   11817 temp1
 cat temp temp1  | sort | uniq -d > temp-3
+    9980 temp-3
 ls temp-f-model.interac > temp-4
 
- bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-f-bias-mouse-mg-rnaseq-Thion.459genes.txt  f-bias-mouse-mg-rnaseq-Thion.459genes  temp-4  temp-3
+bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-f-bias-mouse-mg-rnaseq-Thion.459genes.txt  f-bias-mouse-mg-rnaseq-Thion.459genes  temp-4  temp-3
 test.set        pathway input.overlap   input.notoverlap        noninput.overlap        noninput.nonoverlap     P.value log10P  oddsratio
-f-bias-mouse-mg-rnaseq-Thion.459genes   temp-f-model.interac    28      294     240     9742    1.89159822379262e-08    7.72317110245817        3.86505860317284
+f-bias-mouse-mg-rnaseq-Thion.459genes   temp-f-model.interac    28      294     240     9418    3.70029032520492e-08    7.43176419980113        3.73667041037106
 
 cat temp temp1  | sort | uniq  > temp-3
-   16955 temp-3
-f-bias-mouse-mg-rnaseq-Thion.459genes   temp-f-model.interac    28      431     277     16219   1.87395231243392e-08    7.7272414650546 3.80347343105124
+   16423 temp-3
+test.set        pathway input.overlap   input.notoverlap        noninput.overlap        noninput.nonoverlap     P.value log10P  oddsratio
+f-bias-mouse-mg-rnaseq-Thion.459genes   temp-f-model.interac    28      431     277     15687   3.64613873298997e-08    7.43816681076998        3.67890702012615
 
