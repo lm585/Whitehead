@@ -2486,3 +2486,9 @@ cat temp temp1  | sort | uniq  > temp-3
 test.set        pathway input.overlap   input.notoverlap        noninput.overlap        noninput.nonoverlap     P.value log10P  oddsratio
 f-bias-mouse-mg-rnaseq-Thion.459genes   temp-f-model.interac    28      431     277     15687   3.64613873298997e-08    7.43816681076998        3.67890702012615
 
+linyongmao@Linyong-Mao-MBP16-2019 autism % ls ../microglia/HALL* | grep -v temp > temp-hall-files
+ cp -i  temp1 temp-bg
+wc -l temp-bg
+   11817 temp-bg
+bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-f-bias-mouse-mg-rnaseq-Thion.459genes.txt  f-bias-mouse-mg-rnaseq-Thion.459genes temp-hall-files temp-bg > mouse-mg-rnaseq-Thion.f.bias.459genes.hallmark.overlap.txt
+
