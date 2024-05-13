@@ -2492,3 +2492,11 @@ wc -l temp-bg
    11817 temp-bg
 bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-f-bias-mouse-mg-rnaseq-Thion.459genes.txt  f-bias-mouse-mg-rnaseq-Thion.459genes temp-hall-files temp-bg > mouse-mg-rnaseq-Thion.f.bias.459genes.hallmark.overlap.txt
 
+###
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat  mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.humanname.txt   |  awk 'NR > 1' | sort -t $tab +5 -6g | head -500 | awk 'BEGIN {FS = "\t";} $3 < 0 && $9 != "chrX" && $9 != "chrY" '  |  cut -f 13 | sort | uniq > temp-strand
+      23 temp-strand
+ cat  mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.humanname.txt   |  awk 'NR > 1' | sort -t $tab +5 -6g | head -1000 | awk 'BEGIN {FS = "\t";} $3 < 0 && $9 != "chrX" && $9 != "chrY" '  |  cut -f 13 | sort | uniq > temp-strand
+     151 temp-strand
+
+mv -i temp-strand temp-m-bias-mouse-mg-rnaseq-Thion.151genes.txt
+bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-m-bias-mouse-mg-rnaseq-Thion.151genes.txt m-bias-mouse-mg-rnaseq-Thion.151genes temp-hall-files temp-bg > mouse-mg-rnaseq-Thion.m.bias.151genes.hallmark.overlap.txt
