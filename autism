@@ -2067,6 +2067,11 @@ grep -v "^RP[LS][0-9]"  temp-f-model.no-interac > temp-f-model.no-interac.2
     167 temp-m-model.interac
     176 temp-m-model.no-interac
 
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt |   awk 'NR > 1 && $8 != "chrX" && $8 != "chrY" ' |  cut -f 7 | sort | uniq > temp-bg1
+   14586 temp-bg1
+ bash ../Whitehead-main/script-inputset-pathways-overlap-fisher  temp-f-model.interac f-bias-human-mg-rnaseq.305genes  temp-hall-files  temp-bg1 > temp11
+mv -i  temp11 human-mg-rnaseq.f.bias.305genes.hallmark.overlap.txt
+
 #############################################
 #####gene promoter only peaks
 > t1 <- read.delim("cyno-atac-mg-10samp-conserv10.pc1_3.covar.diff2-1.txt")
