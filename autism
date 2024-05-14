@@ -2464,6 +2464,47 @@ data:  gs4$NES.x and gs4$NES.y
 S = 19636, p-value = 0.9902
          rho -0.001836735
 
+################
+> gs5 <- gs4[ gs4$NES.x < -1.8 & gs4$NES.y < -1.8,]
+# 7 pathways
+ gs6 <- gs5[, c(3,7)]
+ rownames(gs6) <- gs5[, 1]
+ gs7 <- as.data.frame( t(gs6))
+
+ t1 <- read.delim("human-mg-rnaseq.f.bias.305genes.hallmark.overlap.txt")
+ t2 <- read.delim("mouse-mg-rnaseq-Thion.f.bias.459genes.hallmark.overlap.txt")
+ t3 <- merge(t1, t2, by.x="pathway", by.y="pathway")
+ dim(t3)
+# [1] 50 17
+ t3[c(45,27),]
+ t3$pathway <- gsub("../microglia/", "", t3$pathway)
+ t3$pathway <- gsub(".genes$", "", t3$pathway)
+ gs6$id <- rownames(gs6)
+ t4 <- merge(gs6, t3, by.x="id", by.y="pathway")
+ gs7 <- t4[ , c(2,3)]
+ rownames(gs7) <- t4[, c(1)]
+  gs8 <- as.data.frame( t(gs7))
+ t5 <- data.frame(log10(t4$P.value.x), log10(t4$P.value.y))
+ rownames(t5) <- t4$id
+ t6 <- as.data.frame(t(t5))
+
+> par( mar=c(6,2,2,16))
+ barplot(as.matrix(gs8), horiz=T, beside=T, yaxt="n", xlim=c(-3,0), col=c("orange", "blue"), ylim=c(0,24), xlab="GSEA NES (M vs. F)")
+
+ abline(v=0)
+ abline(v = seq(-1000, 15, 0.5), lty = 5, lwd = 0.5, col = "gray")
+ nam <- gsub("HALLMARK", "h", colnames(gs8))
+ axis(side=4, at = seq(2, 20, by=3), labels=nam, las =1, cex.axis = 0.7)
+ legend(-2.5, 24, c( "mouse", "human"), fill=c("blue", "orange"), cex = 0.7, inset = 0.05)
+
+par( mar=c(6,2,2,12))
+  barplot(as.matrix(t6), horiz=T, beside=T, yaxt="n", col=c("orange", "blue"), ylim=c(0,24), xlab="GO enrichment log10P (top F biased genes)", xlim=c(-56,0))
+ axis(side=4, at = seq(2, 20, by=3), labels=nam, las =1, cex.axis = 0.7)
+  abline(v = seq(-1000, 0, 5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v=0)
+ legend(-40, 24, c( "mouse", "human"), fill=c("blue", "orange"), cex = 0.7, inset = 0.05)
+
+
 #######################################################################
     459 temp-f-bias-mouse-mg-rnaseq-Thion.459genes.txt
     305 temp-f-model.interac
