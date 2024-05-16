@@ -2546,3 +2546,57 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % cat  mouse-mg-rnaseq-Thion.diff2-1.na
 
 mv -i temp-strand temp-m-bias-mouse-mg-rnaseq-Thion.151genes.txt
 bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-m-bias-mouse-mg-rnaseq-Thion.151genes.txt m-bias-mouse-mg-rnaseq-Thion.151genes temp-hall-files temp-bg > mouse-mg-rnaseq-Thion.m.bias.151genes.hallmark.overlap.txt
+
+########################pathway-genes corr between mouse and human
+> t1 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt")
+ t2 <- read.delim("mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.humanname.txt")
+ t3 <- merge(t1, t2, by.x="name", by.y="Gene.Symbol")
+ dim(t2)
+# [1] 12380    14
+ length(t3$name)
+# [1] 10475
+ length(unique( t3$name))
+# [1] 10304
+ pg <- read.delim("../microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes", header=F)
+ t4 <- t3[ t3$name %in% pg$V1,]
+ dim(t4)
+# [1] 172  23
+ length(unique( t4$name))
+# [1] 166
+ length(( t4$name))
+# [1] 172
+data:  t4$logFC.x and -t4$logFC.y
+t = 3.4487, df = 170, p-value = 0.0007102
+      cor 0.2557107 
+rho 0.2459734 
+
+t4$pv1 <- log10(t4$PValue.x)
+t4$pv2 <- log10(t4$PValue.y)
+for (i in 1:dim(t4)[1])
+{
+## male bias, 
+ if(t4$logFC.x[i] > 0)
+   t4$pv1[i] <- -log10(t4$PValue.x[i])
+## male bias, mouse RNA-seq, M 0, F 1
+ if(t4$logFC.y[i] < 0)
+   t4$pv2[i] <- -log10(t4$PValue.y[i])
+}
+
+data:  t4$pv1 and t4$pv2
+t = 2.3735, df = 170, p-value = 0.01874
+      cor 
+0.1790961 
+       rho 
+0.09331131 
+
+ t5 <- t4[ t4$logFC.x < -1 & t4$logFC.y >1 & t4$PValue.x < 0.05 & t4$PValue.y < 0.05, ]
+ dim(t5)
+# [1] 28 23
+ t6 <- t4[ t4$logFC.x < -1 & t4$logFC.y < -1 & t4$PValue.x < 0.05 & t4$PValue.y < 0.05, ]
+ dim(t6)
+# [1]  1 25
+ t7 <- t4[ t4$logFC.x > 1 & t4$logFC.y > 1 & t4$PValue.x < 0.05 & t4$PValue.y < 0.05, ]
+  dim(t7)
+# [1]  1 25
+> ggplot(t4, aes(x=logFC.x, y=-logFC.y, label = name)) + geom_point(size=2, shape=21) + geom_hline(yintercept=0) + geom_vline(xintercept=0) + scale_y_continuous(breaks=seq(-10, 10, 2), ) + geom_text_repel(show.legend=T, data=t5 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="blue") + geom_text_repel(show.legend=T, data=t6 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red") + geom_text_repel(show.legend=T, data=t7 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red") + labs(x="human mg logFC (M vs. F)", y="mouse mg logFC (M vs. F)", title="HALLMARK_INTERFERON_GAMMA_RESPONSE pathway")
+
