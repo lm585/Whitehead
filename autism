@@ -2608,3 +2608,18 @@ t = 2.3735, df = 170, p-value = 0.01874
  t5 <- a.g[ a.g$name == na,]
  boxplot(as.numeric( t5[,c(2:5)]) ~ info$sex, col=c("red", "cyan"), ylab = "cpm", main=na)
  abline(h = seq(0,10000,50), lty = 5, lwd = 0.5, col = "gray")
+
+########
+ length(t3$name)
+# [1] 10475
+for(i in 1:length(paths7)) {
+ file <- paste("../microglia/", paths7[i], ".genes", sep="")
+ pg <- read.delim(file, header=F)
+ t4 <- t3[ t3$name %in% pg$V1,]
+ dim(t4)
+ t5 <- cor.test(t4$logFC.x , -t4$logFC.y)
+ corRes <- paste(paths7[i], t5$estimate, t5$p.value, sep="\t")
+ cat(corRes)
+ cat("\n")
+
+}
