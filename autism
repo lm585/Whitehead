@@ -2600,3 +2600,11 @@ t = 2.3735, df = 170, p-value = 0.01874
 # [1]  1 25
 > ggplot(t4, aes(x=logFC.x, y=-logFC.y, label = name)) + geom_point(size=2, shape=21) + geom_hline(yintercept=0) + geom_vline(xintercept=0) + scale_y_continuous(breaks=seq(-10, 10, 2), ) + geom_text_repel(show.legend=T, data=t5 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="blue") + geom_text_repel(show.legend=T, data=t6 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red") + geom_text_repel(show.legend=T, data=t7 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red") + labs(x="human mg logFC (M vs. F)", y="mouse mg logFC (M vs. F)", title="HALLMARK_INTERFERON_GAMMA_RESPONSE pathway")
 
+#########
+ g1="HLA-A"
+ t4[ t4$name == g1,]
+ na <- t4[ t4$name == g1,]$name.x
+ a.g[ a.g$name == na,]
+ t5 <- a.g[ a.g$name == na,]
+ boxplot(as.numeric( t5[,c(2:5)]) ~ info$sex, col=c("red", "cyan"), ylab = "cpm", main=na)
+ abline(h = seq(0,10000,50), lty = 5, lwd = 0.5, col = "gray")
