@@ -5106,3 +5106,52 @@ Pituitary       283
 + info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6+info.2$PC7+info.2$PC8+info.2$PC9+info.2$PC10)
 >  dim(design)
 [1] 283  16
+#######################################################################
+> t1 <- read.delim("temp-heart-lv")
+  head(t1)
+ t2 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-RIN-ischem-PC1-21-covar.txt")
+ head(t2)
+ t3 <- merge(t1, t2, by.x=colnames(t1)[2], by.y="name")
+ dim(t3)
+# [1] 381  15
+ dim(t1)
+# [1] 500   6
+  cor1 <- cor.test(t3$MASH.beta, t3$logFC, method="spearman")
+  par( mar=c(6,6,2,2))
+  plot(t3$MASH.beta, t3$logFC, xlab="MASH.beta (PMID: 32913072)", ylab="logFC \n F vs M, P-Lab")
+ abline(lm(t3$logFC ~ t3$MASH.beta), lwd = 1, col="blue")
+
+ abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = 0)
+ abline(v = 0)
+title(main=paste("left-ventricle ", "r=",round(cor1$estimate, digits = 3), " p=", format(cor1$p.value, digits=3), " (Spearman)", sep =""))
+
+>  dim(eff.p.g)
+[1] 34960    15
+  t4 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-RIN-ischem-PC1-21-covar.txt")
+ t4$geneid2 <- gsub("\\.[0-9][0-9]*", "", t4$geneID)
+ t5 <- merge(t4, eff.p.g, by.x="geneid2", by.y="geneID")
+ dim(t5)
+# [1] 14849    25
+ dim(t4)
+# [1] 15298    11
+ t6 <- t5[ t5$chr.x != "chrX" & t5$chr.x != "chrY", ] 
+ dim(t6)
+# [1] 14362    25
+ t6 <- t5[ (!is.na(t5$Heart_Left_Ventricle.x)) & (!is.na(t5$Heart_Left_Ventricle.y)) ,]
+ dim(t6)
+# [1] 14819    25
+ dim( t6[ t6$Heart_Left_Ventricle.y < 0.005 | t6$FDR < 5e-20,])
+# [1] 956  25
+ t7 <- t6[ t6$Heart_Left_Ventricle.y < 0.005 | t6$FDR < 5e-20,]
+ cor1 <- cor.test(t7$Heart_Left_Ventricle.x, t7$logFC, method="spearman")
+  par( mar=c(6,6,2,2))
+ plot(t7$Heart_Left_Ventricle.x, t7$logFC, xlab="MASH.beta (PMID: 32913072)", ylab="logFC \n F vs M, P-Lab", cex=0.5)
+  abline(lm(t7$logFC ~ t7$Heart_Left_Ventricle.x), lwd = 1, col="blue")
+  abline(h = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = seq(-100,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+  abline(h = 0)
+  abline(v = 0)
+ title(main=paste("left-ventricle ", "r=",round(cor1$estimate, digits = 3), " p=", format(cor1$p.value, digits=3), " (Spearman)", sep =""))
+ 
