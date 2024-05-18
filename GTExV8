@@ -5172,3 +5172,31 @@ title(main=paste("left-ventricle ", "r=",round(cor1$estimate, digits = 3), " p="
  plot(t10$Heart_Left_Ventricle.x, t10$logFC.x,   ylab="P-lab (FvsM.age-bmi-covar.)", xlab="MASH.beta (PMID: 32913072)", cex=0.5)
  abline(lm(t10$logFC.x ~ t10$Heart_Left_Ventricle.x), lwd = 1, col="blue")
 
+######
+> t9 <- merge(t8, t6, by.x="geneID", by.y="geneID")
+  dim(t9)
+# [1] 14819    34  
+  t10 <- t9[, c(3,2,6,7,8,10,12,16,23,26)]
+
+t10$logP.x = -999
+t10$logP.y = -999
+for(i in 1:dim(t10)[1])
+{
+ if(t10$FDR.x[i] == 0 | t10$FDR.y[i] == 0) 
+ {
+  print(t10[i,]);
+  cat("\n")
+ } 
+ else 
+ {
+  a=1 
+  b=1 
+  if(t10$logFC.x[i] < 0)
+    a = -1
+  if(t10$logFC.y[i] < 0)
+    b = -1
+  t10$logP.x[i] = a * (-log10(t10$FDR.x[i]))
+  t10$logP.y[i] = b * (-log10(t10$FDR.y[i]))
+ }
+}
+
