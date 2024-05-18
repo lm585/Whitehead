@@ -5155,3 +5155,20 @@ title(main=paste("left-ventricle ", "r=",round(cor1$estimate, digits = 3), " p="
   abline(v = 0)
  title(main=paste("left-ventricle ", "r=",round(cor1$estimate, digits = 3), " p=", format(cor1$p.value, digits=3), " (Spearman)", sep =""))
  
+###
+> t8 <- read.delim("diff2-1-left-ventricle-FvsM.age-bmi-covar.2.txt")
+ dim(t8)
+# [1] 15298    10
+ t9 <- merge(t8, t7, by.x="geneID", by.y="geneID")
+ dim(t9)
+# [1] 956  34
+ t10 <- t9[, c(3,2,6,7,8,10,12,16,23,26)]
+ cor1 <- cor.test(t10$logFC.x, t10$logFC.y, method="s")
+ par( mar=c(6,6,2,2))
+ plot(t10$logFC.x, t10$logFC.y,  xlab="P-lab (FvsM.age-bmi-covar.)", ylab="logFC \n F vs M, P-Lab", cex=0.3)
+ abline(lm(t10$logFC.y ~ t10$logFC.x), lwd = 1, col="blue")
+
+ cor1 <- cor.test(t10$logFC.x, t10$Heart_Left_Ventricle.x, method="s")
+ plot(t10$Heart_Left_Ventricle.x, t10$logFC.x,   ylab="P-lab (FvsM.age-bmi-covar.)", xlab="MASH.beta (PMID: 32913072)", cex=0.5)
+ abline(lm(t10$logFC.x ~ t10$Heart_Left_Ventricle.x), lwd = 1, col="blue")
+
