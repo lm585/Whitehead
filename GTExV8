@@ -5200,3 +5200,30 @@ for(i in 1:dim(t10)[1])
  }
 }
 
+#######################################################################
+> t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.age-bmi-RIN-ischem-PC1-21-covar.noX.Y-weight0-FAO.GseaPreranked.1711332330950/gsea_report_for_na_pos_1711332330950.tsv")
+ t2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.age-bmi-RIN-ischem-PC1-21-covar.noX.Y-weight0-FAO.GseaPreranked.1711332330950/gsea_report_for_na_neg_1711332330950.tsv")
+ t3 <- rbind(t1,t2)
+ t4 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-fa-syn-left-ventricle-FvsM.noX.Y.age-bmi-covar-weight0-FAO.GseaPreranked.1705102308759/gsea_report_for_na_pos_1705102308759.tsv")
+ t5 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-fa-syn-left-ventricle-FvsM.noX.Y.age-bmi-covar-weight0-FAO.GseaPreranked.1705102308759/gsea_report_for_na_neg_1705102308759.tsv")
+ t6 <- rbind(t4, t5)
+ t3.1 <- t3[, c(1,6,7,8)]
+ t6.1 <- t6[, c(1,6,7,8)]
+ t7 <- merge(t3.1, t6.1, by.x="NAME", by.y="NAME")
+ t8 <- t7[ abs( t7$NES.x) > 2 | abs(t7$NES.y) >2 | t7$NAME == "GOBP_FATTY_ACID_BIOSYNTHETIC_PROCESS", ]
+ dim(t8)
+# [1] 32  7
+ t9 <- t8[, c(2,5)]
+ rownames(t9) <- t8[, c(1)]
+ i <- order(t9$NES.x)
+ t9.1 <- t9[i,]
+
+ gs8 <- as.data.frame( t(t9.1))
+ colnames(gs8) <-  gsub("HALLMARK_", "h_", colnames(gs8)) 
+> par( mar=c(6,2,2,16))
+ barplot(as.matrix(gs8), horiz=T, beside=T, yaxt="n",  col=c("orange", "blue"), xlab="GSEA NES (F vs. M)", )
+ axis(side=4, at = seq(2, 97, by=3), labels=colnames(gs8), las =1, cex.axis = 0.7)
+ abline(h = seq(2, 97, 3), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = seq(-100, 100, 2), lty = 5, lwd = 0.5, col = "gray")
+  legend(-6, 95, c( "age-bmi-covar", "include 21 latent var"), fill=c("blue", "orange"), cex = 0.7, inset = 0.05)
+
