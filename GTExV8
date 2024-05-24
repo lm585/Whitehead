@@ -5231,3 +5231,14 @@ for(i in 1:dim(t10)[1])
 > t4 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-fa-syn-mash.lfsr.left-ventricle-FvsM.noX.Y.weight0-FAO.GseaPreranked.1705100521041/gsea_report_for_na_pos_1705100521041.tsv")
  t5 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-fa-syn-mash.lfsr.left-ventricle-FvsM.noX.Y.weight0-FAO.GseaPreranked.1705100521041/gsea_report_for_na_neg_1705100521041.tsv")
  t6 <- rbind(t4, t5)
+####
+> t1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.Hdiseas-filt-268.noX.Y.age-bmi-covar-weight0-FAO.GseaPreranked.1705712974266/gsea_report_for_na_pos_1705712974266.tsv")
+  t2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.Hdiseas-filt-268.noX.Y.age-bmi-covar-weight0-FAO.GseaPreranked.1705712974266/gsea_report_for_na_neg_1705712974266.tsv")
+  t3 <- rbind(t1,t2)
+  t3.1 <- t3[, c(1,6,7,8)]
+
+
+> t4 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.age-bmi-RIN-ischem-PC1-21-covar.Hdiseas-268-covar.noX.Y-weight0-FAO.GseaPreranked.1716151956816/gsea_report_for_na_pos_1716151956816.tsv")
+ t5 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.age-bmi-RIN-ischem-PC1-21-covar.Hdiseas-268-covar.noX.Y-weight0-FAO.GseaPreranked.1716151956816/gsea_report_for_na_neg_1716151956816.tsv")
+ t6 <- rbind(t4, t5)
+  t6.1 <- t6[, c(1,6,7,8)]
