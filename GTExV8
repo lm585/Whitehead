@@ -5227,3 +5227,7 @@ for(i in 1:dim(t10)[1])
   abline(v = seq(-100, 100, 2), lty = 5, lwd = 0.5, col = "gray")
   legend(-6, 95, c( "age-bmi-covar", "include 21 latent var"), fill=c("blue", "orange"), cex = 0.7, inset = 0.05)
 
+###
+> t4 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-fa-syn-mash.lfsr.left-ventricle-FvsM.noX.Y.weight0-FAO.GseaPreranked.1705100521041/gsea_report_for_na_pos_1705100521041.tsv")
+ t5 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-fa-syn-mash.lfsr.left-ventricle-FvsM.noX.Y.weight0-FAO.GseaPreranked.1705100521041/gsea_report_for_na_neg_1705100521041.tsv")
+ t6 <- rbind(t4, t5)
