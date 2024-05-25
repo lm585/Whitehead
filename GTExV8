@@ -5242,3 +5242,8 @@ for(i in 1:dim(t10)[1])
  t5 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/left-ventricle-FvsM.age-bmi-RIN-ischem-PC1-21-covar.Hdiseas-268-covar.noX.Y-weight0-FAO.GseaPreranked.1716151956816/gsea_report_for_na_neg_1716151956816.tsv")
  t6 <- rbind(t4, t5)
   t6.1 <- t6[, c(1,6,7,8)]
+####
+> t4 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/Heart-Atrial-Appendage-FvsM.age-bmi-RIN-ischem-PC1-21-covar.noX.Y-weight0-FAO.GseaPreranked.1711387507076/gsea_report_for_na_pos_1711387507076.tsv")
+ t5 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/Heart-Atrial-Appendage-FvsM.age-bmi-RIN-ischem-PC1-21-covar.noX.Y-weight0-FAO.GseaPreranked.1711387507076/gsea_report_for_na_neg_1711387507076.tsv")
+  t6 <- rbind(t4, t5)
+  t6.1 <- t6[, c(1,6,7,8)]
