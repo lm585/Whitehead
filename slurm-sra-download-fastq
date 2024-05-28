@@ -1,0 +1,25 @@
+#!/bin/bash
+# Configuration values for SLURM job submission.
+# One leading hash ahead of the word SBATCH is not a comment, but two are.
+#SBATCH --job-name="fasterq-dump" # friendly name for job.
+#SBATCH --nodes=1                      # ensure cores are on one node
+#SBATCH --ntasks=1                     # run a single task
+#SBATCH --cpus-per-task=5              # number of cores/threads requested.
+#SBATCH --mem=80gb                      # memory requested.
+#SBATCH --partition=20                 # partition (queue) to use
+#SBATCH --output out-may-28-254pm
+#SBATCH --mail-type=ALL               # send email on job start/finish.
+#SBATCH --mail-user=linyong@wi.mit.edu
+
+# This is the actual section for commands to run
+
+# Uncomment the last line to email output file to specified address.
+# Slurm doesn't do this automatically, regardless of the mail-type setting above.
+#/usr/bin/mail -s "$SLURM_JOB_NAME $SLURM_JOB_ID" your_username@wi.mit.edu < friendlyname-${SLURM_JOB_ID}.out
+
+cat biosample_result-accession-60samp.txt | awk 'NF > 0' | while read ll 
+do 
+ echo $ll; 
+ prefetch "$ll"
+ fasterq-dump "$ll"
+done
