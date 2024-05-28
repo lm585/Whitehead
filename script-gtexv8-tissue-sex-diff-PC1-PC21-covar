@@ -115,6 +115,24 @@ df.cpm.gene <- merge(df.gene, chr, by.x="geneID", by.y="geneID")
  y[,1:11]
  write.table(df.cpm.gene, "diff2-1.txt", sep="\t", quote=F)
 
+#######################################################################
+> t <- read.delim("/Users/linyongmao/Documents/dir-GTExV8/dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt")
+  t1 <- data.frame(t$SAMPID, t$SMRIN, t$SMTSISCH)
+ t2 <- (t1[ is.na(t1$t.SMTSISCH) | is.na(t1$t.SMRIN),])
+ dim(t2)
+# [1] 3206    3
+ write.table(t2, "sample-rinORisch-NA.txt", sep="\t", quote=F)
+
+>  t2$id <- paste(t2$id, ".", sep="")
+ dim(t2)
+ t3 <- read.delim("sample-rinORisch-NA.txt")
+ dim(t3)
+# [1] 3206    3
+ t4 <- t2[ !( t2$V1 %in% t3$t.SAMPID),]
+ t2 <- t4
+ dim(t2)
+
+
 #############################################################################
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i diff2-1.txt diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-RIN-ischem-PC1-21-covar.txt
 vi diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-RIN-ischem-PC1-21-covar.txt
