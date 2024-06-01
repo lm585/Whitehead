@@ -5247,3 +5247,45 @@ for(i in 1:dim(t10)[1])
  t5 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/Heart-Atrial-Appendage-FvsM.age-bmi-RIN-ischem-PC1-21-covar.noX.Y-weight0-FAO.GseaPreranked.1711387507076/gsea_report_for_na_neg_1711387507076.tsv")
   t6 <- rbind(t4, t5)
   t6.1 <- t6[, c(1,6,7,8)]
+#######################################################################
+ sp <- a.df[, c(1,2)]
+ sp$rho=-999
+ sp$p=-999
+
+for(i in 1:dim(a.df)[1] ) {
+t1 <- data.frame(y = t(a.df[i,]), sex = info.2$SEX )
+t2 <- cor.test(t1[,1] , t1$sex, method="s")
+sp$rho[i] = t2$estimate
+sp$p[i]  = t2$p.value
+}
+head(sp)
+ sp$id <- rownames(sp)
+ t1 <- merge(df.sex1var.edger, sp, by.x="geneID", by.y="id")
+> cor.test(t1$rho, t1$logFC, method="s")
+      rho 
+0.8921754 
+
+t1$logP.x = -999
+t1$logP.y = -999
+for(i in 1:dim(t1)[1])
+{
+ if(t1$PValue[i] == 0 | t1$p[i] == 0)
+ {
+  print(t1[i,]);
+  cat("\n")
+ } 
+ else 
+ {
+  a=1 
+  b=1 
+  if(t1$logFC[i] < 0)
+    a = -1
+  if(t1$rho[i] < 0)
+    b = -1
+  t1$logP.x[i] = a * (-log10(t1$PValue[i]))
+  t1$logP.y[i] = b * (-log10(t1$p[i]))
+ }
+}
+
+> t2 <- t1[ t1$chr != "chrY" & t1$name != "XIST",]
+
