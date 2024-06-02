@@ -5289,3 +5289,6 @@ for(i in 1:dim(t1)[1])
 
 > t2 <- t1[ t1$chr != "chrY" & t1$name != "XIST",]
 
+####
+t3 from diff2-1-BrainCortex-FvsM.edger-spearman-PC8-agebmi.4models
+> t4 <- data.frame( edger=t3$logP.x, spear=t3$logP.y, pc8 = t3$logP.PC8, agebmi=t3$logP.agebmi)
