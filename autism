@@ -2658,3 +2658,54 @@ linyong@fry /lab/solexa_page/linyong$ bash script-paste-files-2 | awk '{print $1
      59 __too_low_aQual
 checked gene order identical in each gene_count file
 
+#######################################################################
+linyongmao@Linyong-Mao-MBP16-2019 autism % bash script-meta-data > temp    
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi temp
+mv -i temp mouse-mg-rnaseq-Hanamsagar.metadata.2.txt
+> meta <- read.delim("mouse-mg-rnaseq-Hanamsagar.metadata.2.txt")
+ dim(meta[ meta$EorP == "E",])
+# [1] 7 7
+ dim(meta)
+# [1] 60  7
+ raw <- read.delim("mouse-mg-rnaseq-60samp-stranded-Hanamsagar.counts_gene")
+ dim(raw)
+# [1] 56980    62
+ t2 <- meta[ meta$EorP != "E",]
+ raw2 <- raw[ , colnames(raw) %in% t2$id]
+ rownames(raw2) <- raw[, 1]
+ dim(raw2)
+# [1] 56980    53
+ y <- DGEList(counts=raw2)
+ y <- calcNormFactors(y)
+ med <- data.frame(y$counts[,1])
+ med$logic <- TRUE
+ d <- cpm(y)
+ for(i in 1:dim(y)[1]) {
+  med$logic[i] <- median(d[i,]) >= 1
+ }
+ ####median >= 1 for pathway genes
+ y<-y[med$logic,]
+ print(dim(y))
+# [1] 13688    53
+
+y.cn <- colnames(y)
+info.2 <- head(meta, n= dim(y)[2])
+for(i in 1:dim(y)[2]) {
+ t1 <- meta[ meta$id == y.cn[i],]
+ info.2[i,] <- t1[1,]
+ }
+ identical(info.2$id, y.cn)
+
+d = cpm(y)
+a <- d
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+ g <- raw[, c(1,2)]
+a.df.g <- merge(a.df, g, by.x="id", by.y="geneID")
+dim(a.df.g)
+
+ p.exp <- a.df.g[ a.df.g$name %in% "Xist", ]
+ length(p.exp$name)
+ mat <- as.matrix(p.exp[, 2:54])
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+ identical(res$id, info.2$id)
