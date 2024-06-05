@@ -2709,3 +2709,20 @@ dim(a.df.g)
  mat <- as.matrix(p.exp[, 2:54])
  res <- data.frame(id = colnames(mat), mean = colMeans(mat))
  identical(res$id, info.2$id)
+
+ info.2$expr <- res$mean
+ t3 <- info.2[ info.2$lps != "LPS",]
+ dim(t3)
+# [1] 40  8
+gplot(t3, aes(x=age, y=expr, color=sex, group=sex)) + geom_point(size=2, shape=21) + geom_smooth(se=T) + labs(title=g, y="gene expression (CPM)", x="age (day)") + geom_smooth(aes(fill = sex))
+
+ t4 <- info.2[ info.2$age == 60,]
+ t4$sl <- paste(t4$sex, t4$lps, sep="_")
+ t4$sl1 <- factor(t4$sl, levels=c("F_sal", "F_LPS", "M_sal", "M_LPS"))
+ boxplot(t4$expr ~ t4$sl1,  outcol="white", main=g, col=c("orange", "orange", "purple", "purple"))
+ beeswarm(t4$expr ~ t4$sl1, add=T)
+ abline(h = seq(0, 1000, 5), lty = 5, lwd = 0.5, col = "grey")
+
+ t5 <- t4[ t4$sl =="F_sal",]
+ t6 <- t4[ t4$sl =="F_LPS",]
+ wilcox.test(t5$expr, t6$expr)
