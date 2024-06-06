@@ -2762,3 +2762,27 @@ for(i in 1:dim(t1)[1]) {
  info.2$pc2 <- p1$PC2
  info.2$ag.lp <- paste(info.2$age, info.2$lps, sep="_")
 
+################################
+>  t1 <- as.data.frame(cor(a.df))
+
+ col_fun = colorRamp2(c(0.7,0.85,1), c( "blue", "white",  "red"))
+ info.2$age_ <- factor(info.2$age)
+ ca <- HeatmapAnnotation( sex = info.2$sex, which="row",  age = info.2$age_, LPS=info.2$lps )
+ Heatmap(t1, name = "correlation",   right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 6), column_names_gp=gpar(fontsize = 6), col = col_fun,)
+
+ t1 <- as.data.frame(cor(a.df))
+ info.3 <- info.2[ info.2$lps !=  "LPS",]
+t2 <- t1[ rownames(t1) %in% info.3$id, colnames(t1) %in% info.3$id,]
+ dim(t2)
+#[1] 40 40
+ identical(rownames(t2), info.3$id)
+ identical(colnames(t2), info.3$id)
+ col_fun = colorRamp2(c(0.7,0.9,1), c( "blue", "white",  "red"))
+ col.sex <- c("blue", "red")
+ names(col.sex) <- c("M", "F")
+ col.lps <- c("white", "black")
+ names(col.lps) <- c("sal", "LPS")
+ col.age <- colorRamp2(c(4,14,60), c("blue","yellow", "red"))
+ ca <- HeatmapAnnotation( sex = info.3$sex, which="row",  age = info.3$age, lps = info.3$lps, col=list(sex = col.sex, age = col.age, lps=col.lps) )
+ Heatmap(t2, name = "correlation",   right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 6), column_names_gp=gpar(fontsize = 6), col = col_fun,)
+
