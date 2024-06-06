@@ -2726,3 +2726,38 @@ gplot(t3, aes(x=age, y=expr, color=sex, group=sex)) + geom_point(size=2, shape=2
  t5 <- t4[ t4$sl =="F_sal",]
  t6 <- t4[ t4$sl =="F_LPS",]
  wilcox.test(t5$expr, t6$expr)
+
+d = cpm(y)
+a <- log10(d+1)
+a.df <- as.data.frame(a)
+a.df[1:6,1:6]
+
+ t1 <- as.data.frame(cor(a.df))
+ dim(t1)
+# [1] 53 53
+for(i in 1:dim(t1)[1]) {
+ t1[i, i] = NA
+}
+ t2 <-boxplot(t1, xlab="53 samples", ylab="Sample-S cor" )
+ boxplot(t2$stats[3,], xlab="53 samples", ylab="median of Sample-S cor" )
+ beeswarm(t2$stats[3,], add=T)
+ abline(h = seq(0, 1000, 0.02), lty = 5, lwd = 0.5, col = "blue")
+
+ identical(info.2$id, colnames(a.df))
+ ll <- info.2[ info.2$lps == "LPS",]$id
+ l2 <- a.df[, !(colnames(a.df) %in% ll)]
+ dim(l2)
+# [1] 13688    40
+
+>  r3 <- t(a.df)
+>  pca <- prcomp(r3, center = TRUE, scale. = TRUE)
+ boxplot(pca$x[,1:20])
+ s <- summary(pca)
+ s$importance[,1:10]
+ p1 <- as.data.frame( pca$x[,1:2])
+ p1$id <- rownames(p1)
+> identical(info.2$id, p1$id)
+ info.2$pc1 <- p1$PC1
+ info.2$pc2 <- p1$PC2
+ info.2$ag.lp <- paste(info.2$age, info.2$lps, sep="_")
+
