@@ -2786,3 +2786,37 @@ t2 <- t1[ rownames(t1) %in% info.3$id, colnames(t1) %in% info.3$id,]
  ca <- HeatmapAnnotation( sex = info.3$sex, which="row",  age = info.3$age, lps = info.3$lps, col=list(sex = col.sex, age = col.age, lps=col.lps) )
  Heatmap(t2, name = "correlation",   right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 6), column_names_gp=gpar(fontsize = 6), col = col_fun,)
 
+####################################
+> t2 <- meta[ meta$EorP != "E" & meta$lps != "LPS",]
+
+
++  a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
++ }
+> a.df <- as.data.frame(a)
+[1] 13862 genes;   40
+> a.df$id <- row.names(a.df)
+ a.df$id2 <-  gsub("\\.[0-9][0-9]*", "", a.df$id)
+t6 <- read.delim("../microglia-mouse/Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip")
+ dim(t6)
+# [1] 19341     3
+ a.df.g <- merge(a.df, t6, by.x="id2", by.y="ID")
+ dim(a.df.g)
+# [1] 12750    44
+ file <- "../microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes"
+ p <- read.delim(file, header=F)
+ p.exp <- a.df.g[ a.df.g$Gene.Symbol %in% p$V1, ]
+ length(p.exp$Gene.Symbol)
+# [1] 184 INTERFERON_GAMMA genes in mouse mg
+ mat <- as.matrix(p.exp[, 2:41])
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+ identical(res$id, info.2$id)
+# [1] TRUE
+ info.2$expr <- res$mean
+ t3 <- info.2
+ dim(t3)
+# [1] 40  8
+ g <- gsub(".*/","", file)
+ ggplot(t3, aes(x=age, y=expr, color=sex, group=sex)) + geom_point(size=2, shape=21) + geom_smooth(se=T) + labs(title=g, y="pathway Z-score", x="age (day)") + geom_smooth(aes(fill = sex))
+ t.test(t3[ t3$sex=="F" & t3$age == 60,]$expr, t3[ t3$sex=="M" & t3$age == 60,]$expr)
+ wilcox.test(t3[ t3$sex=="F" & t3$age == 60,]$expr, t3[ t3$sex=="M" & t3$age == 60,]$expr)
+
