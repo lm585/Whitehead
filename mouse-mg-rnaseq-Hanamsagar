@@ -1,0 +1,97 @@
+meta <- read.delim("mouse-mg-rnaseq-Hanamsagar.metadata.2.txt")
+ dim(meta[ meta$EorP == "E",])
+# [1] 7 7
+ dim(meta)
+# [1] 60  7
+ raw <- read.delim("mouse-mg-rnaseq-60samp-stranded-Hanamsagar.counts_gene")
+ dim(raw)
+# [1] 56980    62
+ t2 <- meta[ meta$EorP != "E" & meta$age == 60 & meta$lps != "LPS",]
+t2
+raw2 <- raw[ , colnames(raw) %in% t2$id]
+ rownames(raw2) <- raw[, 1]
+ dim(raw2)
+# [1] 56980    53
+ y <- DGEList(counts=raw2)
+ y <- calcNormFactors(y)
+ med <- data.frame(y$counts[,1])
+ med$logic <- TRUE
+ d <- cpm(y)
+ for(i in 1:dim(y)[1]) {
+  med$logic[i] <- median(d[i,]) >= 1
+ }
+ ####median >= 1 for pathway genes
+ y<-y[med$logic,]
+ print(dim(y))
+# [1] 13688    53
+
+y.cn <- colnames(y)
+info.2 <- head(meta, n= dim(y)[2])
+for(i in 1:dim(y)[2]) {
+ t1 <- meta[ meta$id == y.cn[i],]
+ info.2[i,] <- t1[1,]
+ }
+ identical(info.2$id, y.cn)
+d = cpm(y)
+a <- log10(d+1)
+a.df <- as.data.frame(a)
+a.df[1:6,1:6]
+ identical(info.2$id, colnames(y))
+ identical(info.2$id, colnames(a.df))
+resid2 <- a.df
+for(i in 1:dim(a.df)[1] ) {
+ t1 <- data.frame(y = t(a.df[i,]), sex = info.2$sex )
+ t2 <- lm(t1[,1] ~ sex, data=t1)
+ t3 <- resid(t2)
+ resid2[i,] <- t3
+
+}
+ r3 <- t(resid2)
+ pca <- prcomp(r3, center = TRUE, scale. = TRUE)
+ t1 <- as.data.frame(pca$x[,1:3])
+ boxplot(t1, outcol="white")
+ beeswarm(t1, add=T)
+ s <- summary(pca)
+s$importance[,1:6]
+p1 <- as.data.frame( pca$x[,1:6])
+ p1$id <- rownames(p1)
+ identical(info.2$id, p1$id)
+ info.2$pc1 <- p1$PC1
+ info.2$pc2 <- p1$PC2
+ t1 <- lm(info.2$pc1 ~ info.2$sex)
+ summary(t1)
+ t1 <- lm(info.2$pc2 ~ info.2$sex)
+ summary(t1)
+  identical(info.2$id, colnames(y))
+ design <- model.matrix( ~ info.2$sex + info.2$pc1 + info.2$pc2) 
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+# write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+gene.name <- raw[, 1:2]
+df.gene <- merge(diff, gene.name, by.x="geneID", by.y="geneID")
+t6 <- read.delim("../microglia-mouse/Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip")
+ dim(t6)
+# [1] 19341     3
+  t2 <- read.delim("../dir-GTExV8/gencode.vM31.mouse-id-chr-name")
+  t3 <- merge(df.gene, t2, by.x="geneID", by.y="geneID")
+  dim(t3)
+ df.cpm.gene <- t3
+ df.cpm.gene$id <- gsub("\\.[0-9][0-9]*", "", df.cpm.gene$geneID)
+ t8 <- merge(df.cpm.gene, t6, by.x="id", by.y="ID")
+ dim(t8)
+> write.table(t8, "diff", sep="\t", quote=F)
+  t9 <- t8[ t8$chr != "chrX" & t8$chr != "chrY", c(1,3:7,2,13)]
+  dim(t9)
+ write.table(t9, "temp", quote=F, sep="\t")
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi temp
+ ../microglia/make-rnk-genesymble  temp out
+cat out | grep -i xist
+cat out | grep -i ddx3y
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  mouse-mg-rnaseq-Hanamsagar.P60.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY.rnk -scoring_scheme classic  -rpt_label  "mouse-mg-rnaseq-Hanamsagar.P60.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY-weight0-hallmark"    -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
