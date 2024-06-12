@@ -2833,8 +2833,15 @@ t6 <- read.delim("../microglia-mouse/Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigD
 [1] 11934     8
 
 ##################
-linyongmao@Linyong-Mao-MBP16-2019 autism % cat mouse-mg-rnaseq-Hanamsagar.P4.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY.rnk | sort -t '      ' +1 -2g | head  -500 | awk '$2 < -1.3010' | cut -f 1 > temp-f-bias
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp-s
+#
+cat mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk  | sort -t '	' +1 -2g | head  -500 | awk '$2 < -1.3010' | cut -f 1 > temp-f-bias
+ bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-f-bias 40samp3ages-f-bias temp-hall-files mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk  |  awk '$7 < 0.005 && $9 > 1' | sed 's#../microglia/##' | cut -f 1-7,9
 
- bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-f-bias P4-f-bias temp-hall-files mouse-mg-rnaseq-Hanamsagar.P4.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY.rnk |  awk '$7 < 0.005 && $9 > 1' | sed 's#../microglia/##' | cut -f 1-7,9 
+echo
+echo
+echo
 
-cat mouse-mg-rnaseq-Hanamsagar.P4.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY.rnk | sort -t '      ' +1 -2gr | head  -500 | awk '$2 > 1.3010' | cut -f 1 > temp-m-bias 
+cat mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk  | sort -t '	' +1 -2gr | head  -500 | awk '$2 > 1.3010' | cut -f 1 > temp-m-bias
+ bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-m-bias 40samp3ages-m-bias temp-hall-files mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk  |  awk '$7 < 0.005 && $9 > 1' | sed 's#../microglia/##' | cut -f 1-7,9
+
