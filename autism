@@ -2831,3 +2831,10 @@ t6 <- read.delim("../microglia-mouse/Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigD
 >  t9 <- t8[ t8$chr != "chrX" & t8$chr != "chrY", c(1,3:7,2,13)]
 >  dim(t9)
 [1] 11934     8
+
+##################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat mouse-mg-rnaseq-Hanamsagar.P4.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY.rnk | sort -t '      ' +1 -2g | head  -500 | awk '$2 < -1.3010' | cut -f 1 > temp-f-bias
+
+ bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-f-bias P4-f-bias temp-hall-files mouse-mg-rnaseq-Hanamsagar.P4.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY.rnk |  awk '$7 < 0.005 && $9 > 1' | sed 's#../microglia/##' | cut -f 1-7,9 
+
+cat mouse-mg-rnaseq-Hanamsagar.P4.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY.rnk | sort -t '      ' +1 -2gr | head  -500 | awk '$2 > 1.3010' | cut -f 1 > temp-m-bias 
