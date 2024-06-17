@@ -2845,3 +2845,26 @@ echo
 cat mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk  | sort -t '	' +1 -2gr | head  -500 | awk '$2 > 1.3010' | cut -f 1 > temp-m-bias
  bash ../Whitehead-main/script-inputset-pathways-overlap-fisher temp-m-bias 40samp3ages-m-bias temp-hall-files mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk  |  awk '$7 < 0.005 && $9 > 1' | sed 's#../microglia/##' | cut -f 1-7,9
 
+#######################################################################
+linyongmao@Linyong-Mao-MBP16-2019 microglia % cat GOBP_OXIDATIVE_PHOSPHORYLATION.v2023.2.Hs.gmt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i}'  | awk 'NR > 2' > GOBP_OXIDATIVE_PHOSPHORYLATION.genes
+     148 GOBP_OXIDATIVE_PHOSPHORYLATION.genes
+cat  KEGG_ALLOGRAFT_REJECTION.v2023.2.Hs.gmt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i}'  | awk 'NR > 2' >  KEGG_ALLOGRAFT_REJECTION.genes
+      37 KEGG_ALLOGRAFT_REJECTION.genes
+cat  KEGG_OXIDATIVE_PHOSPHORYLATION.v2023.2.Hs.gmt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i}'  | awk 'NR > 2' >  KEGG_OXIDATIVE_PHOSPHORYLATION.genes
+     132 KEGG_OXIDATIVE_PHOSPHORYLATION.genes
+cat ../dir-GTExV8/fao.gmt | grep -i fao | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i}'  | awk 'NR > 2' >  FAO.genes
+
+     158 HALLMARK_FATTY_ACID_METABOLISM.genes
+cat ../dir-GTExV8/fao.gmt | grep -i GOBP_FATTY_ACID_BIOSYNTHETIC_PROCESS  | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print  $i}'  | awk 'NR > 2' >  GOBP_FATTY_ACID_BIOSYNTHETIC_PROCESS.genes
+     168 GOBP_FATTY_ACID_BIOSYNTHETIC_PROCESS.genes
+
+
+cat  GOBP_OXIDATIVE_PHOSPHORYLATION.v2023.2.Hs.gmt > to-be-tested-geneset.gmt
+echo >> to-be-tested-geneset.gmt
+cat   KEGG_OXIDATIVE_PHOSPHORYLATION.v2023.2.Hs.gmt >> to-be-tested-geneset.gmt
+echo >> to-be-tested-geneset.gmt
+cat  KEGG_ALLOGRAFT_REJECTION.v2023.2.Hs.gmt  >> to-be-tested-geneset.gmt
+echo >> to-be-tested-geneset.gmt
+cat ../dir-GTExV8/fao.gmt | grep -i fao >> to-be-tested-geneset.gmt
+cat ../dir-GTExV8/fao.gmt | grep -i GOBP_FATTY_ACID_BIOSYNTHETIC_PROCESS  >> to-be-tested-geneset.gmt
+
