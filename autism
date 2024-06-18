@@ -2871,3 +2871,53 @@ cat ../dir-GTExV8/fao.gmt | grep -i fatty_acid_meta >> to-be-tested-geneset.gmt
 cat ../dir-GTExV8/fao.gmt | grep -i allograft >> to-be-tested-geneset.gmt
 cat ../dir-GTExV8/fao.gmt | grep -i oxidative  >> to-be-tested-geneset.gmt
 
+##############################################################
+> f <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717816582258/gsea_report_for_na_neg_1717816582258.tsv")
+
+ t1 <- f[ f$FDR.q.val < 0.01,]
+ t2 <- t1[, c(1,6)]
+ t3 <- data.frame(t2$NES)
+ rownames(t3) <- t2$NAME
+ l <- order(-t3$t2.NES)
+ t4 <- data.frame(NES = t3[l,])
+ rownames(t4) <- rownames(t3)[l]
+ gs8 <- as.data.frame( t(t4))
+ par( mar=c(6,2,2,16))
+ barplot(as.matrix(gs8), horiz=T, beside=T, yaxt="n",   xlab="GSEA NES (M vs. F)", col="orange")
+  nam <- gsub("HALLMARK", "h", colnames(gs8))
+  axis(side=4, at = seq(1.5, 1.5+2*6, by=2), labels=nam, las =1, cex.axis = 0.7)
+  abline(v = seq(-1000, 15, 1), lty = 5, lwd = 0.5, col = "gray")
+
+> f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.P4.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1718115710217/gsea_report_for_na_pos_1718115710217.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.P4.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1718115710217/gsea_report_for_na_neg_1718115710217.tsv")
+ t1 <- rbind(f1, f2)
+ t2 <- t1[, c(1,6, 8)]
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.P14.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717969422447/gsea_report_for_na_pos_1717969422447.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.P14.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717969422447/gsea_report_for_na_neg_1717969422447.tsv")
+ t1 <- rbind(f1[, 1:11], f2)
+ t.p14 <- t1[, c(1,6, 8)]
+
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.P60.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717881403611/gsea_report_for_na_pos_1717881403611.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.P60.MvF-diff2-1.resid.pc1-pc2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717881403611/gsea_report_for_na_neg_1717881403611.tsv")
+ t1 <- rbind(f1, f2)
+ t.p60 <- t1[, c(1,6, 8)]
+
+ t3 <- merge(t2, t.p14, by.x="NAME", by.y="NAME")
+ t4 <- merge(t3, t.p60, by.x="NAME", by.y="NAME")
+ t5 <- t4[ 1:dim(t4.3ages)[1],]
+
+for(i in 1:dim(t4.3ages)[1]) {
+ l <- t4[ t4$NAME == rownames(t4.3ages)[i],]
+ t5[i,] <- l[1,]
+ }
+
+ t6 <- t5[ , c(2,4,6)]
+ rownames(t6) <- t5$NAME
+ t6.1 <- t6[, c(3,2,1)]
+  gs1 <- as.data.frame( t(t6.1))
+ barplot(as.matrix(gs1), horiz=T, beside=T, yaxt="n",   xlab="GSEA NES (M vs. F)", col=c("blue", "orange", "green"), xlim=c(-7, 7))
+ nam <- gsub("HALLMARK", "h", colnames(gs1))
+ axis(side=4, at = seq(2.5, 2.5+4*6, by=4), labels=nam, las =1, cex.axis = 0.9)
+ legend(-6, 2.5+4*2+2, c( "P4", "P14", "P60"), fill=c("green", "orange", "blue"), cex = 0.7, inset = 0.05)
+  abline(v = seq(-10, 10, 1), lty = 5, lwd = 0.5, col = "gray")
+
