@@ -2869,4 +2869,5 @@ cat ../dir-GTExV8/fao.gmt | grep -i fao >> to-be-tested-geneset.gmt
 cat ../dir-GTExV8/fao.gmt | grep -i GOBP_FATTY_ACID_BIOSYNTHETIC_PROCESS  >> to-be-tested-geneset.gmt
 cat ../dir-GTExV8/fao.gmt | grep -i fatty_acid_meta >> to-be-tested-geneset.gmt 
 cat ../dir-GTExV8/fao.gmt | grep -i allograft >> to-be-tested-geneset.gmt
+cat ../dir-GTExV8/fao.gmt | grep -i oxidative  >> to-be-tested-geneset.gmt
 
