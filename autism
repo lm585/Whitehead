@@ -2921,3 +2921,47 @@ for(i in 1:dim(t4.3ages)[1]) {
  legend(-6, 2.5+4*2+2, c( "P4", "P14", "P60"), fill=c("green", "orange", "blue"), cex = 0.7, inset = 0.05)
   abline(v = seq(-10, 10, 1), lty = 5, lwd = 0.5, col = "gray")
 
+############
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717816582258/gsea_report_for_na_pos_1717816582258.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717816582258/gsea_report_for_na_neg_1717816582258.tsv")
+ t1 <- rbind(f1, f2)
+ t2 <- t1[, c(1,6, 8)]
+ t.p4.p14.p60.3ages <-  merge(t4, t2, by.x="NAME", by.y="NAME")
+ colnames(t.p4.p14.p60.3ages) <- c("NAME", "P4.NES", "P4.FDR", "P14.NES", "P14.FDR", "P60.NES", "P60.FDR", "P.3ages.NES", "P.3ages.FDR")
+
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.interac.strand.prerank.v7.4.GseaPreranked.1692378724023/gsea_report_for_na_pos_1692378724023.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.interac.strand.prerank.v7.4.GseaPreranked.1692378724023/gsea_report_for_na_neg_1692378724023.tsv")
+  t1 <- rbind(f1, f2)
+  t2 <- t1[, c(1,6, 8)]
+ t5 <- merge(t.p4.p14.p60.3ages, t2, by.x="NAME", by.y="NAME")
+
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.strand.prerank.v7.4.GseaPreranked.1692381192086/gsea_report_for_na_pos_1692381192086.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF.noX.Y.strand.prerank.v7.4.GseaPreranked.1692381192086/gsea_report_for_na_neg_1692381192086.tsv")
+  t1 <- rbind(f1, f2)
+   t2 <- t1[, c(1,6, 8)]
+ t6 <- merge(t5, t2, by.x="NAME", by.y="NAME")
+ colnames(t6)[10:13] <- c("human.interact.NES", "human.interact.FDR", "human.no-interact.NES", "human.no-interact.FDR")
+
+ t7 <- t6[, c(2,4,6,8,10,12)]
+#      P4.NES    P14.NES   P60.NES P.3ages.NES human.interact.NES human.no-interact.NES
+ cor(t7, method="spearman")
+
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/gsea_report_for_na_pos_1718816546930.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/gsea_report_for_na_neg_1718816546930.tsv")
+t1 <- rbind(f1, f2)
+   t2 <- t1[, c(1,6, 8)]
+dim(t2)
+t8 <- merge(t6, t2, by.x="NAME", by.y="NAME")
+head(t8)
+
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.no-interac.strand-weight0-hallmark.GseaPreranked.1718816589477/gsea_report_for_na_pos_1718816589477.tsv")
+f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.no-interac.strand-weight0-hallmark.GseaPreranked.1718816589477/gsea_report_for_na_neg_1718816589477.tsv")
+t1 <- rbind(f1, f2)
+   t2 <- t1[, c(1,6, 8)]
+dim(t2)
+t9 <- merge(t8, t2, by.x="NAME", by.y="NAME")
+head(t9)
+colnames(t9)[14:17] <- c("human.inter-GSEAwt0.NES", "human.inter-GSEAwt0.FDR", "human.no-inter-GSEAwt0.NES", "human.no-inter-GSEAwt0.FDR")
+t10 <- t9[, c(2,4,6,8,10,12,14,16)]
+cor(t10, method="spearman")
+
