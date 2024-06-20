@@ -2965,3 +2965,37 @@ colnames(t9)[14:17] <- c("human.inter-GSEAwt0.NES", "human.inter-GSEAwt0.FDR", "
 t10 <- t9[, c(2,4,6,8,10,12,14,16)]
 cor(t10, method="spearman")
 
+###p4, p14, p60, 3ages, human, combined NES, FDR
+> write.table(t9, "temp-t9-jun19.txt", sep="\t", quote=F)
+
+#################################################human mg
+"human_Microglia_RNA-18samp.gene.count.stranded.txt"
+> dim(y)
+[1] 15089    13
+
+info <- read.delim("human.postnatal.18samp.info")
+info.2 <- info[1:13,]
+cna <- gsub("human_Microglia_RNA_polyA_", "", colnames(y))
+for(i in 1:13) {
+ info.2[i,] = info[ info$Patient.ID == cna[i], ]
+ }
+identical(info.2$Patient.ID, cna)
+> design <- model.matrix(~info.2$Sex + info.2$Age + info.2$Sex : info.2$Age)
+> des <- as.data.frame(design)
+d = cpm(y)
+a <- log10(d+1)
+a.df <- as.data.frame(a)
+a.df[1:6,1:6]
+ identical(info.2$Patient.ID, gsub("human_Microglia_RNA_polyA_", "", colnames(a.df)))
+t1 <- data.frame(id = rownames(a.df), var = a.df[,1])
+
+t1$sex.cor = -999
+for(i in 1:dim(a.df)[1])
+{
+  d1 <-  data.frame(y = t(a.df[i,]), sex =  des$"info.2$SexM:info.2$Age" )
+  d2 <-  lm(d1[,1] ~ d1$sex)
+  d3 <- summary(d2)
+  t1$sex.cor[i] = d3$r.squared
+}
+
+ summary(t1$sex.cor)
