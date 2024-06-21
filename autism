@@ -2999,3 +2999,40 @@ for(i in 1:dim(a.df)[1])
 }
 
  summary(t1$sex.cor)
+#######################################################################
+f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/gsea_report_for_na_pos_1718816546930.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/gsea_report_for_na_neg_1718816546930.tsv")
+t1 <- rbind(f1, f2)
+   t2 <- t1[, c(1,6, 8)]
+dim(t2)
+
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.no-interac.strand-weight0-hallmark.GseaPreranked.1718816589477/gsea_report_for_na_pos_1718816589477.tsv")
+f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.no-interac.strand-weight0-hallmark.GseaPreranked.1718816589477/gsea_report_for_na_neg_1718816589477.tsv")
+t3 <- rbind(f1, f2)
+   t4 <- t3[, c(1,6, 8)]
+dim(t4)
+######
+> nes.act.no <- merge(t2, t4, by.x="NAME", by.y="NAME")
+ d1 <- cor.test(nes.act.no$NES.y, nes.act.no$NES.x)
+ str <- paste("Pearson r=", round(d1$estimate, digits = 3), ", p=", format(d1$p.value, digits=3), sep ="")
+ str
+ plot(nes.act.no$NES.y, nes.act.no$NES.x, xlab="GSEA NES (model 1, M vs. F)", ylab="GSEA NES (model 2, M vs. F)")
+ abline(lm(nes.act.no$NES.x ~ nes.act.no$NES.y))
+   abline(v = seq(-10, 10, 2), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = seq(-10, 10, 2), lty = 5, lwd = 0.5, col = "gray")
+ text(-5.5,0, str, col="blue")
+
+> dim(nes.act.no[ nes.act.no$NES.x < -3 & nes.act.no$NES.y < -3 & nes.act.no$FDR.q.val.x < 0.01 & nes.act.no$FDR.q.val.y < 0.01,])
+[1] 17  5
+ t1 <- nes.act.no[ nes.act.no$NES.x < -3 & nes.act.no$NES.y < -3 & nes.act.no$FDR.q.val.x < 0.01 & nes.act.no$FDR.q.val.y < 0.01,]
+ gs7 <- t1[ , c(2,4)]
+  rownames(gs7) <- t1[, c(1)]
+ d <- order(-gs7$NES.x)
+ gs8 <- as.data.frame( t(gs7[d,]))
+ par( mar=c(6,2,2,16))
+ barplot(as.matrix(gs8), horiz=T, beside=T, yaxt="n",  col=c("orange", "blue"),  xlab="GSEA NES (M vs. F)")
+ abline(v=0)
+  nam <- gsub("HALLMARK", "h", colnames(gs8))
+  axis(side=4, at = seq(2, 2+16*3, by=3), labels=nam, las =1, cex.axis = 0.7)
+  legend(-8, 12, c( "model 1", "model 2"), fill=c("blue", "orange"), cex = 0.7, inset = 0.05)
+
