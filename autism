@@ -3036,3 +3036,50 @@ dim(t4)
   axis(side=4, at = seq(2, 2+16*3, by=3), labels=nam, las =1, cex.axis = 0.7)
   legend(-8, 12, c( "model 1", "model 2"), fill=c("blue", "orange"), cex = 0.7, inset = 0.05)
 
+#######################################################################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt | awk '$8 == "chrM" ' |cut -f 7,8  | wc
+      19      38     230
+   14586 human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk
+cat human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 > 0' | wc -l
+    6762
+cat human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 < 0' | wc -l
+    7824
+cat human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk |grep "^MT-" | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 > 0' | wc -l
+       2
+cat human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk |grep "^MT-" | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 < 0' | wc -l
+      17
+
+dhyper(x, m, n, k, log = FALSE)
+x, q	
+vector of quantiles representing the number of white balls drawn without replacement from an urn which contains both black and white balls.
+
+m	
+the number of white balls in the urn.
+
+n	
+the number of black balls in the urn.
+
+k	
+the number of balls drawn from the urn, hence must be in 0,1,…, m+n.
+
+x=17
+m=7824
+n=6762
+k=19
+# hypergeometric hyperg fisher
+sum(dhyper(x:k, m, n, k))
+[1] 0.001046018
+
+fisher
+        Fbia  Mbia
+MT-ge    17   2
+non MT   7824-17  6762-2
+> a=17
+ b=2
+ c=7824-17
+ d=6762-2
+fis <- matrix(c(a,b,c,d), nrow=2, ncol=2, byrow=T )
+fis
+ fisher.test(fis) 
+p-value = 0.001836
+odds ratio   7.359304 
