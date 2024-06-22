@@ -3083,3 +3083,20 @@ fis
  fisher.test(fis) 
 p-value = 0.001836
 odds ratio   7.359304 
+
+###################
+> t1 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt")
+ t2 <- t1[ t1$chr == "chrM",]
+ t3 <- t2[ t2$PValue < 0.1,]
+> gplot(t2, aes(x=logFC, y=-log10(PValue), label=name)) + geom_point(size=1.5, shape=21) +geom_text_repel(show.legend=F, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1) +  geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue") + labs(x="logFC (M vs. F)")
+
+t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.txt")
+ dim(t1[ t1$chr == "chrM",])
+# [1] 12 14
+ t2 <- t1[ t1$chr == "chrM",]
+ t3 <- t2[ t2$PValue < 0.1,]
+
+label=name.x
+
+> t2$type
+ [1] "Mt_rRNA"        "Mt_rRNA"        "protein_coding" "Mt_tRNA"        "protein_coding" "Mt_tRNA"        "protein_coding" "protein_coding" "protein_coding" "protein_coding" "protein_coding" "Mt_tRNA"
