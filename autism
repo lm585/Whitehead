@@ -3100,3 +3100,16 @@ label=name.x
 
 > t2$type
  [1] "Mt_rRNA"        "Mt_rRNA"        "protein_coding" "Mt_tRNA"        "protein_coding" "Mt_tRNA"        "protein_coding" "protein_coding" "protein_coding" "protein_coding" "protein_coding" "Mt_tRNA"
+
+########################################
+t6: mouse, t2: human
+> t8 <- merge(t6, t2, by.x="NAME", by.y="NAME")
+> head(t8)
+                          NAME     NES.x  FDR.q.val.x      NES.y  FDR.q.val.y
+1        HALLMARK_ADIPOGENESIS -1.995551 0.0178291480 -4.5545583 0.0000000000
+2 HALLMARK_ALLOGRAFT_REJECTION -2.663592 0.0002631579 -5.5502653 0.0000000000
+
+> t8$nam <- gsub("HALLMARK", "h", t8$NAME)
+> t3 <- t8[ t8$FDR.q.val.x < 0.01 & t8$FDR.q.val.y < 0.01 & t8$NES.x * t8$NES.y > 0,]
+> gplot(t8, aes(x= NES.x, y= NES.y, label = nam)) + geom_point(size=2, shape=21) + geom_smooth(se=T, method="lm") +  geom_text_repel(show.legend=T, data=t3 , size=2, max.overlaps=100, min.segment.length = 0.1, col="red") + labs(x="mouse NES (M vs. F)", y="human NES (M vs. F)")
+
