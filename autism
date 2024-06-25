@@ -3165,3 +3165,27 @@ S = 704002, p-value = 4.185e-06
 > k= 83
 > sum(dhyper(x:k, m, n, k))
 [1] 0.003677595
+
+######
+> file <- "../microglia/HALLMARK_ALLOGRAFT_REJECTION.genes"
+......
+> dim(t4)
+[1] 120   3
+> dim(t4[t4$V2.x < log10(0.05) & t4$V2.y < log10(0.05),])
+[1] 7 3
+> dim(t4[t4$V2.x < log10(0.05) ,])
+[1] 45  3
+> dim(t4[t4$V2.y < log10(0.05) ,])
+[1] 13  3
+> x=7
+> m=45
+> n=120-45
+> k=13
+>  sum(dhyper(x:k, m, n, k))
+[1] 0.1619061
+
+> 13*45/120
+[1] 4.875
+> cor.test(t4$V2.x, t4$V2.y, method="s")
+S = 188630, p-value = 0.0001251
+      rho 0.3449892 
