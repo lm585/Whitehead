@@ -3189,3 +3189,15 @@ S = 704002, p-value = 4.185e-06
 > cor.test(t4$V2.x, t4$V2.y, method="s")
 S = 188630, p-value = 0.0001251
       rho 0.3449892 
+
+#########################################
+ t3 <- t8[ c(2,17,26,27, 31,32,36),]
+ d <- cor.test(t8$NES.x, t8$NES.y)
+ t4 <- t3[1,]
+ t4$NES.x = -6
+ t4$NES.y = 0
+ str <- paste("Pearson r= ", round(d$estimate, digits=3), ", p=", format(d$p.value, digits=3), sep="" )
+ t4$nam <- str
+
+> gplot(t8, aes(x= NES.x, y= NES.y, label = nam)) + geom_point(size=2, shape=21) + geom_smooth(se=T, method="lm") +  geom_text_repel(show.legend=T, data=t3 , size=3, max.overlaps=100, min.segment.length = 0.1, col="red") + labs(x="mouse P14 NES (M vs. F)", y="human NES (M vs. F)") + geom_text(data=t4, size=4, hjust=-0.3)
+
