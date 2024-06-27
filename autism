@@ -3191,7 +3191,15 @@ S = 188630, p-value = 0.0001251
       rho 0.3449892 
 
 #########################################
- t3 <- t8[ c(2,17,26,27, 31,32,36),]
+t6: mouse, t2: human
+> t8 <- merge(t6, t2, by.x="NAME", by.y="NAME")
+> head(t8)
+                          NAME     NES.x  FDR.q.val.x      NES.y  FDR.q.val.y
+1        HALLMARK_ADIPOGENESIS -1.995551 0.0178291480 -4.5545583 0.0000000000
+2 HALLMARK_ALLOGRAFT_REJECTION -2.663592 0.0002631579 -5.5502653 0.0000000000
+
+> t8$nam <- gsub("HALLMARK", "h", t8$NAME) 
+t3 <- t8[ c(2,17,26,27, 31,32,36),]
  d <- cor.test(t8$NES.x, t8$NES.y)
  t4 <- t3[1,]
  t4$NES.x = -6
