@@ -1,0 +1,89 @@
+#####################################mouse pathway-level z score, excluding chrx chrY genes
+
+meta <- read.delim("mouse-mg-rnaseq-Hanamsagar.metadata.2.txt")
+ dim(meta[ meta$EorP == "E",])
+# [1] 7 7
+ dim(meta)
+# [1] 60  7
+ raw <- read.delim("mouse-mg-rnaseq-60samp-stranded-Hanamsagar.counts_gene")
+ dim(raw)
+# [1] 56980    62
+ t2 <- meta[ meta$EorP != "E"  & meta$lps != "LPS",]
+t2
+raw2 <- raw[ , colnames(raw) %in% t2$id]
+ rownames(raw2) <- raw[, 1]
+ dim(raw2)
+# [1] 56980    53
+ y <- DGEList(counts=raw2)
+ y <- calcNormFactors(y)
+ med <- data.frame(y$counts[,1])
+ med$logic <- TRUE
+ d <- cpm(y)
+ for(i in 1:dim(y)[1]) {
+  med$logic[i] <- median(d[i,]) >= 1
+ }
+ ####median >= 1 for pathway genes
+ y<-y[med$logic,]
+ print(dim(y))
+# [1] 13862    40
+
+y.cn <- colnames(y)
+info.2 <- head(meta, n= dim(y)[2])
+for(i in 1:dim(y)[2]) {
+ t1 <- meta[ meta$id == y.cn[i],]
+ info.2[i,] <- t1[1,]
+ }
+ identical(info.2$id, y.cn)
+d = cpm(y)
+ a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+a.df <- as.data.frame(a)
+# [1] 13862 genes;   40
+ dim(a.df)
+# [1] 13862    40
+ a.df$id <- row.names(a.df)
+ a.df$id2 <-  gsub("\\.[0-9][0-9]*", "", a.df$id)
+ t6 <- read.delim("../microglia-mouse/Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip")
+ dim(t6)
+# [1] 19341     3
+ a.df.g <- merge(a.df, t6, by.x="id2", by.y="ID")
+ dim(a.df.g)
+# [1] 12750    44
+
+ t2 <- read.delim("../dir-GTExV8/gencode.vM31.mouse-id-chr-name")
+ t3 <- merge(a.df.g, t2, by.x="id", by.y="geneID")
+ dim(t3)
+# [1] 12750    48
+ t4 <- t3[ t3$chr != "chrX" & t3$chr != "chrY",]
+ dim(t4)
+# [1] 12317    48
+ a.df.g.all <- a.df.g
+ a.df.g <- t4
+
+ file <- "../microglia/HALLMARK_MTORC1_SIGNALING.genes"
+ p <- read.delim(file, header=F)
+ p.exp <- a.df.g[ a.df.g$Gene.Symbol %in% p$V1, ]
+ length(p.exp$Gene.Symbol)
+# [1] 194 genes in HALLMARK_MTORC1_SIGNALING.genes in mouse mg noChrX, no chrY genes
+ mat <- as.matrix(p.exp[, 3:42])
+ res <- data.frame(id = colnames(mat), mean = colMeans(mat))
+ identical(res$id, info.2$id)
+# [1] TRUE
+ info.2$expr <- res$mean
+ t3 <- info.2
+ dim(t3)
+# [1] 40  8
+ g <- gsub(".*/","", file)
+ summary(t3$expr)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -0.74436 -0.20493  0.03454  0.00000  0.17186  0.46034 
+
+ gplot(t3, aes(x=age, y=expr, color=sex, group=sex)) + geom_point(size=2, shape=21) + geom_smooth(se=T) + labs(title=g, y="pathway Z-score", x="age (day)") + geom_smooth(aes(fill = sex))
+
+> ggplot(t3, aes(x=age, y=expr, color=sex, group=sex)) + geom_point(size=3, shape=21) + geom_smooth(se=F) + labs(title=g, y="pathway Z-score", x="age (day)") ## + geom_smooth(aes(fill = sex))
+
