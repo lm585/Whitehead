@@ -3297,4 +3297,24 @@ echo
 
 bash   script-inputset-pathways-overlap-fisher-fdr  temp-m-bias human-mg-m-bias.interact temp-f1   temp-bg-genes
 
-##################################
+#################################################################################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat  script-HD-UP.vs.Ctrl-hallmark-fisher
+#
+cat HD-control-snRNA-mg.deg.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0' | awk '$5 < -0.1' | cut -f 1  | awk 'NR > 1' | sort | uniq > Ctrl-UP.vs.HD
+cat HD-control-snRNA-mg.deg.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 > 0' | awk '$5 > 0.1'  | cut -f 1  | awk 'NR > 1' | sort | uniq > HD-UP.vs.Ctrl
+
+ls ../microglia/HALLMARK*  | grep -v temp | wc -l
+ls ../microglia/HALLMARK*  | grep -v temp > temp-f1 
+
+tab="	"
+cut -f 1 HD-control-snRNA-mg.txt | awk 'NR > 1' | sort | uniq > temp-bg-genes
+wc -l temp-bg-genes
+
+bash   script-inputset-pathways-overlap-fisher-fdr   Ctrl-UP.vs.HD Ctrl-UP.vs.HD temp-f1 temp-bg-genes
+echo
+echo
+echo
+
+bash   script-inputset-pathways-overlap-fisher-fdr   HD-UP.vs.Ctrl HD-UP.vs.Ctrl temp-f1 temp-bg-genes
+
+#######################################################################################
