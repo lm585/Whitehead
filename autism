@@ -3427,3 +3427,12 @@ t1 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-
  colnames(t12) <- c("logFC (human, M vs F)", "logFC (mice, M vs F)")
  col_fun = colorRamp2(c(-6, -1, 0), c( "blue", "white",  "orange"))
  eatmap(t12, cluster_columns=F, col=col_fun, name="logFC")
+
+########################
+HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes
+> t8 <- t7[ t7$PValue.y <= 0.25 & t7$name.x != "Mpc1-ps",]
+>   dim(t8)
+[1] 50 10
+>  col_fun = colorRamp2(c(-2, -1, 0), c( "blue", "white",  "orange"))
+>   eatmap(t12, cluster_columns=F, col=col_fun, name="logFC", row_names_gp = gpar(fontsize = 7))
+
