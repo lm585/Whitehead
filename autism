@@ -3404,3 +3404,26 @@ for(i in 1:dim(t4)[1]) {
 > rownames(t12) <- t11[, 1]
 > colnames(t12) <- c("logFC (human, M vs F)", "logFC (mice, M vs F)", "logFC (HD vs Ct)")
 
+#######################################################################
+t1 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt")
+ g2 <- read.delim("../microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes", header = F)
+# F biased human mg, including chrX / chrY genes
+ t2 <- t1[ t1$name %in% g2$V1 & t1$PValue < 0.05 & t1$logFC < 0,]
+ dim(t2)
+ t3 <- t2[, c(1,2,5,7,8)]
+# include mouse chrX / chrY genes
+ t4 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.txt")
+ t5 <- t4[, c(8,9,13, 14,3,6)]
+ t6 <- merge(t3, t5, by.x="name", by.y="Gene.Symbol")
+ dim(t6)
+ t7 <- t6[ t6$logFC.y < 0,]
+ dim(t7)
+ t8 <- t7[ t7$PValue.y <= 0.25,]
+ dim(t8)
+ t8$name
+ t12 <- t8[, c(3,9)]
+ rownames(t12) <- t8[, 1]
+ head(t12)
+ colnames(t12) <- c("logFC (human, M vs F)", "logFC (mice, M vs F)")
+ col_fun = colorRamp2(c(-6, -1, 0), c( "blue", "white",  "orange"))
+ eatmap(t12, cluster_columns=F, col=col_fun, name="logFC")
