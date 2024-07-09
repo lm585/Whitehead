@@ -5347,3 +5347,22 @@ expr  3252739 -   3252484 = 255
 
 
 
+##################################
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools view -q 1 -b -o GTEX-11GSO-0003-SM-6WBTR.c4.bam GTEX-11GSO-0003-SM-6WBTR.cram     chr6:31982057-32002681 chr6:32014795-32035418
+samtools index GTEX-11GSO-0003-SM-6WBTR.c4.bam
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna$  samtools coverage -r  chr6:31982057-32002681 -q 20 GTEX-11GSO-0003-SM-6WBTR.cram
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    31982057        32002681        656     3485    16.897  4.69105 255     36.9
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools coverage -r chr6:32014795-32035418  -q 20 GTEX-11GSO-0003-SM-6WBTR.cram
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    32014795        32035418        635     3221    15.6177 4.62064 255     33.8
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna$  samtools coverage -r  chr6:31982057-32002681 -q 0 GTEX-11GSO-0003-SM-6WBTR.cram
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    31982057        32002681        6518    20625   100     46.6363 255     3.78
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools coverage -r chr6:32014795-32035418  -q 0 GTEX-11GSO-0003-SM-6WBTR.cram
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    32014795        32035418        6403    20624   100     46.0028 255     3.42
+GTEX-11GSO-0003-SM-6WBTR        C4-tot  5.85712 C4Aexon172bp    126     100     51.3    3.25719 C4Bexon172bp    71      100     47.6    2.57164
+total 5.85copies; C4A 3.25, C4B 2.57
