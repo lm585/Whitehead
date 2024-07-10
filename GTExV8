@@ -5366,6 +5366,7 @@ linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools coverage -r chr6:3201479
 chr6    32014795        32035418        6403    20624   100     46.0028 255     3.42
 GTEX-11GSO-0003-SM-6WBTR        C4-tot  5.85712 C4Aexon172bp    126     100     51.3    3.25719 C4Bexon172bp    71      100     47.6    2.57164
 total 5.85copies; C4A 3.25, C4B 2.57
+> new call: c4a 2.98, c4b 2.88
 
 ########################
 linyong@fry /lab/solexa_page/linyong/gtex-dna$  samtools coverage -r  chr6:31982057-32002681 -q 20 GTEX-12WSK-0003-SM-6WSBW.cram
