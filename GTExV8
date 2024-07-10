@@ -5366,3 +5366,39 @@ linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools coverage -r chr6:3201479
 chr6    32014795        32035418        6403    20624   100     46.0028 255     3.42
 GTEX-11GSO-0003-SM-6WBTR        C4-tot  5.85712 C4Aexon172bp    126     100     51.3    3.25719 C4Bexon172bp    71      100     47.6    2.57164
 total 5.85copies; C4A 3.25, C4B 2.57
+
+########################
+linyong@fry /lab/solexa_page/linyong/gtex-dna$  samtools coverage -r  chr6:31982057-32002681 -q 20 GTEX-12WSK-0003-SM-6WSBW.cram
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    31982057        32002681        575     3710    17.9879 4.16533 255     36.5
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools view -q 20 GTEX-12WSK-0003-SM-6WSBW.cram  chr6:31982057-32002681 | cut -f 2 | sort | uniq -c
+     56 1107
+     61 1123
+     61 1171
+     56 1187
+      1 145
+    149 147
+    138 163
+      2 81
+    138 83
+    147 99
+numreads (not pairs)
+149 + 138 + 138 + 147 = 572
+meandepth
+572 * 151 / (32002681 - 31982057) = 4.187936
+
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools coverage -r chr6:32014795-32035418  -q 20 GTEX-12WSK-0003-SM-6WSBW.cram
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    32014795        32035418        471     3725    18.0615 3.43808 255     34.6
+linyong@fry /lab/solexa_page/linyong/gtex-dna$ samtools view -q 20 GTEX-12WSK-0003-SM-6WSBW.cram chr6:32014795-32035418 |   awk 'BEGIN {FS = "\t";} !($2 != 99 && $2 != 147 && $2 != 83 && $2 != 163)' | wc
+    468    
+numreads 468
+meandepth  468 * 151 / (32035418 - 32014795) =  3.42666
+ 
+572 / 468 = 1.22
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat cnv.dna.depth.gtex.donors.txt  | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, "C4-tot", ($15 + $18) * 2 * 2/ ($3 + $5)}'  | grep GTEX-12WSK-0003-SM-6WSBW
+GTEX-12WSK-0003-SM-6WSBW        C4-tot  5.71117
+C4A 5.71117 * 572 / (572 + 468) = 3.14
+C4B 5.71117 * 468 / (572 + 468) = 2.57
