@@ -5402,3 +5402,4 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat cnv.dna.depth.gtex.donors.txt
 GTEX-12WSK-0003-SM-6WSBW        C4-tot  5.71117
 C4A 5.71117 * 572 / (572 + 468) = 3.14
 C4B 5.71117 * 468 / (572 + 468) = 2.57
+GTEX-12WSK-0003-SM-6WSBW	C4-tot	5.71117	C4Aexon172bp	101	100	47.4	2.52488	C4Bexon172bp	67	100	46.4	2.16944
