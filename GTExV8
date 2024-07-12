@@ -5413,3 +5413,18 @@ c4a
 c4b
 > 3.86138 * 648/(410 + 648)
 [1] 2.365004
+
+##################################################################################
+-rw-r--r--@ 1 linyongmao  staff   477K Jul 12 15:17 gencode.v42.19385.protein_coding.geneID-name.txt
+ENSG00000284662.2       OR4F16
+ENSG00000187634.13      SAMD11
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % bash script-hallmark50-hallmark50-overlap-fisher  > temp.txt &
+P.value oddsratio       fdr
+../microglia/HALLMARK_ADIPOGENESIS.genes        ../microglia/HALLMARK_ALLOGRAFT_REJECTION.genes 1       199     199     18982   0.72687584137068        0.479334996528802       0.886433952891073
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp.txt | awk '$1 > $2 && $7 < 0.05 /(50*49/2)' |wc
+     161    
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp.txt | awk '$1 > $2 && $7 < 0.05 /(50*49/2)' | sed 's#../microglia/HALLMARK#h#g'
+
