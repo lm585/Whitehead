@@ -3436,3 +3436,29 @@ HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes
 >  col_fun = colorRamp2(c(-2, -1, 0), c( "blue", "white",  "orange"))
 >   eatmap(t12, cluster_columns=F, col=col_fun, name="logFC", row_names_gp = gpar(fontsize = 7))
 
+##################################################################################################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat script-human.mg-mouse-overlap-fisher
+#
+
+tab="	"
+
+mouse="mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk"
+cat "$mouse"  | sort -t "$tab"  +1 -2g | head  -500 | awk '$2 < -1.3010' | cut -f 1 > mice-mg-f-bias
+cat "$mouse"  | sort -t "$tab"  +1 -2gr | head  -500 | awk '$2 > 1.3010' | cut -f 1 > mice-mg-m-bias
+ls mice-mg-f-bias mice-mg-m-bias > temp-f1
+
+
+cat  human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk | sort -t "$tab"  +1 -2g | head  -500 | awk '$2 < -1.3010' | cut -f 1 > temp-f-bias
+cat  human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk | sort -t "$tab"  +1 -2gr | head  -500 | awk '$2 > 1.3010' | cut -f 1 > temp-m-bias
+cut -f 1 human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk | sort | uniq > temp-1
+cut -f 1 "$mouse"   | sort | uniq  > temp-2
+cat temp-1 temp-2 | sort | uniq -d > temp-bg-genes
+
+ bash   script-inputset-pathways-overlap-fisher-fdr   temp-f-bias human-mg-f-bias.interact   temp-f1   temp-bg-genes 
+
+echo
+echo
+echo
+
+bash   script-inputset-pathways-overlap-fisher-fdr  temp-m-bias human-mg-m-bias.interact temp-f1   temp-bg-genes
+
