@@ -5441,4 +5441,3 @@ P.value oddsratio       fdr
 linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp.txt | awk '$1 > $2 && $7 < 0.05 /(50*49/2)' |wc
      161    
 
-
