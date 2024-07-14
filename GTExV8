@@ -5441,3 +5441,25 @@ P.value oddsratio       fdr
 linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp.txt | awk '$1 > $2 && $7 < 0.05 /(50*49/2)' |wc
      161    
 
+rm -f temp1   
+cat temp.txt |head  | grep test.set > temp1
+cat temp.txt | awk '$1 > $2 && $7 < 0.05 /(50*49/2) && $8 > 1' | sed 's#../microglia/HALLMARK#h#g' >> temp1
+
+> t1 <- read.delim("temp1")
+ summary(t1)
+ t1$jacc <- t1$input.overlap / (t1$input.overlap + t1$input.notoverlap + t1$noninput.overlap)
+ head(t1)
+ summary(t1$jacc)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+# 0.02174 0.03049 0.03746 0.05375 0.05820 0.33779
+ t1$jacc.cater <- t1$jacc  %/% 0.025
+ colnames(t1)
+ t2 <- t1[, c(1,2,7,11)]
+ plot(t2$jacc.cater, -log10(t2$P.value), col="red")
+ write.table(t2, "temp3", quote=F, sep="\t")
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi temp3
+
+> t3 <- (t1[ t1$jacc >= 0.025 * 2, c(1,2,7,11)])
+ write.table(t3, "temp4", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 autism %  vi temp4
