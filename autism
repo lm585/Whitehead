@@ -3506,6 +3506,7 @@ S = 6685.3, p-value = 0.01781
       rho
 0.3728655
 
+########################robust linear regression
 > d1 <- rlm(info.oxphos$expr ~ info.oxphos$Esrrb)
 > summary(d1)
 
@@ -3516,6 +3517,7 @@ info.oxphos$Esrrb  0.1839  0.0702     2.6191
 
 t=2.6191, Two-tailed, The p-value is 0.012599
 
+########################excluding one example
 > t1 <- info.oxphos[ info.oxphos$id != "SAMN07189830",]
 > d1 <- lm(t1$expr ~ t1$Esrrb)
 > summary(d1)
