@@ -3506,3 +3506,28 @@ S = 6685.3, p-value = 0.01781
       rho
 0.3728655
 
+> d1 <- rlm(info.oxphos$expr ~ info.oxphos$Esrrb)
+> summary(d1)
+
+Coefficients:
+                  Value   Std. Error t value
+(Intercept)       -0.1017  0.0693    -1.4670
+info.oxphos$Esrrb  0.1839  0.0702     2.6191
+
+t=2.6191, Two-tailed, The p-value is 0.012599
+
+> t1 <- info.oxphos[ info.oxphos$id != "SAMN07189830",]
+> d1 <- lm(t1$expr ~ t1$Esrrb)
+> summary(d1)
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept) -0.09334    0.06828  -1.367 0.179892
+t1$Esrrb     0.26292    0.07153   3.676 0.000747 ***
+
+Residual standard error: 0.4259 on 37 degrees of freedom
+Multiple R-squared:  0.2675,    Adjusted R-squared:  0.2477 
+
+p-value = 0.0007474, cor = 0.5172108 
+p-value = 0.002239, rho = 0.4751253, Spearman's rank correlation rho
+
