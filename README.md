@@ -1,7 +1,8 @@
 # Whitehead
 ############
-/lab/solexa_page/linyong
 
+
+/lab/solexa_page/linyong
 /lab/page_human_data/linyong2
 
 install.packages("Matrix.utils")
@@ -17,3 +18,6 @@ library(ggrepel)
 
 install.packages("factoextra")
 library(factoextra)
+
+> install.packages("MASS")
+library(MASS)
