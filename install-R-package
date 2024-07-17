@@ -1,0 +1,65 @@
+> install.packages("ggplot2")
+also installing the dependencies ‘colorspace’, ‘utf8’, ‘farver’, ‘labeling’, ‘munsell’, ‘R6’, ‘RColorBrewer’, ‘viridisLite’, ‘fansi’, ‘magrittr’, ‘pillar’, ‘pkgconfig’, ‘cli’, ‘glue’, ‘gtable’, ‘isoband’, ‘lifecycle’, ‘rlang’, ‘scales’, ‘tibble’, ‘vctrs’, ‘withr’
+
+trying URL 'https://cran.case.edu/bin/macosx/big-sur-x86_64/contrib/4.4/colorspace_2.1-0.tgz'
+Content type 'application/x-gzip' length 2646223 bytes (2.5 MB)
+==================================================
+downloaded 2.5 MB
+
+The downloaded binary packages are in
+	/var/folders/78/gpbxf39x0yg1jc4bbz7sn7vh0000gp/T//RtmpmV60XZ/downloaded_packages
+> library(ggplot2)
+
+
+> install.packages("MASS")
+--- Please select a CRAN mirror for use in this session ---
+trying URL 'https://cran.case.edu/bin/macosx/big-sur-x86_64/contrib/4.4/MASS_7.3-61.tgz'
+Content type 'application/x-gzip' length 1164386 bytes (1.1 MB)
+==================================================
+downloaded 1.1 MB
+
+
+The downloaded binary packages are in
+	/var/folders/78/gpbxf39x0yg1jc4bbz7sn7vh0000gp/T//RtmpmV60XZ/downloaded_packages
+> library(MASS)
+
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(version = "3.19")
+
+BiocManager::install("ComplexHeatmap")
+BiocManager::install("edgeR")
+install.packages("vioplot")
+install.packages("factoextra") 
+
+ install.packages("beeswarm")
+ install.packages("circlize")
+ install.packages("dplyr")
+# Enter commands in R (or R studio, if installed)
+install.packages('Seurat')
+library(Seurat)
+ install.packages('patchwork')
+BiocManager::install("SingleCellExperiment") 
+### it masks many objects including cpm() function. #####library(SingleCellExperiment)
+
+ install.packages("grr") 
+ install.packages("https://cran.r-project.org/src/contrib/Archive/Matrix.utils/Matrix.utils_0.9.8.tar.gz", type = "source", repos = NULL)
+ library(Matrix.utils)
+
+
+#######################################
+library(ComplexHeatmap)
+library(beeswarm)
+library(edgeR)
+library("circlize")
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(MASS)
+library(vioplot)
+library(Matrix.utils)
+library(ggrepel)
+### it masks many objects including cpm() function. #####library(SingleCellExperiment)
+### library(factoextra)
+
