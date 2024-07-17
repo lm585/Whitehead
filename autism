@@ -3462,3 +3462,47 @@ echo
 
 bash   script-inputset-pathways-overlap-fisher-fdr  temp-m-bias human-mg-m-bias.interact temp-f1   temp-bg-genes
 
+###########################################oxphos pathway Z-score ~ Esrrb gene log2(cpm+1)
+> t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk", header=F)
+
+ file <- "../microglia/HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes"
+ p <- read.delim(file, header=F)
+ dim(p)
+# [1] 200   1
+ t2 <- t1[ t1$V1 %in% p$V1,]
+ dim(t2)
+# [1] 187   2
+ t3 <- t2[ t2$V2 < log10(0.25),]
+ dim(t3)
+# [1] 85  2, no chrX/chrY genes
+......
+> info.oxphos <- info.2
+> head(info.oxphos)
+pathway z-scroe
+            id      info replicateNum sex EorP age lps        expr
+1 SAMN07189830 F_P60_Sal            6   F    P  60 sal  3.15159242
+
+> a.df.g.z.score.log10 <-  a.df.g
+...
+gene expr log2(cpm+1)
+> p.exp <- a.df.g[ a.df.g$Gene.Symbol == "ESRRB",]
+...
+info.2 - log2(cpm+1) of a gene
+> identical(info.2$id, info.oxphos$id)
+[1] TRUE
+> plot(info.2$expr, info.oxphos$expr, col="red", main="mice OXPHOS pathway Z-score ~ Esrrb", xlab="log2(CPM+1)")
+
+        Pearson's product-moment correlation
+
+data:  info.2$expr and info.oxphos$expr
+t = 0.74919, df = 38, p-value = 0.4584
+      cor
+0.1206469
+
+Spearman's rank correlation rho
+
+data:  info.2$expr and info.oxphos$expr
+S = 6685.3, p-value = 0.01781
+      rho
+0.3728655
+
