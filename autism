@@ -3608,4 +3608,95 @@ t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC
  t4$Esrrb.bind <- "oxphos.yes"
  t5$Esrrb.bind <- "oxphos.no"
  t6 <- rbind(t4, t5)
+ t6.orig <- t6
+
+##############################################################random genes
+ t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk", header=F)
+  file <- "../microglia/HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes"
+  p <- read.delim(file, header=F)
+  dim(p)
+# [1] 200   1
+  t2 <- t1[ !(t1$V1 %in% c(p$V1, "ESRRB")),]
+  dim(t2)
+# [1] 11983 expressed mouse genes with human ortholog     
+ t3 <- t2[ sample(1:dim(t2)[1], 100 ),]
+> write.table(t3, "random100-non-oxphos", quote=F, sep="\t")
+# 8 genes in t3 have Esrrb binding /1081, p=0.173029719, odds=1.525750638
+# THAP4;NDUFA12;PRDX1;AGL;MIB2;CSNK1D;NCAPD2;MLLT6
+ dim(a.df.g)
+ p.exp <- a.df.g[ a.df.g$Gene.Symbol %in% c(t3$V1, "ESRRB"), ]
+ length(p.exp$Gene.Symbol)
+# 102 mouse expressed non-oxphos genes plus Esrrb, ###a is z-score of log10(cpm+1)
+mat <- as.data.frame(p.exp[, 3:42])
+ rownames(mat) <- p.exp$name
+ identical(mat$SAMN07189830, p.exp$SAMN07189830)
+# [1] TRUE
+ mat2 <- as.data.frame(t(mat))
+ c1 <- as.data.frame(cor(mat2, method="spearman"))
+ c2 <- data.frame(1:dim(c1)[1], colnames(c1))
+ c2[ c2$colnames.c1. == "Esrrb",]
+# one column Esrrb gene, and nearby gene
+ c3 <- c1[, 13:14]
+ c3$id <- rownames(c3)
+identical(c3$id, p.exp$name)
+ c4 <- cbind(c3, p.exp)
+ colnames(c4)
+ c5 <- c4[,c(2:3,46:51)]
+ dim(c5)
+# [1] 102   8
+ c6 <- c5[ c5$Gene.Symbol != "ESRRB",]
+ c6$Esrrb.bind <- "randomgenes.no"
+g1 <- scan(what="", sep = "\n")
+THAP4
+NDUFA12
+PRDX1
+AGL
+MIB2
+CSNK1D
+NCAPD2
+MLLT6
+
+for(i in 1:dim(c6)[1]) {
+if(c6$Gene.Symbol[i] %in% g1)
+  c6$Esrrb.bind[i] <- "randomgenes.yes"
+
+}
+
+dim(c6)
+# 101 
+t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk", header=F)
+ t2 <- t1[ t1$V1 %in% c6$Gene.Symbol,]
+ dim(t2)
+# [1] 100   mouse-converted human genes,   2
+ corr2 <- merge(c6, t2, by.x="Gene.Symbol", by.y="V1")
+ dim(corr2)
+# 101  10
+# two mouse genes -> 1 human gene
+ corr2[ corr2$Gene.Symbol == "MPC1",]
+ plot(corr2$V2, corr2$Esrrb, col="red", xlab="signed logPVal (M vs. F)", ylab="Esrrb ~ random gene Spearman's corr")
+ abline(h = seq(-100, 100, 1/4), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+ abline(h=0)
+ abline(v=0)
+
+ t7 <- t6[, c(1:8,10,9)]
+ dim(t7)
+# [1] 188  10
+ identical(colnames(t7),colnames(corr2))
+# [1] TRUE
+ corr3 <- rbind(t7, corr2)
+# 289 gens;
+ t11 <- corr3[ corr3$Esrrb.bind == "oxphos.yes",]
+ t12 <- corr3[ corr3$Esrrb.bind == "oxphos.no",]
+ t13 <- corr3[ corr3$Esrrb.bind == "randomgenes.yes",]
+ t14 <- corr3[ corr3$Esrrb.bind == "randomgenes.no",]
+ t.test(t11$Esrrb, t14$Esrrb)
+# t = 5.1333, df = 145.5, p-value = 8.976e-07
+#  mean of x  mean of y 
+# 0.27293097 0.03208394 
+
+ t.test(t11$Esrrb, t13$Esrrb)
+# t = 1.1611, df = 7.5732, p-value = 0.2809
+# mean of x mean of y 
+# 0.2729310 0.1345468 
 
