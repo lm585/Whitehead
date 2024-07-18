@@ -3533,3 +3533,79 @@ Multiple R-squared:  0.2675,    Adjusted R-squared:  0.2477
 p-value = 0.0007474, cor = 0.5172108 
 p-value = 0.002239, rho = 0.4751253, Spearman's rank correlation rho
 
+#################################################
+Esrrb binding genes, corr, sex diff
+###84 oxphos genes targeted by Esrrb
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat Esrrb-oxphos.genes-targets
+file <- "../microglia/HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes"
+ p <- read.delim(file, header=F)
+ dim(p)
+# [1] 200   1
+ dim(a.df.g)
+ p.exp <- a.df.g[ a.df.g$Gene.Symbol %in% c(p$V1, "ESRRB"), ]
+  length(p.exp$Gene.Symbol)
+# [1] 188 mouse expressed oxphos genes plus Esrrb, ###a is z-score of log10(cpm+1)
+
+ mat <- as.data.frame(p.exp[, 3:42])
+ rownames(mat) <- p.exp$name
+ identical(mat$SAMN07189830, p.exp$SAMN07189830)
+# [1] TRUE
+ mat2 <- as.data.frame(t(mat))
+ c1 <- as.data.frame(cor(mat2, method="spearman"))
+ c2 <- data.frame(1:189, colnames(c1))
+ c2[ c2$colnames.c1. == "Esrrb",]
+#    X1.189 colnames.c1.
+# 50     50        Esrrb
+ summary(sort(c1[,50])[1:188])
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# -0.59636  0.07478  0.26178  0.22664  0.41743  0.74686 
+ head(c1[,49:50])
+ head(c1[,50])
+ c3 <- c1[, 49:50]
+ c3$id <- rownames(c3)
+identical(c3$id, p.exp$name)
+ c4 <- cbind(c3, p.exp)
+ colnames(c4)
+ c5 <- c4[,c(2:3,46:51)]
+ dim(c5)
+# [1] 189   8
+
+t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk", header=F)
+ file <- "../microglia/HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes"
+ p <- read.delim(file, header=F)
+ dim(p)
+# [1] 200   1
+ t2 <- t1[ t1$V1 %in% c(p$V1, "ESRRB"),]
+ dim(t2)
+# [1] 188 mouse-converted human genes,   2
+ corr1 <- merge(c5, t2, by.x="Gene.Symbol", by.y="V1")
+ dim(corr1)
+# [1] 189   9
+# two mouse genes -> 1 human gene
+ corr1[ corr1$Gene.Symbol == "MPC1",]
+ plot(corr1$V2, corr1$Esrrb, col="red", xlab="signed logPVal (M vs. F)", ylab="Esrrb ~ oxphos gene Spearman's corr")
+ abline(h = seq(-100, 100, 1/4), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+ abline(h=0)
+ abline(v=0)
+
+ t3 <- read.delim("Esrrb-oxphos.genes-targets", header=F)
+ dim(t3)
+# [1] 84  1
+ t4 <- corr1[ corr1$Gene.Symbol %in% t3$V1 & corr1$Gene.Symbol != "ESRRB",]
+ dim(t4)
+# [1] 84  9
+ t5 <- corr1[ !(corr1$Gene.Symbol %in% t3$V1) & corr1$Gene.Symbol != "ESRRB",]
+ dim(t5)
+# [1] 104   9
+
+ wilcox.test(t4$Esrrb, t5$Esrrb)
+# W = 4828, p-value = 0.2154
+ t.test(t4$Esrrb, t5$Esrrb)
+# t = 2.1314, df = 180.1, p-value = 0.03442
+# mean of x mean of y 
+# 0.2729310 0.1892528 
+ t4$Esrrb.bind <- "oxphos.yes"
+ t5$Esrrb.bind <- "oxphos.no"
+ t6 <- rbind(t4, t5)
+
