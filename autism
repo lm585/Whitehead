@@ -3700,3 +3700,8 @@ t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC
 # mean of x mean of y 
 # 0.2729310 0.1345468 
 
+> corr3$caterg <- factor( corr3$Esrrb.bind, levels=c("oxphos.no", "oxphos.yes", "randomgenes.no", "randomgenes.yes"), labels=c("OXPHOS.genes.NO", "OXPHOS.genes.YES", "random.genes.NO", "random.genes.YES"))
+ boxplot(corr3$Esrrb ~ corr3$caterg, outcol="white", xlab="mouse Esrrb targets", ylab="Esrrb ~ gene Spearman's corr", col=c("white", "orange"), ylim=c(-1,1))
+ beeswarm(corr3$Esrrb ~ corr3$caterg, add=T)
+ abline(h = seq(-100, 100, 1/10), lty = 5, lwd = 0.5, col = "gray")
+ lines(2:3,  c(0.8, 0.8), col="blue", lwd = 2)
