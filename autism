@@ -3705,3 +3705,8 @@ t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC
  beeswarm(corr3$Esrrb ~ corr3$caterg, add=T)
  abline(h = seq(-100, 100, 1/10), lty = 5, lwd = 0.5, col = "gray")
  lines(2:3,  c(0.8, 0.8), col="blue", lwd = 2)
+#################
+> t10 <- merge(t8, corr3, by.x="name.x", by.y="id")
+> colnames(t10)[1] <- "mouse.name"
+> dim(t10)
+[1] 47 20
