@@ -3710,3 +3710,4 @@ t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC
 > colnames(t10)[1] <- "mouse.name"
 > dim(t10)
 [1] 47 20
+> t10[ t10$Esrrb >= 0.3 & t10$caterg =="OXPHOS.genes.YES",c(1,2,4,5,9,10,12)]
