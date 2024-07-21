@@ -3711,3 +3711,35 @@ t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC
 > dim(t10)
 [1] 47 20
 > t10[ t10$Esrrb >= 0.3 & t10$caterg =="OXPHOS.genes.YES",c(1,2,4,5,9,10,12)]
+
+########################################################
+human ESRRB corr with OXPHOS genes
+
+> raw <- read.delim("human_Microglia_RNA-18samp.gene.count.stranded.txt")
+......
+> dim(a.df.g)
+[1] 15089    
+> t1 <- corr3[ , c(1,4,11)]
+#    Gene.Symbol                                                                  Gene.Title           caterg
+# 6        ACAT1             acetyl-CoA acetyltransferase 1 [Source:HGNC Symbol;Acc:HGNC:93] OXPHOS.genes.YES
+ dim(t1)
+# [1] 289   3
+ t2 <- unique(t1)
+ dim(t2)
+# [1] 287   3
+ t3 <- merge(a.df.g, t2, by.x="name", by.y="Gene.Symbol")
+ dim(t3)
+# [1] 269 expressed human genes with possible chrX/Y genes, 17
+  p.exp <- a.df.g[ a.df.g$name %in% c(t2$Gene.Symbol, "ESRRB"), ]
+ dim(p.exp)
+# [1] 270  15
+ mat <- as.data.frame(p.exp[, 2:14])
+ rownames(mat) <- p.exp$name
+ identical(mat$human_Microglia_RNA_polyA_P11, p.exp$human_Microglia_RNA_polyA_P11)
+ mat2 <- as.data.frame(t(mat))
+ c1 <- as.data.frame(cor(mat2, method="spearman"))
+ c1$name <- rownames(c1)
+ c2 <- merge(c1, t2, by.x="name", by.y="Gene.Symbol", all.x = TRUE)
+ c3 <- c2[ , colnames(c2) %in% c("name", "ESRRB", "caterg")]
+ dim(c3)
+# [1] 270   2
