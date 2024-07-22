@@ -3743,3 +3743,88 @@ human ESRRB corr with OXPHOS genes
  c3 <- c2[ , colnames(c2) %in% c("name", "ESRRB", "caterg")]
  dim(c3)
 # [1] 270   2
+
+###############################################################################
+###corr between TF ~ targets in a pathway; in random genes
+ f1 <- read.delim("random100-non-oxphos")
+### genes among random that are bound by the TF
+ f2 <- read.delim("temp-11", header=F)
+> a.df.g <- merge(a.df, gene.name, by.x="id", by.y="geneID")
+> dim(a.df.g)
+[1] 15089    15
+p.exp <- a.df.g[ a.df.g$name %in% c(f1$V1, "VDR"), ]
+length(p.exp$name)
+mat <- as.data.frame(p.exp[, 2:14])
+ rownames(mat) <- p.exp$name
+ identical(mat$human_Microglia_RNA_polyA_P14, p.exp$human_Microglia_RNA_polyA_P14)
+ mat2 <- as.data.frame(t(mat))
+ c1 <- as.data.frame(cor(mat2, method="spearman"))
+ c2 <- data.frame(1:dim(c1)[1], colnames(c1))
+ i <- c2[ c2$colnames.c1. == "VDR",1]
+ c3 <- c1[, (i-1):i]
+c3$id <- rownames(c3)
+ identical(c3$id, p.exp$name)
+ c4 <- cbind(c3, p.exp)
+ colnames(c4)
+ c5 <- c4[,c(2,4,18)]
+ head(c5)
+#               VDR                 id    name
+# NDUFAB1 0.4725275 ENSG00000004779.10 NDUFAB1
+# MDH1    0.5934066 ENSG00000014641.21    MDH1
+ c5$VDR.binding = "randomgenes.no"
+ corr1 <- c5
+ corr1[ corr1$name %in% f2$V1, ]$VDR.binding <- "randomgenes.yes"
+ corr1.rand <- corr1
+######HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes and VDR- targets
+ file <- "../microglia/HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes"
+f1 <- read.delim(file, header=F)
+f2 <- read.delim("temp-12", header=F)
+p.exp <- a.df.g[ a.df.g$name %in% c(f1$V1, "VDR"), ]
+length(p.exp$name)
+mat <- as.data.frame(p.exp[, 2:14])
+ rownames(mat) <- p.exp$name
+ identical(mat$human_Microglia_RNA_polyA_P14, p.exp$human_Microglia_RNA_polyA_P14)
+ mat2 <- as.data.frame(t(mat))
+ c1 <- as.data.frame(cor(mat2, method="spearman"))
+ c2 <- data.frame(1:dim(c1)[1], colnames(c1))
+ i <- c2[ c2$colnames.c1. == "VDR",1]
+ c3 <- c1[, (i-1):i]
+c3$id <- rownames(c3)
+ identical(c3$id, p.exp$name)
+ c4 <- cbind(c3, p.exp)
+ colnames(c4)
+ c5 <- c4[,c(2,4,18)]
+ head(c5)
+#               VDR                 id    name
+# NDUFAB1 0.4725275 ENSG00000004779.10 NDUFAB1
+# MDH1    0.5934066 ENSG00000014641.21    MDH1
+ c5$VDR.binding = "oxphos.no"
+ corr1 <- c5
+ corr1[ corr1$name %in% f2$V1, ]$VDR.binding <- "oxphos.yes"
+corr1.ox <- corr1
+ identical(colnames(corr1.rand), colnames(corr1.ox))
+ t1 <- rbind(corr1.rand, corr1.ox)
+ t2 <- t1[t1$name != "VDR",]
+ dim(t2[ t2$VDR.binding == "randomgenes.yes",])
+# [1] 12  4
+ dim(t2[ t2$VDR.binding == "randomgenes.no",])
+# [1] 72  4
+ dim(t2[ t2$VDR.binding == "oxphos.yes",])
+# [1] 45  4
+ dim(t2[ t2$VDR.binding == "oxphos.no",])
+# [1] 152   4
+
+ t2$caterg <- factor( t2$VDR.binding, levels=c("oxphos.no", "oxphos.yes", "randomgenes.no", "randomgenes.yes"), labels=c("OXPHOS.genes.NO", "OXPHOS.genes.YES", "random.genes.NO", "random.genes.YES"))
+
+ boxplot(t2$VDR ~ t2$caterg, outcol="white", xlab="VDR CD4+ Human  targets", ylab="human mg VDR ~ gene Spearman's corr", col=c("white", "orange"), ylim=c(-1,1))
+ beeswarm(t2$VDR ~ t2$caterg,add=T)
+  abline(h = seq(-100, 100, 1/10), lty = 5, lwd = 0.5, col = "gray")
+  lines(2:3,  c(0.8, 0.8), col="blue", lwd = 2)
+
+t3 <- t2[ t2$VDR.binding == "randomgenes.yes",]
+t4 <- t2[ t2$VDR.binding == "randomgenes.no",]
+t5 <- t2[ t2$VDR.binding == "oxphos.yes",]
+t6 <- t2[ t2$VDR.binding == "oxphos.no",]
+
+ t.test(t5$VDR,t4$VDR)
+ t.test(t5$VDR,t6$VDR)
