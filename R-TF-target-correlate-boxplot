@@ -72,7 +72,7 @@ mat <- as.data.frame(p.exp[, 2:14])
  c5$VDR.binding = "randomgenes.no"
  corr1 <- c5
  t4 <- read.delim("chea.random100-non-oxphos.txt")
- t5 <- t1[ t1$Adjusted.P.value < 5e4 ,]
+ t5 <- t4[ t4$Adjusted.P.value < 5e4 ,]
  dim(t5)
 # [1] 698   9
  t6 <- t5
