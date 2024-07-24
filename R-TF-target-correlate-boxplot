@@ -126,7 +126,8 @@ mat <- as.data.frame(p.exp[, 2:14])
  t6 <- t5
  t7 <- t6[ t6$Term == t3$Term[i], ]
  t8 <- strsplit(t7$Genes[1], ';')
- corr1[ corr1$name %in% t8[[1]], ]$VDR.binding <- "randomgenes.yes"
+ if(dim(t7)[1] > 0) {corr1[ corr1$name %in% t8[[1]], ]$VDR.binding <- "randomgenes.yes"}
+
  corr1.rand <- corr1
  identical(colnames(corr1.rand), colnames(corr1.ox))
  t9 <- rbind(corr1.rand, corr1.ox)
