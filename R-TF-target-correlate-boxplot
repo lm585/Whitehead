@@ -21,6 +21,7 @@
  file <- "../microglia/HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes"
 f1 <- read.delim(file, header=F)
  tf <- strsplit( t3$Term[i], ' ')[[1]][1]
+if(dim(a.df.g[ a.df.g$name %in% c( tf), ])[1] > 0) {
 p.exp <- a.df.g[ a.df.g$name %in% c(f1$V1, tf), ]
 length(p.exp$name)
 mat <- as.data.frame(p.exp[, 2:14])
@@ -105,6 +106,6 @@ mat <- as.data.frame(p.exp[, 2:14])
  res$ox.yes.rand.no.P[i] <- test1$p.value
  test2 <- t.test(t13[,1], t14[,1])
  res$ox.yes.ox.no.P[i] <- test2$p.value
-
+}
  }
 
