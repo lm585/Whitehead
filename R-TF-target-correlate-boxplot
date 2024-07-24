@@ -86,8 +86,13 @@ mat <- as.data.frame(p.exp[, 2:14])
 # NDUFAB1 0.4725275 ENSG00000004779.10 NDUFAB1
 # MDH1    0.5934066 ENSG00000014641.21    MDH1
  c5$VDR.binding = "oxphos.no"
+ targ1 <- read.delim("chea.oxphos.200genes.txt")
+ targ2 <- targ1[ targ1$Term == t3$Term[i], ]
+ targ3 <- strsplit(targ2$Genes[1], ';')
+## targ3[[1]] , oxphos.200.targets by TF
+
  corr1 <- c5
- corr1[ corr1$name %in% t4[[1]], ]$VDR.binding <- "oxphos.yes"
+ corr1[ corr1$name %in% targ3[[1]] , ]$VDR.binding <- "oxphos.yes"
 corr1.ox <- corr1
 
 #############################################################
