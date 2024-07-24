@@ -34,6 +34,11 @@ a.df <- as.data.frame(a)
 a.df$id <- row.names(a.df)
 a.df.g <- merge(a.df, gene.name, by.x="id", by.y="geneID")
 dim(a.df.g)
+ t1 <- read.delim("/Users/linyongmao/Documents/autism/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk", header=F)
+ t2 <- a.df.g[ a.df.g$name %in% t1$V1,]
+ a.df.g <- t2
+ dim(a.df.g)
+# [1] 14603    15
 
 t1 <- read.delim("chea.human.mg.f.bias.oxphos.83genes.txt")
  t2 <- t1[ t1$Adjusted.P.value < 5e-4 ,]
