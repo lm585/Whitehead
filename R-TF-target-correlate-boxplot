@@ -1,4 +1,41 @@
- t1 <- read.delim("chea.human.mg.f.bias.oxphos.83genes.txt")
+###
+raw <- read.delim("human_Microglia_RNA-18samp.gene.count.stranded.txt")
+#remove 3 adult samples, and only keep P17_Temporal & P8_Parietal
+#search raw.samp
+ raw.samp <- raw[, c(6:7,9:18, 20)]
+ dim(raw.samp)
+# [1] 62703    13
+rownames(raw.samp) <- raw$geneID
+dim(raw.samp)
+# [1] 62703    13
+summary( raw.samp[,1] - raw[, 6]  )
+y <- DGEList(counts=raw.samp)
+y <- calcNormFactors(y)
+dim(y)
+summary(y$samples$norm.factors)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+# 0.8766  0.9510  1.0106  1.0024  1.0569  1.1434
+#5 male samples
+keep <-rowSums(edgeR::cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+# [1] 15089    13
+d = edgeR::cpm(y)
+a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+info <- read.delim("human.postnatal.18samp.info")
+gene.name <- raw[, 1:2]
+a.df <- as.data.frame(a)
+a.df$id <- row.names(a.df)
+a.df.g <- merge(a.df, gene.name, by.x="id", by.y="geneID")
+dim(a.df.g)
+
+t1 <- read.delim("chea.human.mg.f.bias.oxphos.83genes.txt")
  t2 <- t1[ t1$Adjusted.P.value < 5e-4 ,]
  dim(t2)
 # [1] 22  9
