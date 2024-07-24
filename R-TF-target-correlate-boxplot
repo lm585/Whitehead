@@ -5,6 +5,15 @@
  t3 <- t2[ grep("human", t2$Term, ignore.case=TRUE),]
  dim(t3)
 # [1] 9 9
+ res <- t3[,c(1:2)]
+ res$ox.yes=-999
+ res$ox.no=-999
+ res$rand.no=-999
+ res$rand.yes=-999
+ res$ox.yes.rand.no.P <- -999
+ res$ox.yes.ox.no.P = -999
+
+
  for(i in 1:dim(t3)[1]) {
  t4 <- strsplit(t3$Genes[i], ';')
 #####TF target genes
@@ -83,5 +92,19 @@ mat <- as.data.frame(p.exp[, 2:14])
  boxplot(t10[,1] ~ t10$caterg, outcol="white",  xlab="", ylab="", main=t3$Term[i], col=c("white", "orange"), ylim=c(-1,1), cex.main=0.6)
  beeswarm(t10[,1] ~ t10$caterg,add=T)
  abline(h = seq(-100, 100, 1/10), lty = 5, lwd = 0.5, col = "gray")
+
+ t11 <- t10[ t10$VDR.binding == "randomgenes.yes",]
+ t12 <-  t10[ t10$VDR.binding == "randomgenes.no",]
+ t13 <- t10[ t10$VDR.binding == "oxphos.yes",]
+ t14 <- t10[ t10$VDR.binding == "oxphos.no",]
+ res$ox.yes[i] <- mean(t13[,1])
+ res$ox.no[i] <- mean(t14[,1])
+ res$rand.yes[i] <- mean(t11[,1])
+ res$rand.no[i] <- mean(t12[,1])
+ test1 <- t.test(t13[,1], t12[,1])
+ res$ox.yes.rand.no.P[i] <- test1$p.value
+ test2 <- t.test(t13[,1], t14[,1])
+ res$ox.yes.ox.no.P[i] <- test2$p.value
+
  }
 
