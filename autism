@@ -3855,3 +3855,25 @@ cat temp3 temp4 | sort | uniq -d
 MYC
 YY1
 
+################################################
+#chrY gene expr, mouse mg
+#a.df is log10(cpm+1) 
+a.df$id <- row.names(a.df)
+ a.df$id2 <-  gsub("\\.[0-9][0-9]*", "", a.df$id)
+ t2 <- read.delim("../dir-GTExV8/gencode.vM31.mouse-id-chr-name")
+t3 <- merge(a.df, t2, by.x="id", by.y="geneID")
+
+ t4 <- t3[ t3$chr == "chrY",]
+ dim(t4)
+# [1]  6 46
+ t5 <- t4[ , c(2:41)]
+ rownames(t5) <- t4$name
+ t6 <- as.data.frame(t(t5))
+ dim(t6)
+# [1] 40  6
+ identical(info.2$id, rownames(t6))
+# [1] TRUE
+ t7 <- cbind(info.2, t6)
+ boxplot((10^t7$Uty) - 1 ~ t7$sex, outcol="white")
+ beeswarm((10^t7$Uty) - 1 ~ t7$sex,  add=T)
+ abline(h = seq(-100, 100, 2), lty = 5, lwd = 0.5, col = "gray")
