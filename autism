@@ -2822,6 +2822,8 @@ t2 <- t1[ rownames(t1) %in% info.3$id, colnames(t1) %in% info.3$id,]
  ca <- HeatmapAnnotation( sex = info.3$sex, which="row",  age = info.3$age, lps = info.3$lps, col=list(sex = col.sex, age = col.age, lps=col.lps) )
  Heatmap(t2, name = "correlation",   right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 6), column_names_gp=gpar(fontsize = 6), col = col_fun,)
 
+> ca2 <-  HeatmapAnnotation( sex = info.2$sex, which="column",  age = info.2$age,  col=list(sex = col.sex, age = col.age) )
+
 ####################################
 > t2 <- meta[ meta$EorP != "E" & meta$lps != "LPS",]
 
