@@ -2794,6 +2794,9 @@ for(i in 1:dim(t1)[1]) {
  info.2$pc1 <- p1$PC1
  info.2$pc2 <- p1$PC2
  info.2$ag.lp <- paste(info.2$age, info.2$lps, sep="_")
+> t1 <- info.2[ info.2$id %in% c("SAMN07189885", "SAMN07189830"),]
+
+> gplot(info.2, aes(x=pc1, y = pc2, color = sex, shape=as.factor( age), label=id)) + geom_point(size=3) + labs(y="PC2 (20.1%)", x="PC1 (22.6%)") + geom_text_repel(show.legend=F, data=t1 , size=4.0, max.overlaps=100, min.segment.length = 0.1, col="red")
 
 ################################
 >  t1 <- as.data.frame(cor(a.df))
