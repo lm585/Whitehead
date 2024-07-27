@@ -2798,6 +2798,16 @@ for(i in 1:dim(t1)[1]) {
 
 > gplot(info.2, aes(x=pc1, y = pc2, color = sex, shape=as.factor( age), label=id)) + geom_point(size=3) + labs(y="PC2 (20.1%)", x="PC1 (22.6%)") + geom_text_repel(show.legend=F, data=t1 , size=4.0, max.overlaps=100, min.segment.length = 0.1, col="red")
 
+######boxplot lat.pc.1, lat.pc.2
+> info.2$donor <- "black"
+ info.2[ info.2$id == "SAMN07189885",]$donor = "red"
+ info.2[ info.2$id == "SAMN07189830",]$donor = "green"
+ colnames(info.2)
+ boxplot(info.2[, c(8,9)], outcol="white", xaxt="n")
+ axis(1, at = seq(1, 2, by = 1), labels=c("latent.var.#1", "latent.var.#2"), las=1)
+ beeswarm(info.2[, c(8,9)], pwcol=c(info.2$donor, info.2$donor), add=T, cex=2, pch=20)
+ legend(0.5, 170, c("SAMN07189885", "SAMN07189830"), pch=c(20), col=c("red", "green"))
+
 ################################
 >  t1 <- as.data.frame(cor(a.df))
 
