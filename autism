@@ -3887,3 +3887,24 @@ t3 <- merge(a.df, t2, by.x="id", by.y="geneID")
  boxplot((10^t7$Uty) - 1 ~ t7$sex, outcol="white")
  beeswarm((10^t7$Uty) - 1 ~ t7$sex,  add=T)
  abline(h = seq(-100, 100, 2), lty = 5, lwd = 0.5, col = "gray")
+
+########################################################
+cp  chea.human.mg.f.bias.myc.81genes.txt temp.mouse.mg.f.bias.pathway.44genes.txt
+cp ../microglia/HALLMARK_MYC_TARGETS_V1.genes temp-pathway-200genes-list
+cp chea.myc.200genes.txt temp.pathway.alltargetgenes.txt
+execute R-TF-target-correlate-boxplot-human-generalfiles         
+
+cp chea.human.mg.f.bias.oxphos.83genes.txt     temp.mouse.mg.f.bias.pathway.44genes.txt
+cp ../microglia/HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes temp-pathway-200genes-list
+cp chea.oxphos.200genes.txt temp.pathway.alltargetgenes.txt
+# execute R-TF-target-correlate-boxplot-human-generalfiles
+Rscript R-TF-target-correlate-boxplot-human-generalfiles
+cat temp1 | wc
+cat temp1 | sed 's/^[0-9][0-9]*      //'
+
+cp chea.human.mg.f.bias.infg.102genes.txt temp.mouse.mg.f.bias.pathway.44genes.txt
+cp  ../microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes temp-pathway-200genes-list
+cp chea.infg.200genes.txt       temp.pathway.alltargetgenes.txt
+# execute R-TF-target-correlate-boxplot-human-generalfiles
+Rscript R-TF-target-correlate-boxplot-human-generalfiles
+cat temp1 | wc
