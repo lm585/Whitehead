@@ -1,0 +1,215 @@
+library(ComplexHeatmap)
+library(beeswarm)
+library(edgeR)
+library("circlize")
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(vioplot)
+
+setwd("/Users/linyongmao/Documents/autism")
+
+###
+#####################################mouse pathway-level z score, excluding chrx chrY genes
+
+meta <- read.delim("mouse-mg-rnaseq-Hanamsagar.metadata.2.txt")
+ dim(meta[ meta$EorP == "E",])
+# [1] 7 7
+ dim(meta)
+# [1] 60  7
+ raw <- read.delim("mouse-mg-rnaseq-60samp-stranded-Hanamsagar.counts_gene")
+ dim(raw)
+# [1] 56980    62
+ t2 <- meta[ meta$EorP != "E"  & meta$lps != "LPS",]
+t2
+raw2 <- raw[ , colnames(raw) %in% t2$id]
+ rownames(raw2) <- raw[, 1]
+ dim(raw2)
+# [1] 56980    53
+ y <- DGEList(counts=raw2)
+ y <- calcNormFactors(y)
+ med <- data.frame(y$counts[,1])
+ med$logic <- TRUE
+ d <- cpm(y)
+ for(i in 1:dim(y)[1]) {
+  med$logic[i] <- median(d[i,]) >= 1
+ }
+ ####median >= 1 for pathway genes
+ y<-y[med$logic,]
+ print(dim(y))
+# [1] 13862    40
+
+y.cn <- colnames(y)
+info.2 <- head(meta, n= dim(y)[2])
+for(i in 1:dim(y)[2]) {
+ t1 <- meta[ meta$id == y.cn[i],]
+ info.2[i,] <- t1[1,]
+ }
+ identical(info.2$id, y.cn)
+d = cpm(y)
+ a <- d
+b = log10(a+1)
+for(i in 1:dim(b)[1])
+{
+ a[i, ] <- (b[i, ] - mean(as.numeric(b[i,]))) / var(as.numeric(b[i,]))^(1/2)
+}
+###a is z-score of log10(cpm+1)
+a.df <- as.data.frame(a)
+# [1] 13862 genes;   40
+ dim(a.df)
+# [1] 13862    40
+ a.df$id <- row.names(a.df)
+ a.df$id2 <-  gsub("\\.[0-9][0-9]*", "", a.df$id)
+ t6 <- read.delim("../microglia-mouse/Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip")
+ dim(t6)
+# [1] 19341     3
+ a.df.g <- merge(a.df, t6, by.x="id2", by.y="ID")
+ dim(a.df.g)
+# [1] 12750    44
+
+ t2 <- read.delim("../dir-GTExV8/gencode.vM31.mouse-id-chr-name")
+ t3 <- merge(a.df.g, t2, by.x="id", by.y="geneID")
+ dim(t3)
+# [1] 12750    48
+ t4 <- t3[ t3$chr != "chrX" & t3$chr != "chrY",]
+ dim(t4)
+# [1] 12317    48
+ a.df.g.all <- a.df.g
+ a.df.g <- t4
+
+ t1 <- read.delim("temp.mouse.mg.f.bias.pathway.44genes.txt")
+ t2 <- t1[ t1$Adjusted.P.value < 0.01 ,]
+ dim(t2)
+ t3 <- t2[ grep("mouse", t2$Term, ignore.case=TRUE),]
+ dim(t3)
+ res <- t3[,c(1:2)]
+ res$ox.yes=-999
+ res$ox.no=-999
+ res$rand.no=-999
+ res$rand.yes=-999
+ res$ox.yes.rand.no.P <- -999
+ res$ox.yes.ox.no.P = -999
+
+ for(i in 1:dim(t3)[1]) {
+ t4 <- strsplit(t3$Genes[i], ';')
+ #####TF target genes
+ # t4[[1]]
+ file <- "temp-pathway-200genes-list"
+ f1 <- read.delim(file, header=F)
+ tf <- strsplit( t3$Term[i], ' ')[[1]][1]
+ if(dim(a.df.g[ a.df.g$Gene.Symbol %in% c( tf), ])[1] > 0) {
+ p.exp <- a.df.g[ a.df.g$Gene.Symbol %in% c(f1$V1, tf), ]
+ length(p.exp$name)
+# [1] 127
+ mat <- as.data.frame(p.exp[, 3:42])
+ summary(as.numeric( mat[1,]))
+#  rownames(mat) <- p.exp$name
+ rownames(mat) <- paste(rownames(p.exp), p.exp$Gene.Symbol, sep="@")
+# 22@SDHD   60@PPARG 
+ identical(mat$SAMN07189830, p.exp$SAMN07189830)
+ mat2 <- as.data.frame(t(mat))
+ c1 <- as.data.frame(cor(mat2, method="spearman"))
+ c2 <- data.frame(1:dim(c1)[1], colnames(c1))
+ v1 <- paste("@", tf, "$", sep="")
+ i2 <- c2[ grep(v1, c2$colnames.c1. ) ,1]
+# i2 could be several values
+ i2
+ c3 <-data.frame( c1[, i2])
+ colnames(c3)[1] <- tf
+  c3$id <- rownames(c1)
+#  identical(c3$id, p.exp$name)
+  identical(c3$id, paste(rownames(p.exp), p.exp$Gene.Symbol, sep="@"))
+ summary(c1[,i2] - c3[,1])
+ c4 <- cbind(c3, p.exp)
+ colnames(c4)
+ c5 <- c4[,c(1,3,45,50)]
+ head(c5)
+#           PPARG                    id Gene.Symbol  name
+# 22  -0.07477926  ENSMUSG00000000171.6        SDHD  Sdhd
+# 60   1.00000000 ENSMUSG00000000440.13       PPARG Pparg
+# 101 -0.32388650 ENSMUSG00000000805.19         CA4  Car4
+  c5$VDR.binding = "oxphos.no"
+  targ1 <- read.delim("temp.pathway.alltargetgenes.txt")
+  targ2 <- targ1[ targ1$Term == t3$Term[i], ]
+  targ3 <- strsplit(targ2$Genes[1], ';')
+ ## targ3[[1]] , oxphos.200.targets by TF
+ corr1 <- c5
+ corr1[ corr1$Gene.Symbol %in% targ3[[1]] , ]$VDR.binding <- "oxphos.yes"
+ corr1.ox <- corr1
+ corr1.ox[ corr1.ox$Gene.Symbol  %in% t4[[1]], ]$VDR.binding <- "oxphos.yes.sex.biased"
+ boxplot(corr1.ox[,1] ~ corr1.ox$VDR.binding)
+#############################################################
+# random genes corr
+file <- "../autism/random100-non-oxphos"
+f2 <- read.delim(file, header=T)
+p.exp <- a.df.g[ a.df.g$Gene.Symbol %in% c(f2$V1, tf), ]
+ length(p.exp$name)
+# [1] 127
+ mat <- as.data.frame(p.exp[, 3:42])
+ summary(as.numeric( mat[1,]))
+#  rownames(mat) <- p.exp$name
+ rownames(mat) <- paste(rownames(p.exp), p.exp$Gene.Symbol, sep="@")
+# 22@SDHD   60@PPARG
+ identical(mat$SAMN07189830, p.exp$SAMN07189830)
+ mat2 <- as.data.frame(t(mat))
+ c1 <- as.data.frame(cor(mat2, method="spearman"))
+ c2 <- data.frame(1:dim(c1)[1], colnames(c1))
+ v1 <- paste("@", tf, "$", sep="")
+ i2 <- c2[ grep(v1, c2$colnames.c1. ) ,1]
+# i2 could be several values
+ i2
+ c3 <-data.frame( c1[, i2])
+ colnames(c3)[1] <- tf
+  c3$id <- rownames(c1)
+#  identical(c3$id, p.exp$name)
+  identical(c3$id, paste(rownames(p.exp), p.exp$Gene.Symbol, sep="@"))
+ summary(c1[,i2] - c3[,1])
+ c4 <- cbind(c3, p.exp)
+ colnames(c4)     
+ c5 <- c4[,c(1,3,45,50)]
+ head(c5)
+c5$VDR.binding = "randomgenes.no"
+ corr1 <- c5
+ t4 <- read.delim("chea.random100-non-oxphos.txt")
+ t5 <- t4[ t4$Adjusted.P.value < 5e4 ,]
+ dim(t5)
+# [1] 698   9
+ t6 <- t5
+ t7 <- t6[ t6$Term == t3$Term[i], ]
+ t8 <- strsplit(t7$Genes[1], ';')
+ if(dim(t7)[1] > 0) {corr1[ corr1$Gene.Symbol %in% t8[[1]], ]$VDR.binding <- "randomgenes.yes"}
+
+ corr1.rand <- corr1
+ identical(colnames(corr1.rand), colnames(corr1.ox))
+ t9 <- rbind(corr1.rand, corr1.ox)
+ t10 <- t9[ t9$Gene.Symbol != tf,]
+dim(t10[ t10$VDR.binding == "randomgenes.yes",])
+ dim(t10[ t10$VDR.binding == "randomgenes.no",])
+ dim(t10[ t10$VDR.binding == "oxphos.yes",])
+ dim(t10[ t10$VDR.binding == "oxphos.no",])
+ dim(t10[ t10$VDR.binding == "oxphos.yes.sex.biased",])
+
+ t10$caterg <- factor( t10$VDR.binding, levels=c("oxphos.no", "oxphos.yes", "oxphos.yes.sex.biased", "randomgenes.no", "randomgenes.yes"), labels=c("OXPHOS.genes.NO", "OXPHOS.genes.YES", "path.sex.bias.YES", "random.genes.NO", "random.genes.YES"))
+
+boxplot(t10[,1] ~ t10$caterg, outcol="white",  xlab="", ylab="", main=t3$Term[i], col=c("white", "orange"), ylim=c(-1,1), cex.main=0.6)
+ beeswarm(t10[,1] ~ t10$caterg,add=T)
+ abline(h = seq(-100, 100, 1/10), lty = 5, lwd = 0.5, col = "gray")
+
+ t11 <- t10[ t10$VDR.binding == "randomgenes.yes",]
+ t12 <-  t10[ t10$VDR.binding == "randomgenes.no",]
+ t13 <- t10[ t10$VDR.binding == "oxphos.yes",]
+ t14 <- t10[ t10$VDR.binding == "oxphos.no",]
+ t15 <- t10[ t10$VDR.binding == "oxphos.yes.sex.biased",]
+ res$ox.yes[i] <- mean(t15[,1])
+ res$ox.no[i] <- mean(t14[,1])
+ res$rand.yes[i] <- mean(t11[,1])
+ res$rand.no[i] <- mean(t12[,1])
+ test1 <- wilcox.test(t15[,1], t12[,1])
+
+ res$ox.yes.rand.no.P[i] <- test1$p.value
+ test2 <-  wilcox.test(t15[,1], t14[,1])
+ res$ox.yes.ox.no.P[i] <- test2$p.value
+}
+}
+
+ write.table(res[ res$ox.yes != -999,], "temp1", quote=F, sep="\t")
