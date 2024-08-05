@@ -3908,3 +3908,11 @@ cp chea.infg.200genes.txt       temp.pathway.alltargetgenes.txt
 # execute R-TF-target-correlate-boxplot-human-generalfiles
 Rscript R-TF-target-correlate-boxplot-human-generalfiles
 cat temp1 | wc
+
+cp  chea.human.mg.f.bias.fatty.32genes.txt     temp.mouse.mg.f.bias.pathway.44genes.txt
+cp ../microglia/HALLMARK_FATTY_ACID_METABOLISM.genes  temp-pathway-200genes-list
+cp chea.fatty.158genes.txt       temp.pathway.alltargetgenes.txt
+# execute R-TF-target-correlate-boxplot-human-generalfiles
+Rscript R-TF-target-correlate-boxplot-human-generalfiles
+cat temp1 | wc
+cat temp1 | sed 's/^[0-9][0-9]*      //'
