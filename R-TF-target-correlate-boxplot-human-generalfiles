@@ -52,7 +52,7 @@ dim(a.df.g)
 # [1] 14603    15
 
 t1 <- read.delim("temp.mouse.mg.f.bias.pathway.44genes.txt")
- t2 <- t1[ t1$Adjusted.P.value < 5e-4 ,]
+ t2 <- t1[ t1$Adjusted.P.value < 0.01 ,]
  dim(t2)
 # [1] 22  9
  t3 <- t2[ grep("human", t2$Term, ignore.case=TRUE),]
