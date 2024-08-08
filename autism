@@ -3932,3 +3932,19 @@ Rscript R-TF-target-correlate-boxplot.mouse.generalfiles
 cat temp1 | wc
 cat temp1 | sed 's/^[0-9][0-9]* //'
 
+###############################################
+cp chea.human.mg.f.bias.infg.102genes.withBackg.txt temp.mouse.mg.f.bias.pathway.44genes.txt
+cp  ../microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes temp-pathway-200genes-list
+cp chea.infg.200genes.txt       temp.pathway.alltargetgenes.txt
+
+> r2 <- res[ res$ox.yes != -999,]
+ r2$fdr <- p.adjust(r2$ox.yes.rand.no.P, method = "fdr")
+ r3 <- r2[ r2$fdr < 0.01,]
+
+> box1 <- t10[ t10$VDR.binding %in% c("oxphos.yes.sex.biased", "randomgenes.no"),]
+ dim(box1)
+ box1$caterg <- factor(box1$VDR.binding, levels=c("oxphos.yes.sex.biased", "randomgenes.no"), labels=c("INFG.F.biased.yes", "randomgenes.no"))
+ boxplot(box1[,1] ~ box1$caterg, outcol="white",  xlab="TF target", ylab="TF-gene Spearman corr", main=t3$Term[i], col=c( "grey", "white"), ylim=c(-1,1.1), cex.main=1)
+ beeswarm(box1[,1] ~ box1$caterg,add=T)
+ abline(h = seq(-100, 100, 1/10), lty = 5, lwd = 0.5, col = "gray")
+ text(1.5, 1, paste("pValue=", format(test1$p.value, digits=3), sep=""), pos=3, col="blue")
