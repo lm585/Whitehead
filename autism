@@ -3948,3 +3948,9 @@ cp chea.infg.200genes.txt       temp.pathway.alltargetgenes.txt
  beeswarm(box1[,1] ~ box1$caterg,add=T)
  abline(h = seq(-100, 100, 1/10), lty = 5, lwd = 0.5, col = "gray")
  text(1.5, 1, paste("pValue=", format(test1$p.value, digits=3), sep=""), pos=3, col="blue")
+
+############
+cp chea.human.mg.f.bias.oxphos.83genes.withBackg.txt temp.mouse.mg.f.bias.pathway.44genes.txt
+cp  ../microglia/HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes temp-pathway-200genes-list                       
+cp  chea.oxphos.200genes.txt  temp.pathway.alltargetgenes.txt              
+FDR calc
