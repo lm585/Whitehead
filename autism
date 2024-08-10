@@ -3970,6 +3970,12 @@ heatmap TF-targets
  t2$IRF1 <- 0
 ###TF-target postive corr
  t2[ t2$SYMBOL %in% genes,]$IRF1 = 1
+
+ t4 <- t3[ t3$Term == "IRF1 21803131 ChIP-Seq PrimaryMonocytes Human Connective",]
+ t4
+ genes <- strsplit( t4$Genes, ';')[[1]]
+ t2[ t2$SYMBOL %in% genes,]$IRF1 = 1
+
 t4 <- t3[ t3$Term == "STAT1 19122651 ChIP-Seq HeLaS3 Human CervicalCancer",]
  t4
  genes <- strsplit( t4$Genes, ';')[[1]]
