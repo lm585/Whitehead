@@ -3991,3 +3991,41 @@ t4 <- t3[ t3$Term == "STAT1 19122651 ChIP-Seq HeLaS3 Human CervicalCancer",]
  col_fun = colorRamp2(c(0,1), c( "white",  "red"))
  eatmap(t4, col=col_fun, row_names_gp = gpar(fontsize = 7), name="TF target")
 
+#######################################################################
+# STAT1 19122651 ChIP-Seq HeLaS3 Human CervicalCancer
+# are targets F biased
+> f1 <- read.delim("/Users/linyongmao/Documents/autism/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk", header=F)
+##p=0.8629 in gtex AA tissue, no sex diff
+ f1 <- read.delim("/Users/linyongmao/Documents/dir-GTExV8/diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-RIN-ischem-PC1-21-covar.noX.Y.rnk", header=F)
+# random genes drawn from mouse mg data
+ t1 <- read.delim("random100-non-oxphos", header=T)
+ f2 <- f1[ f1$V1 %in% t1$V1,]
+ dim(f2)
+# [1] 84  2
+ dim(t1)
+# [1] 100   2
+ summary(f2$V2)
+# log10(p) = -0.10, p=0.79
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+# -3.7622 -0.7719 -0.1001 -0.1466  0.5169  2.7276
+ summary(f1$V2)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.
+# -4.93980 -0.65792 -0.05434 -0.10218  0.45778  4.90685
+t3 <- read.delim("chea.random100-non-oxphos.txt")
+t4 <- t3[ t3$Term == "STAT1 19122651 ChIP-Seq HeLaS3 Human CervicalCancer",]
+ t4
+ genes <- strsplit( t4$Genes, ';')[[1]]
+
+ f2$stat1.targets = "no"
+ f2[ f2$V1 %in% genes,]$stat1.targets = "yes"
+ boxplot(f2$V2 ~ f2$stat1.targets, outcol="white", ylab="signed log10(pVal) (F vs. M)", main="diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-RIN-ischem-PC1-21-covar.noX.Y.rnk", cex.main=0.8)
+ beeswarm(f2$V2 ~ f2$stat1.targets, add=T)
+ abline(h = seq(-100, 100, 10/10), lty = 5, lwd = 0.5, col = "gray")
+ t6 <- f2[ f2$stat1.targets == "yes",]
+ dim(t6)
+# [1] 21  3
+ t7 <- f2[ f2$stat1.targets == "no",]
+ dim(t7)
+# [1] 74  3
+ wilcox.test(t6$V2, t7$V2)
+
