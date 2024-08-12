@@ -3997,6 +3997,35 @@ t4 <- t3[ t3$Term == "STAT1 19122651 ChIP-Seq HeLaS3 Human CervicalCancer",]
  col_fun = colorRamp2(c(0,1), c( "white",  "red"))
  eatmap(t4, col=col_fun, row_names_gp = gpar(fontsize = 7), name="TF target")
 
+################
+> f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/HALLMARK_OXIDATIVE_PHOSPHORYLATION.tsv")
+ t1 <- f1[ f1$RANK.METRIC.SCORE < log10(0.05),]
+ dim(t1)
+# [1] 83  7
+ head(t1)
+ t2 <- t1[, 1:6]
+ t3 <- read.delim("chea.oxphos.200genes.txt")
+ t3[1:41, 1:7]
+
+ t4 <- t3[ t3$Term == "STAT1 19122651 ChIP-Seq HeLaS3 Human CervicalCancer",]
+ t4
+ genes <- strsplit( t4$Genes, ';')[[1]]
+ t2$STAT1 <- 0
+ t2[ t2$SYMBOL %in% genes,]$STAT1 = 1
+
+ t4 <- t3[ t3$Term == "VDR 23849224 ChIP-Seq CD4+ Human",]
+ t4
+ genes <- strsplit( t4$Genes, ';')[[1]]
+ t2$VDR <- 0 
+ t2[ t2$SYMBOL %in% genes,]$VDR = 1 
+ rownames(t2) <- t2$SYMBOL
+ colnames(t2)
+ t3 <- t2[, c(7:8)]
+ t4 <- t3[  rowMeans(t3, na.rm=T) > 0,]
+ dim(t4)
+ col_fun = colorRamp2(c(0,1), c( "white",  "red"))
+ eatmap(t4, col=col_fun, row_names_gp = gpar(fontsize = 7), name="TF target")
+
 #######################################################################
 # STAT1 19122651 ChIP-Seq HeLaS3 Human CervicalCancer
 # are targets F biased
