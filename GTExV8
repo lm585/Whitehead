@@ -61,6 +61,11 @@ linyong@fry /lab/solexa_page/linyong$ /lab/page_human_data/linyong2/dir-gtex-118
 2024/03/22 16:18:45 Please download the latest gen3-client release from https://github.com/uc-cdis/cdis-data-client/releases/latest
 2024/03/22 16:18:45 Profile 'gtexv8expire_4_21_2024' has been configured successfully.
 
+linyong@fry /lab/solexa_page/linyong$  /lab/page_human_data/linyong2/dir-gtex-118/gen3-client  configure --profile=gtexv8expire_9_14_2024 --cred=credentials.expire.9.14.2024.json   --apiendpoint=https://gen3.theanvil.io 
+2024/08/15 13:33:01 A new version of gen3-client is available! The latest version is 2024.8.0. You are using version 2022.12
+2024/08/15 13:33:01 Please download the latest gen3-client release from https://github.com/uc-cdis/cdis-data-client/releases/latest
+2024/08/15 13:33:01 Profile 'gtexv8expire_9_14_2024' has been configured successfully.
+
     Important: “--protocol” tag is important to this command as it will determine which bucket the files will be downloaded from. The “s3” value will download from the egress free Cleversafe bucket for the datasets in the “Downloadable” tab.
 
     Note: With larger manifests containing more than 100,000 files such as GTEx v8, the initial process of reading and parsing the manifest into the gen3-client can take anywhere from 30 - 240 mins.
