@@ -4080,3 +4080,18 @@ grep -i "       $g      " gencode.v42.primary_assembly.noPar.gene-chr-type-name
 done  | grep -i "chr[xy]"
 ENSG00000049768.18      FOXP3   chrX    -       protein_coding
 
+###########################################################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat ~/Documents/Whitehead-main/autism | grep "Term == " | sed 's#.*"\(.*\)".*#\1#' | sort | uniq | while read ll
+do
+echo "$ll"
+grep -i "$ll"  chea.vdr.4tf.txt
+echo
+done
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat ~/Documents/Whitehead-main/autism | grep "Term == " | sed 's#.*"\(.*\)".*#\1#' | sort | uniq
+IRF1 21803131 ChIP-Seq MONOCYTES Human
+IRF1 21803131 ChIP-Seq PrimaryMonocytes Human Connective
+IRF8 22096565 ChIP-ChIP GC-B Mouse
+STAT1 19122651 ChIP-Seq HeLaS3 Human CervicalCancer
+VDR 23849224 ChIP-Seq CD4+ Human
+
