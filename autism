@@ -4064,3 +4064,19 @@ t4 <- t3[ t3$Term == "STAT1 19122651 ChIP-Seq HeLaS3 Human CervicalCancer",]
 # [1] 74  3
  wilcox.test(t6$V2, t7$V2)
 
+#######################################################
+ % cat chea.human.mg.f.bias.infg.102genes.withBackg.txt | grep -i human | awk 'BEGIN {FS = "\t"; OFS = "\t"} $4 < 0.01' |cut -f 1-7 | awk '{print $1}' > temp1
+ % cat chea.human.mg.f.bias.oxphos.83genes.withBackg.txt | grep -i human | awk 'BEGIN {FS = "\t"; OFS = "\t"} $4 < 0.01' |cut -f 1-7 | awk '{print $1}' >> temp1
+      24 temp1
+cat temp1 | while read g
+do
+grep -i "       $g      " gencode.v42.primary_assembly.noPar.gene-chr-type-name
+done | wc
+      23
+EST1 TF found no human genes
+cat temp1 | while read g
+do
+grep -i "       $g      " gencode.v42.primary_assembly.noPar.gene-chr-type-name
+done  | grep -i "chr[xy]"
+ENSG00000049768.18      FOXP3   chrX    -       protein_coding
+
