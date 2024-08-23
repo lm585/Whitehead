@@ -4095,6 +4095,37 @@ IRF8 22096565 ChIP-ChIP GC-B Mouse
 STAT1 19122651 ChIP-Seq HeLaS3 Human CervicalCancer
 VDR 23849224 ChIP-Seq CD4+ Human
 
+########################################################
+cat temp1
+CEBPB 24764292 ChIP-Seq MC3T3 Mouse
+ESRRB 18555785 ChIP-Seq MESCs Mouse
+IRF8 21731497 ChIP-ChIP J774 Mouse
+IRF8 22096565 ChIP-ChIP GC-B Mouse
+IRF8 27001747 Chip-Seq BMDM Mouse
+YY1 23942234 ChIP-Seq MYOBLASTS AND MYOTUBES Mouse
+
+cat temp1 | while read ll
+do
+echo "$ll"
+grep -i "$ll" chea.esrrb.4tf.mouse.txt
+echo
+done
+
+IRF8 27001747 Chip-Seq BMDM Mouse       1/1500  0.26792322930856893     0.33363242784772584     0       0       4.11318656882366        5.417292102708492       IRF8
+YY1 23942234 ChIP-Seq MYOBLASTS AND MYOTUBES Mouse      1/1173  0.21477048652613595     0.33363242784772584     0       0       5.353811149032992       8.235153745330903       YY1
+
+######
+cat temp-s3
+###
+cat temp1 | while read ll
+do
+ echo "$ll"
+ tf=`echo "$ll" | awk '{print $1}' `
+ awk 'BEGIN {FS = "\t"; OFS = "\t"} toupper($1) ~ /'$tf'.*MOUSE/ ' chea.esrrb.4tf.mouse.txt
+ echo
+done
+
+
 ######################################################
 linyongmao@Linyong-Mao-MBP16-2019 autism % cat mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk | cut -f 1 | sort | uniq > temp1
 wc -l temp1
