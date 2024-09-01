@@ -5480,3 +5480,50 @@ linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ ls -l *.bam | awk '{print
 97.4519
 98.2604
 98.3616
+
+########################################################################################
+samtools sort -n -@ 6 -o "$f".name-sorted.bam "$f".1.bam
+
+htseq-count  --mode=union --stranded=no --idattr=gene_id --format=bam --additional-attr=gene_name -a 10 --order=name --type=exon temp-13QJC.name.bam /lab/solexa_page/linyong/gencode/gencode.v42.primary_assembly.noPar.annotation.gtf   > temp-13QJC.coun.gene.2
+   
+-a 0
+temp-13QJC.coun.gene.a0
+Warning: 22357 reads with missing mate encountered.
+__no_feature            404248
+__ambiguous             30358
+__too_low_aQual         0
+__not_aligned           11065
+__alignment_not_unique          0
+
+ENSG00000224389.9       C4B     1652
+ENSG00000229776.1       C4B-AS1 245
+ENSG00000233627.2       C4A-AS1 245
+ENSG00000244731.10      C4A     1572
+
+-a 10 
+Warning: 22357 reads with missing mate encountered.
+
+__no_feature            396564
+__ambiguous             29529
+__too_low_aQual         14381
+__not_aligned           11065
+__alignment_not_unique          0
+
+temp-13QJC.coun.gene.2:ENSG00000224389.9        C4B     283
+temp-13QJC.coun.gene.2:ENSG00000229776.1        C4B-AS1 0
+temp-13QJC.coun.gene.2:ENSG00000233627.2        C4A-AS1 0
+temp-13QJC.coun.gene.2:ENSG00000244731.10       C4A     304
+
+-a 20
+temp-13QJC.coun.gene.3
+Warning: 22357 reads with missing mate encountered.
+__no_feature            395750
+__ambiguous             29502
+__too_low_aQual         15337
+__not_aligned           11065
+__alignment_not_unique          0
+
+ENSG00000224389.9       C4B     278
+ENSG00000229776.1       C4B-AS1 0
+ENSG00000233627.2       C4A-AS1 0
+ENSG00000244731.10      C4A     295
