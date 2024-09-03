@@ -4143,3 +4143,24 @@ cp chea.infg.200genes.txt         temp.pathway.alltargetgenes.txt
 
 cp  chea.mouse.mg.f.bias.infg.110genes.withBackg12171.txt temp.mouse.mg.f.bias.pathway.44genes.txt
 
+########################################################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat script-AD-degs-pathway
+#
+
+tab="	"
+cat AD.nature.2024.aggregated_fullset.Mic_Immune_Mic.tsv | grep  "nrad${tab}allregions" | awk 'BEGIN {FS = "\t"; OFS = "\t"} $4 == 2 && $6 > 0 && $7 > 0 ' | cut -f 1 | sort | uniq  > temp-ad-up.genes
+wc -l temp-ad-up.genes
+cat AD.nature.2024.aggregated_fullset.Mic_Immune_Mic.tsv | grep  "nrad${tab}allregions" | awk 'BEGIN {FS = "\t"; OFS = "\t"} $4 == 1 && $6 < 0 && $7 < 0' | cut -f 1 | sort | uniq  > temp-ad-down.genes
+wc -l temp-ad-down.genes
+
+ls ../microglia/HALLMARK*  | grep -v temp | wc -l
+ls ../microglia/HALLMARK*  | grep -v temp > temp-f1 
+cat AD.nature.2024.aggregated_fullset.Mic_Immune_Mic.tsv | grep  "nrad${tab}allregions" | cut -f 1 |  sort | uniq  > temp-bg-genes
+wc -l temp-bg-genes
+bash   script-inputset-pathways-overlap-fisher-fdr  temp-ad-down.genes Ctrl-UP.vs.AD temp-f1 temp-bg-genes
+
+echo
+echo
+echo
+bash   script-inputset-pathways-overlap-fisher-fdr  temp-ad-up.genes AD-UP.vs.Ctrl temp-f1 temp-bg-genes
+
