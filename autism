@@ -3372,6 +3372,20 @@ for(i in 1:dim(t4)[1]) {
  abline(v = seq(-10, 10, 2), lty = 5, lwd = 0.5, col = "gray")
  legend(4, 9, c( "HD Up genes", "Ctrl Up genes"), fill=c("blue", "orange"), cex = 0.7, inset = 0.05)
 
+> t5 <- data.frame(t4$oddsratio.x, t4$oddsratio.y)
+ rownames(t5) <- gsub("HALLMARK", "h", t4$pathway)
+ colnames(t5) <- c("Ctrl-UP", "HD-UP")
+ gs7 <- t5
+### d from previous order
+ gs8 <- as.data.frame( t(gs7[d,]))
+ par( mar=c(6,16,2,2))
+   barplot(as.matrix(gs8), horiz=T, beside=T, yaxt="n",  col=c("orange", "blue"),  xlab="odds ratio")
+   nam <- gsub("HALLMARK", "h", colnames(gs8))
+  axis(side=2, at = seq(2, 2+6*3, by=3), labels=nam, las =1, cex.axis = 0.8)
+  abline(v = seq(-10, 10, 1), lty = 5, lwd = 0.5, col = "gray")
+  legend(4, 9, c( "HD Up genes", "Ctrl Up genes"), fill=c("blue", "orange"), cex = 0.7, inset = 0.05)
+ 
+
 #######################################################################
 ###including chrX / chrY genes
 > t1 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt")
