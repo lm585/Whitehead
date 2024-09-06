@@ -4226,3 +4226,21 @@ echo
 echo
 bash   script-inputset-pathways-overlap-fisher-fdr  temp-ad-up.genes AD-UP.vs.Ctrl temp-f1 temp-bg-genes
 
+################################################################
+cat HD-control-snRNA-mg.deg.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 < 0' | awk '$5 < -0.1' | cut -f 1  | awk 'NR > 1' | sort | uniq > Ctrl-UP.vs.HD
+cat AD.nature.2024.aggregated_fullset.Mic_Immune_Mic.tsv | grep  "nrad${tab}allregions" | awk 'BEGIN {FS = "\t"; OFS = "\t"} $4 == 1 && $6 < 0 && $7 < 0' | cut -f 1 | sort | uniq  > temp-ad-down.genes
+cat  human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk | sort -t "$tab"  +1 -2g  | awk '$2 < -1.3010' | cut -f 1 > temp-f-bias
+wc -l Ctrl-UP.vs.HD temp-ad-down.genes temp-f-bias
+     406 Ctrl-UP.vs.HD
+     305 temp-ad-down.genes
+    1660 temp-f-bias
+
+cat Ctrl-UP.vs.HD ../microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes | sort | uniq -d > temp-Ctrl-UP.vs.HD.infr
+cat temp-ad-down.genes ../microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes | sort | uniq -d > temp-Ctrl-UP.vs.AD.infr
+      14 temp-Ctrl-UP.vs.HD.infr
+      15 temp-Ctrl-UP.vs.AD.infr
+cat temp-Ctrl-UP.vs.HD.infr temp-Ctrl-UP.vs.AD.infr | sort | uniq | wc -l
+      21 (no chrX/chrY genes)
+cat temp-Ctrl-UP.vs.HD.infr temp-Ctrl-UP.vs.AD.infr | sort | uniq -d| wc -l
+       8
+cat temp-Ctrl-UP.vs.HD.infr temp-Ctrl-UP.vs.AD.infr | sort | uniq -d > temp-both
