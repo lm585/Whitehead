@@ -3385,6 +3385,54 @@ for(i in 1:dim(t4)[1]) {
   abline(v = seq(-10, 10, 1), lty = 5, lwd = 0.5, col = "gray")
   legend(4, 9, c( "HD Up genes", "Ctrl Up genes"), fill=c("blue", "orange"), cex = 0.7, inset = 0.05)
  
+#######################################################################
+AD vs ctrl
+linyongmao@Linyong-Mao-MBP16-2019 autism % cp -i  script-AD-degs-pathway temp-s
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi temp-s
+linyongmao@Linyong-Mao-MBP16-2019 autism % bash temp-s
+
+t1 <- read.delim("temp1")
+ t1$pathway <- gsub("../microglia/", "", t1$pathway)
+ head(t1)
+ t2 <- read.delim("temp2")
+ t2$pathway <- gsub("../microglia/", "", t2$pathway)
+ head(t2)
+ t3 <- merge(t1, t2, by.x="pathway", by.y="pathway")
+ dim(t3)
+ t4 <- t3[ t3$fdr.x < 0.01 | t3$fdr.y < 0.01,c(1,2,8,9,10,16,17)]
+ t4$logFDR.x <- 999
+ t4$logFDR.y <- 999
+for(i in 1:dim(t4)[1]) {
+ t4$logFDR.x[i] <- -log10(t4$fdr.x[i])
+ t4$logFDR.y[i] <- -log10(t4$fdr.y[i])
+}
+ t5 <- data.frame(t4$logFDR.x, t4$logFDR.y)
+ rownames(t5) <- gsub("HALLMARK", "h", t4$pathway)
+ colnames(t5) <- c("Ctrl-UP", "AD-UP")
+ gs7 <- t5
+ d <- order(gs7$"Ctrl-UP")
+ gs8 <- as.data.frame( t(gs7[d,]))
+
+ par( mar=c(6,16,2,2))
+   barplot(as.matrix(gs8), horiz=T, beside=T, yaxt="n",  col=c("orange", "blue"),  xlab="-log10(FDR)")
+   nam <- gsub("HALLMARK", "h", colnames(gs8))
+  axis(side=2, at = seq(2, 2+2*3, by=3), labels=nam, las =1, cex.axis = 0.8)
+  abline(v = seq(-10, 10, 2), lty = 5, lwd = 0.5, col = "gray")
+  legend(1.5, 6.5, c( "AD Up genes", "Ctrl Up genes"), fill=c("blue", "orange"), cex = 0.7, inset = 0.0)
+
+t5 <- data.frame(t4$oddsratio.x, t4$oddsratio.y)
+ rownames(t5) <- gsub("HALLMARK", "h", t4$pathway)
+ colnames(t5) <- c("Ctrl-UP", "AD-UP")
+ gs7 <- t5
+### d from previous order
+ gs8 <- as.data.frame( t(gs7[d,]))
+ par( mar=c(6,16,2,2))
+   barplot(as.matrix(gs8), horiz=T, beside=T, yaxt="n",  col=c("orange", "blue"),  xlab="odds ratio")
+   nam <- gsub("HALLMARK", "h", colnames(gs8))
+  axis(side=2, at = seq(2, 2+2*3, by=3), labels=nam, las =1, cex.axis = 0.8)
+  abline(v = seq(-10, 10, 1), lty = 5, lwd = 0.5, col = "gray")
+  legend(4, 6.5, c( "AD Up genes", "Ctrl Up genes"), fill=c("blue", "orange"), cex = 0.7, inset = 0.05)
+
 
 #######################################################################
 ###including chrX / chrY genes
