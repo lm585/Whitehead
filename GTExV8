@@ -5560,3 +5560,39 @@ do
  htseq-count  --mode=union --stranded=no --idattr=gene_id --format=bam --additional-attr=gene_name  --order=name --type=exon "$f".name-sorted.bam  /lab/solexa_page/linyong/gencode/gencode.v42.primary_assembly.noPar.annotation.gtf   > "$f".gene-count
  rm -f "$f".name-sorted.bam
 done
+
+###########################################################################
+ls  /lab/solexa_page/linyong/temp-gtexv8-* | wc -l
+834
+-rw-r--r-- 1 linyong systemd-timesync 0 Sep  6 22:29 GTEX-NL3H-0009-SM-5JK37.gene-count
+-rw-r--r-- 1 linyong systemd-timesync 0 Sep  7 03:02 GTEX-Q2AH-0004-SM-5JK52.gene-count
+-rw-r--r-- 1 linyong systemd-timesync 0 Sep  7 07:44 GTEX-S7SE-0004-SM-5JK4E.gene-count
+-rw-r--r-- 1 linyong systemd-timesync 0 Sep  7 13:27 GTEX-WOFM-0003-SM-5JK3H.gene-count
+ 100000 alignment record pairs processed.
+200000 alignment record pairs processed.
+300000 alignment record pairs processed.
+Error occured when processing input (record #601424 in file GTEX-NL3H-0009-SM-5JK37.name-sorted.bam):
+  'pair_alignments' needs a sequence of paired-end alignments
+  [Exception type: ValueError, raised in __init__.py:463]
+samtools view -bf 1 GTEX-NL3H-0009-SM-5JK37.name-sorted.bam > GTEX-NL3H-0009-SM-5JK37.paired-end.bam
+samtools view -bF 1 GTEX-NL3H-0009-SM-5JK37.name-sorted.bam > GTEX-NL3H-0009-SM-5JK37.single-end.bam
+samtools view GTEX-NL3H-0009-SM-5JK37.paired-end.bam | cut -f 2 | sort | uniq > temp3
+samtools view GTEX-NL3H-0009-SM-5JK37.single-end.bam | cut -f 2 | sort | uniq > temp4
+cat temp3 temp4 | sort | uniq -d |wc
+      0       0       0
+rm -f temp3 temp4
+samtools view GTEX-NL3H-0009-SM-5JK37.paired-end.bam | cut -f 1 | uniq | wc
+ 656231
+samtools view GTEX-NL3H-0009-SM-5JK37.paired-end.bam | cut -f 1 | uniq > temp1
+sort temp1 | uniq -u | wc
+ 656231
+###temp1: A B C D A E F A
+###all uniq in temp1
+###read name sorted
+sort temp1 | uniq -d | wc
+      0     
+rm -f temp3 temp4
+samtools view GTEX-NL3H-0009-SM-5JK37.paired-end.bam | cut -f 1 | uniq > temp3
+samtools view GTEX-NL3H-0009-SM-5JK37.single-end.bam | cut -f 1 | uniq > temp4
+cat temp3 temp4 | sort | uniq -d | wc
+   0  
