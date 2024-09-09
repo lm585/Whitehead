@@ -4244,3 +4244,22 @@ cat temp-Ctrl-UP.vs.HD.infr temp-Ctrl-UP.vs.AD.infr | sort | uniq | wc -l
 cat temp-Ctrl-UP.vs.HD.infr temp-Ctrl-UP.vs.AD.infr | sort | uniq -d| wc -l
        8
 cat temp-Ctrl-UP.vs.HD.infr temp-Ctrl-UP.vs.AD.infr | sort | uniq -d > temp-both
+
+######################################################################
+> f1 <- read.delim("HD-control-snRNA-mg.deg.txt")
+ g1 <- scan(what="", sep = "\n")
+# figures.xlsx
+ g2 <- scan(what="", sep = "\n")
+ t1 <- f1[ f1$gene %in% g1, c(1,3,5)]
+ t1$overlap="y"
+ t2 <- f1[ f1$gene %in% g2, c(1,3,5)]
+ t2$overlap="n"
+ t3 <- rbind(t1, t2)
+ f2 <- read.delim("AD.nature.2024.aggregated_fullset.Mic_Immune_Mic.tsv")
+ t4 <- merge(t3, f2, by.x="gene", by.y="gene")
+ t5 <- t4[ t4$path == "nrad" & t4$region == "allregions",]
+ f3 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt")
+ t6 <- merge(t5, f3, by.x="gene", by.y="name")
+ colnames(t6)
+ write.table(t6, "temp.txt", sep="\t")
+### figures.xlsx
