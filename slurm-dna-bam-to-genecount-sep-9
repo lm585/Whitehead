@@ -1,0 +1,34 @@
+#!/bin/bash
+# Configuration values for SLURM job submission.
+# One leading hash ahead of the word SBATCH is not a comment, but two are.
+#SBATCH --job-name="dna-bam-genecount" # friendly name for job.
+#SBATCH --nodes=1                      # ensure cores are on one node
+#SBATCH --ntasks=1                     # run a single task
+#SBATCH --cpus-per-task=8              # number of cores/threads requested. sort bam according to read name
+#SBATCH --mem=40gb                      # memory requested.
+#SBATCH --partition=20                 # partition (queue) to use
+#SBATCH --output out-dna-bam-genecount-9-9-2024-440pm
+#SBATCH --mail-type=ALL               # send email on job start/finish.
+#SBATCH --mail-user=linyong@wi.mit.edu
+
+# This is the actual section for commands to run
+
+# Uncomment the last line to email output file to specified address.
+# Slurm doesn't do this automatically, regardless of the mail-type setting above.
+#/usr/bin/mail -s "$SLURM_JOB_NAME $SLURM_JOB_ID" your_username@wi.mit.edu < friendlyname-${SLURM_JOB_ID}.out
+
+
+
+cat file-2 | while read ll
+do
+ f=`echo "$ll" | sed 's/.gene-count$//' `
+ echo "$f"
+ samtools sort -n -@ 6 -o "$f".name-sorted.bam "$f".bam
+
+ samtools view -bf 1 "$f".name-sorted.bam > "$f".paired-end.bam
+ samtools view -bF 1 "$f".name-sorted.bam > "$f".single-end.bam
+
+ htseq-count  --mode=union --stranded=no --idattr=gene_id --format=bam --additional-attr=gene_name  --order=name --type=exon "$f".paired-end.bam  /lab/solexa_page/linyong/gencode/gencode.v42.primary_assembly.noPar.annotation.gtf   > "$f".gene-count.pair
+ htseq-count  --mode=union --stranded=no --idattr=gene_id --format=bam --additional-attr=gene_name  --order=name --type=exon "$f".single-end.bam  /lab/solexa_page/linyong/gencode/gencode.v42.primary_assembly.noPar.annotation.gtf   > "$f".gene-count.single
+ rm -f "$f".name-sorted.bam "$f".paired-end.bam "$f".single-end.bam
+done
