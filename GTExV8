@@ -5596,3 +5596,36 @@ samtools view GTEX-NL3H-0009-SM-5JK37.paired-end.bam | cut -f 1 | uniq > temp3
 samtools view GTEX-NL3H-0009-SM-5JK37.single-end.bam | cut -f 1 | uniq > temp4
 cat temp3 temp4 | sort | uniq -d | wc
    0  
+
+#######################################################################################
+merge dna-bwa-htseq gene-count files
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ cat temp-s2
+#
+ls -lh GTEX*.gene-count | awk '$5 == 0 {print $9}' | while read ll
+do
+ ls -lh $ll
+ p=`echo "$ll" | sed 's/.gene-count//' `
+ ls -lh  "$p".gene-count.pair
+ cp "$p".gene-count.pair "$p".gene-count
+done
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ pwd  > dir-list
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ bash script-genecount-merge-3
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ cat  /lab/solexa_page/linyong/temp-error | grep -v "cannot access" |head |wc
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ ls  /lab/solexa_page/linyong/temp-gtexv8-* | wc -l
+838
+cd /lab/solexa_page/linyong/
+rm -f temp1
+linyong@fry /lab/solexa_page/linyong$ sbatch slurm-paste-files
+# bash script-paste-files-3
+ls -lh s  f2 m
+grep -n '__no_feature' s | cut -f 1-10
+awk 'NR < 62705' s > temp1
+linyong@fry /lab/solexa_page/linyong$ mv -i temp1 gtex-dna-c4a-c4b.gene.count.txt
+chmod -w  gtex-dna-c4a-c4b.gene.count.txt
+linyong@fry /lab/solexa_page/linyong$ awk '{print NF}' gtex-dna-c4a-c4b.gene.count.txt | uniq -c | head
+  62704 840
+rm -f s
+linyong@fry /lab/solexa_page/linyong$ rmmmm -f  temp-gtexv8-*.gene-count
+
