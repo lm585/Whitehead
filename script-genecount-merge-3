@@ -1,0 +1,26 @@
+#
+
+rm -f /lab/solexa_page/linyong/temp-gtexv8-*
+rm -f /lab/solexa_page/linyong/temp-error
+
+cat  dir-list | head -1234567 | while read d
+do
+  cd "$d"
+  ls  GTEX*.gene-count | while read s
+  do
+    id=`echo "$s" | sed 's/gene-count//'`
+    t=`grep -w "TNXB" $s | awk 'NR == 1 {print $3}' `
+    if [ "$t" == "" ]
+    then
+      t=0
+    fi
+    
+    if [ "$t" -gt 600 ]
+    then
+     ls -lh /lab/solexa_page/linyong/temp-gtexv8-$s >> /lab/solexa_page/linyong/temp-error 2>&1
+     echo "geneID	name	$id" >  /lab/solexa_page/linyong/temp-gtexv8-$s
+     cat $s >> /lab/solexa_page/linyong/temp-gtexv8-$s
+    fi 
+  done
+done
+
