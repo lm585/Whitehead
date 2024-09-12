@@ -5727,3 +5727,41 @@ do
  bash script-bam-c4a-depth "$ll" > "$f2".c4a.q20.depth 
 done
 linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ 
+
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ cat  script-bam-c4a-depth 
+#
+if [ $# -lt 1 ]
+then
+  echo $0 "	bam-file"
+  echo $#
+  exit 1
+fi
+
+cram="$1"
+f=`echo "$cram" | sed 's/.bam$//' `
+samtools index "$cram"
+ls -lh "$f".bam*
+
+prev="header	geneID	geneName	header	"
+echo -n "$prev"
+samtools coverage -r chr1:1-1000 -q 0   "$cram" | head -1
+
+for g in `echo C4A C4B`
+do
+   ll=`cat /lab/solexa_page/linyong/gencode.v42.primary_assembly.noPar.protein.xist.exons.gtf | grep "	gene	.*	.*	.*	.* gene_name \"$g\";" | head -1`
+  t1=`echo "$ll" |  awk 'BEGIN {FS = "\t";} {print NF}' `
+
+  if [ "$t1" -gt 8 ]
+  then
+     geneid=`echo "$ll" | cut -f 9 | awk 'BEGIN {FS=";"} {print $1}' | sed 's/gene_id "//' | sed 's/"//' `
+     prev="$f	$geneid	$g	geneIntv	"
+     R=`echo "$ll" | awk 'BEGIN {FS="\t"} {print  $1 ":" $4 "-" $5 }' `
+     echo -n "$prev"
+     samtools coverage -r "$R" -q 20 -H "$cram" 
+
+  fi 
+done
+
+rm "$f".bam.bai
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$  
