@@ -5629,3 +5629,28 @@ linyong@fry /lab/solexa_page/linyong$ awk '{print NF}' gtex-dna-c4a-c4b.gene.cou
 rm -f s
 linyong@fry /lab/solexa_page/linyong$ rmmmm -f  temp-gtexv8-*.gene-count
 
+#################################################################"gtex-dna-c4a-c4b.gene.count.txt"
+ t1 <- read.delim("gtex-dna-c4a-c4b.gene.count.txt")
+ dim(t1)
+# [1] 62703   840
+ n = dim(t1)[2] - 2
+ t2 <- t1[, 3:(n+2)]
+ rownames(t2) <- t1$geneID
+ t3 <- t2[,1:2]
+ t3$logic <- TRUE
+for(i in 1:dim(t2)[1]) {
+ t3$logic[i] <- median( as.numeric( t2[i,])) >= 10
+}
+
+ t2 <- t2[ t3$logic,]
+ dim(t2)
+# [1] 285 838
+ y <- DGEList(counts=t2)
+ y <- calcNormFactors(y)
+ summary(y$samples$lib.size/1e3)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   62.53  141.03  155.46  156.24  167.19  351.34
+ summary(y$samples$norm.factors)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#  0.8741  0.9957  1.0010  1.0001  1.0057  1.0337
+ a.df <- as.data.frame(cpm(y))
