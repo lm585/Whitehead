@@ -5654,3 +5654,19 @@ for(i in 1:dim(t2)[1]) {
 #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
 #  0.8741  0.9957  1.0010  1.0001  1.0057  1.0337
  a.df <- as.data.frame(cpm(y))
+
+                         group lib.size norm.factors
+GTEX.NPJ8.0004.SM.CLTG5.     1    62533    0.8740897
+GTEX.NPJ8.0004.SM.CLTG5.   39.3049 (($3 + $5)/2, median of seq depth)
+
+                          group lib.size norm.factors
+GTEX.1477Z.0003.SM.6WSBA.     1   178889    0.9907584
+GTEX.1477Z.0003.SM.6WSBA   25.5466
+
+                          group lib.size norm.factors
+GTEX.131XH.0003.SM.7DRPA.     1   320650    0.9991137
+GTEX.131XH.0003.SM.7DRPA   73.3575
+
+                         group lib.size norm.factors
+GTEX.T6MN.0003.SM.5URB7.     1   142033    0.9937414
+GTEX.T6MN.0003.SM.5URB7   39.3312
