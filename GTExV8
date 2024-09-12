@@ -5670,3 +5670,30 @@ GTEX.131XH.0003.SM.7DRPA   73.3575
                          group lib.size norm.factors
 GTEX.T6MN.0003.SM.5URB7.     1   142033    0.9937414
 GTEX.T6MN.0003.SM.5URB7   39.3312
+
+
+res <- a.df[,1:6]
+ for(i in 1:dim(a.df)[1]) {
+  res[i,]  <- summary(2* as.numeric( a.df[i, ])/median(as.numeric( a.df[i, ])))
+}
+ colnames(res) <- c("min", "f.qu", "median", "mean", "t.qu", "max")
+ res$geneID <- rownames(res)
+gene.name <- t1[, 1:2]
+df.gene <- merge(res, gene.name, by.x="geneID", by.y="geneID")
+ df.gene[ df.gene$name == "C4A",]
+#                 geneID      min     f.qu median     mean     t.qu      max name
+# 229 ENSG00000244731.10 0.154408 1.640286      2 1.964057 2.315535 5.984964  C4A
+ df.gene[ df.gene$name == "C4B",]
+#                geneID       min     f.qu median     mean     t.qu      max name
+# 150 ENSG00000224389.9 0.2507122 1.673204      2 1.987984 2.268299 4.832178  C4B
+ df.gene[ df.gene$min > 1.5 & df.gene$max < 2.5,]
+ t6 <- as.numeric( a.df[rownames(a.df) == "ENSG00000244731.10", ])
+ boxplot(2 * t6 / median(t6), outcol="white", main="C4A")
+ beeswarm(2 * t6 / median(t6), add=T, cex=0.7)
+ abline(h = seq(0,10000,0.5), lty = 5, lwd = 0.5, col = "gray")
+
+ t6 <- as.numeric( a.df[rownames(a.df) == "ENSG00000224389.9", ])
+ boxplot(2 * t6 / median(t6), outcol="white", main="C4B")
+ beeswarm(2 * t6 / median(t6), add=T, cex=0.7)
+ abline(h = seq(0,10000,0.5), lty = 5, lwd = 0.5, col = "gray")
+
