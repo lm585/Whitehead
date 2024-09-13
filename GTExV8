@@ -5765,3 +5765,63 @@ done
 
 rm "$f".bam.bai
 linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$  
+
+######################################################################################################
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ cat script-cnv-02
+#
+
+ls GTEX*.c4a.q20.depth > temp-gene.exon.depth-file
+wc temp-gene.exon.depth-file
+
+cat temp-gene.exon.depth-file | head -12345 | while read ll
+do
+ s=`echo "$ll" | sed 's/.*\///' | sed 's/.c4a.q20.depth//' `
+ c4a=`cat "$ll" | grep "	C4A	" | grep -w geneIntv |head -1 | cut -f 5-20`
+ c4b=`cat "$ll" | grep "	C4B	" | grep -w geneIntv |head -1 | cut -f 5-20`
+ echo "$s	C4A	$c4a	C4B	$c4b"
+
+done
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ 
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ bash script-cnv-02 > temp.txt
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i temp.txt gtex-dna-c4a-c4b.gene.depth.samtools.q20.txt
+vi gtex-dna-c4a-c4b.gene.depth.samtools.q20.txt
+> t1 <- read.delim("gtex-dna-c4a-c4b.gene.depth.samtools.q20.txt", header=T)
+ head(t1)
+ plot(t1$C4A.numreads, t1$C4A.meandepth, main="samtools coverage -q 20")
+ abline(v = seq(0,10000,100), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = seq(0,10000,1/2), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+
+ plot(t1$C4B.numreads, t1$C4B.meandepth, main="samtools coverage -q 20")
+ abline(v = seq(0,10000,100), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = seq(0,10000,1/2), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+
+ t2 <- read.delim("cnv.dna.depth.gtex.donors.txt", header=F)
+ head(t2)
+ t2$seq.dep <- (t2$V3 + t2$V5)/2
+ t2$c4.tot <- (t2$V15 + t2$V18)/t2$seq.dep * 2
+ colnames(t2)
+ t3 <- t2[ , c(1,2,4,19,20)]
+ t6 <- merge(t3, t1, by.x="V1", by.y="donor")
+ dim(t6)
+# [1] 838  25
+ t6$c4a <- t6$C4A.meandepth / t6$seq.dep
+ t6$c4b <- t6$C4B.meandepth / t6$seq.dep
+ hist(t6$c4.tot, breaks=seq(0, 12, 0.5/2/2))
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.7, col = "blue")
+ t6$c4a.cn <- t6$c4a / median(t6$c4a)*2
+ t6$c4b.cn <- t6$c4b / median(t6$c4b)*2
+ summary(t6$c4a)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.01066 0.09534 0.12161 0.12170 0.14729 0.30583 
+ summary(t6$c4b)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.01393 0.09250 0.11176 0.11238 0.13107 0.25703 
+ hist(t6$c4a.cn,  breaks=seq(0, 6, 0.5/2/2))
+ abline(v = seq(0,10000,1/2), lty = 5, lwd = 0.7, col = "blue")
+ hist(t6$c4b.cn,  breaks=seq(0, 6, 0.5/2/2))
+ abline(v = seq(0,10000,1/2), lty = 5, lwd = 0.7, col = "blue")
+
