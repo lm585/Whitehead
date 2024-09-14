@@ -5825,3 +5825,47 @@ vi gtex-dna-c4a-c4b.gene.depth.samtools.q20.txt
  hist(t6$c4b.cn,  breaks=seq(0, 6, 0.5/2/2))
  abline(v = seq(0,10000,1/2), lty = 5, lwd = 0.7, col = "blue")
 
+> t6.c4a.c4b.cn <- t6
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ t3 <- merge(t6.c4a.c4b.cn, info, by.x="V1", by.y="SAMPID")
+ dim(t3)
+# [1] 838  35
+ c4.cn <- t3
+###cmds from script-gtexv8-tissue-sex-diff-age-bmi-covar
+###Liver        226
+diff <- as.data.frame(cpm(y))
+gene.name <- raw[, 1:2]
+ gene.name[ gene.name$name %in% c("C4A", "C4B"),]
+#                   geneID name
+# 25277  ENSG00000224389.9  C4B
+# 37237 ENSG00000244731.10  C4A
+
+ g1 <- gene.name[ gene.name$name %in% c("C4A", "C4B"),]$geneID
+ g2 <- as.data.frame( t(diff[ rownames(diff) %in% g1,]))
+ str(g2)
+ g2$sample <- rownames(g2)
+ g3 <- merge(g2, info, by.x="sample", by.y="sid")
+ dim(g3)
+# [1] 226   9
+ g4 <- merge(g3, c4.cn, by.x="SUBJID", by.y="SUBJID")
+ dim(g4)
+# [1] 208  43
+# > 208/226
+# [1] 0.920354
+
+> cor.test(log2(g4$ENSG00000244731.10), g4$c4a.cn, method="p")
+
+        Pearson's product-moment correlation
+data:  log2(g4$ENSG00000244731.10) and g4$c4a.cn
+t = 5.187, df = 206, p-value = 5.097e-07
+      cor
+0.3398804
+> cor.test(log2(g4$ENSG00000224389.9), g4$c4b.cn, method="p")
+
+        Pearson's product-moment correlation
+data:  log2(g4$ENSG00000224389.9) and g4$c4b.cn
+t = 1.8578, df = 206, p-value = 0.06462
+      cor
+0.1283708
