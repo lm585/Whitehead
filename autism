@@ -4263,3 +4263,13 @@ cat temp-Ctrl-UP.vs.HD.infr temp-Ctrl-UP.vs.AD.infr | sort | uniq -d > temp-both
  colnames(t6)
  write.table(t6, "temp.txt", sep="\t")
 ### figures.xlsx
+
+########################################################cyno RNA-seq
+/lab/solexa_page/linyong/cyno-genome/GCF_012559485_plus_Y.fna
+/lab/page_genomes/Macaca_fascicularis/genome/assemblies/GCF_012559485_plus_Y/GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.gtf 
+
+linyong@fry /lab/solexa_public/Page/240703_WIGTC-NOVASEQ1B_BHKL2LDSXC$ ls /lab/solexa_public/Page/240703_WIGTC-NOVASEQ1B_BHKL2LDSXC/FASTQ/*R1_001.fastq.gz | wc
+     33      33    3234
+linyong@fry /lab/solexa_public/Page/240703_WIGTC-NOVASEQ1B_BHKL2LDSXC$ ls /lab/solexa_public/Page/240703_WIGTC-NOVASEQ1B_BHKL2LDSXC/FASTQ/*R2_001.fastq.gz | wc
+     33      33    3234
+
