@@ -4273,3 +4273,22 @@ linyong@fry /lab/solexa_public/Page/240703_WIGTC-NOVASEQ1B_BHKL2LDSXC$ ls /lab/s
 linyong@fry /lab/solexa_public/Page/240703_WIGTC-NOVASEQ1B_BHKL2LDSXC$ ls /lab/solexa_public/Page/240703_WIGTC-NOVASEQ1B_BHKL2LDSXC/FASTQ/*R2_001.fastq.gz | wc
      33      33    3234
 
+######
+linyong@fry /lab/solexa_page/linyong$ cat slurm-cyno-star-genome-index-151bp
+#!/bin/bash
+# Configuration values for SLURM job submission.
+# One leading hash ahead of the word SBATCH is not a comment, but two are.
+#SBATCH --job-name="stargenomeindex" # friendly name for job.
+#SBATCH --nodes=1                      # ensure cores are on one node
+#SBATCH --ntasks=1                     # run a single task
+#SBATCH --cpus-per-task=20              # number of cores/threads requested.
+#SBATCH --mem=128gb                      # memory requested.
+#SBATCH --partition=20                 # partition (queue) to use
+#SBATCH --output star-genome-index-cyno-9-23-359pm   # name of output file.  %j is jobid
+#SBATCH --mail-type=ALL               # send email on job start/finish.
+#SBATCH --mail-user=linyong@wi.mit.edu
+
+# This is the actual section for commands to run
+
+
+STAR  --runMode genomeGenerate  --genomeDir /lab/solexa_page/linyong/dir-star-genome-index-cyno-oh150  --genomeFastaFiles /lab/solexa_page/linyong/cyno-genome/GCF_012559485_plus_Y.fna   --sjdbGTFfile /lab/page_genomes/Macaca_fascicularis/genome/assemblies/GCF_012559485_plus_Y/GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.gtf   --sjdbOverhang 150 --runThreadN 16
