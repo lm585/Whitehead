@@ -4273,6 +4273,9 @@ linyong@fry /lab/solexa_public/Page/240703_WIGTC-NOVASEQ1B_BHKL2LDSXC$ ls /lab/s
 linyong@fry /lab/solexa_public/Page/240703_WIGTC-NOVASEQ1B_BHKL2LDSXC$ ls /lab/solexa_public/Page/240703_WIGTC-NOVASEQ1B_BHKL2LDSXC/FASTQ/*R2_001.fastq.gz | wc
      33      33    3234
 
+linyong@fry /lab/solexa_page/linyong/cyno-rna-seq-2024$ cp -i /lab/page_genomes/Macaca_fascicularis/genome/assemblies/GCF_012559485_plus_Y/GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.gtf ../
+linyong@fry /lab/solexa_page/linyong$ vi /lab/solexa_page/linyong/GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.gtf
+
 ######
 linyong@fry /lab/solexa_page/linyong$ cat ./slurm-cyno-star-genome-index-151bp
 #!/bin/bash
