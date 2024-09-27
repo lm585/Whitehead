@@ -5869,3 +5869,12 @@ data:  log2(g4$ENSG00000224389.9) and g4$c4b.cn
 t = 1.8578, df = 206, p-value = 0.06462
       cor
 0.1283708
+
+##############################################################
+ identical(t6.c4a.c4b.cn , t6)
+# 0.8917315 is the median of (t6$c4a.cn + t6$c4b.cn) / t6$c4.tot
+ t10 <- (t6$c4a.cn + t6$c4b.cn)/ 0.8917315
+ ss1 <- sum( (t6$c4.tot - t10)^2 )
+ ss2 <- sum( (t6$c4.tot - mean(t6$c4.tot))^2 )
+ r2 <- 1 - ss1/ss2
+#R-squared, r^2, Rsquared
