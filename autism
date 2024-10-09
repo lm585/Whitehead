@@ -4339,3 +4339,12 @@ do
 
 done
 linyong@fry /lab/solexa_page/linyong/cyno-rna-seq-2024$ 
+
+#################################################################################
+linyong@fry /lab/page_human_data/linyong2/temp-dir-01$ ~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chrX 73850723  73852723   > xist.dna.1stexon.fa
+linyong@fry /lab/page_human_data/linyong2/temp-dir-01$ bwa bwasw  -f xist.dna.1stexon.sam  -t 10  /lab/solexa_page/linyong/cyno-genome/GCF_012559485_plus_Y.fna xist.dna.1stexon.fa
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[bsw2_aln] read 1 sequences/pairs (2001 bp) ...
+
+XIST in cyno   NC_052275.1     69487373Type: transcript gene_id: LOC102139757 transcript_id: XR_001487868.2 db_xref: GeneID:102139757 experiment: COORDINATES: gbkey: ncRNA gene: LOC102139757 model_evidence: Supporting product: uncharacterized transcript_biotype: lnc_RNA
+
