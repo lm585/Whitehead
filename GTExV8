@@ -5878,3 +5878,11 @@ t = 1.8578, df = 206, p-value = 0.06462
  ss2 <- sum( (t6$c4.tot - mean(t6$c4.tot))^2 )
  r2 <- 1 - ss1/ss2
 #R-squared, r^2, Rsquared
+##############################################################
+ raw2 <- raw[, 3:17352 ]
+ rownames(raw2) <- raw$geneID
+ head(raw2[, 1:11])
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+dim(y)
+# [1] 62703 17350
