@@ -4375,3 +4375,39 @@ wc -l conserved.6samp.6samp.peak.coord conserved.6samp.6samp.peak.id
 
 #####
   179342 conserved.6samp.6samp.peak.coord
+
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ bash script-gene-bed-2
+###using /lab/solexa_page/linyong/GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.gtf (modified by me)
+
+bedtools intersect -a temp-gene.bed -b conserved.6samp.6samp.peak.coord -wa -wb  > temp.gene.2kbp.peak
+cat temp.gene.2kbp.peak | cut -f 4 | sort | uniq -c | wc -l
+13476 genes whose promoters overlap with conserv peaks
+
+sort -t '      ' +0 -1 +1 -2n conserved.6samp.6samp.peak.coord > conserved.6samp.6samp.peak.coord.sorted
+###  NC_012670.1        15972   16412   L16_6720.mapQ.paired_peak_1
+###  NC_012670.1        15974   16393   L16_6707.mapQ.paired_peak_1
+###  NC_012670.1        15974   16412   L16_6704.mapQ.paired_peak_1
+
+bedtools merge -d 100 -i   conserved.6samp.6samp.peak.coord.sorted > conserved.6samp.6samp.peak.coord.sorted.merged
+29211 conserved.6samp.6samp.peak.coord.sorted.merged
+
+cat conserved.6samp.6samp.peak.coord.sorted.merged |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+ {
+   print $1 "\t" "macs2" "\t" "peak" "\t"  $2 "\t" $3 "\t" "." "\t" "+"  "\t" "."  "\t" "peak_id=\"" $1 "@@@" $2 "@@@" $3  "\"" "\n";
+ }' > conserved.6samp.6samp.peak.coord.sorted.merged.gtf
+#  NC_012670.1  macs2   peak    15972   16412   .       +       .       peak_id="NC_012670.1@@@15972@@@16412"
+
+cat ../script-peak-read-count-2
+#
+ls ../L*.mapQ.paired.bam | awk 'NR > 4' |  while read f
+do
+ id=`echo "$f" | sed 's/.bam//' | sed 's/..\///' `
+ echo "$id"
+ ###testing bam sorted by read names
+ samtools view "$f" | head -1000000 | cut -f 1 | uniq -d | wc -l
+ ## --nonunique=default: none
+ htseq-count  --mode=intersection-strict   --stranded=no --idattr=peak_id  --format=bam  --order=name --type=peak "$f"   conserved.6samp.6samp.peak.coord.sorted.merged.gtf > "$id".conserved.6samp.6samp.peaks.readcount
+
+
+done
+
