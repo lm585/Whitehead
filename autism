@@ -4348,3 +4348,30 @@ linyong@fry /lab/page_human_data/linyong2/temp-dir-01$ bwa bwasw  -f xist.dna.1s
 
 XIST in cyno   NC_052275.1     69487373Type: transcript gene_id: LOC102139757 transcript_id: XR_001487868.2 db_xref: GeneID:102139757 experiment: COORDINATES: gbkey: ncRNA gene: LOC102139757 model_evidence: Supporting product: uncharacterized transcript_biotype: lnc_RNA
 
+######################################################################################
+cd /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ bash  ../script-peak-overlap-6samples  L16_6692
+###  linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ bedtools intersect -a temp-target.bed -b temp-L16_6723.bed  -wa -wb | head
+###  NC_012670.1        15942   16494   L16_6692.mapQ.paired_peak_1     NC_012670.1     16197   16377   L16_6723.mapQ.paired_peak_1
+###  NC_052255.1        34907   35536   L16_6692.mapQ.paired_peak_2     NC_052255.1     34933   35423   L16_6723.mapQ.paired_peak_3
+###  NC_052255.1        35712   36180   L16_6692.mapQ.paired_peak_3     NC_052255.1     35788   36034   L16_6723.mapQ.paired_peak_4
+
+ls temp-*.overlap -lh | grep "Oct 12" | awk '{print $9}' | wc
+     30      30     930
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ cat temp-*.overlap | sed 's/.mapQ.paired_peak_[0-9]*$//' | cut -f 4,8 | sort | uniq | cut -f 1 | uniq -c |  awk '$1 >= 5' |  awk 'BEGIN {OFS = "\t";} {print $2}' > conserved.6samp.6samp.peak.id
+wc -l conserved.6samp.6samp.peak.id
+179342 conserved.6samp.6samp.peak.id
+
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ cat temp-s
+#
+cat L16_6692.mapQ.paired_peaks.xls L16_6701.mapQ.paired_peaks.xls L16_6704.mapQ.paired_peaks.xls L16_6707.mapQ.paired_peaks.xls L16_6720.mapQ.paired_peaks.xls L16_6723.mapQ.paired_peaks.xls | awk 'BEGIN {FS = "\t";} NF > 5' | sort -t '     ' +9 -10 > temp-1
+
+sort +0 -1 conserved.6samp.6samp.peak.id > temp-2
+
+join -t '       ' -1 1 -2 10 temp-2 temp-1 -o "2.1,2.2,2.3,2.10" > conserved.6samp.6samp.peak.coord
+
+wc -l conserved.6samp.6samp.peak.coord conserved.6samp.6samp.peak.id
+
+
+#####
+  179342 conserved.6samp.6samp.peak.coord
