@@ -4411,3 +4411,51 @@ do
 
 done
 
+cat out-peak-rp-count-1012-245pm | awk 'NF == 1'  | sort | uniq -c
+      6 500000
+cat temp-s1 > temp-s2
+cat temp-s2
+#
+b=`ls L*.6samp.6samp.peaks.readcount | awk 'NR == 1' `
+id=`echo "$b" | sed 's/.mapQ.paired.conserved.6samp.6samp.peaks.readcount//'`
+echo "peak      $id" > s
+cat "$b" >> s
+
+ls  L*.6samp.6samp.peaks.readcount  | awk 'NR > 1' | while read f
+do
+ id=`echo "$f" | sed 's/.mapQ.paired.conserved.6samp.6samp.peaks.readcount//'`
+ echo "$id" > f2
+ cut -f 2 "$f" >> f2
+ paste s f2 > m
+ mv m s
+done
+
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$
+vi s
+mv -i s  cyno-atac-mg-6samp-conserv6.readcount
+paste L*.6samp.6samp.peaks.readcount | awk '$1 != $3' | head -20
+paste L*.6samp.6samp.peaks.readcount | awk '$1 != $11' | head -20
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ cat temp-s3
+#
+
+cat cyno-atac-mg-6samp-conserv6.readcount | awk 'BEGIN {FS = "\t";}
+{
+ if(NR == 1)
+   print $0;
+ else
+  {
+   t=0;
+   for(i = 2; i < 8; i++)
+   {
+    if($i >= 6)
+      t++;
+   }  
+   if((t>= 3))
+     print $0; 
+  }
+}
+'
+
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ wc -l cyno-atac-mg-6samp-conserv6.readcount*
+  29212 cyno-atac-mg-6samp-conserv6.readcount
+  29211 cyno-atac-mg-6samp-conserv6.readcount.filt
