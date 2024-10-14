@@ -4459,3 +4459,55 @@ cat cyno-atac-mg-6samp-conserv6.readcount | awk 'BEGIN {FS = "\t";}
 linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ wc -l cyno-atac-mg-6samp-conserv6.readcount*
   29212 cyno-atac-mg-6samp-conserv6.readcount
   29211 cyno-atac-mg-6samp-conserv6.readcount.filt
+
+> setwd("../autism/")
+  t <- read.delim("cyno-atac-mg-6samp-conserv6.readcount.filt", row.names=1)
+ rawCount <- t
+ group <- factor(rep(1, 6))
+ y <- DGEList(counts=rawCount,group=group)
+ y <- calcNormFactors(y)
+
+###
+$samples
+         group lib.size norm.factors
+L16_6692     1 10737223    1.0642708
+L16_6701     1 14750574    0.9898500
+L16_6704     1  3350929    1.1853365
+L16_6707     1 14721931    1.0563823
+L16_6720     1 11925351    0.8863467
+L16_6723     1 22163906    0.8552874
+###
+
+ d = cpm(y)
+ a <- log10(d+1)
+ a.df <- as.data.frame(a)
+ c1 <- as.data.frame(cor(a.df))
+ summary(c1)
+ dim(y)
+#  [1] 29210     6
+t1 <- data.frame(id = rownames(a.df), var = a.df[,1])
+for(i in 1:dim(a.df)[1])
+{
+ t1$var[i] = var(as.numeric(a.df[i,]))
+}
+
+ info <- data.frame(sex = c(0,1,0,1,0,1))
+t1$sex.cor = -999
+for(i in 1:dim(a.df)[1])
+{
+  d1 <-  data.frame(y = t(a.df[i,]), sex = info$sex )
+  d2 <-  lm(d1[,1] ~ d1$sex)
+  d3 <- summary(d2)
+  t1$sex.cor[i] = d3$r.squared
+}
+
+ sum(t1$var * t1$sex.cor) / sum(t1$var)
+#  [1] 0.1285352
+
+> design <- model.matrix( ~ info$sex)
+  y <- estimateDisp(y,design)
+  fit <- glmQLFit(y, design)
+  qlf <- glmQLFTest(fit, coef=2)
+  top2v1 <- topTags(qlf, n = 91234)
+ head(top2v1)
+> write.table(top2v1, "temp", quote=F, sep="\t")
