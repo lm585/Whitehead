@@ -4511,3 +4511,38 @@ for(i in 1:dim(a.df)[1])
   top2v1 <- topTags(qlf, n = 91234)
  head(top2v1)
 > write.table(top2v1, "temp", quote=F, sep="\t")
+
+cat script-gene-bed-2 > script-gene-bed-3
+
+bash script-gene-bed-3
+vi temp-gene.bed
+head temp-gene.bed
+NC_052255.1     7616    11616   +       9616    14912   LOC123572819
+NC_052255.1     18645   22645   -       19115   20645   LOC102116409
+NC_052255.1     33558   37558   -       32432   35558   LOC123572833
+
+cat temp-gene.bed | awk '{print NF}' | uniq -c | head
+  35591 7
+bedtools intersect -a conserved.6samp.6samp.peak.coord.sorted.merged -b temp-gene.bed -wa -wb > temp
+cat temp |  awk 'BEGIN {FS = "\t"; OFS = "\t";}
+{
+ print $1 "@@@" $2 "@@@"  $3, $0
+}' > conserved.6samp.6samp.peak.coord.sorted.merged-gene-intersect
+
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ cat ../dir-macs2-defalt-param/chrom.sizes
+NC_012670.1     16575
+Ycons   11253475
+NC_052275.1     149803873
+
+> top.df <- as.data.frame(top2v1)
+ top.df$id <- rownames(top.df)
+ t1 <- read.delim("conserved.6samp.6samp.peak.coord.sorted.merged-gene-intersect", header=F)
+ top.df.2 <- merge(top.df, t1, by.x="id", by.y="V1")
+ dim(top.df.2)
+#  [1] 14258    16
+> t2 <-top.df.2[ top.df.2$V11 %in% g1, c(1,2,5,16,10, 14,15,13 )]
+
+> t2 <-top.df.2[ top.df.2$logFC > log2(1.5) & top.df.2$PValue < 0.05, ]
+> dim(t2)
+[1] 50 16
+> write.table(t2, "temp", quote=F, sep="\t")
