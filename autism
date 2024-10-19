@@ -4585,3 +4585,16 @@ dim(y)
 #     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
 #   0.8941  0.9531  0.9923  1.0018  1.0490  1.1156
 
+###########################################################################
+oct 19, 2024
+
+> sessionInfo()
+R version 4.4.1 (2024-06-14)
+Platform: x86_64-apple-darwin20
+Running under: macOS Ventura 13.2.1
+
+other attached packages:
+ [1] ggrepel_0.9.5         Matrix.utils_0.9.8    Matrix_1.7-0          vioplot_0.5.0         zoo_1.8-12            sm_2.2-6.0            MASS_7.3-61          
+ [8] ggplot2_3.5.1         patchwork_1.2.0       Seurat_5.1.0          SeuratObject_5.0.2    sp_2.1-4              dplyr_1.1.4           circlize_0.4.16      
+[15] edgeR_4.2.1           limma_3.60.3          beeswarm_0.4.0        ComplexHeatmap_2.20.0
+
