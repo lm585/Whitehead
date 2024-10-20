@@ -4598,3 +4598,24 @@ other attached packages:
  [8] ggplot2_3.5.1         patchwork_1.2.0       Seurat_5.1.0          SeuratObject_5.0.2    sp_2.1-4              dplyr_1.1.4           circlize_0.4.16      
 [15] edgeR_4.2.1           limma_3.60.3          beeswarm_0.4.0        ComplexHeatmap_2.20.0
 
+##############################################################################
+> t1 <- read.delim("cyno-atac-mg-10samp-conserv10.6samplesOnly.age.covar.diff2-1.txt")
+ df.gene.old <- t1[ t1$V2 == "NC_052275.1",]
+ t2 <- df.gene.old[1,]
+ t2$PValue = 0.045
+ t2$logFC = -0.7
+ t2$V1 = "PValue=0.05"
+ t3 <- df.gene.old[ df.gene.old$PValue < 0.1, ]
+
+ggplot(df.gene.old, aes(x=logFC, y = -log10(PValue), label = gsub("gene_id ", "", V1) ) ) + geom_point(shape=21, size=1)  + labs( x = "log2FC (F vs. M)") + geom_hline(yintercept=-log10(0.05), col="blue") + geom_text(data=t2, col="blue") + geom_text_repel(show.legend=T, data=t3 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red")   
+
+t1 <- read.delim("cyno-atac-mg-10samp-conserv10.6samplesOnly.age.covar.oct24.diff2-1.txt")
+ df.gene <- t1[ t1$V2 == "NC_052275.1",]
+ t2 <- df.gene[1,]
+ t2$PValue = 0.045
+ t2$logFC = -0.7
+ t2$V1 = "PValue=0.05"
+ t3 <- df.gene[ df.gene$PValue < 0.1, ]
+
+gplot(df.gene, aes(x=logFC, y = -log10(PValue), label = gsub("gene_id ", "", V1) ) ) + geom_point(shape=21, size=1)  + labs( x = "log2FC (F vs. M)") + geom_hline(yintercept=-log10(0.05), col="blue") + geom_text(data=t2, col="blue") + geom_text_repel(show.legend=T, data=t3 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red")    
+
