@@ -4652,7 +4652,7 @@ LOC123575554
 LOC123575555
 VHLL
 NC_052266.1     Curated Genomic gene    85564609        85636450        .       +       .       gene_id "AOX3P"; transcript_id ""; db_xref "GeneID:102131887"; description "aldehyde oxidase 3 pseudogene"; gbkey "Gene"; gene "AOX3P"; gene_biotype "pseudogene"; pseudo "true";
-"AOX3P" no exon info
+"AOX3P" no exon info, pseudogene
 
 linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i temp1 GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.chr.coord.id
 
