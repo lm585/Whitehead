@@ -4619,3 +4619,40 @@ t1 <- read.delim("cyno-atac-mg-10samp-conserv10.6samplesOnly.age.covar.oct24.dif
 
 gplot(df.gene, aes(x=logFC, y = -log10(PValue), label = gsub("gene_id ", "", V1) ) ) + geom_point(shape=21, size=1)  + labs( x = "log2FC (F vs. M)") + geom_hline(yintercept=-log10(0.05), col="blue") + geom_text(data=t2, col="blue") + geom_text_repel(show.legend=T, data=t3 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red")    
 
+##############################################################################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.gtf| awk 'BEGIN {FS = "\t"; OFS = "\t"} $3 == "gene" ' |cut -f 1,4,5,7,9  > temp1
+cat temp1 | cut -f 5 | sort | uniq -c | awk '$1 > 1' |head
+   2 CDY
+   2 RBMY
+cat temp1 |  cut -f 5 | sort | uniq > temp2
+cat cyno-33samp-rnaseq-oct-2024.gene.counts.txt | cut -f 1|sort | uniq > temp3
+cat temp2 temp3 | sort | uniq -d | wc -l
+   30535
+wc -l temp2 temp3
+   35589 temp2
+   30538 temp3
+cat temp2 temp3 | sort | uniq -d > temp4
+cat temp3 temp4 | sort | uniq -u 
+RBMY1   Ycons   geneblast       mRNA    6271572 6284072 .       -       .       gene_id "RBMY1";
+XKRY    Ycons   geneblast       exon    7641599 7672456 .       -       .       gene_id "XKRY"; gene_source "testis RNA-seq SRR8474208"
+peak
+
+cat temp2 temp4 | sort | uniq -u 
+cat temp2 temp4 | sort | uniq -u | head
+AOX3P
+CYP2A27P
+HTR3D
+IRGMP
+LOC102114770
+LOC102114771
+LOC102114778
+cat temp2 temp4 | sort | uniq -u | tail
+LOC123575553
+LOC123575554
+LOC123575555
+VHLL
+NC_052266.1     Curated Genomic gene    85564609        85636450        .       +       .       gene_id "AOX3P"; transcript_id ""; db_xref "GeneID:102131887"; description "aldehyde oxidase 3 pseudogene"; gbkey "Gene"; gene "AOX3P"; gene_biotype "pseudogene"; pseudo "true";
+"AOX3P" no exon info
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i temp1 GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.chr.coord.id
+
