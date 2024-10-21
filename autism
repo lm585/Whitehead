@@ -4656,3 +4656,30 @@ NC_052266.1     Curated Genomic gene    85564609        85636450        .       
 
 linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i temp1 GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.chr.coord.id
 
+#####################################################################################################
+> t1 <- read.delim("cyno-33samp-rnaseq-oct-2024.info.1")
+ t2 <-unique( t1[, c(2,4,6)])
+ dim(t2)
+#  [1] 10  3
+ t2$age <- 0
+ t2$age <- c(18 + 23/365, 10+5/12 , 3+7/12 , 3+7/12, 3+9/12, 4+10/12, 4+1/12, 4+2/12, 3+2/12, 4+1/12)
+ t2
+ t3 <- t2[ t2$age < 5,]
+ dim(t3)
+#  [1] 8 4
+ boxplot(t3$age ~ t3$Sex, outcol="white")
+ beeswarm(t3$age ~ t3$Sex, add=T, cex=1.6, col="red")
+ t4 <- merge(t1, t2, by.x="Animal.ID", by.y="Animal.ID")
+ t5 <- read.delim("cyno-33samp-rnaseq-oct-2024.mapping.1")
+ t6 <- merge(t4, t5, by.x="FASTQ.ID", by.y="sample")
+ dim(t6)
+#  [1] 33 16
+ t7 <- t6[ t6$age < 10,]
+ t8 <- t7[, c(10,11,15)]
+ boxplot(t8, outcol="white", ylab="read pairs", main="28 samples with age < 5")
+ beeswarm(t8, add=T)
+ abline(h = seq(4e7, 40e7, 1e7), lty = 5, lwd = 0.5, col = "gray")
+ summary(t6$age)
+#     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#    3.167   3.750   4.083   5.395   4.833  18.063
+
