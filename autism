@@ -4683,3 +4683,65 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i temp1 GCF_012559485.2_MFA1912RK
 #     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
 #    3.167   3.750   4.083   5.395   4.833  18.063
 
+ info <- t7
+ r1 <- read.delim("cyno-33samp-rnaseq-oct-2024.gene.counts.txt")
+ r2 <- r1[, colnames(r1) %in% info$FASTQ.ID]
+ dim(r2)
+#  [1] 30537    28
+ rownames(r2) <- r1[, 1]
+ y <- DGEList(counts=r2)
+ y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+#  [1] 15033    28
+d = cpm(y)
+a <- log10(d+1)
+a.df <- as.data.frame(a)
+a.df[1:6,1:6]
+
+ t1 <- read.delim("GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.chr.coord.id", header=F)
+ t2 <- t1[ t1$V1 == "NC_052275.1" | t1$V1 == "Ycons",]
+ a.df.2 <- a.df[!(rownames(a.df) %in% t2$V5),]
+ dim(a.df.2)
+#  [1] 14422    28
+ r3 <- t(a.df.2)
+ pca <- prcomp(r3, center = TRUE, scale. = TRUE)
+ boxplot(pca$x[,1:20])
+ s <- summary(pca)
+ s$importance[,1:10]
+#                              PC1      PC2      PC3      PC4      PC5      PC6
+#  Standard deviation     52.26151 47.64917 41.43746 39.12836 37.11105 32.68347
+#  Proportion of Variance  0.18938  0.15743  0.11906  0.10616  0.09550  0.07407
+#  Cumulative Proportion   0.18938  0.34681  0.46587  0.57203  0.66752  0.74159
+ p1 <- as.data.frame( pca$x[,1:2])
+ p1$id <- rownames(p1)
+ identical(info$FASTQ.ID, p1$id)
+#  [1] TRUE
+ info$pc1 <- p1$PC1
+ info$pc2 <- p1$PC2
+ g1 <- c("ACTB" ,   "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
+ a.df.3 <- a.df.2[ rownames(a.df.2) %in% g1,]
+ t4 <- as.data.frame( t(a.df.3))
+ t5 <- data.frame( t4$ACTB, t4$ITGAM, t4$P2RY12, t4$TMEM119, t4$CX3CR1, t4$CCR2, t4$CD3D, t4$MS4A1 )
+ colnames(t5) <- gsub("t4.", "", colnames(t5))
+ rownames(t5) <- rownames(t4)
+ boxplot(t5, outcol = "white", ylab = "log10(cpm+1)")
+ beeswarm(t5, add=T, cex = 0.6, col = "red" )
+ abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = seq(-100, 100, 1/2), lty = 5, lwd = 0.5, col = "gray")
+
+ boxplot(t4$CX3CR1, outcol = "white", ylab = "log10(cpm+1)", xlab="CX3CR1")
+ beeswarm(t4$CX3CR1,  add=T, cex = 1.5, col = "red")
+ abline(h = seq(-100, 100, 1/2), lty = 5, lwd = 0.5, col = "gray")
+ t4$ratio <- (10^(t4$CX3CR1) - 1) / (10^(t4$CCR2) - 1)
+ boxplot(log2(t4$ratio), outcol = "white", ylab = "log2FC(CX3CR1 : CCR2)", xlab="")
+beeswarm(log2(t4$ratio),add=T, cex = 1.5, col = "red")
+ abline(h = seq(-1000, 1000, 1), lty = 5, lwd = 0.5, col = "gray")
