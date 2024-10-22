@@ -4726,6 +4726,8 @@ a.df[1:6,1:6]
 #  [1] TRUE
  info$pc1 <- p1$PC1
  info$pc2 <- p1$PC2
+gplot(info, aes(x=pc1, y = pc2, color = Animal.ID, shape= Sex.x)) + geom_point(size=3) + labs(y="PC2 (15.7%)", x="PC1 (18.9%)") 
+
  g1 <- c("ACTB" ,   "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
  a.df.3 <- a.df.2[ rownames(a.df.2) %in% g1,]
  t4 <- as.data.frame( t(a.df.3))
