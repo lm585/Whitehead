@@ -4747,3 +4747,25 @@ gplot(info, aes(x=pc1, y = pc2, color = Animal.ID, shape= Sex.x)) + geom_point(s
  boxplot(log2(t4$ratio), outcol = "white", ylab = "log2FC(CX3CR1 : CCR2)", xlab="")
 beeswarm(log2(t4$ratio),add=T, cex = 1.5, col = "red")
  abline(h = seq(-1000, 1000, 1), lty = 5, lwd = 0.5, col = "gray")
+
+ t4$ratio.ms <- (10^(t4$CX3CR1) - 1) / (10^(t4$MS4A1) - 1)
+ identical(info$FASTQ.ID, rownames(t4))
+#  [1] TRUE
+ info$ratio <- t4$ratio
+ info$ratio.ms <- t4$ratio.ms
+
+ ggplot(info, aes(x=pc1, y = pc2, size = log2(ratio), color = Animal.ID, label=round(ratio, digits=0)))  + labs(y="PC2 (15.7%)", x="PC1 (18.9%)") + geom_point() + geom_text_repel(show.legend=F, data=info , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="black")
+
+ plot(log2(t4$ratio), log2(t4$ratio.ms), xlab="log2(CX3CR1/CCR2)", ylab="log2(CX3CR1/MS4A1)")
+  abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+ m1 <- as.data.frame (cor(a.df.2))
+ dim(a.df.2)
+#  [1] 14422 autosomal genes,   28
+ identical(rownames(m1), info$FASTQ.ID)
+#  [1] TRUE
+ donor <- c("red", "green", "blue", "yellow", "white", "black", "grey", "orange")
+ names(donor) <- unique(info$Animal.ID)
+ col.ra.cc <- colorRamp2(c(4,8), c("white", "red"))
+ ca <- HeatmapAnnotation( sex = info$Sex.x, donor=info$Animal.ID, ra.CC = log2(info$ratio), ra.MS = log10(info$ratio.ms), which="row",  col=list(donor=donor, ra.CC = col.ra.cc, sex=c("XX"="red", "XY"="blue")))
+ Heatmap(m1, name="correlation", right_annotation=ca)
