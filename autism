@@ -4825,3 +4825,31 @@ length(li)
  boxplot(l2, ylab="log2FC(CX3CR1 / CCR2)", col=c("grey", "red"), outcol="white")
  beeswarm(l2, add=T, col=c("black", "black"), cex=1.6 )
  abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+
+################################################################################################
+ mg.cx = 2^11 -1
+#  [1] 2047
+ mg.cc = 2^2.5-1
+#  [1] 4.656854
+ mo.cx=2^7-1
+#  [1] 127
+ mo.cc = 2^8.5 -1
+#  [1] 361.0387
+ t1 <- data.frame(f1=seq(5e-5, 0.5, 1e-5))
+ t1$f2 <- 1-t1$f1
+ t1$cx3cr1 <- mo.cx * t1$f1 + mg.cx * t1$f2
+ t1$ccr2 <- mo.cc * t1$f1 + mg.cc * t1$f2
+ t1$ratio <- t1$cx3cr1 / t1$ccr2
+ head(t1, n=20)
+#          f1      f2   cx3cr1     ccr2    ratio
+#  1  0.00005 0.99995 2046.904 4.674673 437.8710
+#  2  0.00006 0.99994 2046.885 4.678237 437.5334
+#  3  0.00007 0.99993 2046.866 4.681801 437.1962
+ tail(t1, n=20)
+#             f1      f2   cx3cr1     ccr2    ratio
+#  49994 0.49998 0.50002 1087.038 182.8406 5.945278
+#  49995 0.49999 0.50001 1087.019 182.8442 5.945057
+#  49996 0.50000 0.50000 1087.000 182.8478 5.944836
+ plot(t1$f1, log2(t1$ratio), xlab="ccr2 fraction", ylab="log2(cx3cr1/ccr2)")
+  abline(h = seq(-100, 100, 1/2), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = seq(0,1,0.02), lty = 5, lwd = 0.5, col = "grey")
