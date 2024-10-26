@@ -4853,3 +4853,12 @@ length(li)
  plot(t1$f1, log2(t1$ratio), xlab="ccr2 fraction", ylab="log2(cx3cr1/ccr2)")
   abline(h = seq(-100, 100, 1/2), lty = 5, lwd = 0.5, col = "gray")
   abline(v = seq(0,1,0.02), lty = 5, lwd = 0.5, col = "grey")
+######################################################
+> mg.cx = 10^3.5
+ mo.cx = 10^3.5
+ mg.cc = 0.18356 ###median of 15 human mg ccr2 cpm; they are all high purity
+ ### t4.450pm, 28 cyno mg bulk RNA-seq
+ ### t5, have mixed with monocyte, assume 20% of monocyte based on the curve of log2(cx3cr1/ccr2) ~ ccr2 fraction
+ t5 <- t4.450pm[ t4.450pm$ratio <= 32,]
+ ### Median of t5$ccr2
+ mo.cc <- 111.98/0.2
