@@ -4862,3 +4862,129 @@ length(li)
  t5 <- t4.450pm[ t4.450pm$ratio <= 32,]
  ### Median of t5$ccr2
  mo.cc <- 111.98/0.2
+
+###################################################################################################################
+> print(dim(y))
+[1] 15033    28
+> identical(colnames(y), info$FASTQ.ID)
+[1] TRUE
+ design <- model.matrix( ~ info$Sex.x + info$age + info$Animal.ID)
+# 9 variables, 8 monkeys, 8*4 - 2 - 2 = 28
+> y <- estimateDisp(y,design)
+Error in glmFit.default(sely, design, offset = seloffset, dispersion = 0.05,  : 
+  Design matrix not of full rank.  The following coefficients not estimable:
+ info$Animal.IDN-FA4306 info$Animal.IDV220142
+ design <- model.matrix( ~ info$Sex.x + info$age + info$Animal.ID)
+ d1 <- as.data.frame(design)
+ colnames(d1) <- gsub("info\\$", "", colnames(d1))
+> l1 <- lm(d1$"Animal.IDN-FA4306" ~ d1$Sex.xXY + d1$age + d1$Animal.ID3552764464 + d1$Animal.ID5071 + d1$Animal.ID5430 + d1$Animal.ID6411814342 + d1$Animal.ID8074406366)
+> summary(l1)
+Multiple R-squared:      1,	Adjusted R-squared:      1 
+l1 <- lm(d1$Animal.IDV220142 ~ d1$Sex.xXY + d1$age + d1$Animal.ID3552764464 + d1$Animal.ID5071 + d1$Animal.ID5430 + d1$Animal.ID6411814342 + d1$Animal.ID8074406366)
+summary(l1)
+Multiple R-squared:      1,	Adjusted R-squared:      1 
+
+ 
+> identical(colnames(y), info$FASTQ.ID)
+ design <- model.matrix( ~ info$Sex.x + info$age + info$Animal.ID)
+ d1 <- as.data.frame(design)
+ colnames(d1) <- gsub("info\\$", "", colnames(d1))
+ design <- model.matrix(~ d1$Sex.xXY + d1$age +  d1$Animal.ID3552764464 + d1$Animal.ID5071 + d1$Animal.ID5430 + d1$Animal.ID6411814342 + d1$Animal.ID8074406366 )
+ y <- estimateDisp(y,design)
+using 28 cyno RNA-seq samples with ages < 5
+               logFC   logCPM            F       PValue          FDR  geneID
+ZFX     -0.637892795 4.273633 41.323883826 9.918657e-07 0.0000115587     ZFX
+KDM5C   -0.374251366 5.929103 17.302397719 3.287771e-04 0.0016200764   KDM5C
+SLC25A6  0.396679262 9.289789 16.477689184 4.257421e-04 0.0020126354 SLC25A6
+KDM6A   -0.383891338 4.732303 15.456735642 5.910185e-04 0.0026665011   KDM6A
+USP9X   -0.292293780 6.605873  4.507019046 4.383956e-02 0.0955268946   USP9X
+RBBP7   -0.092018518 6.330361  1.891316328 1.812589e-01 0.2948988049   RBBP7
+DLG3     0.362863443 1.156192  1.370490939 2.528171e-01 0.3796423970    DLG3
+CDK16    0.072334167 4.743852  0.684108689 4.160045e-01 0.5493495211   CDK16
+DDX3X    0.034651006 8.673167  0.307519969 5.841359e-01 0.6998178533   DDX3X
+BCOR    -0.071322611 5.613166  0.157015105 6.952831e-01 0.7887850930    BCOR
+SMC1A    0.005479371 5.958991  0.001767982 9.667951e-01 0.9802209990   SMC1A
+
+ info$ratio <- t4$ratio
+ f1 <- info[ info$ratio > 32,]$FASTQ.ID
+ length(f1)
+#  [1] 18 samples 
+......
+  r2 <- r1[, colnames(r1) %in% f1]
+ dim(r2)
+#  [1] 30537    18
+......
+> print(dim(y))
+[1] 14923    18
+ info.2 <- info[ info$FASTQ.ID %in% f1,]
+ identical(colnames(y), info.2$FASTQ.ID)
+#  [1] TRUE
+ design <- model.matrix( ~ info.2$Sex.x + info.2$age + info.2$Animal.ID)
+ d1 <- as.data.frame(design)
+ colnames(d1) <- gsub("info.2\\$", "", colnames(d1))
+ design <- model.matrix(~ d1$Sex.xXY + d1$age + d1$Animal.ID5430 + d1$Animal.ID6411814342 + d1$Animal.ID8074406366)
+ identical(d1$age, info.2$age)
+#  [1] TRUE
+ t1 <- data.frame(d1$Sex.xXY, info.2$Sex.x)
+ t1[ t1$d1.Sex.xXY == 0,]
+ unique(t1[ t1$d1.Sex.xXY == 0,])
+
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+ write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+using 18 cyno RNA-seq samples with ages < 5 && CX3CR1/CCR2 ratio > 32
+3 XX monkeys & 3 XY monkeys
+
+             logFC   logCPM           F       PValue          FDR  geneID
+ZFX     -2.6261974 4.466991 32.19888072 3.004003e-05 0.0003172593     ZFX
+SLC25A6  2.3065303 9.257460 23.14068762 1.740829e-04 0.0013288180 SLC25A6
+KDM5C   -1.1057100 6.069906  4.92199400 4.077320e-02 0.1011624611   KDM5C
+SMC1A   -1.5227002 6.071394  4.26767491 5.482162e-02 0.1269163976   SMC1A
+KDM6A   -0.7940600 4.826618  2.82684805 1.114195e-01 0.2155449264   KDM6A
+DLG3    -2.3566005 1.035716  2.41098307 1.394566e-01 0.2550069066    DLG3
+DDX3X   -0.5060345 8.604289  2.36951475 1.425732e-01 0.2594026142   DDX3X
+CDK16    0.4833024 4.779311  0.93068489 3.485327e-01 0.4959619527   CDK16
+USP9X   -0.4632183 6.689221  0.40601223 5.326926e-01 0.6649411218   USP9X
+RBBP7   -0.1415194 6.406427  0.15088427 7.026294e-01 0.8029819786   RBBP7
+BCOR    -0.2172755 5.728830  0.04215405 8.398235e-01 0.9006601704    BCOR
+
+using 18 cyno RNA-seq samples with ages < 5 && CX3CR1/CCR2 ratio > 32
+$design
+  (Intercept) d1$Sex.xXY   d1$age
+              logFC   logCPM           F       PValue          FDR  geneID
+ZFX     -0.89179779 4.467237 55.86508658 6.346877e-07 0.0001503404     ZFX
+KDM6A   -0.61112049 4.826850 45.85997970 2.406725e-06 0.0003702635   KDM6A
+KDM5C   -0.47871969 6.069908 24.32596290 1.074269e-04 0.0042768379   KDM5C
+USP9X   -0.63314625 6.689286 24.01700874 1.150169e-04 0.0044351332   USP9X
+DDX3X   -0.38707072 8.604288 16.89457989 6.564826e-04 0.0123379528   DDX3X
+SLC25A6  0.46156085 9.257450 10.45748339 4.604917e-03 0.0402928749 SLC25A6
+SMC1A   -0.43975186 6.071449  8.10459738 1.070071e-02 0.0675763944   SMC1A
+CDK16   -0.13636283 4.779291  1.80156233 1.962024e-01 0.3874382475   CDK16
+DLG3    -0.26782612 1.023168  0.22361744 6.419864e-01 0.7833154269    DLG3
+RBBP7    0.01988550 6.406379  0.05301327 8.204959e-01 0.9003794352   RBBP7
+BCOR    -0.04589084 5.728955  0.04881779 8.276192e-01 0.9046982504    BCOR
+
+identical(colnames(y), info.2$FASTQ.ID)
+#  [1] TRUE
+# no intercept, no age as covariant
+design <- model.matrix( ~  0 + info.2$Animal.ID)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, contrast= c(-1/3, -1/3, 1/3, 1/3, 1/3, -1/3) )
+
+              logFC   logCPM            F       PValue          FDR  geneID
+ZFX     -0.92310927 4.466991 151.06889886 9.343185e-10 7.619036e-08     ZFX
+KDM6A   -0.73287354 4.826618  92.92062324 3.287321e-08 1.229491e-06   KDM6A
+DDX3X   -0.34590442 8.604289  42.73743392 5.709974e-06 7.567490e-05   DDX3X
+KDM5C   -0.47418270 6.069906  34.82364783 1.923292e-05 2.050092e-04   KDM5C
+USP9X   -0.62297087 6.689221  28.76746370 5.595526e-05 4.796211e-04   USP9X
+SLC25A6  0.38848136 9.257460  25.37343742 1.088654e-04 8.231113e-04 SLC25A6
+CDK16   -0.22055874 4.779311   7.51403866 1.414432e-02 4.019722e-02   CDK16
+SMC1A   -0.29955799 6.071394   6.27061028 2.303574e-02 5.906570e-02   SMC1A
+DLG3    -0.47815699 1.035716   2.82016347 1.119218e-01 1.989529e-01    DLG3
+BCOR    -0.07371434 5.728830   0.18524177 6.724437e-01 7.652978e-01    BCOR
+RBBP7    0.01314820 6.406427   0.04931479 8.269695e-01 8.812580e-01   RBBP7
