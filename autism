@@ -5008,3 +5008,25 @@ SMC1A   -0.44573196 6.0252588 -1.36557953 0.1878759556 0.76090563 -6.0137153
 CDK16   -0.14228235 4.7598592 -0.69162935 0.4974589426 0.90727543 -6.6309445
 BCOR    -0.09824431 5.6766676 -0.21197210 0.8343654823 0.97532620 -6.9087464
 RBBP7    0.01474879 6.3989385  0.09386111 0.9261932381 0.98918577 -6.9473626
+
+> print(dim(y))
+[1] 14923    18
+median(d[i,]) >= 0.1
+using 18 cyno RNA-seq samples with ages < 5 && CX3CR1/CCR2 ratio > 32
+3 XX monkeys & 3 XY monkeys
+>  t1 <- as.data.frame(topTable(fit, coef="info.2$Sex.xXY", number=91234))
+> rna.block <- t1
+ rna.block$geneID <- rownames(rna.block)
+ t1 <- read.delim("cyno-atac-mg-10samp-conserv10.6samplesOnly.age.covar.oct24.diff2-1.txt")
+ df.gene <- t1[ t1$V2 == "NC_052275.1",]
+ dim(df.gene)
+#  [1] 286  11
+ df.gene$gene <- gsub("gene_id ", "", df.gene$V1)
+ t2 <- merge(df.gene, rna.block, by.x="gene", by.y="geneID")
+ dim(t2)
+#  [1] 260  18
+ t3 <- t2[t2$logFC.x > 0.5 | t2$logFC.x < -0.5 | t2$logFC.y > 1 | t2$logFC.y < -1,]
+ dim(t3)
+#  [1] 53 18
+ gplot(t2, aes(x = logFC.x, y = -logFC.y, label = gene)) +   geom_point(shape=21, size=1) + labs(x="open chromatin log2 FC (F vs. M)" , y="gene expression log2 FC (F vs. M)") + geom_hline(yintercept=0, col="black") + geom_vline(xintercept=0) + geom_text_repel(show.legend=T, data=t3 , size=2, max.overlaps=100, min.segment.length = 0.1, col="red")
+
