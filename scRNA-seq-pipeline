@@ -2452,3 +2452,48 @@ head  temp
 /Users/linyongmao/Documents/microglia/make-rnk-genesymble temp mouse.clusts.micro.4TAMs.MvF.noXY.diff2-1.edgeR.human.gene.rnk
 
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  mouse.clusts.micro.4TAMs.MvF.noXY.diff2-1.edgeR.human.gene.rnk  -rpt_label "mouse.clusts.micro.4TAMs.MvF.Mpos.noXY.edgeR.human.gene.prerank.h.all.7.4" -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+####################################################################################################
+cellranger cellranger-7.1.0
+cellranger count --id=run_count_1kpbmcs  --fastqs=/lab/solexa_page/linyong/pbmc_1k_v3_fastqs  --sample=pbmc_1k_v3 --transcriptome=/lab/solexa_page/linyong/refdata-gex-GRCh38-2020-A
+Cores per node: 6
+CPU Utilized: 03:47:09
+CPU Efficiency: 51.78% of 07:18:42 core-walltime
+Job Wall-clock time: 01:13:07
+Memory Utilized: 15.19 GB
+linyong@fry /lab/solexa_page/linyong/run_count_1kpbmcs$ ls outs/filtered_feature_bc_matrix/ -lh
+total 15M
+-rw-r--r-- 1 linyong systemd-timesync 7.0K Nov  4 13:24 barcodes.tsv.gz
+-rw-r--r-- 1 linyong systemd-timesync 326K Nov  4 13:24 features.tsv.gz
+-rw-r--r-- 1 linyong systemd-timesync  15M Nov  4 13:24 matrix.mtx.gz
+
+#######pbmc3k data
+ counts <- pbmc@assays$RNA$counts
+ dim(counts)
+#  [1] 13714  2638
+ metadata <- pbmc@meta.data
+ dim(metadata)
+#  [1] 2638-cells    6
+ metadata$cluster_id <- metadata$RNA_snn_res.0.5
+ identical(metadata$RNA_snn_res.0.5, metadata$seurat_clusters)
+#  [1] TRUE
+# Create single cell experiment object
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+ # Identify groups for aggregation of counts
+ # groups: character class
+ groups <- colData(sce)[, c("RNA_snn_res.0.5")]
+ groups[1:11]
+ head(colData(sce), n=11)
+ pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+ class(pb)
+ dim(pb)
+#  [1]     9-cluster 13714
+t1 <- as.data.frame(t(pb))
+head(t1)
+dim(t1)
+group <- factor(rep(1, 9))
+y <- DGEList(counts=t1,group=group)
+y <- calcNormFactors(y)
+
