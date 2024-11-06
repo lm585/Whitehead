@@ -46,6 +46,8 @@ BiocManager::install("SingleCellExperiment")
  install.packages("https://cran.r-project.org/src/contrib/Archive/Matrix.utils/Matrix.utils_0.9.8.tar.gz", type = "source", repos = NULL)
  library(Matrix.utils)
 
+> install.packages("devtools")
+> devtools::install_github('satijalab/seurat-data')
 
 #######################################
 library(ComplexHeatmap)
