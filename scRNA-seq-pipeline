@@ -2549,3 +2549,44 @@ mg.1 <- FindClusters(mg.1, resolution = 0.6)
 mg.1 <- RunUMAP(mg.1, dims = 1:30, reduction = "integrated.cca")
 # Visualization
  DimPlot(mg.1, reduction = "umap", group.by = c( "RNA_snn_res.0.6"), label=T)
+
+ FeaturePlot(mg.1, features = c("Ccr2", "Cx3cr1", "Cd3d"),  max.cutoff = 3, cols = c("grey", "red"), reduction = "umap")
+ counts <- mg.1@assays$RNA$counts
+ metadata <- mg.1@meta.data
+ metadata$cluster_id <- metadata$RNA_snn_res.0.6
+# Create single cell experiment object
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+# Identify groups for aggregation of counts
+# groups: character class
+groups <- colData(sce)[, c("RNA_snn_res.0.6")]
+
+# Aggregate across cluster-sample groups
+pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+
+class(pb)
+
+dim(pb)
+# [1]    17 14618
+t1 <- as.data.frame(t(pb))
+head(t1)
+dim(t1)
+group <- factor(rep(1, 17))
+y <- DGEList(counts=t1,group=group)
+y <- calcNormFactors(y)
+> g1 <- scan(what="", sep = "\n")
+ g2 <- unique( sort(g1))
+ length(g2)
+#  [1] 28
+ [1] "Apoe"    "Ccr2"    "Cd14"    "Cd163"   "Cd2"     "Cd24a"   "Cd3d"    "Cd4"     "Cd8b1"   "Cx3cr1"  "Gpr34"   "Ifitm2"  "Ifitm3"  "Klrk1"   "Lgals3"
+[16] "Ly6c2"   "Ly6i"    "Mrc1"    "Ms4a1"   "Ms4a7"   "Ncam1"   "Ncr1"    "P2ry12"  "S100a6"  "Selplg"  "Sparc"   "Tgfbi"   "Tmem119"
+
+ d = edgeR::cpm(y)
+ a <- d
+ a.df <- as.data.frame(a)
+ t1 <- a.df[ rownames(a.df) %in% g2,]
+ dim(t1)
+#  [1] 28 17
+> Heatmap(log10(t1+1), name="log10 (cpm+1)", column_names_side="top", clustering_distance_columns="pearson", clustering_method_columns="complete", column_dend_height=unit(15*3, "mm"))
+
