@@ -2590,3 +2590,71 @@ y <- calcNormFactors(y)
 #  [1] 28 17
 > Heatmap(log10(t1+1), name="log10 (cpm+1)", column_names_side="top", clustering_distance_columns="pearson", clustering_method_columns="complete", column_dend_height=unit(15*3, "mm"))
 
+#####################################################################################
+> mg.1 <- SetIdent(mg.1, value="RNA_snn_res.0.6")
+ mic <- c(0, 1, 2, 3, 5, 8)
+ x <- c(13)
+ markers <- FindMarkers(mg.1, ident.1 = x, ident.2 = mic)
+#x cluster:  Astrocyte Brain Mouse	2.185e-58	4.370e-56	42.96 (odds ratio)
+
+>  x <- c(6,12)
+  markers <- FindMarkers(mg.1, ident.1 = x, ident.2 = mic, min.pct= 0.05)
+ write.table(markers[ markers$avg_log2FC > 2 & markers$p_val < 1e-320,], "temp", sep="\t")
+# Ifitm2	0	2.963490964	0.259	0.037	0
+# Lgals3	0	4.280857808	0.353	0.036	0
+# Isg15	0	3.451949179	0.586	0.108	0
+> markers[ c("Tgfbi","Ifitm2", "Ifitm3", "S100a6", "Ly6c2", "Ccr2"),]
+               p_val avg_log2FC pct.1 pct.2     p_val_adj
+Tgfbi   1.977447e-29  0.4678874 0.122 0.061  2.890631e-25
+Ifitm2  0.000000e+00  2.9634910 0.259 0.037  0.000000e+00
+Ifitm3  0.000000e+00  2.7727462 0.710 0.190  0.000000e+00
+S100a6 3.353127e-176  3.2363519 0.095 0.013 4.901602e-172
+Ly6c2   3.598587e-56  1.7105822 0.092 0.031  5.260415e-52
+
+Ccr2 3.088182e-20   1.545681 0.033 0.011 4.514304e-16
+clusters 6/12:  intMoMΦ intermediate monocyte–macrophage
+
+> t1 <- as.data.frame( mg.1@meta.data)
+> dim(t1)
+[1] 40401     8
+> write.table(t1, "temp1", quote=F, sep="\t" )
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat ../microglia-mouse/temp1 | cut -f 2,6 |grep ctrl |cut -f 2 |sort -g | uniq -c
+5221 0
+3704 1
+3270 2
+2629 3
+ 287 4
+2219 5
+ 553 6
+ 664 7
+ 732 8
+  64 9
+  50 10
+ 117 11
+  60 12
+ 221 13
+ 134 14
+  44 15
+  44 16
+5221 + 3704 + 3270 + 2629 + 2219 + 732 = 17775
+17775 / 20013 = 0.8881727
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat ../microglia-mouse/temp1 | cut -f 2,6 |grep tumor |cut -f 2 |sort -g | uniq -c
+4148 0
+2703 1
+1964 2
+1828 3
+3857 4
+1091 5
+1587 6
+ 537 7
+ 363 8
+ 641 9
+ 641 10
+ 460 11
+ 329 12
+ 118 13
+  76 14
+  27 15
+  18 16
+4148 + 2703 + 1964 + 1828 + 1091 + 363 = 12097
+12097 / 20388 = 0.5933392
