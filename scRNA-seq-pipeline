@@ -2527,7 +2527,7 @@ mg.1 <- FindVariableFeatures(mg.1)
 mg.1 <- ScaleData(mg.1)
 mg.1 <- RunPCA(mg.1)
 # After preprocessing, we integrate layers.
-mg.1 <- IntegrateLayers(object = mg.1, method = CCAIntegration, orig.reduction = "pca", new.reduction = "integrated.cca",    verbose = T)
+mg.1 <- IntegrateLayers(object = mg.1, method = CCAIntegration, orig.reduction = "pca", new.reduction = "integrated.cca",   dims = 1:30, verbose = T)
 mg.1[["RNA"]] <- JoinLayers(mg.1[["RNA"]])
 #  14618 features across 40401 samples within 1 assay
 #  Active assay: RNA (14618 features, 2000 variable features)
