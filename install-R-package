@@ -49,6 +49,11 @@ BiocManager::install("SingleCellExperiment")
 > install.packages("devtools")
 > devtools::install_github('satijalab/seurat-data')
 
+BiocManager::install("celldex")
+BiocManager::install("SingleR")
+install.packages("pheatmap")
+install.packages("viridis")
+
 #######################################
 library(ComplexHeatmap)
 library(beeswarm)
