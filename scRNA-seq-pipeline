@@ -2684,3 +2684,41 @@ DefaultAssay(immune.combined) <- "RNA"
 #  6           g13         Microglia      0.08559813               <NA>
 
 
+#######################################################################
+ mg.2 <- mg.1[, grep("tumor", mg.1$orig.ident)]
+ mg.2
+#  14618 features across 20388 samples within 1 assay
+ mg.2 <- mg.2[, mg.2$RNA_snn_res.0.6 %in% c(10)]
+ mg.2
+#  14618 features across 641 samples within 1 assay
+
+ mg.3 <- CreateSeuratObject(counts = mg.2@assays$RNA$counts)
+ mg.3$stim <-  mg.2$orig.ident
+
+ identical(mg.3@assays$RNA$counts[, 1:100], mg.2@assays$RNA$counts[,1:100])
+ identical(mg.3@meta.data$stim, mg.2@meta.data$orig.ident)
+
+ mg.2 <- 1
+ unique(mg.3@meta.data$stim)
+
+ mg.3[["RNA"]] <- split(mg.3[["RNA"]], f = mg.3$stim)
+ mg.3
+#  14618 features across 641 samples within 1 assay
+#  Active assay: RNA (14618 features, 0 variable features)
+#   4 layers present: counts.f-tumor-1, counts.f-tumor-2, counts.m-tumor-1, counts.m-tumor-2
+
+mg.3 <- NormalizeData(mg.3)
+ mg.3 <- FindVariableFeatures(mg.3, nfeatures=400)
+
+mg.3 <- ScaleData(mg.3)
+mg.3 <- RunPCA(mg.3)
+# After preprocessing, we integrate layers.
+ mg.3 <- IntegrateLayers(object = mg.3, method = CCAIntegration, orig.reduction = "pca", new.reduction = "integrated.cca",    verbose = T, dims=1:10, k.weight=40)
+
+mg.3[["RNA"]] <- JoinLayers(mg.3[["RNA"]])
+ mg.3 <- FindNeighbors(mg.3, reduction = "integrated.cca", dims = 1:10)
+ mg.3 <- FindClusters(mg.3, resolution = 0.2)
+ mg.3 <- RunUMAP(mg.3, dims = 1:10, reduction = "integrated.cca")
+ DimPlot(mg.3, reduction = "umap", group.by = c( "RNA_snn_res.0.2"), label=T)
+ VlnPlot(mg.3, features = c("Ms4a1", "Cd3d"),  group.by = "RNA_snn_res.0.2", pt.size = 0.1, combine = T)
+ FeaturePlot(mg.3, features = c( "Ms4a1", "Cd3d"),   cols = c("grey", "red"), reduction = "umap", label=T)
