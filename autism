@@ -5030,3 +5030,47 @@ using 18 cyno RNA-seq samples with ages < 5 && CX3CR1/CCR2 ratio > 32
 #  [1] 53 18
  gplot(t2, aes(x = logFC.x, y = -logFC.y, label = gene)) +   geom_point(shape=21, size=1) + labs(x="open chromatin log2 FC (F vs. M)" , y="gene expression log2 FC (F vs. M)") + geom_hline(yintercept=0, col="black") + geom_vline(xintercept=0) + geom_text_repel(show.legend=T, data=t3 , size=2, max.overlaps=100, min.segment.length = 0.1, col="red")
 
+##########################################################################################################
+## mouse scRNA-seq
+## tumor mg
+## scRNA-seq-cluster-DEG-mouse ##
+linyongmao@Linyong-Mao-MBP16-2019 microglia-mouse % mv -i diff2-1.txt mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.txt
+
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+t6 <- read.delim("../microglia-mouse/Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip")
+ dim(t6)
+# [1] 19341     3
+ raw <- read.delim("../autism/mouse-mg-rnaseq-60samp-stranded-Hanamsagar.counts_gene")
+ gene.name <- raw[, 1:2]
+ dim(gene.name)
+#  [1] 56980     2
+ gene.name$id <- gsub("\\.[0-9][0-9]*$", "", gene.name$geneID)
+ t7 <- merge(t6, gene.name, by.x="ID", by.y="id")
+ dim(t7)
+#  [1] 19341     5
+ diff.2 <- merge(diff, t7, by.x="geneID", by.y="name")
+ dim(diff)
+#  [1] 14618     6
+ dim(diff.2)
+#  [1] 12589    10
+   t2 <- read.delim("../dir-GTExV8/gencode.vM31.mouse-id-chr-name")
+ dim(t2)
+#  [1] 56980     5
+ diff.3 <- merge(diff.2, t2, by.x="geneID.y", by.y="geneID")
+ dim(diff.3)
+#  [1] 12589    14
+  write.table(diff.3, "temp", quote=F, sep="\t")
+
+linyongmao@Linyong-Mao-MBP16-2019 microglia-mouse % mv -i temp  mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.txt
+vi  mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.txt
+cat  mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.txt |awk 'BEGIN {FS = "\t"; OFS = "\t"} $11 != "chrX" && $11 != "chrY" ' | wc -l
+   12187
+ cat  mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.txt |awk 'BEGIN {FS = "\t"; OFS = "\t"} $11 != "chrX" && $11 != "chrY" ' | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $8, $3, $4, $5,$6,$7, $8, $9}' >  mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.noXY.txt
+ ../microglia/make-rnk-genesymble  mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.noXY.txt  mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.noXY.rnk
+   11970 mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.noXY.rnk
+cat mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.noXY.rnk | grep -i ddx3y
+cat mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.noXY.rnk | grep -i xist
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.noXY.rnk  -scoring_scheme classic  -rpt_label  "mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humanname.noXY-weight0-hallmark"    -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
