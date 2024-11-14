@@ -1,0 +1,110 @@
+setwd("/Users/linyongmao/Documents/microglia-mouse")
+
+t1 <- read.delim("nameDir-id", header=F)
+ss <- list()
+for(i in 1:dim(t1)[1])
+{
+ mic.data <- Read10X(data.dir = t1[i, 1])
+ ss[[i]] <- CreateSeuratObject(counts = mic.data, project = t1[i, 2], min.cells = 5)
+}
+
+t2 <- ss[[2]]
+for(i in 3:8)
+{
+ t2 <- c(t2, ss[[i]])
+}
+
+#  scRNA clustering in Seurat v5
+#  Seurat_5.1.0 
+#  R version 4.4.1 (2024-06-14)
+#  Platform: x86_64-apple-darwin20
+#  Running under: macOS Ventura 13.2.1
+
+ mg <- merge(ss[[1]], y = t2, project = "microglia")
+#  Warning: Some cell names are duplicated across objects provided. Renaming to enforce unique cell names.
+ mg
+#  An object of class Seurat 
+#  14618 features across 41059 samples within 1 assay 
+#  Active assay: RNA (14618 features, 0 variable features)
+#   8 layers present: counts.f-ctrl-1, counts.f-ctrl-2, counts.f-tumor-1, counts.f-tumor-2, counts.m-ctrl-1, counts.m-ctrl-2, counts.m-tumor-1, counts.m-tumor-2
+
+mg.1 <- mg[, mg$nFeature_RNA > 200 & mg$nFeature_RNA < 3000 & mg$percent.mt < 5 ]
+mg.1
+#  An object of class Seurat 
+#  14618 features across 40401 samples within 1 assay 
+#   ..@ meta.data   :'data.frame': 40401 obs. of  4 variables:
+#    .. ..$ orig.ident  : chr [1:40401] "f-ctrl-1" "f-ctrl-1" "f-ctrl-1" "f-ctrl-1" ... 
+#    .. ..$ nCount_RNA  : num [1:40401] 1863 3705 2471 2030 2074 ... 
+#    .. ..$ nFeature_RNA: int [1:40401] 988 1679 1219 978 1094 1182 1081 953 1074 576 ... 
+#    .. ..$ percent.mt  : num [1:40401] 2.201 0.999 0.405 2.266 2.363 ... 
+#    ..@ active.assay: chr "RNA"
+#    ..@ active.ident: Factor w/ 8 levels "f-ctrl-1","f-ctrl-2",..: 1 1 1 1 1 1 1 1 1 1 ... 
+
+# run standard anlaysis workflow
+mg.1 <- NormalizeData(mg.1)
+mg.1 <- FindVariableFeatures(mg.1)
+mg.1 <- ScaleData(mg.1)
+mg.1 <- RunPCA(mg.1)
+# After preprocessing, we integrate layers.
+mg.1 <- IntegrateLayers(object = mg.1, method = CCAIntegration, orig.reduction = "pca", new.reduction = "integrated.cca",   dims = 1:30, verbose = T)
+mg.1[["RNA"]] <- JoinLayers(mg.1[["RNA"]])
+#  14618 features across 40401 samples within 1 assay
+#  Active assay: RNA (14618 features, 2000 variable features)
+# before joinlayers, 17 layers 
+#   3 layers present: data, counts, scale.data
+#   2 dimensional reductions calculated: pca, integrated.cca
+mg.1 <- FindNeighbors(mg.1, reduction = "integrated.cca", dims = 1:30)
+mg.1 <- FindClusters(mg.1, resolution = 0.6)
+#  Number of nodes: 40401
+#  Number of edges: 1590270
+#  Running Louvain algorithm...
+#  Maximum modularity in 10 random starts: 0.8659
+#  Number of communities: 22
+#  5 singletons identified. 17 final clusters.
+
+  saveRDS(mg.1, file="mouse.scRNA.mg.1.seurat5.nov2024.rds")
+#  -rw-r--r--  1 linyongmao  staff   354M Nov  8 19:10 mouse.scRNA.mg.1.seurat5.nov2024.rds
+
+
+ mg.1 <- readRDS("mouse.scRNA.mg.1.seurat5.nov2024.rds")
+#  DefaultAssay(immune.combined) <- "RNA"
+ mic <- c(0, 1, 2, 3, 5, 8)
+mg.1 <- SetIdent(mg.1, value="RNA_snn_res.0.6")
+ mg.2 <- mg.1[, mg.1$RNA_snn_res.0.6 %in% mic]
+ mg.2
+#  14618 features across 29872 samples within 1 assay 
+#   3 layers present: data, counts, scale.data
+#   2 dimensional reductions calculated: pca, integrated.cca
+ counts <- mg.1@assays$RNA$counts
+ metadata <- mg.1@meta.data
+ metadata$cluster_id <- metadata$RNA_snn_res.0.6
+# Create single cell experiment object
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+# Identify groups for aggregation of counts
+# groups: character class
+groups <- colData(sce)[, c("orig.ident")]
+# Aggregate across cluster-sample groups
+pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+
+class(pb)
+
+dim(pb)
+# [1]     8 14618
+t1 <- as.data.frame(t(pb))
+head(t1)
+dim(t1)
+group <- factor(rep(1, 8))
+y <- DGEList(counts=t1,group=group)
+y <- calcNormFactors(y)
+ info <- data.frame(id = colnames(y))
+ info$sex <- c("f", "f","f","f","m","m","m","m")
+ info$tumor <- c("c", "c", "t", "t", "c", "c", "t", "t")
+ design <- model.matrix( ~ info$sex + info$tumor)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=3)
+top2v1 <- topTags(qlf, n = 91234)
+ write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+
