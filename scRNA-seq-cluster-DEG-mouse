@@ -108,3 +108,31 @@ qlf <- glmQLFTest(fit, coef=3)
 top2v1 <- topTags(qlf, n = 91234)
  write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
 
+#################################################################
+> sessionInfo()
+R version 4.4.1 (2024-06-14)
+Platform: x86_64-apple-darwin20
+Running under: macOS Ventura 13.2.1
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/New_York
+tzcode source: internal
+
+attached base packages:
+[1] stats4    grid      stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] viridis_0.6.5               viridisLite_0.4.2           pheatmap_1.0.12             SingleR_2.6.0               celldex_1.14.0             
+ [6] SingleCellExperiment_1.26.0 SummarizedExperiment_1.34.0 Biobase_2.64.0              GenomicRanges_1.56.1        GenomeInfoDb_1.40.1        
+[11] IRanges_2.38.1              S4Vectors_0.42.1            BiocGenerics_0.50.0         MatrixGenerics_1.16.0       matrixStats_1.3.0          
+[16] ggrepel_0.9.5               Matrix.utils_0.9.8          Matrix_1.7-0                vioplot_0.5.0               zoo_1.8-12                 
+[21] sm_2.2-6.0                  MASS_7.3-61                 ggplot2_3.5.1               dplyr_1.1.4                 circlize_0.4.16            
+[26] edgeR_4.2.1                 limma_3.60.3                beeswarm_0.4.0              ComplexHeatmap_2.20.0       patchwork_1.2.0            
+[31] ifnb.SeuratData_3.0.0       SeuratData_0.2.2.9001       Seurat_5.1.0                SeuratObject_5.0.2          sp_2.1-4                   
+
