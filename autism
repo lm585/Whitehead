@@ -5074,3 +5074,12 @@ cat mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.noXY.rnk 
 
 linyongmao@Linyong-Mao-MBP16-2019 autism % bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humangene.noXY.rnk  -scoring_scheme classic  -rpt_label  "mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humanname.noXY-weight0-hallmark"    -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
 
+f3 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humanname.noXY-weight0-hallmark.GseaPreranked.1731610323635/gsea_report_for_na_pos_1731610323635.tsv")
+f4 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse.seurat.oct2024.clusts.micro.8samples.diff2-1.edgeR.humanname.noXY-weight0-hallmark.GseaPreranked.1731610323635/gsea_report_for_na_neg_1731610323635.tsv")
+t3 <- rbind(f3, f4)
+   t4 <- t3[, c(1,6, 8)]
+dim(t4)
+t8 <- merge(t4, t2, by.x="NAME", by.y="NAME")
+ t8$nam <- gsub("HALLMARK", "h", t8$NAME)
+ t3 <- t8[ t8$FDR.q.val.x < 0.01 & t8$FDR.q.val.y < 0.01 & t8$NES.x * t8$NES.y < 0,]
+> gplot(t8, aes(x= -NES.x, y= NES.y, label = nam)) + geom_point(size=2, shape=21) + geom_smooth(se=T, method="lm") +  geom_text_repel(show.legend=T, data=t3 , size=2, max.overlaps=100, min.segment.length = 0.1, col="red") + labs(x="mouse scRNA-seq NES (baseline vs. GAM)", y="human NES (M vs. F)")
