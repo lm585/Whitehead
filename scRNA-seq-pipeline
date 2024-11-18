@@ -2683,6 +2683,12 @@ DefaultAssay(immune.combined) <- "RNA"
 #  1            g0         Microglia      0.11343338          Microglia
 #  6           g13         Microglia      0.08559813               <NA>
 
+> t2 <-as.data.frame( pred$scores)
+ rownames(t2) <- pred@rownames
+ t3 <- t2[ rownames(t2) %in% c("g0","g1", "g2", "g3", "g5", "g8", "g6", "g12", "g13"),]
+ eatmap(t3, name="corr", column_names_side="top", column_dend_height=unit(25, "mm"))
+ dim(t3)
+#  [1]  9 28
 
 #######################################################################
  mg.2 <- mg.1[, grep("tumor", mg.1$orig.ident)]
