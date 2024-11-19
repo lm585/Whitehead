@@ -5122,3 +5122,37 @@ t8 <- merge(t4, t2, by.x="NAME", by.y="NAME")
 t = -4.3824, df = 168, p-value = 2.062e-05, Pearson's r= -0.3202984
 S = 1095352,           p-value = 7.567e-06, Spearman's rho = -0.3377446 
 
+###################################################################################################
+# You are computing correlations between pairs of spots for the same gene across different
+genes. ......The duplicateCorrelation() function on the other hand computes a
+correlation across technical replicates for the same gene.
+# # Estimate the within-block correlation
+>   identical(colnames(y), info.2$FASTQ.ID)
+[1] TRUE
+>   design <- model.matrix( ~ info.2$Sex.x + info.2$age )
+> dim(y)
+[1] 14923    18
+> y.1 <- y
+>  fit <- voomLmFit(y, design, block=info.2$Animal.ID, plot=TRUE)
+First intra-block correlation  0.6576184
+Final intra-block correlation  0.6567963
+
+> logy <- log2(as.data.frame(edgeR::cpm(y)) + 0.5)
+> dupcor <- duplicateCorrelation(logy,design,block=info.2$Animal.ID)
+> dupcor$consensus.correlation
+[1] 0.6701205
+
+> design <- model.matrix( ~  info.2$age )
+> dupcor <- duplicateCorrelation(logy,design,block=info.2$Sex.x)
+> dupcor$consensus.correlation
+[1] 0.1351476
+
+design <- model.matrix( ~ info.2$Sex.x + info.2$age )
+ t1 <- runif(18)
+dupcor <- duplicateCorrelation(logy,design,block=info.2$Animal.ID[order(t1)])
+dupcor$consensus.correlation
+# run [1] -0.1481612
+# run [2] -0.04484423
+# no permuting animal IDs: 0.6701205
+
+# The function is analogous to calling voom followed by duplicateCorrelation and lmFit
