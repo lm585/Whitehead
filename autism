@@ -5030,6 +5030,40 @@ using 18 cyno RNA-seq samples with ages < 5 && CX3CR1/CCR2 ratio > 32
 #  [1] 53 18
  gplot(t2, aes(x = logFC.x, y = -logFC.y, label = gene)) +   geom_point(shape=21, size=1) + labs(x="open chromatin log2 FC (F vs. M)" , y="gene expression log2 FC (F vs. M)") + geom_hline(yintercept=0, col="black") + geom_vline(xintercept=0) + geom_text_repel(show.legend=T, data=t3 , size=2, max.overlaps=100, min.segment.length = 0.1, col="red")
 
+######
+> mean(y$samples$lib.size)
+[1] 73974787
+> mean(y$samples$norm.factors)
+[1] 1.001162
+> saveRDS(y, "cyno-18samp-14923g.rds")
+-rw-r--r--  1 linyongmao  staff   628K Nov 20 13:12 cyno-18samp-14923g.rds
+
+> identical(colnames(y), info.2$FASTQ.ID)
+design <- model.matrix( ~ info.2$Sex.x + info.2$age )
+ logy <- log2(as.data.frame(edgeR::cpm(y)) + 0.5)
+ dupcor <- duplicateCorrelation(logy,design,block=info.2$Animal.ID)
+ dupcor$consensus.correlation
+#  [1] 0.6701205
+fit <- lmFit(logy,design,block=info.2$Animal.ID,correlation=dupcor$consensus)
+fit <- eBayes(fit)
+ topTable(fit,coef=2)
+ t1 <- as.data.frame(topTable(fit, coef="info.2$Sex.xXY", number=91234))
+###derived from voomLmFit pipeline
+t1.vlf
+ t1.vlf$id <- rownames(t1.vlf)
+ t1$id <- rownames(t1)
+ t2 <- merge(t1.vlf, t1, by.x="id", by.y="id")
+ dim(t2)
+#  [1] 14923    13
+> cor.test(t2$logFC.x, t2$logFC.y)
+        Pearson's product-moment correlation
+t = 230.28, df = 14921, p-value < 2.2e-16
+      cor
+0.8834076
+
+> 0.8834076 ^2
+[1] 0.780409
+
 ##########################################################################################################
 ## mouse scRNA-seq
 ## tumor mg
