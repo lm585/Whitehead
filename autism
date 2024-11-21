@@ -5190,3 +5190,27 @@ dupcor$consensus.correlation
 # no permuting animal IDs: 0.6701205
 
 # The function is analogous to calling voom followed by duplicateCorrelation and lmFit
+#########################################################################
+> write.table(info.2, "cyno-18samp-rnaseq-oct-2024.info.2.txt", quote=F, sep="\t")
+  t1 <- read.delim("cyno-atac-mg-10samp-conserv10.6samplesOnly.age.covar.oct24.diff2-1.txt")
+  df.gene <- t1 ####[ t1$V2 == "NC_052275.1",]
+  dim(df.gene)
+#  [1] 10853    11
+  df.gene$gene <- gsub("gene_id ", "", df.gene$V1)
+ t2 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.strand.name-type-chr.txt")    
+                ###human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt")
+ t3 <- merge(t2, df.gene, by.x="name", by.y="gene")
+ dim(t3)
+# 7951
+ t4 <- t3[ t3$chr == "chrX",]
+ dim(t4)
+#  [1] 211  21
+ t4.2 <- t4[ t4$logFC.y > 0.5 | t4$logFC.y < -0.5 | t4$logFC.x > 1 | t4$logFC.x < -1,]
+ dim(t4.2)
+# [1] 31 21
+ t5 <- t4[ sample(1:dim(t4)[1], 211),]
+ dim(t5)
+ t6 <- cor.test(t5$logFC.y, -t5$logFC.x)
+ paste("Pearson ", "r=",round(t6$estimate, digits = 3), ", p=", format(t6$p.value, digits=3),  sep ="")
+ t6 <- cor.test(t5$logFC.y, -t5$logFC.x, method = "s")
+ paste("Spearman ", "r=",round(t6$estimate, digits = 3), ", p=", format(t6$p.value, digits=3),  sep ="")
