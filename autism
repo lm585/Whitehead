@@ -5038,7 +5038,10 @@ using 18 cyno RNA-seq samples with ages < 5 && CX3CR1/CCR2 ratio > 32
 > saveRDS(y, "cyno-18samp-14923g.rds")
 -rw-r--r--  1 linyongmao  staff   628K Nov 20 13:12 cyno-18samp-14923g.rds
 
-> identical(colnames(y), info.2$FASTQ.ID)
+> y <- readRDS("cyno-18samp-14923g.rds")
+ info.2 <- read.table("cyno-18samp-rnaseq-oct-2024.info.2.txt", header=T, sep="\t")
+cor.test(y$samples$lib.size , info.2$lib.size)
+ identical(colnames(y), info.2$FASTQ.ID)
 design <- model.matrix( ~ info.2$Sex.x + info.2$age )
  logy <- log2(as.data.frame(edgeR::cpm(y)) + 0.5)
  dupcor <- duplicateCorrelation(logy,design,block=info.2$Animal.ID)
