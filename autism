@@ -5217,3 +5217,54 @@ dupcor$consensus.correlation
  paste("Pearson ", "r=",round(t6$estimate, digits = 3), ", p=", format(t6$p.value, digits=3),  sep ="")
  t6 <- cor.test(t5$logFC.y, -t5$logFC.x, method = "s")
  paste("Spearman ", "r=",round(t6$estimate, digits = 3), ", p=", format(t6$p.value, digits=3),  sep ="")
+#######################################################################
+cyno-18samp-14923g.rds
+lmFit(logy,design,block=info.2$Animal.ID,correlation=dupcor$consensus)
+cyno-atac-mg-10samp-conserv10.6samplesOnly.age.covar.oct24.diff2-1.txt
+
+> t3 <-  merge(cyno.rnaseq, df.gene, by.x="id", by.y="gene")
+ dim(t3)
+#  [1] 9427   18
+ t4 <- t3[ t3$V2 == "NC_052275.1", ]
+ dim(t4)
+#  [1] 260  18
+ write.table(t4, "temp", quote=F, sep="\t")
+ system(" bash script-atac-peak-gene-pair-sel.1 > temp-res")
+ t5 <- read.table("temp-res", sep="\t")
+ dim(t5)
+#  [1] 225  18
+ t6 <- t5[ abs( t5$logFC.y) > 0.5 | abs(t5$logFC.x) > 1, ]
+ dim(t6)
+#  [1] 35 18
+gplot(t5, aes(x = logFC.y, y = -logFC.x, label = id)) +   geom_point(shape=21, size=1) + labs(x="cyno. open chromatin log2 FC (F vs. M)" , y="gene expression log2 FC (F vs. M)") + geom_hline(yintercept=0, col="black") + geom_vline(xintercept=0) + geom_smooth(se=T, ) + geom_text_repel(show.legend=T, data=t6 , size=2, max.overlaps=100, min.segment.length = 0.1, col="red")
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat script-atac-peak-gene-pair-sel.1
+#
+# 18 (header line) or 19 columns (body)
+
+cat temp | awk 'NR > 1' | cut -f 9 | sort | uniq -d > peak-dup
+cat temp | awk 'NR > 1' | cut -f 9 | sort | uniq -u > peak-single
+
+cat temp | head -1
+cat peak-single | while read ll
+do
+ awk 'BEGIN {FS = "\t"; OFS = "\t"} $9 == "'$ll'" ' temp
+done
+
+cat peak-dup | while read ll
+do
+ awk 'BEGIN {FS = "\t"; OFS = "\t"} $9 == "'$ll'" ' temp > temp2
+ ##1 peak controls 3 genes
+ a=0
+ awk 'BEGIN {FS = "\t"; OFS = "\t"} $3 * $10 < 0 ' temp2 > temp3 ####same sex bias
+ a=`wc -l temp3 | awk '{print $1}' `
+ if [ "$a" -gt 0 ]
+ then
+   head -1 temp3
+ else
+   head -1 temp2
+ fi
+done
+
+ rm temp temp2 temp3 peak-dup peak-single
+linyongmao@Linyong-Mao-MBP16-2019 autism %  
