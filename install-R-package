@@ -54,6 +54,8 @@ BiocManager::install("SingleR")
 install.packages("pheatmap")
 install.packages("viridis")
 
+install.packages("gridExtra")
+
 #######################################
 library(ComplexHeatmap)
 library(beeswarm)
