@@ -75,8 +75,8 @@ mg.1 <- SetIdent(mg.1, value="RNA_snn_res.0.6")
 #  14618 features across 29872 samples within 1 assay 
 #   3 layers present: data, counts, scale.data
 #   2 dimensional reductions calculated: pca, integrated.cca
- counts <- mg.1@assays$RNA$counts
- metadata <- mg.1@meta.data
+ counts <- mg.2@assays$RNA$counts
+ metadata <- mg.2@meta.data
  metadata$cluster_id <- metadata$RNA_snn_res.0.6
 # Create single cell experiment object
 sce <- SingleCellExperiment(assays = list(counts = counts),
