@@ -5290,3 +5290,45 @@ p10[[i]] <- ggplot(t5, aes(x = logFC.y, y = -logFC.x, label = id)) +   geom_poin
 > grid.arrange(p10[[1]],p10[[2]],p10[[3]],p10[[4]],p10[[5]],p10[[6]],p10[[7]],p10[[8]],p10[[9]],p10[[10]], nrow=2)
 
 linyongmao@Linyong-Mao-MBP16-2019 autism % cat mouse-mg-rnaseq-Thion.diff2-1.name-type-chr.humanname.txt | head | awk 'BEGIN {ORS = ""} {print "p10[[" NR "]]" ","}'
+
+######################################################################################
+using 18 cyno RNA-seq samples with ages < 5 && CX3CR1/CCR2 ratio > 32
+> fit <- lmFit(logy,design,block=info.2$Animal.ID,correlation=dupcor$consensus)
+......
+>  t1 <- as.data.frame(topTable(fit, coef="info.2$Sex.xXY", number=91234))
+ t1$id <- rownames(t1)
+ t2 <- read.delim("GCF_012559485.2_MFA1912RKSv2_genomic_plus_Y.chr.coord.id", header=F)
+ dim(t2)
+#  [1] 35591     5
+ t3 <- merge(t1, t2, by.x="id", by.y="V5")
+ dim(t3)
+#  [1] 14923    11
+ t4 <- t3[ t3$V1 != "NC_052275.1" & t3$V1 != "Ycons", ]
+ dim(t4)
+#  [1] 14317    11
+ write.table(t4, "temp", sep="\t", quote=F)
+ t3.block <- t3
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi temp
+cat temp | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $2,  $3, $4, $5,$6,$7, $1}' > temp1
+ ../microglia/make-rnk-genesymble temp1 out
+mv out out.rnk
+ bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk out.rnk  -scoring_scheme classic  -rpt_label  "temp-block"    -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+> design <- model.matrix( ~ info.2$Sex.x + info.2$age )
+each of 18 samples treated as independent
+no block effect
+> t1 <- as.data.frame(top2v1)
+         logFC   logCPM        F       PValue          FDR  id
+ZFX -0.8917978 4.467237 55.86509 6.346877e-07 0.0001503404 ZFX
+ t3.nob <- t3
+ colnames(t3.nob) <- paste("noblock", colnames(t3.nob), sep="_")
+ identical(t3.block$id, t3.nob$noblock_id)
+#  [1] TRUE
+ t4 <- cbind(t3.block, t3.nob)
+ t5 <- t4[ t4$V1 == "NC_052275.1",]
+ dim(t5)
+#  [1] 595  21
+ t6 <- t5[ t5$P.Value < 0.05 | t5$noblock_PValue < 0.05,]
+ dim(t6)
+#  [1] 183  21
