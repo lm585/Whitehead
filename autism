@@ -5377,3 +5377,16 @@ MvF human mg            1.00000000             0.2176979        0.03503532
 MvF mouse 40samp3ages   0.21769789             1.0000000        0.11234267
 cyno 3Mv.3F,age=4       0.03503532             0.1123427        1.00000000
 
+HALLMARK_INTERFERON_GAMMA_RESPONSE.genes
+>  dim(t6)
+[1] 149   5
+>  cor(t7, method="spearman")
+                      MvF human mg MvF mouse 40samp3ages cyno 3Mv.3F,age=4
+MvF human mg             1.0000000             0.2748268        -0.2834391
+MvF mouse 40samp3ages    0.2748268             1.0000000        -0.1915110
+cyno 3Mv.3F,age=4       -0.2834391            -0.1915110         1.0000000
+> cor(t7)
+                      MvF human mg MvF mouse 40samp3ages cyno 3Mv.3F,age=4
+MvF human mg             1.0000000             0.3267523        -0.2931218
+MvF mouse 40samp3ages    0.3267523             1.0000000        -0.1950356
+cyno 3Mv.3F,age=4       -0.2931218            -0.1950356         1.0000000
