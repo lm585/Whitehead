@@ -5339,3 +5339,41 @@ ZFX -0.8917978 4.467237 55.86509 6.346877e-07 0.0001503404 ZFX
  t6 <- t5[ t5$P.Value < 0.05 | t5$noblock_PValue < 0.05,]
  dim(t6)
 #  [1] 183  21
+
+################
+> f3 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-block.GseaPreranked.1732737026231/gsea_report_for_na_pos_1732737026231.tsv")
+f4 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/temp-block.GseaPreranked.1732737026231/gsea_report_for_na_neg_1732737026231.tsv")
+ t3 <- rbind(f3,f4)
+ t4 <- t3[, c(1,6,8)]
+t8 <- merge(t4, t2, by.x="NAME", by.y="NAME")
+ head(t8)
+t8$nam <- gsub("HALLMARK", "h", t8$NAME)
+ t9 <- t8[ t8$FDR.q.val.x < 0.01 & t8$FDR.q.val.y < 0.01, ]  
+
+ t1 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk", header=F)
+ t2 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk", header=F)
+  t3 <- merge(t1, t2, by.x="V1", by.y="V1")
+  dim(t3)
+#  [1] 10021     3
+ t4 <- read.delim("temp-block.rnk", header=F)
+ t5 <- merge(t3, t4, by.x="V1", by.y="V1")
+ dim(t5)
+#  [1] 9177    5
+file <- "../microglia/HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes"
+ p <- read.delim(file, header=F)
+ t6 <- t5[ t5$V1 %in% p$V1,]
+ dim(t6)
+#  [1] 156   5
+ colnames(t6) <-c("id", "MvF human mg", "MvF mouse 40samp3ages", "cyno 3Mv.3F,age=4")
+t7 <- t6[, c(2:4)]
+> cor(t7, method="spearman")
+                      MvF human mg MvF mouse 40samp3ages cyno 3Mv.3F,age=4
+MvF human mg            1.00000000            0.28209764        0.01235953
+MvF mouse 40samp3ages   0.28209764            1.00000000        0.08885271
+cyno 3Mv.3F,age=4       0.01235953            0.08885271        1.00000000
+> cor(t7)
+                      MvF human mg MvF mouse 40samp3ages cyno 3Mv.3F,age=4
+MvF human mg            1.00000000             0.2176979        0.03503532
+MvF mouse 40samp3ages   0.21769789             1.0000000        0.11234267
+cyno 3Mv.3F,age=4       0.03503532             0.1123427        1.00000000
+
