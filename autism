@@ -5392,3 +5392,9 @@ cyno 3Mv.3F,age=4       -0.2834391            -0.1915110         1.0000000
 MvF human mg             1.0000000             0.3267523        -0.2931218
 MvF mouse 40samp3ages    0.3267523             1.0000000        -0.1950356
 cyno 3Mv.3F,age=4       -0.2931218            -0.1950356         1.0000000
+
+##############################################################################
+linyongmao@Linyong-Mao-MBP16-2019 autism % for g in `echo TYROBP  C1QC    CD68    CYBB    MFGE8   P2RY12  C1QB    C1QA    GPR34   ITGAM   TREM2   C3      CX3CR1`
+do
+grep -iw "$g" human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt
+done > temp
