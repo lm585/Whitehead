@@ -51,6 +51,8 @@ dim(a.df.g)
  dim(a.df.g)
 # [1] 14603    15
 
+## read in CHEA results
+## chea.human.mg.f.bias.infg.102genes.withBackg.txt
 t1 <- read.delim("temp.mouse.mg.f.bias.pathway.44genes.txt")
  t2 <- t1[ t1$Adjusted.P.value < 0.01 ,]
  dim(t2)
