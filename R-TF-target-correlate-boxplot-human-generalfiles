@@ -45,6 +45,8 @@ a.df <- as.data.frame(a)
 a.df$id <- row.names(a.df)
 a.df.g <- merge(a.df, gene.name, by.x="id", by.y="geneID")
 dim(a.df.g)
+ a.df.g.x <- a.df.g
+
  t1 <- read.delim("/Users/linyongmao/Documents/autism/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk", header=F)
  t2 <- a.df.g[ a.df.g$name %in% t1$V1,]
  a.df.g <- t2
@@ -53,7 +55,7 @@ dim(a.df.g)
 
 ## read in CHEA results
 ## chea.human.mg.f.bias.infg.102genes.withBackg.txt
-t1 <- read.delim("chea.human.mg.f.bias.infg.102genes.withBackg.txt")
+t1 <- read.delim("temp-chea.human.mg.f.bias.infg.102genes.withBackg.txt")
  t2 <- t1[ t1$Adjusted.P.value < 0.01 ,]
  dim(t2)
 # [1] 22  9
@@ -61,12 +63,15 @@ t1 <- read.delim("chea.human.mg.f.bias.infg.102genes.withBackg.txt")
  dim(t3)
 # [1] 9 9
  res <- t3[,c(1:2)]
+#avg of corr between a TF and targets
  res$ox.yes=-999
  res$ox.no=-999
  res$rand.no=-999
  res$rand.yes=-999
  res$ox.yes.rand.no.P <- -999
  res$ox.yes.ox.no.P = -999
+#TF status
+ res$TF = "not expre or 1 gene name with >1 geneID"
 
 
  for(i in 1:dim(t3)[1]) {
@@ -76,21 +81,24 @@ t1 <- read.delim("chea.human.mg.f.bias.infg.102genes.withBackg.txt")
  file <- "temp-pathway-200genes-list"
 f1 <- read.delim(file, header=F)
  tf <- strsplit( t3$Term[i], ' ')[[1]][1]
-if(dim(a.df.g[ a.df.g$name %in% c( tf), ])[1] > 0) {
-p.exp <- a.df.g[ a.df.g$name %in% c(f1$V1, tf), ]
+if(dim(a.df.g.x[ a.df.g.x$name %in% c( tf), ])[1] == 1) {
+p.exp <- a.df.g[ a.df.g$name %in% c(f1$V1), ]
+p.exp.2 <- a.df.g.x[ a.df.g.x$name %in% c( tf), ]
+p.exp <- unique(rbind(p.exp, p.exp.2))
 length(p.exp$name)
 mat <- as.data.frame(p.exp[, 2:14])
- rownames(mat) <- p.exp$name
+ rownames(mat) <- p.exp$id
+
  identical(mat$human_Microglia_RNA_polyA_P14, p.exp$human_Microglia_RNA_polyA_P14)
  mat2 <- as.data.frame(t(mat))
  c1 <- as.data.frame(cor(mat2, method="spearman"))
  c2 <- data.frame(1:dim(c1)[1], colnames(c1))
- i2 <- c2[ c2$colnames.c1. == tf,1]
+ i2 <- c2[ c2$colnames.c1. == a.df.g.x[ a.df.g.x$name %in% c( tf), ]$id[1],  1]
 ## c3, c5, spearman corr between TF and all genes in the pathway and TF itself
  c3 <-data.frame( c1[, i2])
  colnames(c3)[1] <- tf
  c3$id <- rownames(c1)
- identical(c3$id, p.exp$name)
+ identical(c3$id, p.exp$id)
  summary(c1[,i2] - c3[,1])
  c4 <- cbind(c3, p.exp)
  colnames(c4)
@@ -101,7 +109,7 @@ mat <- as.data.frame(p.exp[, 2:14])
 # MDH1    0.5934066 ENSG00000014641.21    MDH1
  c5$VDR.binding = "oxphos.no"
 ## targ1 <- read.delim("temp.pathway.alltargetgenes.txt")
- targ1 <- read.delim("chea_2022.allterms.14586humangenes.txt")
+ targ1 <- read.delim("temp-chea_2022.allterms.14586humangenes.txt")
  targ2 <- targ1[ targ1$Term == t3$Term[i], ]
  targ3 <- strsplit(targ2$Genes[1], ';')
 ## targ3[[1]] , all express genes that are targeted by TF
@@ -124,11 +132,10 @@ corr1.ox <- corr1
  r1 <- a.df.g[!(a.df.g$name %in% corr1.ox$name | a.df.g$name %in% targ3[[1]]), ] $name
  set.seed(1234)
  r2 <- r1[sample(1:length(r1), 10*10 )]
- r2 <- r2[sample(1:length(r2), 10*10 )]
 p.exp <- a.df.g[ a.df.g$name %in% unique( c(r2, tf)), ]
 length(p.exp$name)
 mat <- as.data.frame(p.exp[, 2:14])
- rownames(mat) <- p.exp$name
+ rownames(mat) <- p.exp$id
  identical(mat$human_Microglia_RNA_polyA_P14, p.exp$human_Microglia_RNA_polyA_P14)
  mat2 <- as.data.frame(t(mat))
  c1 <- as.data.frame(cor(mat2, method="spearman"))
