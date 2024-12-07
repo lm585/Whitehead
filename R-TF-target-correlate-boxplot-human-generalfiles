@@ -53,7 +53,7 @@ dim(a.df.g)
 
 ## read in CHEA results
 ## chea.human.mg.f.bias.infg.102genes.withBackg.txt
-t1 <- read.delim("temp.mouse.mg.f.bias.pathway.44genes.txt")
+t1 <- read.delim("chea.human.mg.f.bias.infg.102genes.withBackg.txt")
  t2 <- t1[ t1$Adjusted.P.value < 0.01 ,]
  dim(t2)
 # [1] 22  9
@@ -124,6 +124,7 @@ corr1.ox <- corr1
  r1 <- a.df.g[!(a.df.g$name %in% corr1.ox$name | a.df.g$name %in% targ3[[1]]), ] $name
  set.seed(1234)
  r2 <- r1[sample(1:length(r1), 10*10 )]
+ r2 <- r2[sample(1:length(r2), 10*10 )]
 p.exp <- a.df.g[ a.df.g$name %in% unique( c(r2, tf)), ]
 length(p.exp$name)
 mat <- as.data.frame(p.exp[, 2:14])
@@ -174,7 +175,7 @@ mat <- as.data.frame(p.exp[, 2:14])
 
    t10$caterg <- factor( t10$VDR.binding, levels=c("oxphos.no", "oxphos.yes", "oxphos.yes.sex.biased", "randomgenes.no"), labels=c("OXPHOS.genes.NO", "OXPHOS.genes.YES", "path.sex.bias.YES", "random.genes.NO"))
 
- boxplot(t10[,1] ~ t10$caterg, outcol="white",  xlab="", ylab="", main=t3$Term[i], col=c("white", "grey", "orange"), ylim=c(-1,1), cex.main=0.6)
+ boxplot(t10[,1] ~ t10$caterg, outcol="white",  xlab="", ylab="TF-gene Spearman corr", main=t3$Term[i], col=c("white", "grey", "orange"), ylim=c(-1,1), cex.main=1)
  beeswarm(t10[,1] ~ t10$caterg,add=T)
  abline(h = seq(-100, 100, 1/10), lty = 5, lwd = 0.5, col = "gray")
 
@@ -183,9 +184,11 @@ mat <- as.data.frame(p.exp[, 2:14])
  t13 <- t10[ t10$VDR.binding == "oxphos.yes",]
  t14 <- t10[ t10$VDR.binding == "oxphos.no",]
  t15 <- t10[ t10$VDR.binding == "oxphos.yes.sex.biased",]
+# ox.yes: pathway genes bound by TF & sex biased
  res$ox.yes[i] <- mean(t15[,1])
  res$ox.no[i] <- mean(t14[,1])
  res$rand.yes[i] <- mean(t11[,1])
+# rand.no: non-pathway genes, non TF-targets
  res$rand.no[i] <- mean(t12[,1])
  test1 <- wilcox.test(t15[,1], t12[,1])
 
