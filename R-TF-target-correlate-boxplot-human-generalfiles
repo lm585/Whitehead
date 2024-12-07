@@ -132,7 +132,9 @@ corr1.ox <- corr1
  r1 <- a.df.g[!(a.df.g$name %in% corr1.ox$name | a.df.g$name %in% targ3[[1]]), ] $name
  set.seed(1234)
  r2 <- r1[sample(1:length(r1), 10*10 )]
-p.exp <- a.df.g[ a.df.g$name %in% unique( c(r2, tf)), ]
+p.exp <- a.df.g[ a.df.g$name %in% unique( c(r2)), ]
+p.exp.2 <- a.df.g.x[ a.df.g.x$name %in% c( tf), ]
+p.exp <- unique(rbind(p.exp, p.exp.2))
 length(p.exp$name)
 mat <- as.data.frame(p.exp[, 2:14])
  rownames(mat) <- p.exp$id
@@ -140,11 +142,11 @@ mat <- as.data.frame(p.exp[, 2:14])
  mat2 <- as.data.frame(t(mat))
  c1 <- as.data.frame(cor(mat2, method="spearman"))
  c2 <- data.frame(1:dim(c1)[1], colnames(c1))
- i2 <- c2[ c2$colnames.c1. == tf,1]
+ i2 <- c2[ c2$colnames.c1. == a.df.g.x[ a.df.g.x$name %in% c( tf), ]$id[1],  1]
  c3 <-data.frame( c1[, i2])
  colnames(c3)[1] <- tf
  c3$id <- rownames(c1)
- identical(c3$id, p.exp$name)
+ identical(c3$id, p.exp$id)
  summary(c1[,i2] - c3[,1])
  c4 <- cbind(c3, p.exp)
  colnames(c4)     
@@ -202,6 +204,8 @@ mat <- as.data.frame(p.exp[, 2:14])
  res$ox.yes.rand.no.P[i] <- test1$p.value
  test2 <-  wilcox.test(t15[,1], t14[,1])
  res$ox.yes.ox.no.P[i] <- test2$p.value
+ res$TF[i] = 1
+
 }
  }
 
