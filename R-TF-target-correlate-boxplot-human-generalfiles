@@ -209,5 +209,5 @@ mat <- as.data.frame(p.exp[, 2:14])
 }
  }
 
- write.table(res[ res$ox.yes != -999,], "temp1", quote=F, sep="\t")
-
+# write.table(res[ res$ox.yes != -999,], "temp1", quote=F, sep="\t")
+write.table(res, "temp1", quote=F, sep="\t")
