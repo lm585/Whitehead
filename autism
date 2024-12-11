@@ -5407,6 +5407,13 @@ head  temp-chea.human.mg.f.bias.infg.102genes.withBackg.txt temp-chea_2022.allte
 Rscript /Users/linyongmao/Documents/Whitehead-main/R-TF-target-correlate-boxplot-human-generalfiles
 cat temp1 | sed 's/^[0-9]*      //' > temp2
 
+cp  chea.human.mg.f.bias.oxphos.83genes.txt  temp-chea.human.mg.f.bias.infg.102genes.withBackg.txt
+cp chea_2022.allterms.14586humangenes.txt temp-chea_2022.allterms.14586humangenes.txt
+cp  ../microglia/HALLMARK_OXIDATIVE_PHOSPHORYLATION.genes  temp-pathway-200genes-list
+head  temp-chea.human.mg.f.bias.infg.102genes.withBackg.txt temp-chea_2022.allterms.14586humangenes.txt temp-pathway-200genes-list | cut -f 1-6
+Rscript /Users/linyongmao/Documents/Whitehead-main/R-TF-target-correlate-boxplot-human-generalfiles
+cat temp1 | sed 's/^[0-9]*      //' > temp2
+
 cat temp2 | grep "not expre or 1 gene name" | awk '{print $1}' | while read g
 do
   grep -i "$g" human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt
