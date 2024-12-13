@@ -5429,3 +5429,12 @@ done
  text(1.3, 0.9, paste( "pValue=",format( test1$p.value, digits=3)), pos=4, col="blue")
  wilcox.test(t15$IRF1, mu=0)
  wilcox.test(t12$IRF1, mu=0)
+
+################################################################################
+bash script-stat1-targets-allgenes
+wc -l temp-targ*
+grep " " temp-targ*
+gencode.v42.primary_assembly.noPar.protein_coding.names as bg
+ls temp-targ* > temp-pathway-files
+bash ~/Documents/Whitehead-main/script-inputset-pathways-overlap-fisher-2 temp-targets-chea-STAT1_19122651_ChIP-Seq_HeLaS3_Human_CervicalCancer chea-STAT1_19122651_ChIP-Seq_HeLaS3 temp-pathway-files gencode.v42.primary_assembly.noPar.protein_coding.names
+
