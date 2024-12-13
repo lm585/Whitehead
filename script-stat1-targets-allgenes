@@ -1,0 +1,37 @@
+###
+#two chea files (two parts)
+ rm temp-targets-chea-*
+ cat dir-chea.v42.noPar.protein_coding.names/ChEA_2022_table*.txt |  grep -i "stat1 .*human" | cut -f 1,9 | while read ll
+do
+ f=`echo "$ll" | cut -f 1 | sed 's/ /_/g' `
+ echo "$ll" | cut -f 2 | awk 'BEGIN {FS = ";"}
+   {
+     for(i = 1; i <= NF; i++) 
+       print $i
+   }' >> temp-targets-chea-"$f"
+done
+
+ rm temp-targets-TRRUST-*
+ cat   dir-chea.v42.noPar.protein_coding.names/TRRUST_Transcription_Factors_2019_table*.txt | grep -i "stat1 .*human" | cut -f 1,9 | while read ll
+do
+ f=`echo "$ll" | cut -f 1 | sed 's/ /_/g' `
+ echo "$ll" | cut -f 2 | awk 'BEGIN {FS = ";"}
+   {
+     for(i = 1; i <= NF; i++)
+       print $i
+   }' >> temp-targets-TRRUST-"$f"
+done
+
+rm temp-targets-encode-*
+cat dir-chea.v42.noPar.protein_coding.names/ENCODE_TF_ChIP-seq_2015_table*.txt | grep -i "stat1 " | cut -f 1,9 | while read ll
+do
+ f=`echo "$ll" | cut -f 1 | sed 's/ /_/g' `
+ echo "$ll" | cut -f 2 | awk 'BEGIN {FS = ";"}
+   {
+     for(i = 1; i <= NF; i++)
+       print $i
+   }' >> temp-targets-encode-"$f"
+done
+
+
+
