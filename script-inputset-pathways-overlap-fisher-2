@@ -10,13 +10,17 @@ cat  "$1" "$4" |cut -f 1 | sort | uniq > temp-combined-uniq
 rnkf="temp-combined-uniq"
 tot=`cat "$rnkf" | wc -l | awk '{print $1}' `
 ##echo "$tot"
+echo "dup genes in input.gene.set if any"
+sort "$1"  |uniq -d
 cat "$rnkf"  "$1"  | cut -f 1 |sort | uniq -d > temp-safari-genes
 safa=`cat temp-safari-genes | wc -l | awk '{print $1}' ` 
 echo "test.set	pathway	input-overlap	input-notoverlap	noninput-overlap	noninput-nonoverlap	P-value	log10P	oddsratio" > temp-input-221
 
+echo "dup genes in pathway.gene.set if any"
 cat "$3" | while read f
 do
  echo -n "$2	$f	"
+ sort "$f" |uniq -d
  cat "$f" "$rnkf"  | cut -f 1 |sort | uniq -d > temp-pathway
  path=`cat temp-pathway | wc -l | awk '{print $1}'  `
  ###temp-safari-genes 300 genes, temp-pathway 200 genes, bg 15000 genes;
