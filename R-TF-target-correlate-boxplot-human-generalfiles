@@ -225,3 +225,7 @@ do
   grep -i "$g" human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt
 done
 
+##################################
+ r2 <- res[ res$ox.yes != -999,]
+ r2$fdr <- p.adjust(r2$ox.yes.rand.no.P, method = "fdr")
+r3 <- r2[ r2$fdr < 0.01,]
