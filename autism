@@ -5438,3 +5438,30 @@ gencode.v42.primary_assembly.noPar.protein_coding.names as bg
 ls temp-targ* > temp-pathway-files
 bash ~/Documents/Whitehead-main/script-inputset-pathways-overlap-fisher-2 temp-targets-chea-STAT1_19122651_ChIP-Seq_HeLaS3_Human_CervicalCancer chea-STAT1_19122651_ChIP-Seq_HeLaS3 temp-pathway-files gencode.v42.primary_assembly.noPar.protein_coding.names
 
+#########################################################################################
+Simply typing "findMotifs.pl" should work before running Homer.
+linyong@fry ~$ perl ./configureHomer.pl -install hg19
+
+linyong@fry ~$ vi /lab/solexa_page/linyong/dir-temp/genes-infg-irf1-21genes
+
+# find known motifs, and de novo motifs
+# de novo motif discovery maybe not necessary if only want to check known motifs like irf1, stat1
+#       Checking de novo motifs against known motifs...
+#               1 of 33 (1e-25) similar to Irf1/MA0050.4/Jaspar(0.982)
+#               2 of 33 (1e-8) similar to Prdm15/MA1616.2/Jaspar(0.671)
+linyong@fry ~$  findMotifs.pl  /lab/solexa_page/linyong/dir-temp/genes-infg-irf1-21genes human /lab/solexa_page/linyong/dir-temp/ -start -500 -end 100 -len 8,10,12 -p 4
+!!! human not found in /home/linyong//config.txt
+        Try typing "perl /home/linyong//configureHomer.pl -list" to see available promoter sets
+        If avaliable, type "perl /home/linyong//configureHomer.pl -install human" to install
+
+
+### to save space under $HOME
+linyong@fry ~/data/genomes$ mv -i hg18/   /lab/solexa_page/linyong/
+linyong@fry ~/data/genomes$ mv -i hg19/   /lab/solexa_page/linyong/
+linyong@fry ~/data/genomes$ ln -s /lab/solexa_page/linyong/hg18/ ./
+linyong@fry ~/data/genomes$ ln -s /lab/solexa_page/linyong/hg19/ ./
+
+#install  human promoter
+# --2024-12-19 14:16:02--  http://homer.ucsd.edu/homer/data/promoters/human.v5.5.zip
+linyong@fry ~$ perl ./configureHomer.pl -install  human-p
+
