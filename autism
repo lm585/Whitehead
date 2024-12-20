@@ -5465,3 +5465,44 @@ linyong@fry ~/data/genomes$ ln -s /lab/solexa_page/linyong/hg19/ ./
 # --2024-12-19 14:16:02--  http://homer.ucsd.edu/homer/data/promoters/human.v5.5.zip
 linyong@fry ~$ perl ./configureHomer.pl -install  human-p
 
+#############################
+linyong@fry ~$ vi /lab/solexa_page/linyong/dir-temp/genes-infg-stat1-42genes
+linyong@fry ~$ mkdir /lab/solexa_page/linyong/dir-temp-1/dir-infg-stat1-42g
+
+# cat slurm-find-motif-homer-12-20-2024
+findMotifs.pl  /lab/solexa_page/linyong/dir-temp/genes-infg-stat1-42genes  human  /lab/solexa_page/linyong/dir-temp-1/dir-infg-stat1-42g/ -start -500 -end 100 -len 8,10,12 -p 8
+
+linyong@fry ~$ sbatch slurm-find-motif-homer-12-20-2024
+Selected Options:
+        Input file = /lab/solexa_page/linyong/dir-temp/genes-infg-stat1-42genes
+        Promoter Set = human
+        Output Directory = /lab/solexa_page/linyong/dir-temp-1/dir-infg-stat1-42g/
+        New start is -500 relative to the TSS
+        New end is 100 relative to the TSS
+        Motif length set at 8, 10, 12,
+        Using 8 CPUs
+        Found mset for "human", will check against vertebrates motifs
+
+        Progress: Step1 - Convert input file to refseq IDs
+        Percentage of IDs converted into refseq: 100.0% (42 out of 42)
+
+        Progress: Step2 - prepare sequence files
+
+        Progress: Step3 - creating foreground/background file
+
+        Progress: Step4 - removing redundant promoters
+                Kept 47797 of 53293
+
+        Progress: Step5 - adjusting background sequences for GC/CpG content...
+        Progress: Step6 - Gene Ontology Enrichment Analysis
+
+        Progress: Step7 - Known motif enrichment
+
+        Reading input files...
+        44881 total sequences read
+        472 motifs loaded
+        Cache length = 11180
+        Using hypergeometric scoring
+        Checking enrichment of 472 motif(s)
+        Progress: Step8 - De novo motif finding (HOMER)
+
