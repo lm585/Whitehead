@@ -5506,3 +5506,24 @@ Selected Options:
         Checking enrichment of 472 motif(s)
         Progress: Step8 - De novo motif finding (HOMER)
 
+############################################################
+linyongmao@Linyong-Mao-MBP16-2019 temp-122024 % cat     GSM320736_HeLa_STAT1_peaks.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $2, $3, "peak_" NR,$6, "+" }' | head  -100 > temp-peaks
+#  chr4 184505570       184508116       peak_1  14.268423408896 +
+#  chr19        55219872        55221447        peak_2  7.40194575291536        +
+#  chr21        35181531        35184550        peak_3  6.97093250755022        +
+
+linyong@fry ~/data/genomes$ cp -r /lab/solexa_page/linyong/hg18 ./
+#  i.e. findMotifsGenome.pl ERpeaks.txt hg18 ER_MotifOutput/ -size 200 -mask
+findMotifsGenome.pl temp-peaks   hg18 /lab/solexa_page/linyong/dir-temp-1/dir-infg-stat1-hela-31genes/ -size 200 -mask
+###
+Motif Name      Consensus       P-value Log P-value     q-value (Benjamini)     # of Target Sequences with Motif(of 80) % of Target Sequences with Motif        # of Background Sequences with Motif(of 97439)  % of Background Sequences with Motif
+ISRE(IRF)/ThioMac-LPS-Expression(GSE23622)/Homer        AGTTTCASTTTC    1e-3    -7.971e+00      0.1630  4.0     5.00%   399.5   0.41%
+...
+STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-2    -5.014e+00      0.4170  6.0     7.50%   2035.7  2.09%
+
+findMotifsGenome.pl temp-peaks   hg18 /lab/solexa_page/linyong/dir-temp-1/dir-infg-stat1-hela-31genes/ -size given -p 8
+###
+STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-20   -4.732e+01      0.0000  80.0    80.00%  31621.7 33.73%
+STAT5(Stat)/mCD4+-Stat5-ChIP-Seq(GSE12346)/Homer        RTTTCTNAGAAA    1e-16   -3.864e+01      0.0000  79.0    79.00%  34888.8 37.21%
+Stat3(Stat)/mES-Stat3-ChIP-Seq(GSE11431)/Homer  CTTCCGGGAA      1e-11   -2.601e+01      0.0000  86.0    86.00%  50142.3 53.48%
+Stat3+il21(Stat)/CD4-Stat3-ChIP-Seq(GSE19198)/Homer     SVYTTCCNGGAARB  1e-10   -2.436e+01      0.0000  94.0    94.00%  61991.3 66.12%
