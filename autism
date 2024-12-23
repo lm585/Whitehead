@@ -5527,3 +5527,37 @@ STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-20   
 STAT5(Stat)/mCD4+-Stat5-ChIP-Seq(GSE12346)/Homer        RTTTCTNAGAAA    1e-16   -3.864e+01      0.0000  79.0    79.00%  34888.8 37.21%
 Stat3(Stat)/mES-Stat3-ChIP-Seq(GSE11431)/Homer  CTTCCGGGAA      1e-11   -2.601e+01      0.0000  86.0    86.00%  50142.3 53.48%
 Stat3+il21(Stat)/CD4-Stat3-ChIP-Seq(GSE19198)/Homer     SVYTTCCNGGAARB  1e-10   -2.436e+01      0.0000  94.0    94.00%  61991.3 66.12%
+
+#################################################################
+/Users/linyongmao/Downloads/temp-122024/GSM320736_HeLa_STAT1_peaks.txt
+
+linyong@fry /lab/solexa_page/linyong$ cut -f 2- refGene.txt  | genePredToGtf file stdin out.gp
+
+linyong@fry /lab/solexa_page/linyong$ wget "https://s3.amazonaws.com/igv.broadinstitute.org/genomes/seq/hg18/hg18.fasta"
+-rw-r--r-- 1 linyong systemd-timesync 3.0G Dec  6  2013 hg18.fasta
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat /Users/linyongmao/Downloads/temp-122024/GSM320736_HeLa_STAT1_peaks.txt  | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $2, $3, "peak_" $1 "-" $2 "-" $3 "_" NR,$6, "+" }'  > temp-peaks
+linyongmao@Linyong-Mao-MBP16-2019 autism % head temp-peaks
+chr4    184505570       184508116       peak_chr4-184505570-184508116_1 14.268423408896 +
+chr19   55219872        55221447        peak_chr19-55219872-55221447_2  7.40194575291536        +
+linyongmao@Linyong-Mao-MBP16-2019 autism % wc -l temp-peaks
+   36998 temp-peaks
+
+linyong@fry /lab/solexa_page/linyong$ homerTools extract temp-peaks hg18.fasta -fa > temp-peaks.fa
+
+linyong@fry /lab/solexa_page/linyong$ bwa bwasw -t 8 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  temp-peaks.fa >  temp-peaks.sam
+
+linyong@fry /lab/solexa_page/linyong$ cat temp-peaks.sam | awk 'NF > 9' | cut -f 2 | sort | uniq -c | head
+  35635 0
+     64 16 read reverse strand
+   1302 4 read unmapped
+cat temp-peaks.sam | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0' | cut -f 1 | sort | uniq -d | wc -l
+2
+cat temp-peaks.sam | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 && $5 >= 20' | wc -l
+34982
+cat temp-peaks.sam | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 && $5 >= 20' | cut -f 6 | grep "^[0-9]*M$" |wc -l
+34916
+cat temp-peaks.sam | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 && $5 >= 20' | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 ~ /^[0-9]*M$/' | cut -f 5 | awk '$1 > 50' | wc -l
+34385
+cat temp-peaks.sam | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 && $5 >= 20' | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 ~ /^[0-9]*M$/ && $5 > 50' > temp-peaks.2.sam
+
