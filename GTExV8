@@ -5886,3 +5886,26 @@ y <- DGEList(counts=raw2)
 y <- calcNormFactors(y)
 dim(y)
 # [1] 62703 17350
+##############################################################################################
+c4a-c4b snv
+linyong@fry /lab/solexa_page/linyong$ ~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chr6 1 32008096 > temp-chr6.fa  
+-rw-r--r-- 1 linyong systemd-timesync 31M Jan  1 12:04 temp-chr6.fa
+linyong@fry /lab/solexa_page/linyong/dir-temp$ mv -i ../temp-chr6.fa ./
+linyong@fry /lab/solexa_page/linyong/dir-temp$ bwa index temp-chr6.fa
+~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chr6 32012795 32037418 > temp.c4b.fa
+bwa bwasw  -f temp.c4b.sam  -t 10   temp-chr6.fa  temp.c4b.fa
+samtools view -b -S -o temp.c4b.bam temp.c4b.sam
+samtools sort -@ 4 -o  temp.c4b.sort.bam  temp.c4b.bam
+samtools mpileup -Q 0  -q 17 -d 1000000 -f  temp-chr6.fa  temp.c4b.sort.bam >  temp.c4b.pileup
+wc -l temp.c4b.pileup   
+24151 temp.c4b.pileup   
+cat temp.c4b.pileup |awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 != "." '  > temp
+28 lines -> 24 lines (del the following 4 lines)
+chr6    31980532        C       1       ^~.     ~
+chr6    31996617        T       1       .-1C    ~
+chr6    32004591        A       1       .-1G    ~
+chr6    32004682        G       1       .$      ~
+ cat temp > c4a.c4b.snv
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat c4a.c4b.snv | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $2-1, $2, $3 $5}' > temp.bed
+cat  temp.bed | grep '*' > temp.del.bed
+cat  temp.bed | grep -v '*' > temp.snp.bed
