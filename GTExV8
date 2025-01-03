@@ -5909,3 +5909,45 @@ chr6    32004682        G       1       .$      ~
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat c4a.c4b.snv | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $2-1, $2, $3 $5}' > temp.bed
 cat  temp.bed | grep '*' > temp.del.bed
 cat  temp.bed | grep -v '*' > temp.snp.bed
+################################################
+ hist(t6$c4.tot, breaks=seq(0, 12, 0.5/2/2), xlab="total C4 copy number", main="C4A+C4B copy number")
+> abline(v = seq(-100, 1000, 1), lty = 5, lwd = 0.5, col = "grey")
+> abline(v = seq(-100, 1000, 2), lty = 5, lwd = 0.5, col = "blue")
+> ggplot(t6, aes(x=c4.tot)) + geom_freqpoly(binwidth = 1/6, center=0) + scale_x_continuous(breaks=seq(0, 12, 2), limits=c(0, 12))
+
+> medi=median ((t6$c4a.cn + t6$c4b.cn)/t6$c4.tot)
+> medi
+[1] 0.8917315
+> hist(t6$c4a.cn/medi, breaks=seq(0, 6, 0.5/2/2), xlab="C4A copy number")
+ hist(t6$c4a.cn/medi, breaks=seq(0, 6, 0.5/2/2), xlab="C4A copy number", probability=T, main="")
+  abline(v = seq(0, 1000, 1), lty = 5, lwd = 0.5, col = "blue")
+  d <- density(t6$c4a.cn/medi)
+  lines(d$x, d$y, col="red")
+ df <- ""
+ df1 <- data.frame(CN = t6$c4a.cn/medi, gene= "C4A")
+ df2 <- data.frame(CN = t6$c4b.cn/medi, gene= "C4B")
+ df <- rbind(df1, df2)
+ dim(df)
+#  [1] 1676    2
+> ggplot(df, aes(x=CN, color = gene)) + geom_freqpoly(binwidth = 1/5, center=0)
+
+> med1 <- median(t6$c4a + t6$c4b)
+> med2 <- median(t6$c4.tot)
+> med2/med1
+[1] 19.77512
+> t1 <- data.frame(C4.tot=t6$c4.tot, norm.c4a.plus.c4b.19.77 = (t6$c4a + t6$c4b)*med2/med1 )
+> boxplot(t1)
+> abline(h = seq(-100, 1000, 1), lty = 5, lwd = 0.5, col = "blue")
+
+ plot(t1$norm.c4a.plus.c4b.19.77,t1$C4.tot)
+ abline(h = seq(-100, 1000, 1), lty = 5, lwd = 0.5, col = "grey")
+ abline(v = seq(-100, 1000, 1), lty = 5, lwd = 0.5, col = "grey")
+ x1 = 1:5
+ y1=x1
+ abline(lm(y1 ~ x1), col="blue")
+ t10 <- t1$norm.c4a.plus.c4b.19.77
+ ss1 <- sum( (t1$C4.tot - t10)^2 )
+ ss2 <- sum( (t1$C4.tot - mean(t1$C4.tot))^2 )
+ r2 <- 1 - ss1/ss2
+ r2
+#  [1] 0.754645
