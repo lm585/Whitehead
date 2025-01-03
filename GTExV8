@@ -5951,3 +5951,17 @@ cat  temp.bed | grep -v '*' > temp.snp.bed
  r2 <- 1 - ss1/ss2
  r2
 #  [1] 0.754645
+
+> medi
+[1] 0.8917315
+> c4a.cn.medi <- t6$c4a.cn/medi
+> c4b.cn.medi <- t6$c4b.cn/medi
+> lm1 <- lm(t6$c4.tot ~ c4a.cn.medi + c4b.cn.medi  )
+ plot(0.85547 + c4a.cn.medi * 1.06690 + c4b.cn.medi * 0.57072, t6$c4.tot, ylab="total C4 copy number"  )
+ abline(v = seq(-100, 1000, 1), lty = 5, lwd = 0.5, col = "grey")
+ abline(h = seq(-100, 1000, 1), lty = 5, lwd = 0.5, col = "grey")
+ x1 = 1:5
+  y1=x1
+  abline(lm(y1 ~ x1), col="red")
+
+ plot( c4a.cn.medi  + c4b.cn.medi , t6$c4.tot, ylab="total C4 copy number"  )
