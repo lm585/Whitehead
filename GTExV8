@@ -5965,3 +5965,6 @@ cat  temp.bed | grep -v '*' > temp.snp.bed
   abline(lm(y1 ~ x1), col="red")
 
  plot( c4a.cn.medi  + c4b.cn.medi , t6$c4.tot, ylab="total C4 copy number"  )
+##############################################################################
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % Rscript c4a-c4b-cnv-q20-corr-express-batch-1 > temp-1
+cat temp-1 | awk 'BEGIN {FS = "\t"; OFS = "\t"} NF > 9'  > temp-1.txt
