@@ -5968,3 +5968,47 @@ cat  temp.bed | grep -v '*' > temp.snp.bed
 ##############################################################################
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % Rscript c4a-c4b-cnv-q20-corr-express-batch-1 > temp-1
 cat temp-1 | awk 'BEGIN {FS = "\t"; OFS = "\t"} NF > 9'  > temp-1.txt
+
+##############################
+pasted from c4a-only-copyNumber-exon-depth.xlsx
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp.txt
+cat temp.txt |head -1 > temp1
+cat temp.txt | awk 'NR > 1' | sort -t '  ' +5 -6n  >> temp1
+
+ t1 <- read.delim("temp1")
+ t2 <- data.frame( c4b.r = t1$c4b.cn.expr.corr, c4a.r = t1$c4a.cn.expr.corr)
+ rownames(t2) <- t1$X
+ t3 <- as.data.frame(t(t2))
+ par( mar=c(6,2,2,12))
+ barplot(as.matrix(t3), horiz=T, beside=T, yaxt="n", col=c("blue", "orange"), xlab="(gene expression ~ CN) correlation", xlim= c(-0.15, 0.45))
+ axis(side=4, at = seq(2, 148, by=3), labels=colnames(t3), las =1, cex.axis = 0.6)
+  abline(v = seq(-1000, 15, 0.1), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = seq(2, 148, by=3), lty = 5, lwd = 0.5, col = "gray")
+  legend(-0.15, 2+3*45, c( "C4A", "C4B"), fill=c( "orange", "blue"), cex = 0.6, inset = 0.05)
+
+> t1[ t1$c4a.cn.expr.corr.pval < 1e-15,]
+                X X.samp X.samp.genotype X.samp.F X.samp.M c4a.cn.expr.corr c4a.cn.expr.corr.pval c4b.cn.expr.corr
+45        Thyroid    653             574      196      378        0.3535121              9.34e-19        0.1959386
+48 Nerve - Tibial    619             532      177      355        0.4067271              0.00e+00        0.2726965
+
+rho= 0.4067271, p-value < 2.2e-16
+lm(formula = log10(g4$ENSG00000244731.10 + 1) ~ g4$c4a.cn), Multiple R-squared:  0.2015, pVal= 9.685219e-28
+
+ t1 <- read.delim("temp1")
+ t2 <- data.frame(c4b.p = t1$c4b.cn.expr.corr.pval, c4a.p = t1$c4a.cn.expr.corr.pval)
+ rownames(t2) <- t1$X
+ t2[ t2$c4a.p == 0,]
+ t2[ t2$c4a.p == 0,]$c4a.p = 1e-19
+ t2$c4b.fdr <- p.adjust(t2$c4b.p, method="fdr")
+ t2$c4a.fdr <- p.adjust(t2$c4a.p, method="fdr")
+ t3 <- as.data.frame(t( t2[, c(3,4)]))
+ par( mar=c(6,2,2,12))
+ barplot(as.matrix(t3), horiz=T, beside=T, yaxt="n", col=c("blue", "orange"), xlab="(gene expression ~ CN) correlation", xlim= c(-0.15, 0.45))
+ barplot(as.matrix(-log10(t3)), horiz=T, beside=T, yaxt="n", col=c("blue", "orange"), xlab="(gene expression ~ CN) corr. log10(FDR)", xlim=c(0, 20) )
+  axis(side=4, at = seq(2, 148, by=3), labels=colnames(t3), las =1, cex.axis = 0.6)
+  abline(v = seq(-1000, 15, 2.5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v=2, col="red")
+  abline(h = seq(2, 148, by=3), lty = 5, lwd = 0.5, col = "gray")
+   legend(10, 2+3*15, c( "C4A", "C4B"), fill=c( "orange", "blue"), cex = 0.6, inset = 0.05)
+ text(2, 5, "FDR = 0.01", pos=4, col="red")
+
