@@ -6012,3 +6012,37 @@ lm(formula = log10(g4$ENSG00000244731.10 + 1) ~ g4$c4a.cn), Multiple R-squared: 
    legend(10, 2+3*15, c( "C4A", "C4B"), fill=c( "orange", "blue"), cex = 0.6, inset = 0.05)
  text(2, 5, "FDR = 0.01", pos=4, col="red")
 
+######################################################################################
+linyong@fry /lab/solexa_page/linyong/gtex-dna-test$ cat temp.sex-chr.1.txt | awk '$5 < 0.5 && $5 > 0.3' |head
+GTEX-1OKEX-0003-SM-DJWXH        chrX    0.948842        chrY    0.437715
+GTEX-16XZY-0002-SM-6UH26        chrX    0.979822        chrY    0.413537
+GTEX-1A3MX-0002-SM-7J38V        chrX    0.995194        chrY    0.425899
+GTEX-SUCS-0001-SM-5URDQ chrX    0.998329        chrY    0.329816
+linyong@fry /lab/solexa_page/linyong/gtex-dna-test$  cat temp-gene.exon.depth-file |grep GTEX-SUCS-0001-SM-5URDQ
+
+
+header  geneID  geneName        header  #rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+
+GTEX-SUCS-0001-SM-5URDQ geneID  geneName        chrom   chrY    1       57227415        3061224 23433952        40.9488 6.50793 255     18.9
+GTEX-SUCS-0001-SM-5URDQ chrX    0.998329        chrY    0.329816
+
+GTEX-1AYD5-0003-SM-7J39P        chrX    0.97571 chrY    0.950914
+GTEX-1AYD5-0003-SM-7J39P        geneID  geneName        chrom   chrY    1       57227415        7158588 23552203        41.1555 14.6993 255     16.9
+Y       26,452,288 -bp , Ungapped lengths are calculated by summing the length of sequenced bases only. 'Ns' are excluded.
+
+7158588*L / (57227415) = 14.6993
+14.6993 * 57227415 / 7158588 = 117
+6.50793 * 57227415 / 3061224 = 121.6
+linyong@fry /lab/solexa_page/linyong/dir-temp-1$ ~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chrY 12878801 17878801  > temp-chry.fa
+5M bp no 'N' is the seq
+linyong@fry /lab/solexa_page/linyong/dir-temp-1$ samtools coverage -q 0  temp-chry.bam | head
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chrY    1       57227415        1       5000001 8.73707 0.0873707       255     250
+5000001 / 57227415 = 0.08737
+1*5000001 / 57227415 =
+
+[bsw2_aln] read 3 sequences/pairs (15000003 bp) ...
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chrY    1       57227415        3       5000001 8.73707 0.262112        255     250
+3*5000001  / (57227415) = 0.2621122
+
