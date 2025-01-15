@@ -6046,3 +6046,47 @@ chrY    1       57227415        1       5000001 8.73707 0.0873707       255     
 chrY    1       57227415        3       5000001 8.73707 0.262112        255     250
 3*5000001  / (57227415) = 0.2621122
 
+######################################################################################
+index=5
+t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+file <- read.delim("gtex-54tiss.txt", header=F)
+tissue = file[index,1]
+ t2 <- t1[ t1$V2 == tissue, ]
+ t2$id <- gsub("-", ".", t2$V1)
+ t2$id <- paste(t2$id, ".", sep="")
+ raw2 <- raw[, colnames(raw) %in% t2$id ]
+ str1 <- paste(tissue, dim(raw2)[2], sep="\t")
+ cat(str1)
+ cat("\n")
+ rownames(raw2) <- raw$geneID
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+
+diff <- as.data.frame(cpm(y))
+gene.name <- raw[, 1:2]
+ gene.name[ gene.name$name %in% c("C4A", "C4B"),]
+#                   geneID name
+# 25277  ENSG00000224389.9  C4B
+# 37237 ENSG00000244731.10  C4A
+
+ g1 <- gene.name[ gene.name$name %in% c("C4A", "C4B"),]$geneID
+ g2 <- as.data.frame( t(diff[ rownames(diff) %in% g1,]))
+ str(g2)
+ g2$sample <- rownames(g2)
+ g3 <- merge(g2, info, by.x="sample", by.y="sid")
+ dim(g3)
+# [1] 226   9
+ g4 <- merge(g3, c4.cn, by.x="SUBJID", by.y="SUBJID")
+ dim(g4)
+ cor <- cor.test((g4$ENSG00000244731.10), g4$c4a.cn, method="s")
+ str2 <- paste(tissue, ", ", "rho=",  round(cor$estimate, digits = 4), ", ", "p=", format(cor$p.value, digits = 3), ", n=", dim(g4)[1], sep="")
+ggplot(g4, aes(x=c4a.cn, y=ENSG00000244731.10)) + geom_point(shape=21) + geom_smooth() + labs(x="C4A copy number", y="C4A gene expression (CPM)", title=str2)
