@@ -6090,3 +6090,7 @@ gene.name <- raw[, 1:2]
  cor <- cor.test((g4$ENSG00000244731.10), g4$c4a.cn, method="s")
  str2 <- paste(tissue, ", ", "rho=",  round(cor$estimate, digits = 4), ", ", "p=", format(cor$p.value, digits = 3), ", n=", dim(g4)[1], sep="")
 ggplot(g4, aes(x=c4a.cn, y=ENSG00000244731.10)) + geom_point(shape=21) + geom_smooth() + labs(x="C4A copy number", y="C4A gene expression (CPM)", title=str2)
+
+ cor <- cor.test(g4$ENSG00000224389.9, g4$c4b.cn, method="s")
+ str2 <- paste(tissue, ", ", "rho=",  round(cor$estimate, digits = 4), ", ", "p=", format(cor$p.value, digits = 3), ", n=", dim(g4)[1], sep="")
+ggplot(g4, aes(x=c4b.cn, y=ENSG00000224389.9)) + geom_point(shape=21) + geom_smooth() + labs(x="C4B copy number", y="C4B gene expression (CPM)", title=str2)
