@@ -1,0 +1,99 @@
+library(ComplexHeatmap)
+library(beeswarm)
+library(edgeR)
+library("circlize")
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(MASS)
+library(vioplot)
+library(Matrix.utils)
+library(ggrepel)
+
+setwd("/Users/linyongmao/Documents/dir-GTExV8")
+ t1 <- read.delim("gtex-dna-c4a-c4b.gene.depth.samtools.q20.txt", header=T)
+ head(t1)
+ t2 <- read.delim("cnv.dna.depth.gtex.donors.txt", header=F)
+ head(t2)
+ t2$seq.dep <- (t2$V3 + t2$V5)/2
+ t2$c4.tot <- (t2$V15 + t2$V18)/t2$seq.dep * 2
+ colnames(t2)
+ t3 <- t2[ , c(1,2,4,19,20)]
+ t6 <- merge(t3, t1, by.x="V1", by.y="donor")
+ dim(t6)
+# [1] 838  25
+ t6$c4a <- t6$C4A.meandepth / t6$seq.dep
+ t6$c4b <- t6$C4B.meandepth / t6$seq.dep
+ t6$c4a.cn <- t6$c4a / median(t6$c4a)*2
+ t6$c4b.cn <- t6$c4b / median(t6$c4b)*2
+
+ hist(t6$c4.tot, breaks=seq(0, 12, 0.5/2/2))
+t6.c4a.c4b.cn <- t6
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ t3 <- merge(t6.c4a.c4b.cn, info, by.x="V1", by.y="SAMPID")
+ dim(t3)
+# [1] 838  33
+ lm1 <- lm( t3$c4.tot ~ t3$c4a.cn + t3$c4b.cn)
+ summary(lm1)
+ t3$c4b.cn.derived <- (t3$c4.tot - 0.8555 - 1.19643 * t3$c4a.cn) / 0.64001
+
+ c4.cn <- t3
+ head(c4.cn, n=10)
+
+raw <- read.delim("gtex-all-samples.gene.count.txt", header=T)
+dim(raw)
+for (index in 1:54  ) {
+t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+file <- read.delim("gtex-54tiss.txt", header=F)
+tissue = file[index,1]
+ t2 <- t1[ t1$V2 == tissue, ]
+ t2$id <- gsub("-", ".", t2$V1)
+ t2$id <- paste(t2$id, ".", sep="")
+ raw2 <- raw[, colnames(raw) %in% t2$id ]
+ str1 <- paste(tissue, dim(raw2)[2], sep="\t")
+ cat(str1)
+ cat("\n")
+ rownames(raw2) <- raw$geneID
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+
+diff <- as.data.frame(cpm(y))
+gene.name <- raw[, 1:2]
+ gene.name[ gene.name$name %in% c("C4A", "C4B"),]
+#                   geneID name
+# 25277  ENSG00000224389.9  C4B
+# 37237 ENSG00000244731.10  C4A
+
+ g1 <- gene.name[ gene.name$name %in% c("C4A", "C4B"),]$geneID
+ g2 <- as.data.frame( t(diff[ rownames(diff) %in% g1,]))
+ str(g2)
+ g2$sample <- rownames(g2)
+ g3 <- merge(g2, info, by.x="sample", by.y="sid")
+ dim(g3)
+# [1] 226   9
+ g4 <- merge(g3, c4.cn, by.x="SUBJID", by.y="SUBJID")
+ dim(g4)
+# if(dim(g4[ g4$SEX.x == 2,])[1] >= 50) {
+ if(dim(g4)[1] >= 50) {
+ cor <- cor.test((g4$ENSG00000244731.10), g4$c4a.cn, method="s")
+ str2 <- paste(str1, dim(g4)[1], dim(g4[ g4$SEX.x == 2,])[1] , dim(g4[ g4$SEX.x == 1,])[1] , cor$estimate, cor$p.value,sep="\t")
+ cor <- cor.test(g4$ENSG00000224389.9, g4$c4b.cn, method="s")
+ str3 <- paste(str2, cor$estimate, cor$p.value, sep="\t")
+ cor <- cor.test(g4$ENSG00000224389.9, g4$c4b.cn.derived, method="s")
+ str4 <- paste(str3, cor$estimate, cor$p.value, sep="\t")
+ cat (str4)
+ cat("\n")
+} ### at least 50  F samples, if(dim(g4[ g4$SEX.x == 2,])[1] >= 50) 
+}
