@@ -119,9 +119,9 @@ gene.name <- raw[, 1:2]
 
 # if(dim(g4[ g4$SEX.x == 2,])[1] >= 50) {
  if(dim(g4)[1] >= 50 & dim(g6[ g6$SEX.x == 2,])[1] >= 10 & dim(g6[ g6$SEX.x == 1,])[1] >= 10) {
-lm1 <- lm(log2(g6$ENSG00000244731.10+1) ~ g6$c4a.cn + g6$t.SMRIN + log2(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+lm1 <- lm(log2(g6$ENSG00000244731.10+1) ~ g6$c4a.cn + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
 s1 <- summary(lm1)
-lm2 <-  lm(log2(g6$ENSG00000224389.9 +1) ~ g6$c4b.cn + g6$t.SMRIN + log2(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+lm2 <-  lm(log2(g6$ENSG00000224389.9 +1) ~ g6$c4b.cn + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
 s2 <- summary(lm2)
 
 str3 <- paste(str1, dim(g6)[1] , dim(g6[ g6$SEX.x == 2,])[1] , dim(g6[ g6$SEX.x == 1,])[1], 
