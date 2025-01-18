@@ -1,0 +1,139 @@
+library(ComplexHeatmap)
+library(beeswarm)
+library(edgeR)
+library("circlize")
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(MASS)
+library(vioplot)
+library(Matrix.utils)
+library(ggrepel)
+
+setwd("/Users/linyongmao/Documents/dir-GTExV8")
+ t1 <- read.delim("gtex-dna-c4a-c4b.gene.depth.samtools.q20.txt", header=T)
+ head(t1)
+ t2 <- read.delim("cnv.dna.depth.gtex.donors.txt", header=F)
+ head(t2)
+ t2$seq.dep <- (t2$V3 + t2$V5)/2
+ t2$c4.tot <- (t2$V15 + t2$V18)/t2$seq.dep * 2
+ colnames(t2)
+ t3 <- t2[ , c(1,2,4,19,20)]
+ t6 <- merge(t3, t1, by.x="V1", by.y="donor")
+ dim(t6)
+# [1] 838  25
+ t6$c4a <- t6$C4A.meandepth / t6$seq.dep
+ t6$c4b <- t6$C4B.meandepth / t6$seq.dep
+ t6$c4a.cn <- t6$c4a / median(t6$c4a)*2
+ t6$c4b.cn <- t6$c4b / median(t6$c4b)*2
+
+ hist(t6$c4.tot, breaks=seq(0, 12, 0.5/2/2))
+t6.c4a.c4b.cn <- t6
+ info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ t3 <- merge(t6.c4a.c4b.cn, info, by.x="V1", by.y="SAMPID")
+ dim(t3)
+# [1] 838  33
+ lm1 <- lm( t3$c4.tot ~ t3$c4a.cn + t3$c4b.cn)
+ summary(lm1)
+ t3$c4b.cn.derived <- (t3$c4.tot - 0.8555 - 1.19643 * t3$c4a.cn) / 0.64001
+
+ c4.cn <- t3
+ head(c4.cn, n=10)
+
+raw <- read.delim("gtex-all-samples.gene.count.txt", header=T)
+dim(raw)
+
+ t <- read.delim("/Users/linyongmao/Documents/dir-GTExV8/dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt")
+ t1 <- data.frame(t$SAMPID, t$SMRIN, t$SMTSISCH)
+ t2 <- t1[ !( is.na(t1$t.SMTSISCH) | is.na(t1$t.SMRIN)),]
+ dim(t2)
+#  [1] 19745     3
+#  > summary(t2)
+#     t.SAMPID            t.SMRIN         t.SMTSISCH
+#   Length:19745       Min.   : 3.100   Min.   :-1287
+#   Class :character   1st Qu.: 6.500   1st Qu.:  234
+#   Mode  :character   Median : 7.200   Median :  530
+#                      Mean   : 7.272   Mean   :  579
+#                      3rd Qu.: 7.900   3rd Qu.:  870
+#                      Max.   :10.000   Max.   : 2076
+
+rin <- t2
+
+for (index in 1:54  ) {
+t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+file <- read.delim("gtex-54tiss.txt", header=F)
+tissue = file[index,1]
+ t2 <- t1[ t1$V2 == tissue, ]
+ t2$id <- gsub("-", ".", t2$V1)
+ t2$id <- paste(t2$id, ".", sep="")
+ raw2 <- raw[, colnames(raw) %in% t2$id ]
+ str1 <- paste(tissue, dim(raw2)[2], sep="\t")
+ cat(str1)
+ cat("\n")
+ rownames(raw2) <- raw$geneID
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+
+diff <- as.data.frame(cpm(y))
+gene.name <- raw[, 1:2]
+ gene.name[ gene.name$name %in% c("C4A", "C4B"),]
+#                   geneID name
+# 25277  ENSG00000224389.9  C4B
+# 37237 ENSG00000244731.10  C4A
+
+ g1 <- gene.name[ gene.name$name %in% c("C4A", "C4B"),]$geneID
+ g2 <- as.data.frame( t(diff[ rownames(diff) %in% g1,]))
+ str(g2)
+ g2$sample <- rownames(g2)
+ g3 <- merge(g2, info, by.x="sample", by.y="sid")
+ dim(g3)
+# [1] 226   9
+ g4 <- merge(g3, c4.cn, by.x="SUBJID", by.y="SUBJID")
+ dim(g4)
+
+ g5 <- merge(g4, rin, by.x="SAMPID", by.y="t.SAMPID")
+ dim(g4)
+#  [1] 227  44
+ dim(g5)
+#  [1] 227  46
+ t5 <- read.delim("gtex-981subjects-tsvs/subject.tsv")
+ info3 <- t5[, c(16,31,46, 106)]
+ head(info3)
+#    age_value body_mass_index source_subject_id height
+#  1        49           21.41         GTEX-YB5E     68
+ g6 <- merge(g5, info3, by.x="SUBJID", by.y="source_subject_id")
+ dim(g6)
+#  [1] 227  49
+
+# if(dim(g4[ g4$SEX.x == 2,])[1] >= 50) {
+ if(dim(g4)[1] >= 50 & dim(g6[ g6$SEX.x == 2,])[1] >= 10 & dim(g6[ g6$SEX.x == 1,])[1] >= 10) {
+lm1 <- lm(log10(g6$ENSG00000244731.10+1) ~ g6$c4a.cn + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+s1 <- summary(lm1)
+lm2 <-  lm(log10(g6$ENSG00000224389.9 +1) ~ g6$c4b.cn + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+s2 <- summary(lm2)
+
+str3 <- paste(str1, dim(g6)[1] , dim(g6[ g6$SEX.x == 2,])[1] , dim(g6[ g6$SEX.x == 1,])[1], 
+s1$coefficients[2,1], s1$coefficients[2,4],
+s1$coefficients[3,1], s1$coefficients[3,4],s1$coefficients[4,1], s1$coefficients[4,4],s1$coefficients[5,1], s1$coefficients[5,4],
+s1$coefficients[6,1], s1$coefficients[6,4],s1$coefficients[7,1], s1$coefficients[7,4], s1$r.squared^(1/2),
+"c4a_c4b",
+s2$coefficients[2,1], s2$coefficients[2,4],
+s2$coefficients[3,1], s2$coefficients[3,4],s2$coefficients[4,1], s2$coefficients[4,4],s2$coefficients[5,1], s2$coefficients[5,4],
+s2$coefficients[6,1], s2$coefficients[6,4],s2$coefficients[7,1], s2$coefficients[7,4],s2$r.squared^(1/2), sep="\t")
+cat(str3)
+cat("\n")
+
+} ### at least 50  F samples, if(dim(g4[ g4$SEX.x == 2,])[1] >= 50) 
+}
