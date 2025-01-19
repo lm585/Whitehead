@@ -6096,6 +6096,9 @@ ggplot(g4, aes(x=c4a.cn, y=ENSG00000244731.10)) + geom_point(shape=21) + geom_sm
 ggplot(g4, aes(x=c4b.cn, y=ENSG00000224389.9)) + geom_point(shape=21) + geom_smooth() + labs(x="C4B copy number", y="C4B gene expression (CPM)", title=str2)
 
 #######################################################
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % Rscript c4a-c4b-cnv-q20-corr-express-batch-multiVar-2 > temp-1
+cat temp-1 | awk 'BEGIN {FS="\t"} NF > 12' > temp.txt 
+
 c4a-only-copyNumber-exon-depth.xlsx
 paste to "temp2"
 > t1 <- read.delim("temp2")
