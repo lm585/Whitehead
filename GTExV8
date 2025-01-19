@@ -6094,3 +6094,40 @@ ggplot(g4, aes(x=c4a.cn, y=ENSG00000244731.10)) + geom_point(shape=21) + geom_sm
  cor <- cor.test(g4$ENSG00000224389.9, g4$c4b.cn, method="s")
  str2 <- paste(tissue, ", ", "rho=",  round(cor$estimate, digits = 4), ", ", "p=", format(cor$p.value, digits = 3), ", n=", dim(g4)[1], sep="")
 ggplot(g4, aes(x=c4b.cn, y=ENSG00000224389.9)) + geom_point(shape=21) + geom_smooth() + labs(x="C4B copy number", y="C4B gene expression (CPM)", title=str2)
+
+#######################################################
+c4a-only-copyNumber-exon-depth.xlsx
+paste to "temp2"
+> t1 <- read.delim("temp2")
+ dim(t1)
+#  [1] 44 32
+ t2 <- data.frame(t1$X, t1$c4a.g6.c4a.cn.coeff, t1$c4a.g6.c4a.cn.pVal)
+ dim(t2[ t2$t1.c4a.g6.c4a.cn.pVal < 0.005,])
+#  [1] 43  3
+t3 <- data.frame(t1$X, t1$c4b.g6.c4b.cn.coeff, t1$c4b.g6.c4b.cn.pVal)
+ dim(t3[ t3$t1.c4b.g6.c4b.cn.pVal < 0.005,])
+#  [1] 25  3
+liver:
+Multiple R-squared:  0.5662,    Adjusted R-squared:  0.5533
+
+                (Intercept)                    g6$c4a.cn                   g6$t.SMRIN  log10(g6$t.SMTSISCH + 1300)
+                 16.8939175                    0.8058212                    0.6071816                   -4.6715198
+                   g6$SEX.x                 g6$age_value           g6$body_mass_index
+                 -0.1674806                   -0.0005688                   -0.0100502
+
+> df1 <- data.frame(x1 = 16.8939175 + 0.8058212*g6$c4a.cn + 0.6071816*g6$t.SMRIN -4.6715198 * log10(g6$t.SMTSISCH + 1300) -0.1674806 * g6$SEX.x -0.0005688 *g6$age_value -0.0100502 * g6$body_mass_index, y1 = log2(g6$ENSG00000244731.10+1))
+
+> summary(c4.cn$c4a.cn)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+ 0.1754  1.5679  2.0000  2.0016  2.4224  5.0299
+> summary(c4.cn$c4b.cn)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+ 0.2493  1.6553  2.0000  2.0111  2.3456  4.5997
+#  > summary(t2)
+#     t.SAMPID            t.SMRIN         t.SMTSISCH
+#   Length:19745       Min.   : 3.100   Min.   :-1287
+#   Class :character   1st Qu.: 6.500   1st Qu.:  234
+#   Mode  :character   Median : 7.200   Median :  530
+#                      Mean   : 7.272   Mean   :  579
+#                      3rd Qu.: 7.900   3rd Qu.:  870
+#                      Max.   :10.000   Max.   : 2076
