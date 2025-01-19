@@ -6120,6 +6120,41 @@ Multiple R-squared:  0.5662,    Adjusted R-squared:  0.5533
 
 > df1 <- data.frame(x1 = 16.8939175 + 0.8058212*g6$c4a.cn + 0.6071816*g6$t.SMRIN -4.6715198 * log10(g6$t.SMTSISCH + 1300) -0.1674806 * g6$SEX.x -0.0005688 *g6$age_value -0.0100502 * g6$body_mass_index, y1 = log2(g6$ENSG00000244731.10+1))
 
+############
+using log2(g6$c4a.cn)   log2(g6$c4b.cn) in linear model
+> 0.4769 /0.4448
+[1] 1.072167
+> 0.3845 / 0.3801
+[1] 1.011576
+>  t2 <- data.frame(t1$X, t1$c4a.g6.c4a.cn.coeff, t1$c4a.g6.c4a.cn.pVal)
+>  dim(t2[ t2$t1.c4a.g6.c4a.cn.pVal < 0.005,])
+[1] 43  3
+43/44 with FDR < 0.01
+> t1[ t1$c4a.g6.c4a.cn.coeff < 0,]
+zero tissue
+> t2 <- data.frame(t=t1$X, c=t1$c4a.g6.SEX.x.coeff, p= t1$c4a.g6.SEX.x.pVal)
+> t2$fdr <- p.adjust(t2$p, method="fdr")
+> t2[ t2$fdr < 0.01,]
+                         t          c           p          fdr
+1   Adipose - Subcutaneous -0.2254635 3.70939e-04 8.160658e-03
+20 Breast - Mammary Tissue  0.8304923 3.64000e-13 1.601600e-11
+
+                              X X.samp X.samp.genotype X.samp.F X.samp.M c4a.g6.c4a.cn.coeff c4a.g6.c4a.cn.pVal
+21 Cells - Cultured fibroblasts    504             467      165      302          0.09299814          0.1621013
+
+> t3 <- data.frame(t1$X, t1$c4b.g6.c4b.cn.coeff, t1$c4b.g6.c4b.cn.pVal)
+>  dim(t3[ t3$t1.c4b.g6.c4b.cn.pVal < 0.005,])
+[1] 26  3
+26/44 with FDR < 0.01
+> t1[ t1$c4b.g6.c4b.cn.coeff < 0,]
+one tissue: Cells - Cultured fibroblasts, -0.1085284          0.1256329
+ t2 <- data.frame(t=t1$X, c=t1$c4b.g6.SEX.x.coeff, p= t1$c4b.g6.SEX.x.pVal)
+ t2$fdr <- p.adjust(t2$p, method="fdr")
+ t2[ t2$fdr < 0.01,]
+                         t       c       p       fdr
+20 Breast - Mammary Tissue 1.04849 8.3e-17 3.652e-15
+
+######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
  0.1754  1.5679  2.0000  2.0016  2.4224  5.0299
