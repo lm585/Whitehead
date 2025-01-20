@@ -6154,6 +6154,11 @@ one tissue: Cells - Cultured fibroblasts, -0.1085284          0.1256329
                          t       c       p       fdr
 20 Breast - Mammary Tissue 1.04849 8.3e-17 3.652e-15
 
+liver:
+Multiple R-squared:  0.6564,    Adjusted R-squared:  0.6461 
+> t2 <- data.frame(x=  18.497655468 + 1.182719595 * log2(g6$c4a.cn) + 0.586422459 * g6$t.SMRIN -4.972768905 * log10(g6$t.SMTSISCH + 1300) -0.123010658 * g6$SEX.x -0.001015806 * g6$age_value -0.008834635 * g6$body_mass_index , y= log2(g6$ENSG00000244731.10 + 1))
+ gplot(t2, aes(x=x, y=y)) + geom_point(shape=21) + geom_smooth(method="lm") + labs(x="multiVarModel predicted value", y="log2(CPM+1)") #
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
