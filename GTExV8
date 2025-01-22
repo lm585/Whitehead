@@ -6182,6 +6182,16 @@ t3 <- data.frame(t2$c4a.g6.body_mass_index.pVal, t2$c4a.g6.age_value.pVal, t2$c4
   abline(v = seq(-100, 100, 5), lty = 5, lwd = 0.5, col = "gray")
  legend(25, 4+7*3, c("C4A CN", "RIN", "ISCH", "sex", "age", "bmi"), fill=c("magenta", "yellow", "green", "blue", "orange", "red"), cex=0.6, inset=0.05)
 
+###
+> t3 <- data.frame(t2$c4a.R)
+ rownames(t3) <- t2$X
+ t4 <- as.data.frame(t(t3))
+  par( mar=c(6,2,2,12))
+ barplot(as.matrix(t4), horiz=T, beside=T, xlab="multiVarModel R", xlim=c(0, 0.9), yaxt="n")
+ axis(side=4, at = seq(1.5, 27.5, by=2), labels=colnames(t4), las =1, cex.axis = 0.6)
+  abline(h = seq(1.5, 27.5, by=2), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = seq(-100, 100, 0.2), lty = 5, lwd = 0.5, col = "gray")
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
