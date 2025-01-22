@@ -6159,6 +6159,29 @@ Multiple R-squared:  0.6564,    Adjusted R-squared:  0.6461
 > t2 <- data.frame(x=  18.497655468 + 1.182719595 * log2(g6$c4a.cn) + 0.586422459 * g6$t.SMRIN -4.972768905 * log10(g6$t.SMTSISCH + 1300) -0.123010658 * g6$SEX.x -0.001015806 * g6$age_value -0.008834635 * g6$body_mass_index , y= log2(g6$ENSG00000244731.10 + 1))
  gplot(t2, aes(x=x, y=y)) + geom_point(shape=21) + geom_smooth(method="lm") + labs(x="multiVarModel predicted value", y="log2(CPM+1)") #
 
+###########################
+paste from:  c4a-only-copyNumber-exon-depth.xlsx
+vi temp1
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp1 | head -1 | awk 'BEGIN {FS = "\t"; OFS = "\t"} {for(i = 1; i <= NF; i++) print i, $i}'
+head -1 temp1 > temp1.c4a.R.sort
+awk 'NR > 1' temp1 | sort -t '   ' +17n -18 >> temp1.c4a.R.sort
+
+> t1 <- read.delim("temp1.c4a.R.sort")
+ dim(t1)
+#  [1] 44 32
+ dim(t1[ t1$c4a.R > 0.50139 ,])
+#  [1] 14 32
+t2 <- tail(t1, n=14)
+t3 <- data.frame(t2$c4a.g6.body_mass_index.pVal, t2$c4a.g6.age_value.pVal, t2$c4a.g6.SEX.x.pVal, t2$c4a.log10.g6.t.SMTSISCH.pVal, t2$c4a.g6.t.SMRIN.pVal,t2$c4a.g6.c4a.cn.pVal)
+ rownames(t3) <- t2$X
+ t4 <- as.data.frame(t(-log10(t3)))
+  par( mar=c(6,2,2,12))
+ barplot(as.matrix(t4), horiz=T, beside=T, col=c("red", "orange","blue", "green", "yellow", "magenta"), xlab="-log10(pVal)", xlim=c(0, 45), yaxt="n")
+ axis(side=4, at = seq(4, 99, by=7), labels=colnames(t4), las =1, cex.axis = 0.6)
+ abline(h = seq(4, 99, by=7), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = seq(-100, 100, 5), lty = 5, lwd = 0.5, col = "gray")
+ legend(25, 4+7*3, c("C4A CN", "RIN", "ISCH", "sex", "age", "bmi"), fill=c("magenta", "yellow", "green", "blue", "orange", "red"), cex=0.6, inset=0.05)
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
