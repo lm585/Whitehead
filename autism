@@ -5561,3 +5561,9 @@ cat temp-peaks.sam | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 && $5 >= 20' | a
 34385
 cat temp-peaks.sam | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 && $5 >= 20' | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 ~ /^[0-9]*M$/ && $5 > 50' > temp-peaks.2.sam
 
+#############################################################
+29211 conserved.6samp.6samp.peak.coord.sorted.merged
+ For the PU.1 (microglia samples) there are 11 replicates, most of which look pretty good and show the expected patterns of acetylation at microglia specific genes (e.g., CSF1R, TREM2, SPI1).
+
+linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ cat  conserved.6samp.6samp.peak.coord.sorted.merged | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $2, $3, "peak_" NR}' > conserved.6samp.6samp.peak.coord.sorted.merged.bed
+
