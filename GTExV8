@@ -6180,6 +6180,22 @@ t5 <- as.data.frame(t(t4))
   text(2, 5, "FDR = 0.01", pos=4, col="red")
  legend(7.5, 1.5+20*2, c(  "C4B"), fill=c("blue"), cex = 0.6, inset = 0.05)
 
+>  t2 <- data.frame(t1$X, t1$c4a.g6.c4a.cn.coeff, t1$c4a.g6.c4a.cn.pVal)
+ t2$fdr <- p.adjust(t2$t1.c4a.g6.c4a.cn.pVal, method="fdr")
+t3 <- t2[ order(t2$fdr, decreasing=T),]
+ t4 <- data.frame(t3$fdr)
+rownames(t4) <- t3$t1.X
+t5 <- as.data.frame(t(t4))
+  par( mar=c(6,2,2,12))
+ barplot(as.matrix(-log10(t5)), horiz=T, beside=T, col=c("orange"), xlab="-log10(FDR)",  yaxt="n")
+ axis(side=4, at = seq(1.5, 1.5 + 43*2, by=2), labels=colnames(t5), las =1, cex.axis = 0.6)
+ abline(h = seq(1.5, 1.5 + 43*2, by=2), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100, 100, 5), lty = 5, lwd = 0.5, col = "gray")
+ abline(v=2, col="red")
+ text(2, 1, "FDR = 0.01", pos=4, col="red")
+ legend(20, 1.5+20*2, c(  "C4A"), fill=c("orange"), cex = 0.6, inset = 0.05)
+
+
 ###########################
 paste from:  c4a-only-copyNumber-exon-depth.xlsx
 vi temp1
