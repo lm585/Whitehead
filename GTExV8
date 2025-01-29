@@ -6165,6 +6165,13 @@ t1 <- read.delim("temp1.c4a.R.sort")
 #  [1] 44 32
  dim(t1[ t1$c4a.R > 0.50139 ,])
 #  [1] 14 32
+ summary(t1$c4a.R)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.1421  0.4220  0.4649  0.4770  0.5221  0.8102 
+ summary(t1$c4b.R)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#0.09995 0.30946 0.39034 0.38454 0.43910 0.77011 
+
 > t2 <- data.frame(t1$X, t1$c4b.g6.c4b.cn.coeff, t1$c4b.g6.c4b.cn.pVal)
  t2$fdr <- p.adjust(t2$t1.c4b.g6.c4b.cn.pVal, method="fdr")
 t3 <- t2[ order(t2$fdr, decreasing=T),]
