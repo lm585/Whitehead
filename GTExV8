@@ -6195,6 +6195,29 @@ t5 <- as.data.frame(t(t4))
  text(2, 1, "FDR = 0.01", pos=4, col="red")
  legend(20, 1.5+20*2, c(  "C4A"), fill=c("orange"), cex = 0.6, inset = 0.05)
 
+> t2 <- data.frame(t1$X, t1$c4b.g6.c4b.cn.coeff, t1$c4b.g6.c4b.cn.pVal, t1$c4a.g6.c4a.cn.coeff, t1$c4a.g6.c4a.cn.pVal)
+  t2$fdr.c4b <- p.adjust(t2$t1.c4b.g6.c4b.cn.pVal, method="fdr")
+  t2$fdr.c4a <- p.adjust(t2$t1.c4a.g6.c4a.cn.pVal, method="fdr")
+ t2$log.fdr.c4b <- -log10( t2$fdr.c4b)
+ t2$log.fdr.c4a <- -log10( t2$fdr.c4a)
+ for(i in 1:dim(t2)[1]) {
+if(t2$t1.c4b.g6.c4b.cn.coeff[i] < 0) {
+ t2$log.fdr.c4b[i] <- -t2$log.fdr.c4b[i]
+}
+}
+
+ for(i in 1:dim(t2)[1]) {
+if(t2$t1.c4a.g6.c4a.cn.coeff[i] < 0) {
+ t2$log.fdr.c4a[i] <- -t2$log.fdr.c4a[i]
+}
+}
+
+ t3 <- t2[ grep("brain", t2$t1.X, ignore.case=T),]
+ dim(t3)
+#  [1] 13  9
+ gplot(t2, aes(x=log.fdr.c4b, y=log.fdr.c4a, label=t1.X)) + geom_point(shape=21, col="red", size=2) + scale_x_continuous(breaks=seq(0, 16, 2), limits=c(-1,15)) + scale_y_continuous(breaks=seq(0, 42, 2), limits=c(0, 42)) + geom_smooth(method="lm") + labs(x="signed log10(FDR), C4B", y="signed log10(FDR), C4A") + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1)
+
+gplot(t3, aes(x=log.fdr.c4b, y=log.fdr.c4a, label=t1.X)) + geom_point(shape=21, col="red", size=2) + labs(x="signed log10(FDR), C4B", y="signed log10(FDR), C4A") + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1)
 
 ###########################
 paste from:  c4a-only-copyNumber-exon-depth.xlsx
