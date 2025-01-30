@@ -6249,6 +6249,17 @@ t3 <- t2[ grep("brain", t2$t1.X, ignore.case=T),]
 #  [1] 13  9
  gplot(t2, aes(x=log.fdr.c4b, y=log.fdr.c4a, label=t1.X)) + geom_point(shape=21, col="red", size=2) + geom_smooth(method="lm") + labs(x="signed log10(FDR), C4B", y="signed log10(FDR), C4A") + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1)  + scale_x_continuous(breaks=seq(-10, 16, 2), limits=c(-2,7)) + scale_y_continuous(breaks=seq(-10, 16, 2), limits=c(-2,7))
 
+ t2$tissue <- "other tissues"
+for(i in 1:dim(t2)[1]) {
+if(grepl("brain", t2$t1.X[i], ignore.case=T)) {
+t2$tissue[i] <- "brain"
+}
+}
+
+ par( mar=c(6,6,2,2))
+ boxplot(abs( t2$log.fdr.c4a) ~ t2$tissue, ylab=paste( "-log10(FDR)", "\n", "C4A gene expression ~ age", sep=""))
+ abline(h = seq(-10, 10, by=1), lty = 5, lwd = 0.5, col = "gray")
+
 
 ###########################
 paste from:  c4a-only-copyNumber-exon-depth.xlsx
