@@ -6260,6 +6260,21 @@ t2$tissue[i] <- "brain"
  boxplot(abs( t2$log.fdr.c4a) ~ t2$tissue, ylab=paste( "-log10(FDR)", "\n", "C4A gene expression ~ age", sep=""))
  abline(h = seq(-10, 10, by=1), lty = 5, lwd = 0.5, col = "gray")
 
+################
+> t2 <- data.frame(t1$X, t1$c4a.g6.c4a.cn.pVal, t1$c4a.g6.t.SMRIN.pVal, t1$c4a.log10.g6.t.SMTSISCH.pVal, t1$c4a.g6.SEX.x.pVal, t1$c4a.g6.age_value.pVal, t1$c4a.g6.body_mass_index.pVal)
+ dim(t2)
+#  [1] 44  7
+ t2$fdr.c4a.cn <- p.adjust(t2$t1.c4a.g6.c4a.cn.pVal, method="fdr")
+ t2$fdr.c4a.RIN <- p.adjust(t2$t1.c4a.g6.t.SMRIN.pVal, method="fdr")
+ t2$fdr.c4a.ISCH <- p.adjust(t2$t1.c4a.log10.g6.t.SMTSISCH.pVal, method="fdr")
+ t2$fdr.c4a.sex <- p.adjust(t2$t1.c4a.g6.SEX.x.pVal, method="fdr")
+ t2$fdr.c4a.age <- p.adjust(t2$t1.c4a.g6.age_value.pVal, method="fdr")
+ t2$fdr.c4a.bmi <- p.adjust(t2$t1.c4a.g6.body_mass_index.pVal, method="fdr")
+ t3 <- t2[, c(8:13)]
+ t4 <- -log10(t3)
+ boxplot(t4, xlab="variable", ylab="MultiVarModel regression -log10(FDR)", cex.axis=0.8, col=c("red", "blue"), outcol=c("red", "blue"))
+  abline(v = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
 
 ###########################
 paste from:  c4a-only-copyNumber-exon-depth.xlsx
