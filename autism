@@ -5567,3 +5567,34 @@ cat temp-peaks.sam | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 && $5 >= 20' | a
 
 linyong@fry /lab/solexa_page/linyong/cyno-data/dir-macs2-defalt-param-2024-2-22$ cat  conserved.6samp.6samp.peak.coord.sorted.merged | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $2, $3, "peak_" NR}' > conserved.6samp.6samp.peak.coord.sorted.merged.bed
 
+##################################################################
+        Add this line to .bashrc file (or other depending on your shell):
+                PATH=$PATH:/lab/solexa_page/linyong/homer//bin/
+        Simply typing "findMotifs.pl" should work before running Homer.
+
+linyong@fry /lab/solexa_page/linyong/homer$ perl ./configureHomer.pl -list
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat chea.human.mg.f.bias.infg.102genes.withBackg.txt|head | grep ^IRF1  | head -1 | cut -f 9 | awk 'BEGIN {FS = ";"; OFS = "\t"} {for(i = 1; i <= NF; i++) print $i}' > temp-human.mg.f.bias.infg.21-genes.irf1-chip-seq
+
+linyong@fry /lab/solexa_page/linyong/homer$ perl ./configureHomer.pl -list
+linyong@fry /lab/solexa_page/linyong/homer$ perl ./configureHomer.pl -install hg38
+        Installing: hg38
+linyong@fry /lab/solexa_page/linyong/homer$ perl ./configureHomer.pl -install human-p
+linyong@fry /lab/solexa_page/linyong/homer$ findMotifs.pl temp-human.mg.f.bias.infg.21-genes.irf1-chip-seq  human dir-output/ -start -500 -end 100  -p 4
+                2 of 472 (1e-19) IRF1(IRF)/PBMC-IRF1-ChIP-Seq(GSE43036)/Homer; 80.95% vs. 4.44%
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat chea.human.mg.f.bias.infg.102genes.withBackg.txt|head -20| grep -i "^stat1"   | cut -f 9 | awk 'BEGIN {FS = ";"; OFS = "\t"} {for(i = 1; i <= NF; i++) print $i}' > temp-human.mg.f.bias.infg.42-genes.stat1-chip-seq
+
+$ findMotifs.pl  temp-human.mg.f.bias.infg.42-genes.stat1-chip-seq   human dir-output-2/ -start -2000 -end 2000  -p 8
+                2 of 472 (1e-12) IRF1(IRF)/PBMC-IRF1-ChIP-Seq(GSE43036)/Homer; 69.05% vs. 16.94%
+                6 of 472 (1e-3) STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer; 59.52% vs. 32.41%
+
+linyong@fry /lab/solexa_page/linyong/homer$ annotatePeaks.pl tss hg38 -size -2000,2000 -hist 50 -m dir-output-2/knownResults//known6.motif -list temp-human.mg.f.bias.infg.42-genes.stat1-chip-seq > temp1
+        Peak file = tss
+        Genome = hg38
+        Organism = human
+        Peak Region set to 4001
+        -----------------------------------------------------
+        Histogram mode activated (bin size = 50 bp)
+        -----------------------------------------------------
+linyong@fry /lab/solexa_page/linyong/homer$ annotatePeaks.pl tss hg38 -size -2000,2000  -m dir-output-2/knownResults//known6.motif -list temp-human.mg.f.bias.infg.42-genes.stat1-chip-seq > temp2
+
