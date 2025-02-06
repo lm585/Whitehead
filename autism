@@ -5578,6 +5578,8 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % cat chea.human.mg.f.bias.infg.102gene
 linyong@fry /lab/solexa_page/linyong/homer$ perl ./configureHomer.pl -list
 linyong@fry /lab/solexa_page/linyong/homer$ perl ./configureHomer.pl -install hg38
         Installing: hg38
+linyong@fry /lab/solexa_page/linyong/homer$ perl ./configureHomer.pl -install hg18
+
 linyong@fry /lab/solexa_page/linyong/homer$ perl ./configureHomer.pl -install human-p
 linyong@fry /lab/solexa_page/linyong/homer$ findMotifs.pl temp-human.mg.f.bias.infg.21-genes.irf1-chip-seq  human dir-output/ -start -500 -end 100  -p 4
                 2 of 472 (1e-19) IRF1(IRF)/PBMC-IRF1-ChIP-Seq(GSE43036)/Homer; 80.95% vs. 4.44%
