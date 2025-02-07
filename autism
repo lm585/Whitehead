@@ -5600,3 +5600,41 @@ linyong@fry /lab/solexa_page/linyong/homer$ annotatePeaks.pl tss hg38 -size -200
         -----------------------------------------------------
 linyong@fry /lab/solexa_page/linyong/homer$ annotatePeaks.pl tss hg38 -size -2000,2000  -m dir-output-2/knownResults//known6.motif -list temp-human.mg.f.bias.infg.42-genes.stat1-chip-seq > temp2
 
+############################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat /Users/linyongmao/Downloads/temp-122024/GSM320736_HeLa_STAT1_peaks.txt  |  awk 'BEGIN {FS = "\t"; OFS = "\t"} $8 < 1e-300 && $6 > 4' | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $2, $3, "peak_" $1 "-" $2 "-" $3 "_" NR,$6, "+" }'  > temp-peaks
+###Q-value == 0 && Ratio of fold enrichment of sample over control > 4
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % wc -l temp-peaks
+     144 temp-peaks
+linyong@fry /lab/solexa_page/linyong/homer$  homerTools extract temp-peaks data/genomes/hg18/ -fa > temp-peaks.fa
+        Custom genome sequence directory: data/genomes/hg18/
+linyong@fry /lab/solexa_page/linyong/homer$ bwa bwasw -t 8 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  temp-peaks.fa >  temp-peaks.sam
+linyong@fry /lab/solexa_page/linyong/homer$ cat temp-peaks.sam | awk 'NF > 9' | cut -f 2 | sort | uniq -c | head
+    144 0 read forward mapped
+
+linyong@fry /lab/solexa_page/linyong/homer$ cat temp-peaks.sam | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 && $5 >= 20' | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $6 ~ /^[0-9]*M$/ && $5 > 50' > temp-peaks.2.sam
+linyong@fry /lab/solexa_page/linyong/homer$ wc -l  temp-peaks.2.sam
+143 temp-peaks.2.sam
+
+cat temp-peaks.2.sam | cut -f 1-6 | sed 's/M$//' | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $3, $4, $4+$6, $1, $5, "+" }' > temp-peaks.2.sam.peaks
+
+findMotifsGenome.pl temp-peaks.2.sam.peaks hg38  /lab/solexa_page/linyong/homer/dir-output-3/  -size given -p 8
+###unmasked sequences
+STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-60   -1.396e+02      0.0000  124.0   86.71%  20903.3 21.85%
+STAT5(Stat)/mCD4+-Stat5-ChIP-Seq(GSE12346)/Homer        RTTTCTNAGAAA    1e-51   -1.179e+02      0.0000  121.0   84.62%  23316.7 24.37%
+Stat3(Stat)/mES-Stat3-ChIP-Seq(GSE11431)/Homer  CTTCCGGGAA      1e-41   -9.540e+01      0.0000  130.0   90.91%  34945.7 36.52%
+Stat3+il21(Stat)/CD4-Stat3-ChIP-Seq(GSE19198)/Homer     SVYTTCCNGGAARB  1e-36   -8.309e+01      0.0000  137.0   95.80%  45324.8 47.37%
+STAT4(Stat)/CD4-Stat4-ChIP-Seq(GSE22104)/Homer  NYTTCCWGGAAR    1e-24   -5.532e+01      0.0000  136.0   95.10%  54930.9 57.41%
+
+        Background fragment size set to 2113 (avg size of targets)
+        Background files for 2113 bp fragments found.
+linyong@fry /lab/solexa_page/linyong/homer$ ls -lh /lab/solexa_page/linyong/homer//data/genomes/hg38//preparsed/
+total 1.6G
+-rw-r--r-- 1 linyong systemd-timesync  25M Feb  6 19:47 hg38.2113.cgbins
+-rw-r--r-- 1 linyong systemd-timesync 1.5G Feb  6 19:46 hg38.2113.seq
+
+
+linyong@fry ~$ mv -i bin binnib
+             ### make those perl programs in $HOME/bin disappear
+linyong@fry ~$ mkdir bin
+             ###now it's empty $HOME/bin/
