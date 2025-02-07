@@ -5638,3 +5638,23 @@ linyong@fry ~$ mv -i bin binnib
              ### make those perl programs in $HOME/bin disappear
 linyong@fry ~$ mkdir bin
              ###now it's empty $HOME/bin/
+
+#########
+findMotifs.pl  human.mg.f.bias.infg.102-genes  human dir-output-4/   -start -2000 -end 2000  -p 8 -nomask
+###     Using non-repeat masked sequences
+/lab/solexa_page/linyong/homer/dir-output-4/ contains result files
+/lab/solexa_page/linyong/homer/out-homer-infn102g-2p-27 slurm output
+linyongmao@Linyong-Mao-MBP16-2019 autism % du -sh dir-temp-1/dir-output-4
+ 21M    dir-temp-1/dir-output-4
+
+IRF1(IRF)/PBMC-IRF1-ChIP-Seq(GSE43036)/Homer    GAAAGTGAAAGT    1e-19   -4.474e+01      0.0000  67.0    65.69%  10535.7 22.79%
+STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-2    -5.428e+00      0.2072  54.0    52.94%  18308.3 39.61%
+
+/lab/solexa_page/linyong/homer$ findMotifs.pl  human.mg.f.bias.infg.102-genes  human dir-output-5/   -start -2000 -end 2000  -p 8
+#default: -mask
+/lab/solexa_page/linyong/homer/dir-output-5/ contains result files
+/lab/solexa_page/linyong/homer/out-homer-infn102g-401p-2.7 slurm output
+
+IRF1(IRF)/PBMC-IRF1-ChIP-Seq(GSE43036)/Homer    GAAAGTGAAAGT    1e-23   -5.300e+01      0.0000  63.0    61.76%  7882.2  17.08%
+STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-2    -6.287e+00      0.0878  48.0    47.06%  15107.4 32.74%
+
