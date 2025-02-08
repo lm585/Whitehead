@@ -5660,3 +5660,22 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % du -sh dir-temp-1/dir-output-5
 IRF1(IRF)/PBMC-IRF1-ChIP-Seq(GSE43036)/Homer    GAAAGTGAAAGT    1e-23   -5.300e+01      0.0000  63.0    61.76%  7882.2  17.08%
 STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-2    -6.287e+00      0.0878  48.0    47.06%  15107.4 32.74%
 
+linyong@fry /lab/solexa_page/linyong/homer$ findMotifs.pl  human.mg.f.bias.infg.102-genes  human dir-output-6/   -start -1500 -end 500  -p 8  -nomotif
+## #default: -mask
+## Will not run homer for de novo motifs
+IRF1(IRF)/PBMC-IRF1-ChIP-Seq(GSE43036)/Homer    GAAAGTGAAAGT    1e-21   -4.981e+01      0.0000  47.0    46.08%  4190.8  9.09%
+STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-2    -6.607e+00      0.0531  31.0    30.39%  8207.0  17.79%
+
+linyong@fry /lab/solexa_page/linyong/homer$  findMotifs.pl  human.mg.f.bias.infg.102-genes  human dir-output-6/   -start -1000 -end 500  -p 8  -nomotif
+## #default: -mask
+## Will not run homer for de novo motifs
+IRF1(IRF)/PBMC-IRF1-ChIP-Seq(GSE43036)/Homer    GAAAGTGAAAGT    1e-25   -5.867e+01      0.0000  47.0    46.08%  3387.9  7.36%
+STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-3    -8.104e+00      0.0119  28.0    27.45%  6470.0  14.05%
+
+
+linyong@fry /lab/solexa_page/linyong/homer$  findMotifs.pl  human.mg.f.bias.infg.102-genes  human dir-output-6/   -start -500 -end 200  -p 8  -nomotif
+## #default: -mask
+## Will not run homer for de novo motifs
+IRF1(IRF)/PBMC-IRF1-ChIP-Seq(GSE43036)/Homer    GAAAGTGAAAGT    1e-26   -6.165e+01      0.0000  40.0    39.22%  2001.0  4.39%
+STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-2    -6.028e+00      0.0758  17.0    16.67%  3570.4  7.83%
+
