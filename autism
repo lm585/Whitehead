@@ -5654,6 +5654,8 @@ STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-2    
 #default: -mask
 /lab/solexa_page/linyong/homer/dir-output-5/ contains result files
 /lab/solexa_page/linyong/homer/out-homer-infn102g-401p-2.7 slurm output
+linyongmao@Linyong-Mao-MBP16-2019 autism % du -sh dir-temp-1/dir-output-5
+ 20M	dir-temp-1/dir-output-5
 
 IRF1(IRF)/PBMC-IRF1-ChIP-Seq(GSE43036)/Homer    GAAAGTGAAAGT    1e-23   -5.300e+01      0.0000  63.0    61.76%  7882.2  17.08%
 STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-2    -6.287e+00      0.0878  48.0    47.06%  15107.4 32.74%
