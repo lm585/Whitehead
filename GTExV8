@@ -6339,6 +6339,24 @@ t3 <- data.frame(t2$c4b.g6.body_mass_index.pVal, t2$c4b.g6.age_value.pVal, t2$c4
   abline(v = seq(-100, 100, 0.2), lty = 5, lwd = 0.5, col = "gray")
 
 ######################################
+"c4a-c4b-cnv-q20-corr-express-batch-multiVar-2"
+c4.cn
+> summary( (c4.cn$c4a.cn + c4.cn$c4b.cn)/c4.cn$c4.tot)
+#     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   0.4765  0.8239  0.8917  0.8885  0.9593  1.3559
+
+ med <- median((c4.cn$c4a.cn + c4.cn$c4b.cn)/c4.cn$c4.tot)
+ boxplot(c4.cn$c4a.cn / med ~ c4.cn$SEX, xlab="", xaxt="n", ylab="C4A CN")
+ axis(side = 1, at=seq(1,2,by=1), labels =c("male(n=557)", "female(n=281)"))
+ abline(h = seq(0, 148, by=1), lty = 5, lwd = 0.5, col = "gray")
+ wilcox.test( c4.cn[ c4.cn$SEX == 1,]$c4a.cn, c4.cn[ c4.cn$SEX == 2,]$c4a.cn)
+
+ boxplot(c4.cn$c4b.cn / med ~ c4.cn$SEX, xlab="", xaxt="n", ylab="C4B CN")
+ axis(side = 1, at=seq(1,2,by=1), labels =c("male(n=557)", "female(n=281)"))
+ abline(h = seq(0, 148, by=1), lty = 5, lwd = 0.5, col = "gray")
+ wilcox.test( c4.cn[ c4.cn$SEX == 1,]$c4b.cn, c4.cn[ c4.cn$SEX == 2,]$c4b.cn)
+
+######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
  0.1754  1.5679  2.0000  2.0016  2.4224  5.0299
