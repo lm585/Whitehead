@@ -6356,6 +6356,42 @@ c4.cn
  abline(h = seq(0, 148, by=1), lty = 5, lwd = 0.5, col = "gray")
  wilcox.test( c4.cn[ c4.cn$SEX == 1,]$c4b.cn, c4.cn[ c4.cn$SEX == 2,]$c4b.cn)
 
+########################################
+> raw2 <- raw[, 3: 17352]
+ rownames(raw2) <- raw$geneID
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.5 
+}
+ y<-y[med$logic,]
+ dim(y)
+#  [1] 16985 genes;  17350
+ d <- cpm(y)
+ a <- as.data.frame(log2(d+1))
+gene.name <- raw[, 1:2]
+ gene.name[ gene.name$name %in% c("C4A", "C4B"),]
+ g1 <- gene.name[ gene.name$name %in% c("C4A", "C4B"),]$geneID
+ e1 <- a[ rownames(a) == g1[1],]
+ corr <- a[, c(1,2)]
+ colnames(corr) <- c("geneID", g1[1])
+
+for(i in 1:dim(a)[1]) {
+ t1 <- cor.test(as.numeric( e1[1,]), as.numeric(a[i,]))
+ corr[i,1] <- rownames(a)[i]
+ corr[i,2] <- t1$estimate
+
+}
+
+ corr1 <- merge(corr, gene.name, by.x="geneID", by.y="geneID")
+ dim(corr1)
+#  [1] 16985     3
+ corr1[ corr1$ENSG00000224389.9 > 0.5,]
+# 22 genes
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
