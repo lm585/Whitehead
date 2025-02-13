@@ -6392,6 +6392,12 @@ for(i in 1:dim(a)[1]) {
  corr1[ corr1$ENSG00000224389.9 > 0.5,]
 # 22 genes
 
+###################################################################
+### script-gtexv8-tissue-sex-diff-PC1-PC21-covar
++  med$logic[i] <- median(d[i,]) >= 0.5
+design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN + log10(info.2$t.SMTSISCH + 1300))  
+"diff2-1-breast-FvsM.age-bmi-RIN-ischemV2-covar.cpm0.5.txt"
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
