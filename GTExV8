@@ -6392,6 +6392,22 @@ for(i in 1:dim(a)[1]) {
  corr1[ corr1$ENSG00000224389.9 > 0.5,]
 # 22 genes
 
+##################################################
+"c4a-c4b-cnv-q20-corr-express-batch-multiVar-2"
+> boxplot(log2(g6$ENSG00000224389.9 + 1) ~ g6$SEX.x, ylab="C4B gene expression, log2(CPM+1)", xlab="", xaxt="n")
+  axis(side = 1, at=seq(1,2,by=1), labels =c("male(n=245)", "female(n= 149)"))
+  abline(h = seq(0, 148, by=1), lty = 5, lwd = 0.5, col = "gray")
+ g7 <- g6
+ g7$SEX.y <- factor(g7$SEX.x, levels=c(1,2), labels=c( "male", "female"))
+> gplot(g7, aes(x=log2(c4b.cn), y=  log2(ENSG00000224389.9 + 1), group= SEX.y, color=SEX.y)) + geom_point(shape=21, size = 1) + geom_smooth(aes(fill = SEX.y)) + labs(x="log2(C4B_CN)", y="C4B gene expression, log2(CPM+1)") + scale_color_manual(breaks=c("female", "male"), values=c("orange", "purple")) + scale_fill_manual(breaks=c("female", "male"), values=c("orange", "purple")) + scale_y_continuous(breaks=seq(0, 42, 2), limits=c(0, 7))
+
+ boxplot(log2(g6$ENSG00000244731.10 + 1) ~ g6$SEX.x, ylab="C4A gene expression, log2(CPM+1)", xlab="", xaxt="n")
+ axis(side = 1, at=seq(1,2,by=1), labels =c("male(n=245)", "female(n= 149)"))
+ abline(h = seq(0, 148, by=1), lty = 5, lwd = 0.5, col = "gray")
+ g7 <- g6
+ g7$SEX.y <- factor(g7$SEX.x, levels=c(1,2), labels=c( "male", "female"))
+ gplot(g7, aes(x=log2(c4a.cn), y=  log2(ENSG00000244731.10 + 1), group= SEX.y, color=SEX.y)) + geom_point(shape=21, size = 1) + geom_smooth(aes(fill = SEX.y)) + labs(x="log2(C4A_CN)", y="C4A gene expression, log2(CPM+1)") + scale_color_manual(breaks=c("female", "male"), values=c("orange", "purple")) + scale_fill_manual(breaks=c("female", "male"), values=c("orange", "purple")) + scale_y_continuous(breaks=seq(0, 42, 2), limits=c(0, 7))
+
 ###################################################################
 ### script-gtexv8-tissue-sex-diff-PC1-PC21-covar
 +  med$logic[i] <- median(d[i,]) >= 0.5
