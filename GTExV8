@@ -6414,6 +6414,34 @@ for(i in 1:dim(a)[1]) {
 design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN + log10(info.2$t.SMTSISCH + 1300))  
 "diff2-1-breast-FvsM.age-bmi-RIN-ischemV2-covar.cpm0.5.txt"
 
+###################################################################
+> t1 <- read.delim("temp1.c4a.R.sort")
+......
+> t2 <- data.frame(t1$X, t1$c4b.g6.SEX.x.coeff, t1$c4b.g6.SEX.x.pVal, t1$c4a.g6.SEX.x.coeff, t1$c4a.g6.SEX.x.pVal)
+ t2$fdr.c4a <- p.adjust(t2$t1.c4a.g6.SEX.x.pVal, method="fdr")
+ t2$fdr.c4b <- p.adjust(t2$t1.c4b.g6.SEX.x.pVal, method="fdr")
+ t3 <- t2[ abs( t2$t1.c4b.g6.SEX.x.coeff) > 0.2,]
+> gplot(t2, aes(x=t1.c4b.g6.SEX.x.coeff, y= -log10(fdr.c4b), label=t1.X))  + geom_point(shape=21,size=2) + geom_text_repel(show.legend=F, data=t3, size=2, max.overlaps=100, min.segment.length = 0.1) + scale_y_continuous(breaks=seq(0, 40, 1), limits=c(0, 2.5)) + labs(x="log2 FC (F vs. M)", y="-log10(FDR), C4B") + geom_smooth(se=T)
+
+######
+> t2 <- data.frame(t1$X, t1$X.samp.genotype, t1$c4b.g6.SEX.x.coeff, t1$c4b.g6.SEX.x.pVal, t1$c4a.g6.SEX.x.coeff, t1$c4a.g6.SEX.x.pVal)
+ t2$fdr.c4a <- p.adjust(t2$t1.c4a.g6.SEX.x.pVal, method="fdr")
+ t2$fdr.c4b <- p.adjust(t2$t1.c4b.g6.SEX.x.pVal, method="fdr")
+ t3 <- t2[ abs( t2$t1.c4b.g6.SEX.x.coeff) > 0.2,]
+ t2.2 <- t2
+ t2.2[ t2.2$fdr.c4b < 1e-10,]$fdr.c4b = 1e-4
+ plot(-log10(t2.2$fdr.c4b) ~ abs( t2.2$t1.c4b.g6.SEX.x.coeff), xlab="abs(SEX.coeff)", ylab="abs(log10(FDR)), C4B" )
+ text(x=1.04849 - 0.1, y=4, "breat, FDR=3.6e-15", col="blue", pos=1)
+
+ plot(-log10(t2.2$fdr.c4b) ~ ( t2.2$t1.X.samp.genotype), xlab="# of samples per tissue", ylab="abs(log10(FDR)), C4B" )
+ text(x=350, y=4, "breat, FDR=3.6e-15", col="blue", pos=1)
+
+######
+ t3 <- t2[ abs( t2$t1.c4a.g6.SEX.x.coeff) > 0.2 & abs( t2$t1.c4b.g6.SEX.x.coeff) > 0.2,]
+ dim(t3)
+#  [1] 15  7
+> gplot(t3, aes(x=t1.c4b.g6.SEX.x.coeff, y=t1.c4a.g6.SEX.x.coeff, label=t1.X))  + geom_point(shape=21,size=2) + geom_text_repel(show.legend=F, data=t3, size=2, max.overlaps=100, min.segment.length = 0.1) + scale_y_continuous(breaks=seq(-2,2,0.2)) + labs(x="C4B, log2 FC (F vs. M)", y="C4A, log2 FC (F vs. M)") + geom_smooth(se=T, method="lm")
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
