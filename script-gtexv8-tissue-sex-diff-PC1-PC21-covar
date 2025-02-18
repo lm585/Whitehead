@@ -18,6 +18,18 @@ tissue = file[index,1]
  cat(str1)
  cat("\n")
 clname <- t2$id
+
+t <- read.delim("/Users/linyongmao/Documents/dir-GTExV8/dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt")
+ t1 <- data.frame(t$SAMPID, t$SMRIN, t$SMTSISCH)
+ t2 <- t1[ !( is.na(t1$t.SMTSISCH) | is.na(t1$t.SMRIN)),]
+ dim(t2)
+#  [1] 19745     3
+rin <- t2
+ rin$id <- gsub("-", ".", rin$t.SAMPID)
+ rin$id <- paste(rin$id, ".", sep="")
+ raw2 <- raw[, colnames(raw) %in% clname & colnames(raw) %in% rin$id]
+ dim(raw2)
+
 rownames(raw2) <- raw$geneID
 y <- DGEList(counts=raw2)
 y <- calcNormFactors(y)
