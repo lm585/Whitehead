@@ -1,6 +1,11 @@
  setwd("/Users/linyongmao/Documents/dir-GTExV8/")
 raw <- read.delim("gtex-all-samples.gene.count.txt", header=T)
 dim(raw)
+ mean(raw[,3])
+#  [1] 496.539
+ mean(raw[,dim(raw)[2]])
+#  [1] 464.4653
+
 t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
 file <- read.delim("gtex-54tiss.txt", header=F)
  index = 32
