@@ -17,6 +17,7 @@ tissue = file[index,1]
  str1 <- paste(tissue, dim(raw2)[2], sep="\t")
  cat(str1)
  cat("\n")
+clname <- t2$id
 rownames(raw2) <- raw$geneID
 y <- DGEList(counts=raw2)
 y <- calcNormFactors(y)
