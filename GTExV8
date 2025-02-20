@@ -6445,6 +6445,29 @@ design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index
 > gplot(t3, aes(x=t1.c4b.g6.SEX.x.coeff, y=t1.c4a.g6.SEX.x.coeff, label=t1.X))  + geom_point(shape=21,size=2) + geom_text_repel(show.legend=F, data=t3, size=2, max.overlaps=100, min.segment.length = 0.1) + scale_y_continuous(breaks=seq(-2,2,0.2)) + labs(x="C4B, log2 FC (F vs. M)", y="C4A, log2 FC (F vs. M)") + geom_smooth(se=T, method="lm")
 
 ######################################
+> d2 <- read.delim("dir-c4-c4b-comple-pathway/diff2-1.BrainFrontalCortex-FvsM.age-bmi-RIN-ischemplus1300-PC1-2-covar.cpm0.5.txt")
+ d3 <- merge(d2, df.cpm.gene, by.x="geneID", by.y="geneID")
+ dim(d3)
+#  [1] 18067    19
+ t1 <- read.delim("/Users/linyongmao/Documents/h.all.v7.4.symbols.gmt", header=F)
+ dim(t1)
+#  [1]  50 202
+ t2 <- t1[ grepl("complement", t1$V1, ignore.case=T),3:202]
+ d4 <- d3[ d3$name.x %in% as.character(t2),]
+ dim(d4)
+#  [1] 168  19
+ d5 <- d4[ d4$logFC.x >= 0.5,]
+ gplot(d4, aes(x=logFC.x, y=logFC.y, label=name.x)) + geom_point(shape=21, size=2, color="red") + geom_smooth(method="lm") + scale_x_continuous(breaks=seq(-2,2,0.2)) + geom_hline(yintercept=0) + geom_vline(xintercept=0) + labs(x="log2 FC (F vs. M), Frontal Cortex (BA9)", y="log2 FC (F vs. M), Cortex") + geom_text_repel(show.legend=T, data=d5, size=2.2, max.overlaps=100, min.segment.length = 0.1)
+ d4 <- d3[ d3$chr.x == "chrX",]
+ dim(d4)
+#  [1] 599  19
+  d5 <- d4[ d4$logFC.x >= 0.3,]
+ dim(d5)
+#  [1] 36 19
+gplot(d4, aes(x=logFC.x, y=logFC.y, label=name.x)) + geom_point(shape=21, size=2, color="red") + geom_smooth(method="lm")  + geom_hline(yintercept=0) + geom_vline(xintercept=0) + labs(x="log2 FC (F vs. M), Frontal Cortex (BA9)", y="log2 FC (F vs. M), Cortex") + geom_text_repel(show.legend=T, data=d5, size=2.2, max.overlaps=100, min.segment.length = 0.1)
+
+
+######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
  0.1754  1.5679  2.0000  2.0016  2.4224  5.0299
