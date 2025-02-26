@@ -5679,3 +5679,13 @@ linyong@fry /lab/solexa_page/linyong/homer$  findMotifs.pl  human.mg.f.bias.infg
 IRF1(IRF)/PBMC-IRF1-ChIP-Seq(GSE43036)/Homer    GAAAGTGAAAGT    1e-26   -6.165e+01      0.0000  40.0    39.22%  2001.0  4.39%
 STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer       NATTTCCNGGAAAT  1e-2    -6.028e+00      0.0758  17.0    16.67%  3570.4  7.83%
 
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat chea.human.mg.f.bias.infg.102genes.withBackg.txt|head -20| grep -i "^irf1"  | head -1 |  cut -f 9  | awk 'BEGIN {FS = ";"; OFS = "\t"} {for(i = 1; i <= NF; i++) print $i}' > temp-human.mg.f.bias.infg.21-genes.IRF1ChIP-SeqMONOCYTES
+linyong@fry /lab/solexa_page/linyong/homer$  findMotifs.pl  temp-human.mg.f.bias.infg.21-genes.IRF1ChIP-SeqMONOCYTES   human dir-output-temp/  -start -2000 -end 2000  -p 8  -nomotif
+## #default: -mask
+## Will not run homer for de novo motifs
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat chea.human.mg.f.bias.oxphos.83genes.withBackg.txt | grep -i "^stat1" | head -1 |  cut -f 9  | awk 'BEGIN {FS = ";"; OFS = "\t"} {for(i = 1; i <= NF; i++) print $i}' > temp-human.mg.f.bias.oxphos.37-genes.STAT1ChIP-SeqHeLaS3
+linyong@fry /lab/solexa_page/linyong/homer$  findMotifs.pl temp-human.mg.f.bias.oxphos.37-genes.STAT1ChIP-SeqHeLaS3    human dir-output-temp/  -start -2000 -end 2000  -p 8  -nomotif
+
+linyong@fry /lab/solexa_page/linyong/homer$  findMotifs.pl temp-human.mg.f.bias.oxphos.83-genes  human dir-output-temp/  -start -2000 -end 2000  -p 8  -nomotif
+
