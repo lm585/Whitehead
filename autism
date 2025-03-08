@@ -5689,3 +5689,37 @@ linyong@fry /lab/solexa_page/linyong/homer$  findMotifs.pl temp-human.mg.f.bias.
 
 linyong@fry /lab/solexa_page/linyong/homer$  findMotifs.pl temp-human.mg.f.bias.oxphos.83-genes  human dir-output-temp/  -start -2000 -end 2000  -p 8  -nomotif
 
+#############################################################
+linyong@fry /lab/solexa_page/linyong/homer$ rm -f temp1
+annotatePeaks.pl tss hg38 -size -2000,2000  -m dir-output-2/knownResults//known6.motif -list temp-human.mg.f.bias.infg.42-genes.stat1-chip-seq > temp1
+cat temp1 | cut -f 22 | awk 'NR > 1 && $1 != "" ' | wc -l
+# 26, 26 / 42 = 0.6190476
+
+annotatePeaks.pl tss hg38 -size -2000,2000  -m dir-output-2/knownResults//known6.motif -list temp-human.mg.f.bias.infg.42-genes.stat1-chip-seq  -mask > temp1
+cat temp1 | cut -f 22 | awk 'NR > 1 && $1 != "" ' | wc -l
+#  25
+
+linyong@fry /lab/solexa_page/linyong/homer$  findMotifs.pl   temp-human.mg.f.bias.infg.42-genes.stat1-chip-seq    human dir-output-temp/  -start -2000 -end 2000  -p 8  -nomotif
+# 25 / 42 = 0.5952381, STAT1(Stat)/HelaS3-STAT1-ChIP-Seq(GSE12782)/Homer
+
+-rw-r--r--  1 linyong systemd-timesync 111K Mar  7 19:05 temp-bg1
+linyong@fry /lab/solexa_page/linyong/homer$ sbatch slurm-homer-5
+#SBATCH --output "out-homer-14586g-3-7-707p"   # name of output file.  %j is jobid
+annotatePeaks.pl tss hg38 -size -2000,2000  -m dir-output-2/knownResults//known6.motif -list temp-bg1 -mask > human-mg-14586genes-stat1-motif-occur
+#       Will use repeat-masked sequences
+                Total Peaks: 11884
+        11817 total sequences read
+linyong@fry /lab/solexa_page/linyong/homer$ cat human-mg-14586genes-stat1-motif-occur | wc -l
+11885
+cat human-mg-14586genes-stat1-motif-occur |cut -f 22 | awk 'NR > 1 && $1 != "" ' | wc -l
+3789
+cat human-mg-14586genes-stat1-motif-occur |cut -f 22 | awk 'NR > 1 && $1 == "" ' | wc -l
+8095
+> 3789 / 11884
+[1] 0.318832
+> 3789/11817
+[1] 0.3206398
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt |   awk 'NR > 1 && $8 != "chrX" && $8 != "chrY" ' |  cut -f 7 | sort | uniq > temp-bg1
+linyongmao@Linyong-Mao-MBP16-2019 autism % wc -l temp-bg1
+   14586 temp-bg1
