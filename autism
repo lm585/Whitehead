@@ -1378,7 +1378,7 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i human_Microglia_RNA-18samp.gene
 .......
 > dim(df.cpm.noX.Y)
 [1] 14603    10
-
+##  14586 uniq gene symbols
 linyongmao@Linyong-Mao-MBP16-2019 autism % ls -lh *rnk
 -rw-r--r--  1 linyongmao  staff   243K Aug 18 13:15 human_Microglia_rna-postnatal-M.age.interac-diff2-1.noX.Y.interac.strand.rnk
 -rw-r--r--  1 linyongmao  staff   243K Aug 18 13:09 human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk
