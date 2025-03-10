@@ -3539,6 +3539,36 @@ echo
 
 bash   script-inputset-pathways-overlap-fisher-fdr  temp-m-bias human-mg-m-bias.interact temp-f1   temp-bg-genes
 
+###################################################
+> r1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk", header=F)
+ r2 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk", header=F)
+ dim(r1)
+#  [1] 12171     2
+ dim(r2)
+#  [1] 14586     2
+ r3 <- merge(r1, r2, by.x="V1", by.y="V1")
+ dim(r3)
+#  [1] 10021     3
+ write.table(r3, "temp1", quote=F, sep="\t")
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi temp1
+cat temp1 | awk 'NR > 1' |cut -f 1-2 | sort -t "$tab"  +1 -2g | awk '$2 < -1' |head  -500 | cut -f 1  >  mice-mg-f-bias
+cat temp1 | awk 'NR > 1' |cut -f 1-2 | sort -t "$tab"  +1 -2gr | awk '$2 > 1' |head  -500 | cut -f 1  > mice-mg-m-bias
+ls mice-mg-f-bias mice-mg-m-bias > temp-f1
+
+cat temp1 | awk 'NR > 1' |cut -f 1,3 | sort -t "$tab"  +1 -2g | awk '$2 < -1' |head  -500   | cut -f 1 > temp-f-bias
+cat temp1 | awk 'NR > 1' |cut -f 1,3 | sort -t "$tab"  +1 -2gr | awk '$2 > 1' |head  -500   | cut -f 1 > temp-m-bias
+
+cat temp1 | awk 'NR > 1' |cut -f 1 > temp-bg-genes
+
+wc -l mice-mg-f-bias mice-mg-m-bias temp-f-bias temp-m-bias temp-bg-genes
+bash   script-inputset-pathways-overlap-fisher-fdr   temp-f-bias human-mg-f-bias.interact   temp-f1   temp-bg-genes
+echo
+echo
+echo
+
+bash   script-inputset-pathways-overlap-fisher-fdr  temp-m-bias human-mg-m-bias.interact temp-f1   temp-bg-genes
+
 ###########################################oxphos pathway Z-score ~ Esrrb gene log2(cpm+1)
 > t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk", header=F)
 
