@@ -5753,3 +5753,38 @@ cat human-mg-14586genes-stat1-motif-occur |cut -f 22 | awk 'NR > 1 && $1 == "" '
 linyongmao@Linyong-Mao-MBP16-2019 autism % cat human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt |   awk 'NR > 1 && $8 != "chrX" && $8 != "chrY" ' |  cut -f 7 | sort | uniq > temp-bg1
 linyongmao@Linyong-Mao-MBP16-2019 autism % wc -l temp-bg1
    14586 temp-bg1
+
+##########################################################
+linyongmao@Linyong-Mao-MBP16-2019 autism % ls *.rnk | grep -i resid > temp-1
+ ls human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk >> temp-1
+> t1 <- read.delim("temp-1", header=F)
+ f1 <- read.delim(t1$V1[5], header=F)
+ f2 <- read.delim(t1$V1[1], header=F)
+ h.m <- merge(f1, f2, by.x="V1", by.y="V1")
+ dim(h.m)
+  p <- read.delim("../microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes", header=F)
+ h2 <- h.m[ h.m$V1 %in% p$V1,]
+ dim(h2)
+ lm1 <- cor.test(h2$V2.x, h2$V2.y, method="spearman")
+ str4 <- paste(t1$V1[1], lm1$estimate, lm1$p.value, sep="\t")
+cat (str4)
+ cat("\n")
+
+for(i in 1:4) {
+f1 <- read.delim(t1$V1[5], header=F)
+ f2 <- read.delim(t1$V1[i], header=F)
+ h.m <- merge(f1, f2, by.x="V1", by.y="V1")
+ dim(h.m)
+  p <- read.delim("../microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes", header=F)
+ h2 <- h.m[ h.m$V1 %in% p$V1,]
+ dim(h2)
+ lm1 <- cor.test(h2$V2.x, h2$V2.y, method="pearson")
+ str4 <- paste(t1$V1[i], lm1$estimate, lm1$p.value, sep="\t")
+cat (str4)
+ cat("\n")
+
+ }
+
+> h3 <- h2[ abs(h2$V2.x) > abs(log10(0.05)) &  abs(h2$V2.y) > abs(log10(0.05)) & h2$V2.x * h2$V2.y > 0,]
+> gplot(h2, aes(x=V2.y, y=V2.x, label=V1)) + geom_point(shape=21, size=2, color="red") + geom_smooth(method="lm") + labs( x = "mouse-mg signed log10 Pval (M vs. F)", y="human-mg signed log10 Pval (M vs. F)", title="HALLMARK_INTERFERON_GAMMA_RESPONSE.genes") + geom_hline(yintercept=0, col="black") + geom_vline(xintercept=0)  + scale_x_continuous(breaks=seq(-12, 12, 1)) + scale_y_continuous(breaks=seq(-12, 12, 1)) + geom_text_repel(show.legend=T, data=h3, size=2.2, max.overlaps=100, min.segment.length = 0.1)  
+
