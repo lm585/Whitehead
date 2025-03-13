@@ -5788,3 +5788,43 @@ cat (str4)
 > h3 <- h2[ abs(h2$V2.x) > abs(log10(0.05)) &  abs(h2$V2.y) > abs(log10(0.05)) & h2$V2.x * h2$V2.y > 0,]
 > gplot(h2, aes(x=V2.y, y=V2.x, label=V1)) + geom_point(shape=21, size=2, color="red") + geom_smooth(method="lm") + labs( x = "mouse-mg signed log10 Pval (M vs. F)", y="human-mg signed log10 Pval (M vs. F)", title="HALLMARK_INTERFERON_GAMMA_RESPONSE.genes") + geom_hline(yintercept=0, col="black") + geom_vline(xintercept=0)  + scale_x_continuous(breaks=seq(-12, 12, 1)) + scale_y_continuous(breaks=seq(-12, 12, 1)) + geom_text_repel(show.legend=T, data=h3, size=2.2, max.overlaps=100, min.segment.length = 0.1)  
 
+######################################################################
+> y.orig <- y
+ y <- y[, grepl("F", info.2$Sex)]
+ y
+ t1 <- data.frame(dum= 1:8)
+ design <- model.matrix(~t1$dum)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+# write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+ diff$geneID <- rownames(diff)
+ diff.f <- diff[, c(2,6)]
+ colnames(diff.f)[1] <- "log2CPM.female"
+
+ y <- y.orig 
+ y <- y[, grepl("M", info.2$Sex)]
+ y
+ t1 <- data.frame(dum= 1:5)
+ design <- model.matrix(~t1$dum)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+# write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+ diff$geneID <- rownames(diff)
+ diff.m <- diff[, c(2,6)]
+ colnames(diff.m)[1] <- "log2CPM.male"
+ 
+ t2 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt")
+ t3 <- merge(diff.f, diff.m, by.x="geneID", by.y="geneID")
+ dim(t3)
+#  [1] 15089     3
+ t4 <- merge(t3, t2,  by.x="geneID", by.y="geneID")
+ dim(t4)
+#  [1] 15089    12
+#   write.table(t4, "temp1.txt", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i "temp1.txt" autism-collab-fatir-human_Microglia_rna-postnatal-MvF.interac.strand.name-type-chr.txt 
