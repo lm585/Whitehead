@@ -5828,3 +5828,74 @@ diff <- as.data.frame(top2v1)
 #  [1] 15089    12
 #   write.table(t4, "temp1.txt", quote=F, sep="\t")
 linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i "temp1.txt" autism-collab-fatir-human_Microglia_rna-postnatal-MvF.interac.strand.name-type-chr.txt 
+
+###############################################################
+# 40 samples, 3 ages
+>  design <- model.matrix( ~ info.2$sex + info.2$age + info.2$pc1 + info.2$pc2) 
+linyongmao@Linyong-Mao-MBP16-2019 autism % wc -l mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.txt
+   12751 mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.txt
+
+>  identical(info.2$id, y.cn)
+ y.0 <- y
+ samp <- info.2[ info.2$sex == "F",]
+ y <- y[, colnames(y) %in% samp$id]
+ dim(y)
+#  [1] 13862    21
+ t1 <- data.frame(dum= 1:21)
+ design <- model.matrix(~t1$dum)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+# write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+gene.name <- raw[, 1:2]
+df.gene <- merge(diff, gene.name, by.x="geneID", by.y="geneID")
+t6 <- read.delim("../microglia-mouse/Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip")
+ dim(t6)
+# [1] 19341     3
+  t2 <- read.delim("../dir-GTExV8/gencode.vM31.mouse-id-chr-name")
+  t3 <- merge(df.gene, t2, by.x="geneID", by.y="geneID")
+  dim(t3)
+ df.cpm.gene <- t3
+ df.cpm.gene$id <- gsub("\\.[0-9][0-9]*", "", df.cpm.gene$geneID)
+ t8 <- merge(df.cpm.gene, t6, by.x="id", by.y="ID")
+ dim(t8)
+ diff.f <- t8[, c(2,4)]
+  colnames(diff.f)[2] <- "log2CPM.female"
+
+y <- y.0 
+......
+> head(diff.m)
+> head(t8)
+
+>  t2 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.txt")
+ t3 <- merge(diff.f, diff.m, by.x="geneID", by.y="geneID")
+ dim(t3)
+#  [1] 12750     3
+  t4 <- merge(t3, t2,  by.x="geneID", by.y="geneID")
+ dim(t4)
+#  [1] 12750    16
+ t5 <- t4[ t4$PValue < 0.01,]
+ dim(t5)
+#  [1] 482  16
+ plot(t5$log2CPM.male - t5$log2CPM.female, t5$logFC)
+ y1 <- t5$logFC
+ x1 <- t5$log2CPM.male - t5$log2CPM.female
+ abline(lm(y1 ~ x1))
+  abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(h=0)
+ abline(v=0)
+ t6 <- t5[ t5$logFC > -2 & t5$logFC < 2,]
+ dim(t6)
+#  [1] 477  16
+ plot(t6$log2CPM.male - t6$log2CPM.female, t6$logFC)
+ y1 <- t6$logFC
+ x1 <- t6$log2CPM.male - t6$log2CPM.female
+ lm <- lm(y1 ~ x1)
+ summary(lm)
+#  write.table(t4, "temp1.txt", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i "temp1.txt" autism-collab-fatir-mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF.age-residPC1-residPC2-covar.name-type-chr.humanname.txt 
+
