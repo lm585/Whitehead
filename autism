@@ -5899,3 +5899,25 @@ y <- y.0
 #  write.table(t4, "temp1.txt", quote=F, sep="\t")
 linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i "temp1.txt" autism-collab-fatir-mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF.age-residPC1-residPC2-covar.name-type-chr.humanname.txt 
 
+##############################################################
+> t1 <- read.delim("autism-collab-fatir-human_Microglia_rna-postnatal-MvF.interac.strand.name-type-chr.txt")
+ head(t1)
+ t5 <- t1[ t1$PValue < 0.01,]
+  dim(t5)
+#  [1] 1036   12
+ plot(t5$log2CPM.male - t5$log2CPM.female, t5$logFC)
+   abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+   abline(v = seq(-100,100,5), lty = 5, lwd = 0.5, col = "gray")
+  abline(h=0)
+  abline(v=0)
+ t6 <- t5[ t5$chr != "chrY",]
+ dim(t6)
+#  [1] 1024   12
+ plot(t6$log2CPM.male - t6$log2CPM.female, t6$logFC)
+   abline(h = seq(-100,100,2), lty = 5, lwd = 0.5, col = "gray")
+   abline(v = seq(-100,100,2), lty = 5, lwd = 0.5, col = "gray")
+  abline(h=0)
+  abline(v=0)
+ y1 <- t6$logFC
+ x1 <- t6$log2CPM.male - t6$log2CPM.female
+ abline(lm(y1 ~ x1))
