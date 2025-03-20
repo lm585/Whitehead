@@ -5921,3 +5921,104 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i "temp1.txt" autism-collab-fatir
  y1 <- t6$logFC
  x1 <- t6$log2CPM.male - t6$log2CPM.female
  abline(lm(y1 ~ x1))
+
+############################################################################
+ t1 <- read.delim("cyno-33samp-rnaseq-oct-2024.info.1")
+ t2 <-unique( t1[, c(2,4,6)])
+ dim(t2)
+#  [1] 10  3
+  t2$age <- 0
+  t2$age <- c(18 + 23/365, 10+5/12 , 3+7/12 , 3+7/12, 3+9/12, 4+10/12, 4+1/12, 4+2/12, 3+2/12, 4+1/12)
+  t2
+#      Animal.ID Sex                Age       age
+#  1       90388  XX  18 years, 23 days 18.063014
+#  3  9183784375  XX 10 years, 5 months 10.416667
+#  6        5430  XX  3 years, 7 months  3.583333
+  t3 <- t2[ t2$age < 11,]
+  dim(t3)
+#  [1] 9 4
+ boxplot(t3$age ~ t3$Sex, outcol="white")
+ beeswarm(t3$age ~ t3$Sex, add=T, cex=1.6, col="red")
+ t4 <- merge(t1, t2, by.x="Animal.ID", by.y="Animal.ID")
+ t5 <- read.delim("cyno-33samp-rnaseq-oct-2024.mapping.1")
+ t6 <- merge(t4, t5, by.x="FASTQ.ID", by.y="sample")
+ dim(t6)
+#  [1] 33 16
+ t7 <- t6[ t6$age < 11,]
+  t8 <- t7[, c(10,11,15)]
+  boxplot(t8, outcol="white", ylab="read pairs", main="31 samples with age < 11")
+  beeswarm(t8, add=T)
+  abline(h = seq(4e7, 40e7, 1e7), lty = 5, lwd = 0.5, col = "gray")
+  summary(t6$age)
+#     Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#    3.167   3.750   4.083   5.395   4.833  18.063 
+ info <- t7
+  r1 <- read.delim("cyno-33samp-rnaseq-oct-2024.gene.counts.txt")
+  r2 <- r1[, colnames(r1) %in% info$FASTQ.ID]
+  dim(r2)
+#  [1] 30537    31
+rownames(r2) <- r1[, 1]
+ y <- DGEList(counts=r2)
+ y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.5
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+# [1] 12596    31
+d = cpm(y)
+a <- d
+a.df <- as.data.frame(a)
+a.df[1:6,1:6]
+ g1 <- c("ACTB" ,   "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
+ a.df.2 <- a.df
+ a.df.3 <- a.df.2[ rownames(a.df.2) %in% g1,]
+ t4 <- as.data.frame( t(a.df.3))
+ t4$ratio.ccr <- t4$CX3CR1 / t4$CCR2
+ t4$ratio.ms4 <- t4$CX3CR1 / t4$MS4A1
+ t5 <- t4[ t4$ratio.ms4 > 2^8.2,]
+ dim(t5)
+#  [1] 15  9
+ filtsamp <- t5
+   r1 <- read.delim("cyno-33samp-rnaseq-oct-2024.gene.counts.txt")
+   r2 <- r1[, colnames(r1) %in% rownames(filtsamp)]
+   dim(r2)
+#  [1] 30537    15
+rownames(r2) <- r1[, 1]
+ y <- DGEList(counts=r2)
+ y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.5
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+#  [1] 12601    15
+ info.2 <- info[ info$FASTQ.ID %in% colnames(y),]
+ identical(colnames(y), info.2$FASTQ.ID)
+#  [1] TRUE
+ design <- model.matrix( ~ info.2$Sex.x + info.2$age )
+  logy <- log2(as.data.frame(edgeR::cpm(y)) + 0.5)
+  dupcor <- duplicateCorrelation(logy,design,block=info.2$Animal.ID)
+  dupcor$consensus.correlation
+#  [1] 0.5862388
+fit <- lmFit(logy,design,block=info.2$Animal.ID,correlation=dupcor$consensus)
+fit <- eBayes(fit)
+ topTable(fit,coef=2)
+ t1 <- as.data.frame(topTable(fit, coef="info.2$Sex.xXY", number=91234))
+#          logFC  AveExpr         t      P.Value   adj.P.Val        B
+#  ZFX -1.092931 4.472065 -5.644835 4.526998e-05 0.003375426 2.145802
+#  DDX3X -0.3761855 8.68947 -2.378243 0.03100535 0.2599457 -4.256228
+#  KDM5C -0.5576065 6.120153 -2.556066 0.02183487 0.2175029 -3.928736
+#  KDM6A -0.8664455 4.768278 -4.35277 0.0005586634 0.01977449 -0.3596368
+#  STAT1 0.309260913  7.874836 1.44987772 0.1675234 0.5710055 -5.744341
+#  C3    0.091643977 14.108781 0.27090849 0.7901257 0.9385223 -6.740854
+#  IRF1  0.009530936  5.273546 0.05996671 0.9529678 0.9885854 -6.777495
+
