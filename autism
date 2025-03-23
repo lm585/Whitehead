@@ -6042,3 +6042,15 @@ cat temp | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $2,  $3, $4, $5,$6,$7, 
 ../microglia/make-rnk-genesymble temp1 cyno-rna-3f2m-MvF-diff2-1.age.block.noXY.rnk
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  cyno-rna-3f2m-MvF-diff2-1.age.block.noXY.rnk  -scoring_scheme classic  -rpt_label  "cyno-rna-3f2m-MvF-diff2-1.age.block.noXY.weight0"    -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
 
+#############################################################################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cut -f 1 "mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk" "human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk" | sort | uniq > temp-genes
+wc -l temp-genes
+   16736 temp-genes
+mv /Users/linyongmao/Downloads/Reactome_Pathways_2024_table\(3\).txt  Reactome_Pathways_2024_table.16736genes.human-mouse.txt
+cat Reactome_Pathways_2024_table.16736genes.human-mouse.txt | grep -i er-phagosome | cut -f 1,2,9 > some-pathways
+cat Reactome_Pathways_2024_table.16736genes.human-mouse.txt | grep -i  "Axon Guidance" | cut -f 1,2,9 >> some-pathways
+cat Reactome_Pathways_2024_table.16736genes.human-mouse.txt | grep -i  "Nervous System Development" | cut -f 1,2,9 >> some-pathways 
+vi some-pathways
+mv some-pathways  some-pathways.gmt
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    some-pathways.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk   human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk  -scoring_scheme classic  -rpt_label  "temp-some-pathways.gmt"    -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
