@@ -6054,3 +6054,65 @@ vi some-pathways
 mv some-pathways  some-pathways.gmt
 
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    some-pathways.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk   human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk  -scoring_scheme classic  -rpt_label  "temp-some-pathways.gmt"    -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+###############################################################################
+y.orig <- y
+ f <- info.2[ info.2$Sex.x == "XX",]
+ y <- y[, colnames(y) %in% f$FASTQ.ID]
+ dim(y)
+#  [1] 12601     7
+  t1 <- data.frame(dum= 1:7)
+ design <- model.matrix(~t1$dum)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+# write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+ diff$geneID <- rownames(diff)
+ diff.f <- diff[, c(2,6)]
+ colnames(diff.f)[1] <- "log2CPM.female"
+
+ y <- y.orig 
+ f <- info.2[ info.2$Sex.x == "XY",]
+ y <- y[, colnames(y) %in% f$FASTQ.ID]
+ dim(y)
+# [1] 12601     8
+ y
+ t1 <- data.frame(dum= 1:8)
+ design <- model.matrix(~t1$dum)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+# write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+ diff$geneID <- rownames(diff)
+ diff.m <- diff[, c(2,6)]
+ colnames(diff.m)[1] <- "log2CPM.male"
+
+......
+>  t3.block <- t3
+ t4 <- read.delim("cyno-rna-3f2m-MvF-diff2-1.age.block.txt")
+ head(t4)
+ identical(t3.block$id, t4$id)
+#  [1] TRUE
+ summary(t3.block$logFC - t4$logFC)
+#        Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#  -4.885e-15 -1.943e-16  0.000e+00 -3.917e-18  1.943e-16  5.329e-15 
+ summary(t3.block$P.Value / t4$P.Value)
+#     Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#        1       1       1       1       1       1 
+ t5 <- merge(diff.f, diff.m, by.x="geneID", by.y="geneID")
+ t6 <- merge(t5, t4, by.x="geneID", by.y="id")
+ dim(t6)
+#  [1] 12601    13
+> write.table(t6[, c(1:4, 6:8, 10)], "temp1", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i "temp1" autism-collab-fatir-cyno-mg-rna-3f2m-MvF.age.block.txt 
+> t7 <- (t6[ t6$P.Value < 0.01,])
+> dim(t7)
+[1] 900  13
+ plot(t7$log2CPM.male - t7$log2CPM.female, t7$logFC)
+y1 <- t7$logFC
+ x1 <- t7$log2CPM.male - t7$log2CPM.female
+ abline(lm(y1 ~ x1))
