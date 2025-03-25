@@ -6116,3 +6116,37 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i "temp1" autism-collab-fatir-cyn
 y1 <- t7$logFC
  x1 <- t7$log2CPM.male - t7$log2CPM.female
  abline(lm(y1 ~ x1))
+
+###################################################################################
+>   t3 <- t2[ t2$age < 10,]
+>   dim(t3)
+[1] 8 cynos, 3 female monkeys, 5 male monkeys, 28 samples
+...
+>  t5 <- t4[ t4$ratio.ms4 > 2^8.2,]
+>  dim(t5)
+[1] 12 samples kept;  9
+...
++  med$logic[i] <- median(d[i,]) >= 0.5
++ }
+> ####median >= 1 for pathway genes
+> y<-y[med$logic,]
+> print(dim(y))
+[1] 12690    12
+> unique( info.2[, c(2,4,6)])
+    Animal.ID Sex.x              Age.x
+5        5430    XX  3 years, 7 months
+6        5071    XX  3 years, 7 months
+9  6411814342    XY 4 years, 10 months
+17 8074406366    XY   4 years, 1 month
+>  design <- model.matrix( ~ info.2$Sex.x )
+...
+>   dupcor$consensus.correlation
+[1] 0.5602875
+...
+> t4 <- t3[ t3$V1 != "NC_052275.1" & t3$V1 != "Ycons", ]
+>   dim(t4)
+[1] 12195    11
+
+linyongmao@Linyong-Mao-MBP16-2019 autism %  mv -i "temp2" cyno-rna-2f2m-MvF-diff2-1.blockOnlyVar.txt
+linyongmao@Linyong-Mao-MBP16-2019 autism %  mv -i "temp" cyno-rna-2f2m-MvF-diff2-1.blockOnlyVar.noXY.txt
+#############################################################################################
