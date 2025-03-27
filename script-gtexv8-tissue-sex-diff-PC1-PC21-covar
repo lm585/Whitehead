@@ -114,6 +114,8 @@ cor.test(p2$PC1, log10(p2$t.SMTSISCH))
 design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN + log10(info.2$t.SMTSISCH) + 
 info.2$PC1+info.2$PC2+info.2$PC3+info.2$PC4+info.2$PC5+info.2$PC6+info.2$PC7+info.2$PC8+info.2$PC9+info.2$PC10+info.2$PC11+info.2$PC12+info.2$PC13+info.2$PC14+info.2$PC15+info.2$PC16+info.2$PC17+info.2$PC18+info.2$PC19+info.2$PC20+info.2$PC21 )
 
+design <- model.matrix( ~ info.2$SEX + info.2$age_value + info.2$body_mass_index + info.2$t.SMRIN + log10(info.2$t.SMTSISCH + 1300) + 
+info.2$PC1+info.2$PC2)
  dim(design)
 # [1] 429  27
  head(design)
