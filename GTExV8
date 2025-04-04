@@ -6226,6 +6226,21 @@ if(t2$t1.c4a.g6.c4a.cn.coeff[i] < 0) {
 
 gplot(t3, aes(x=log.fdr.c4b, y=log.fdr.c4a, label=t1.X)) + geom_point(shape=21, col="red", size=2) + labs(x="signed log10(FDR), C4B", y="signed log10(FDR), C4A") + geom_text_repel(show.legend=T, data=t3, size=2.2, max.overlaps=100, min.segment.length = 0.1)
 
+##########################################################
+>  t2 <- data.frame(t1$X, t1$X.samp.genotype, t1$c4b.g6.c4b.cn.coeff, t1$c4b.g6.c4b.cn.pVal, t1$c4a.g6.c4a.cn.coeff, t1$c4a.g6.c4a.cn.pVal)
+> t2$tiss <- "non-brain"
+> t2[ grepl("brain", t2$t1.X, ignore.case=T),]$tiss <- "brain"
+> l1 <- lm(t2$t1.c4a.g6.c4a.cn.coeff ~ t2$t1.X.samp.genotype + t2$tiss)
+> summary(l1)
+> gplot(t2, aes(x=t1.X.samp.genotype, y= t1.c4a.g6.c4a.cn.coeff, group=tiss, color=tiss)) + geom_point(shape=21, size = 2) + geom_smooth(aes(fill = tiss)) + scale_y_continuous(breaks=seq(-42, 42, 0.4), )
+> gplot(t2, aes(x=t1.X.samp.genotype, y= t1.c4b.g6.c4b.cn.coeff, group=tiss, color=tiss)) + geom_point(shape=21, size = 2) + geom_smooth(aes(fill = tiss)) + scale_y_continuous(breaks=seq(-42, 42, 0.4), )
+> gplot(t2, aes(x=t1.X.samp.genotype, y= log.fdr.c4a, group=tiss, color=tiss)) + geom_point(shape=21, size = 2) + geom_smooth(aes(fill = log.fdr.c4a)) ##+ scale_y_continuous(breaks=seq(-42, 42, 0.4), )
+> mid <- median(log2( t2$t1.X.samp.genotype))
+ ggplot(t2, aes(x=t1.c4b.g6.c4b.cn.coeff, y= log.fdr.c4b,  color=log2(t1.X.samp.genotype))) + geom_point(shape=21, size = 2) + geom_smooth() +scale_color_gradient2(midpoint=mid, low="blue", mid="white",   high="red", space ="Lab" )
+
+> l1 <- lm(t2$log.fdr.c4a ~ t2$t1.X.samp.genotype + t2$t1.c4a.g6.c4a.cn.coeff)
+> l1 <- lm(t2$log.fdr.c4a ~ t2$t1.X.samp.genotype + t2$tiss)
+
 ######
 > t2 <- data.frame(t1$X, t1$c4a.g6.age_value.coeff, t1$c4a.g6.age_value.pVal, t1$c4b.g6.age_value.coeff, t1$c4b.g6.age_value.pVal)
  t2$fdr.c4b <- p.adjust(t2$t1.c4b.g6.age_value.pVal, method="fdr")
