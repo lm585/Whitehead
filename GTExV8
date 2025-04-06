@@ -6495,6 +6495,32 @@ t1 <- read.delim("/Users/linyongmao/Documents/h.all.v7.4.symbols.gmt", header=F)
 #  [1] 28 10
 > gplot(g2, aes(x=logFC, y=-log10(PValue), label=name)) +  geom_point(shape=21, size=2, color="red") + labs(x="log2 FC (F vs. M), Frontal Cortex (BA9)", ) + geom_text_repel(show.legend=T, data=g3, size=2.2, max.overlaps=100, min.segment.length = 0.1)
 
+################################################
+
+ se <- seq(200, dim(g6)[1], 1)
+ res <- as.data.frame(matrix(nrow=length(se), ncol=10))
+k=1
+
+for(i in se) {
+g7 <- g6[ sample(1:dim(g6)[1], i),]
+lm1 <- lm(log2(g7$ENSG00000244731.10+1) ~ log2(g7$c4a.cn) + g7$t.SMRIN + log10(g7$t.SMTSISCH + 1300) + g7$SEX.x + g7$age_value + g7$body_mass_index )
+s1 <- summary(lm1)
+res[k, 2] <- i
+res[k, 3] <- s1$coefficients[2,1]
+res[k, 4] <- s1$coefficients[2,4]
+res[k, 5] <- s1$r.squared^(1/2)
+k = k+1
+
+}
+
+ colnames(res)[2] <- "NumOfSamp"
+ colnames(res)[3] <- "c4a.cn.slope"
+ colnames(res)[4] <- "c4a.cn.p.val"
+ colnames(res)[5] <- "mulVarModel.R"
+ 
+ cor1 <- cor.test(res[,2], res[,3])
+ str <- paste("Pearson R= ", round(cor1$estimate, digits=6), ", pVal= ", format(cor1$p.value, digits=3), sep="")
+> gplot(data=res, aes(x= NumOfSamp, y= c4a.cn.slope)) + geom_point() + geom_smooth() + labs(title=str) + theme(text=element_text(size=15))
 
 ######################################
 > summary(c4.cn$c4a.cn)
