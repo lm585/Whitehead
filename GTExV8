@@ -6522,6 +6522,55 @@ k = k+1
  str <- paste("Pearson R= ", round(cor1$estimate, digits=6), ", pVal= ", format(cor1$p.value, digits=3), sep="")
 > gplot(data=res, aes(x= NumOfSamp, y= c4a.cn.slope)) + geom_point() + geom_smooth() + labs(title=str) + theme(text=element_text(size=15))
 
+################################################################
+linyong@fry /lab/solexa_page/linyong/homer$ cat /lab/solexa_page/linyong/gencode.v42.primary_assembly.noPar.protein.xist.exons.gtf | grep -w C4A | head -1
+chr6	HAVANA	gene	31982057	32002681	.	+	.	gene_id "ENSG00000244731.10"; gene_type "protein_coding"; gene_name "C4A"; level 2; hgnc_id "HGNC:1323"; tag "overlapping_locus"; havana_gene "OTTHUMG00000031186.6";
+linyong@fry /lab/solexa_page/linyong/homer$ cat /lab/solexa_page/linyong/gencode.v42.primary_assembly.noPar.protein.xist.exons.gtf | grep -w C4B | head -1
+chr6	HAVANA	gene	32014795	32035418	.	+	.	gene_id "ENSG00000224389.9"; gene_type "protein_coding"; gene_name "C4B"; level 2; hgnc_id "HGNC:1324"; havana_gene "OTTHUMG00000031187.6";
+
+linyong@fry /lab/solexa_page/linyong/homer$ cat script
+#
+
+t=32002681
+
+while [ $t -lt 32014795 ]
+do
+ echo $t > temp1
+ cat temp1 | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print "chr6", $1, $1 + 100, "peak_" $1 "-100bp", 3.14, "+" }' 
+ t=`expr $t + 1`
+done
+
+linyong@fry /lab/solexa_page/linyong/homer$ bash script > temp-peaks
+linyong@fry /lab/solexa_page/linyong/homer$ homerTools extract temp-peaks hg38  -fa > temp-peaks.fa
+linyong@fry /lab/solexa_page/linyong/homer$ cat temp-peaks-2
+chr6	31002681	32002681	c4a.and.upstream1Mbp	3.14	+
+chr6	32014795	33014795	c4b.and.downstream1Mbp	3.14	+
+linyong@fry /lab/solexa_page/linyong/homer$ homerTools extract temp-peaks-2 hg38  -fa > temp-c4a-c4b.fa
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ mv -i ../temp-c4a-c4b.fa .
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ bwa index temp-c4a-c4b.fa 
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ bwa bwasw  -f temp-peaks.sam -t 10  temp-c4a-c4b.fa  ../temp-peaks.fa
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[bsw2_aln] read 12114 sequences/pairs (1211400 bp) ...
+[main] Version: 0.7.17-r1188
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp-peaks.sam  | awk 'BEGIN {FS = "\t"; OFS = "\t"} $3 == "c4b.and.downstream1Mbp" ' | cut -f 1-6 > temp1
+> t1 <- read.delim("temp1", header=F)
+ t1$pos <- gsub("peak_", "", t1$V1)
+ t1$pos <- gsub("-100bp", "", t1$pos)
+ t2 <- t1[ t1$V1 != "peak_32014794-100bp",]
+ plot(t2$pos, t2$V4 -20623 , cex=0.01, pch=1, xlab="C4A-C4B intergenic region, chr6 genome pos", ylab="C4B.downstream1Mbp")
+ t2$map.pos <- t2$V4 -20623
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp-peaks.sam  | awk 'BEGIN {FS = "\t"; OFS = "\t"} $3 == "c4a.and.upstream1Mbp" ' | cut -f 1-6 > temp2
+t3 <- read.delim("temp2", header=F)
+ t3$pos <- gsub("peak_", "", t3$V1)
+ t3$pos <- gsub("-100bp", "", t3$pos)
+ t4 <- t3[ t3$pos > 32013239,]
+ t4$map.pos <- -(1e6 - t4$V4 - 20624 )
+
+plot(t4$pos, t4$map.pos , cex=0.01, pch=1, xlab="C4A-C4B intergenic region, chr6 genome pos", ylab="C4A.downstream1Mbp")
+
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
