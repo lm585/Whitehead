@@ -6570,6 +6570,74 @@ t3 <- read.delim("temp2", header=F)
 
 plot(t4$pos, t4$map.pos , cex=0.01, pch=1, xlab="C4A-C4B intergenic region, chr6 genome pos", ylab="C4A.downstream1Mbp")
 
+#########################################
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ ~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chr6 1  32013269 > temp-chr6.fa 
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ bwa index temp-chr6.fa
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ ~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chr6  32013270 32046127 > temp.c4b.fa
+
+#slurm
+bwa bwasw  -f temp.c4b.sam  -t 10   temp-chr6.fa  temp.c4b.fa
+
+####cmd lines on prompt
+samtools view -b -S -o temp.c4b.bam temp.c4b.sam
+samtools sort -@ 4 -o  temp.c4b.sort.bam  temp.c4b.bam
+samtools mpileup -Q 0  -q 17 -d 1000000 -f  temp-chr6.fa  temp.c4b.sort.bam >  temp.c4b.pileup
+wc -l temp.c4b.pileup   
+# 32738 temp.c4b.pileup
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ cat  temp.c4b.sam | cut -f 1-6,11-20
+@SQ	SN:chr6	LN:32013269
+chr6	0	chr6	31980532	250	16086M1D7973M1D649M1D249M1D629M3D93M1D14M3D21M1I148M8I1042M1D2233M1D1306M2406S	*	AS:i:29952	XS:i:57	XF:i:0	XE:i:415	NM:i:120
+chr6	0	chr6	32010985	250	30569S2285M4S	*	AS:i:2229	XS:i:0	XF:i:0	XE:i:31	NM:i:14
+
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ cat temp.c4b.pileup | head
+chr6	31980532	C	1	^~.	~
+chr6	31980533	A	1	.	~
+chr6	31980534	A	1	.	~
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ cat temp.c4b.pileup | tail
+chr6	32013260	A	1	C	~
+......
+chr6	32013267	G	1	.	~
+chr6	32013268	C	1	.	~
+chr6	32013269	A	1	.$	~
+
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ cat temp.c4b.pileup |awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 != "." '  > temp
+cp -i temp temp-0
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ vi temp
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ diff temp temp-0
+0a1
+> chr6	31980532	C	1	^~.	~
+17a19
+> chr6	31996617	T	1	.-1C	~
+23a26
+> chr6	32004591	A	1	.-1G	~
+29a33
+> chr6	32005241	C	1	.-1A	~
+37a42
+> chr6	32005491	A	1	.-1T	~
+45a51
+> chr6	32006121	T	1	.-3TTG	~
+56a63
+> chr6	32006217	T	1	.-1C	~
+59a67
+> chr6	32006232	A	1	.-3TCC	~
+94a103
+> chr6	32007446	G	1	.-1T	~
+109a119
+> chr6	32009680	C	1	.-1T	~
+113a124,126
+> chr6	32010985	C	2	.^~.	~~
+> chr6	32010986	C	2	..	~~
+> chr6	32010987	T	2	.$.	~~
+127a141
+> chr6	32013269	A	1	.$	~
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ cat temp | cut -f 5 | sort | uniq -c
+     13 *
+      1 .+1G
+      1 .+8GAGACTAC
+     26 A
+     27 C
+     34 G
+     25 T
 
 ######################################
 > summary(c4.cn$c4a.cn)
