@@ -6639,6 +6639,11 @@ linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ cat temp | cut -f 5 
      34 G
      25 T
 
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$ cat temp  | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $2-1, $2, $3 $5}' > temp.bed
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cp -i temp.bed  copyA.copyB.snv.bed
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  copyA.copyB.snv.bed | grep '*' > copyA.copyB.indel.bed
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  copyA.copyB.snv.bed | grep '+' >> copyA.copyB.indel.bed
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
