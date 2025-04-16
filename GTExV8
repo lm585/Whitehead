@@ -6645,6 +6645,15 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  copyA.copyB.snv.bed | grep '
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  copyA.copyB.snv.bed | grep '+' >> copyA.copyB.indel.bed
 
 ######################################
+c4a 1st exon dna
+linyong@fry /lab/solexa_page/linyong/homer/dir-output-temp$  ~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chr6  31982108 31982172
+>chr6
+ATGAGGCTGCTCTGGGGGCTGATCTGGGCATCCAGCTTCTTCACCTTATCTCTGCAGAAGCCCAG
+
+no C4B
+chr6_GL000255v2_alt     3238078 3238143 +       1000    65      0       0       0       0       0       0       0
+
+######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
  0.1754  1.5679  2.0000  2.0016  2.4224  5.0299
