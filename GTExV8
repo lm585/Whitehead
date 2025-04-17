@@ -6653,6 +6653,76 @@ ATGAGGCTGCTCTGGGGGCTGATCTGGGCATCCAGCTTCTTCACCTTATCTCTGCAGAAGCCCAG
 no C4B
 chr6_GL000255v2_alt     3238078 3238143 +       1000    65      0       0       0       0       0       0       0
 
+############################################################################
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ ls GTEX*.bam | head -100 | while read ll; do cp -i $ll temp-dir-bams/; ls -lh $ll; done
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/temp-dir-bams$  ls GTEX*.bam |while read ll
+> do
+> samtools index $ll
+> ls -lh "$ll"*
+> done
+-r-------- 1 linyong systemd-timesync 131M Apr 16 15:36 GTEX-1117F-0003-SM-6WBT7.bam
+-rw-r--r-- 1 linyong systemd-timesync  54K Apr 16 15:43 GTEX-1117F-0003-SM-6WBT7.bam.bai
+-r-------- 1 linyong systemd-timesync 135M Apr 16 15:36 GTEX-111CU-0003-SM-6WBUD.bam
+-rw-r--r-- 1 linyong systemd-timesync  53K Apr 16 15:43 GTEX-111CU-0003-SM-6WBUD.bam.bai
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % scp -r linyong@fry.wi.mit.edu:/lab/solexa_page/linyong/gtex-dna-aug2024/temp-dir-bams/ ./
+
+c4a chr6:31982057-32002681 
+bam file region: chr6:29982057-34035418
+intron 9: chr6:31984408-31991192 (ritrovirus)
+ samtools coverage -r "$R" -q 0 -H "$cram"
+
+C4B      chr6     32014795   32035418  
+intron 9: chr6 32017146 32023930
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/temp-dir-bams$ cat script-1
+#
+
+file="GTEX-11DXX-0004-SM-6WBT9.bam"
+
+ls GTEX*.bam | head -60000 | while read file
+do
+ 
+samtools index "$file"
+
+echo -n "file	gene	region	"
+samtools coverage -r chr6:29982057-30982057 -q 0   "$file" | head -1
+
+## c4a upstream -2mbp - -1mbp
+echo -n "$file	C4A	upstream-2mbp.-1mbp	"
+samtools coverage -r chr6:29982057-30982057 -q 0  -H "$file"
+
+## c4a start-exon#9
+echo -n "$file	C4A	start-exon#9	"
+samtools coverage -r chr6:31982057-31984408 -q 0  -H "$file"
+
+## c4a exon#10-end
+echo -n "$file	C4A	exon#10-end	"
+samtools coverage -r chr6:31991192-32002681 -q 0   -H "$file"
+
+##c4a start-end
+echo -n "$file	C4A	start-end	"
+samtools coverage -r chr6:31982057-32002681 -q 0  -H "$file"
+
+## c4b downstream 1mbp-2mbp
+echo -n "$file	C4B	downstream+1mbp-2mbp	"
+samtools coverage -r chr6:33035418-34035418 -q 0  -H "$file"
+
+## c4b start-exon#9
+echo -n "$file	C4B	start-exon#9	"
+samtools coverage -r chr6:32014795-32017146 -q 0  -H "$file"
+
+## c4b exon#10-end
+echo -n "$file	C4B	exon#10-end	"
+samtools coverage -r chr6:32023930-32035418 -q 0  -H "$file"
+
+##c4b  start-end
+echo -n "$file	C4B	start-end	"
+samtools coverage -r chr6:32014795-32035418  -q 0  -H "$file"
+
+done
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/temp-dir-bams$ 
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
