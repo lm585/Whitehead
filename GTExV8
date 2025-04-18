@@ -6723,6 +6723,38 @@ samtools coverage -r chr6:32014795-32035418  -q 0  -H "$file"
 done
 linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/temp-dir-bams$ 
 
+linyongmao@Linyong-Mao-MBP16-2019 temp-dir-bams % scp linyong@fry.wi.mit.edu:/lab/solexa_page/linyong/gtex-dna-aug2024/out-c4a-depth-no.intron9-01  ../
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat script-1
+#
+
+# file  gene    region  #rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+# GTEX-1117F-0003-SM-6WBT7.bam  C4A     upstream-2mbp.-1mbp     chr6    29982057        30982057        212228  999797  99.9796 31.2147 28.8    59.2
+
+t1=`head -1 out-c4a-depth-no.intron9-01 | cut -f 2-12`
+echo "file      $t1     $t1     $t1     $t1"
+
+cat out-c4a-depth-no.intron9-01 | cut -f 1 | uniq | grep -vw file | head -10234 |  while read ll
+do
+  t1=`echo "$ll" | sed 's/.bam//' `
+  t2=`grep -w "$ll" out-c4a-depth-no.intron9-01 | grep -w "C4A  start-exon#9" | head -1 | cut -f 2-12`
+  t3=`grep -w "$ll" out-c4a-depth-no.intron9-01 | grep -w "C4A  exon#10-end" | head -1 | cut -f 2-12`
+  t4=`grep -w "$ll" out-c4a-depth-no.intron9-01 | grep -w "C4B  start-exon#9" | head -1 | cut -f 2-12`
+  t5=`grep -w "$ll" out-c4a-depth-no.intron9-01 | grep -w "C4B  exon#10-end" | head -1 | cut -f 2-12`
+  echo "$t1     $t2     $t3     $t4     $t5"
+done
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % bash script-1 > c4a-depth-no.intron9-01.txt
+> t7 <- read.delim("c4a-depth-no.intron9-01.txt")
+ t8 <- merge(t6, t7, by.x="V1", by.y="file")
+ dim(t8)
+#  [1] 838  73
+ t8$c4.tot.no.intron9 <- (t8$meandepth * 2352 + t8$meandepth.1 * 11490 + t8$meandepth.2 *  2352 + t8$meandepth.3 * 11489) / (2352 + 11489.5) / t8$seq.dep * 2
+
+> d <- density(t8$c4.tot.no.intron9, bw = 0.15)
+>  plot(d$x, d$y, col="red")
+> lines(d$x, d$y, col="red")
+> abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
