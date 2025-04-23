@@ -6755,6 +6755,37 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % bash script-1 > c4a-depth-no.intr
 > lines(d$x, d$y, col="red")
 > abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
 
+###############################################################
+name: CYP21A1P
+chr6:32005636-32008909
+
+name: CYP21A2
+chr6:32038415-32041644
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ cat temp-dir-bams/script-2
+#
+
+file="GTEX-11DXX-0004-SM-6WBT9.bam"
+
+ls GTEX*.bam | head -6000 | while read file
+do
+ samtools index "$file"
+ echo -n "file  gene    "
+ samtools coverage -r chr6:32038415-32041644 -q 0  "$file" | head -1
+
+ echo -n "$file CYP21A2 "
+ samtools coverage -r chr6:32038415-32041644 -q 0 -H   "$file"
+ echo -n "$file CYP21A1P        "
+ samtools coverage -r chr6:32005636-32008909 -q 0 -H   "$file"
+ echo -n "$file CYP21A2-q20     "
+ samtools coverage -r chr6:32038415-32041644 -q 20 -H    "$file"
+ echo -n "$file CYP21A1P-q20    "
+ samtools coverage -r chr6:32005636-32008909 -q 20 -H    "$file"
+done
+
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
