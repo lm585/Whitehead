@@ -6786,6 +6786,61 @@ done
 
 linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$
 
+#######################################################################
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % scp linyong@fry.wi.mit.edu:/lab/solexa_page/linyong/gtex-dna-aug2024/out-CN-CYP21A2-4.23.12.22 ./
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat script-2 
+#
+# out-CN-CYP21A2-4.23.12.22
+# file  gene    #rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+# GTEX-11TUW-0004-SM-7FG6E.bam  CYP21A2 chr6    32038415        32041644        939     3230    100     41.487  26.6    43.1
+# GTEX-11TUW-0004-SM-7FG6E.bam  CYP21A1P        chr6    32005636        32008909        417     3274    100     17.675  26.6    37.9
+# GTEX-11TUW-0004-SM-7FG6E.bam  CYP21A2-q20     chr6    32038415        32041644        863     3230    100     38.1978 26.7    46.6
+# GTEX-11TUW-0004-SM-7FG6E.bam  CYP21A1P-q20    chr6    32005636        32008909        331     3274    100     13.9236 26.8    47.5
+
+
+t1=`head -1 out-CN-CYP21A2-4.23.12.22 | cut -f 2-12`
+echo "file      $t1     $t1     $t1     $t1"
+
+cat out-CN-CYP21A2-4.23.12.22 | cut -f 1 | uniq | grep -vw file | head -6234 |  while read ll
+do
+  t1=`echo "$ll" | sed 's/.bam//' `
+  t2=`grep -w "$ll" out-CN-CYP21A2-4.23.12.22 | grep  "CYP21A1P " | head -1 | cut -f 2-12`
+  t3=`grep -w "$ll" out-CN-CYP21A2-4.23.12.22 | grep  "CYP21A2  " | head -1 | cut -f 2-12`
+  t4=`grep -w "$ll" out-CN-CYP21A2-4.23.12.22 | grep -w "CYP21A1P-q20" | head -1 | cut -f 2-12`
+  t5=`grep -w "$ll" out-CN-CYP21A2-4.23.12.22 | grep -w "CYP21A2-q20" | head -1 | cut -f 2-12`
+  echo "$t1     $t2     $t3     $t4     $t5"
+done
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % bash script-2 > CYP21A2-depth.txt
+> t9 <- read.delim("CYP21A2-depth.txt")
+ dim(t9)
+#  [1] 838  41
+ t10 <- merge(t8, t9, by.x="V1", by.y="file")
+ dim(t10)
+#  [1] 838 114
+ t10$cyp21.tot <- (t10$meandepth.y + t10$meandepth.1.y) / t10$seq.dep * 2
+ t10$CYP21A2 <- t10$meandepth.3.y / t10$seq.dep * 2
+ t10$CYP21A1P <- t10$meandepth.2.y / t10$seq.dep * 2
+
+
+ plot(t10$cyp21.tot, t10$c4.tot.no.intron9)
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "grey")
+ abline(h = seq(0,10000,1), lty = 5, lwd = 0.5, col = "grey")
+ x=1:100
+ y=x
+ abline(lm(y~x))
+
+ hist(t10$cyp21.tot, breaks = seq(0,13, 0.5/2/2))
+ abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,2), lty = 5, lwd = 0.5, col = "blue")
+
+ d <- density(t10$cyp21.tot, bw = 0.15)
+ plot(d$x, d$y, col="red")
+ lines(d$x, d$y, col="red")
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
