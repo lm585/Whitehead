@@ -6831,6 +6831,9 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % bash script-2 > CYP21A2-depth.txt
  y=x
  abline(lm(y~x))
 
+> par(mar=c(5,6,4,2))
+> plot(t10$cyp21.tot, t10$c4.tot.no.intron9, cex.lab=2, cex=1, ylab="total C4 copy number (no.intron9)", xlab="total CYP21A copy number")
+
  hist(t10$cyp21.tot, breaks = seq(0,13, 0.5/2/2))
  abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
  abline(v = seq(-100,100,2), lty = 5, lwd = 0.5, col = "blue")
