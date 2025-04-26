@@ -6843,6 +6843,56 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % bash script-2 > CYP21A2-depth.txt
  lines(d$x, d$y, col="red")
  abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
 
+#######################################################################
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/temp-dir-bams$ cat script-3
+#
+t1=31990500
+
+while [ $t1 -gt 29983000 ]
+do
+ file="../GTEX-1269C-1826-SM-DO3X2.bam"
+ e=`expr $t1 - 3000`
+ samtools coverage -r "chr6:$e-$t1" -q 0   "$file"
+ t1=`expr $t1 - 3000`
+done
+
+t1=31990500
+
+while [ $t1 -lt 34035000 ]
+do
+ file="../GTEX-1269C-1826-SM-DO3X2.bam"
+ e=`expr $t1 + 3000`
+ samtools coverage -r "chr6:$t1-$e" -q 0   "$file"
+ t1=`expr $t1 + 3000`
+done
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/temp-dir-bams$ bash script-3 > out
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat out | head -1 > out1
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat out | grep -w chr6 | sort -t '      ' +1 -2n | uniq >> out1
+
+> t1 <- read.delim("out1")
+ summary(t1)
+ t1$cn <- t1$meandepth / seq.dep * 2
+ d <- density(t1$cn, bw=0.15)
+ plot(d$x, d$y, col="red")
+ lines(d$x, d$y, col="red")
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+
+ t2 <- t1[ t1$startpos > 32050000,]
+ hist(t2$cn)
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+ dim(t2)
+#  [1] 662  10
+ t3 <- t2[ t2$meanmapq > 50,]
+ dim(t3)
+#  [1] 658  10
+ t3 <- t2[ t2$meanmapq > 55,]
+ dim(t3)
+#  [1] 649  10
+ t2 <- t1[ t1$endpos < 31980000,]
+ dim(t2)
+#  [1] 666  10
 
 ######################################
 > summary(c4.cn$c4a.cn)
