@@ -6893,6 +6893,45 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 %  cat out | grep -w chr6 | sort -t
  t2 <- t1[ t1$endpos < 31980000,]
  dim(t2)
 #  [1] 666  10
+#######################################################################
+
+name: C2
+location: chr6:31927717-31945672 (+)
+id: NM_001282458.2
+https://www.ncbi.nlm.nih.gov/gene/?term=NM_001282458.2
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ cat temp-dir-bams/script-2.B
+#
+#name: C2
+# location: chr6:31927717-31945672 (+)
+# id: NM_001282458.2
+# https://www.ncbi.nlm.nih.gov/gene/?term=NM_001282458.2
+
+
+file="GTEX-11DXX-0004-SM-6WBT9.bam"
+
+ echo -n "file  gene    "
+ samtools coverage -r chr6:32038415-32041644 -q 0  "$file" | head -1
+
+ls GTEX*.bam | head -60123 | while read file
+do
+# samtools index "$file"
+
+ echo -n "$file C2      "
+ samtools coverage -r chr6:31927717-31945672 -q 0 -H   "$file"
+done
+
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ bash temp-dir-bams/script-2.B > out
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % scp linyong@fry.wi.mit.edu:/lab/solexa_page/linyong/gtex-dna-aug2024/out ./
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i out C2-depth.txt
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi C2-depth.txt
+> t7 <- read.delim("C2-depth.txt")
+ t8 <- merge(t6, t7, by.x="V1", by.y="file")
+ dim(t8)
+#  [1] 838  39
+ t8$c2.CN <- t8$meandepth / t8$seq.dep * 2
+ t8$C2.CN <- t8$c2.CN / median(t8$c2.CN) * 2
 
 ######################################
 > summary(c4.cn$c4a.cn)
