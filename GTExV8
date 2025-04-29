@@ -6932,6 +6932,36 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi C2-depth.txt
 #  [1] 838  39
  t8$c2.CN <- t8$meandepth / t8$seq.dep * 2
  t8$C2.CN <- t8$c2.CN / median(t8$c2.CN) * 2
+######################################
+> C4A.CN <- t10$c4a    *  20.0916
+ C4B.CN <- t10$c4b  *    19.2208 
+ plot(C4A.CN, C4B.CN)
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "grey")
+  abline(h = seq(0,10000,1), lty = 5, lwd = 0.5, col = "grey")
+ x=-100:100
+ y=2*x
+ abline(lm(y~x), lty = 5, lwd = 1, col = "blue")
+ y=1/2*x
+ abline(lm(y~x), lty = 5, lwd = 1, col = "blue")
+ text(5.5, 2.8, "y=0.5x", pos=4, col="blue")
+  text(2, 4.5, "y=2x", pos=4, col="blue")
+ 
+ boxplot(C4A.CN, C4B.CN, ylab="CN", xat="n")
+ abline(h = seq(0,100,0.2), lty = 5, lwd = 0.5, col = "gray")
+ axis(1, at=1:2, labels=c("C4A.CN", "C4B.CN"))
+
+> plot(t10$c4.tot.no.intron9 ~ t10$cyp21.tot)
+abline(h = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
+abline(v = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
+ x=t10$cyp21.tot * 1.005465 + 0.192301
+ y=t10$c4.tot.no.intron9
+ abline(lm(y~x))
+
+> d <- density(t10$c4.tot.no.intron9 - 0.2, bw = 0.15)
+  plot(d$x, d$y, col="red")
+  lines(d$x, d$y, col="red")
+  abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+
 
 ######################################
 > summary(c4.cn$c4a.cn)
