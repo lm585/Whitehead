@@ -6962,6 +6962,13 @@ abline(v = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
   lines(d$x, d$y, col="red")
   abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
 
+#########
+> f1 <- t10[ t10$c4.tot.no.intron9 - 0.2 > 4.5 & t10$c4.tot.no.intron9 - 0.2 < 6.5 & t10$cyp21.tot > 4.5 & t10$cyp21.tot < 6.5,]
+> dim(f1)
+[1] 363 117
+> plot(f1$cyp21.tot, f1$c4.tot.no.intron9 - 0.2)
+> abline(h = seq(0,100,1/2), lty = 5, lwd = 0.5, col = "blue")
+> abline(v = seq(0,100,1/2), lty = 5, lwd = 0.5, col = "blue")
 
 ######################################
 > summary(c4.cn$c4a.cn)
