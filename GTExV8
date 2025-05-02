@@ -6969,6 +6969,48 @@ abline(v = seq(0,100,1), lty = 5, lwd = 0.5, col = "gray")
 > plot(f1$cyp21.tot, f1$c4.tot.no.intron9 - 0.2)
 > abline(h = seq(0,100,1/2), lty = 5, lwd = 0.5, col = "blue")
 > abline(v = seq(0,100,1/2), lty = 5, lwd = 0.5, col = "blue")
+#######################################################################
+> colnames(t10)
+t11 <- t10[, c(1,26,27,117, 116)]
+ t11$c4a <- t10$c4a    *  20.0916  + 0.2
+ t11$c4b <- t10$c4b    *  19.2208  + 0.2
+ t11$CYP21A1P <- t10$CYP21A1P * 1.23306
+ t11$CYP21A2  <- t10$CYP21A2  * 1.08333
+ head(t11)
+ t12 <- round(t11[, c(2:5)])
+ t12$donor <- t11[, 1]
+ plot(t11$c4a, t12$c4a)
+ abline(v = seq(0.5,10000,1), lty = 5, lwd = 0.5, col = "blue")
+ plot(t11$CYP21A1P, t12$CYP21A1P)
+ abline(v = seq(0.5,10000,1), lty = 5, lwd = 0.5, col = "blue")
+> write.table(t12, "temp2", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp2
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | awk 'NR > 1' |cut -f 1-4 |sort | uniq -c | sort -n | wc -l
+      97
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | awk 'NR > 1' |cut -f 1-4 |sort | uniq -c | sort -n | awk '$1 >= 3' |wc -l
+      44
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | awk 'NR > 1' |cut -f 1-4 |sort | uniq -c | sort -n | awk '$1 >= 6' |wc -l
+      26
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | awk 'NR > 1' |cut -f 1-4 |sort  | awk '$1 == $3 && $2==$4'  | wc -l
+     275   32.81%
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % head temp2
+c4a     c4b     CYP21A1P        CYP21A2 donor
+2       3       2       3       GTEX-1117F-0003-SM-6WBT7
+2       2       1       3       GTEX-111CU-0003-SM-6WBUD
+1       3       1       3       GTEX-111FC-0001-SM-6WBTJ
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | awk 'NR > 1' |cut -f 1-4 |sort  | awk '$1 == $3 '  | wc -l
+     400
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | awk 'NR > 1' |cut -f 1-4 |sort  | awk ' $2==$4'  | wc -l
+     499
+>  info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+> a11 <- merge(info, t11, by.x="SAMPID", by.y="V1")
+> dim(a11)
+[1] 838  10
+> summary(a11)
+> boxplot(a11$c4a ~ a11$SEX, xlab="", xaxt="n", ylab="C4A CN")
+>  axis(side = 1, at=seq(1,2,by=1), labels =c("male(n=557)", "female(n=281)"))
+>  abline(h = seq(0, 148, by=1), lty = 5, lwd = 0.5, col = "gray")
+> t.test( a11[a11$SEX == 1,]$c4a, a11[a11$SEX == 2,]$c4a)
 
 ######################################
 > summary(c4.cn$c4a.cn)
