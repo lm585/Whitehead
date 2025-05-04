@@ -7012,6 +7012,33 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | awk 'NR > 1' |cut -f 
 >  abline(h = seq(0, 148, by=1), lty = 5, lwd = 0.5, col = "gray")
 > t.test( a11[a11$SEX == 1,]$c4a, a11[a11$SEX == 2,]$c4a)
 
+######
+Hardy-Weinberg equilibrium
+
+> d1 <- hist(t11$c4a, breaks=seq(-0.5, 6.5,1))
+ d2 <- hist(t11$c4b, breaks=seq(-0.5, 6.5,1))
+ res <- as.data.frame(matrix(nrow= length(d1$mids) * length(d2$mids), ncol=5))
+ colnames(res) <- c("observed", "expected", "ratio", "cn.1", "cn.2")
+ k = 0
+ for(i in 1:length(d1$mids)) {
+ for(j in 1:length(d2$mids)) {
+ k = k+1
+ res$cn.1[k] <- d1$mids[i]
+ res$cn.2[k] <- d2$mids[j]
+ res$observed[k] <- dim(t11[ t11$c4a <= res$cn.1[k] + 0.5 & t11$c4a > res$cn.1[k] - 0.5 & t11$c4b <=  res$cn.2[k] + 0.5 & t11$c4b > res$cn.2[k] - 0.5,])[1]
+ res$expected[k] <- d1$counts[i] * d2$counts[j] / 838
+ res$ratio[k] <- res$observed[k] / res$expected[k] 
+ }
+ }
+
+ res$expected <- round(res$expected, digits=2)
+
+> res[ res$expected == 0,]
+> res[ res$ratio > 2 & res$expected != 0,]
+> res[ res$ratio < 1/2 & res$expected != 0,]
+> write.table(res, "temp1", quote=F, sep="\t")
+
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
