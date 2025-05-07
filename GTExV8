@@ -7068,6 +7068,16 @@ Hardy-Weinberg equilibrium
  res$expected <- round(res$expected, digits=2)
  res$compare <- "CYP21A1P-CYP21A2"
 
+##################################
+ STAR --runThreadN 8  --outFilterMultimapNmax 20  --genomeDir /lab/solexa_page/linyong/dir-star-genome-index-oh75 --readFilesIn  human_Microglia_RNA_polyA_P17_Temporal.fastq.gz  --readFilesCommand zcat   --outSAMtype BAM Unsorted --outSAMunmapped Within --outSAMattributes Standard
+
+linyong@fry /lab/solexa_page/linyong/autism$ samtools sort  -@ 6 -o  human_Microglia_RNA_polyA_P17_Temporal.sorted.bam Aligned.out.bam
+linyong@fry /lab/solexa_page/linyong/autism$ samtools index human_Microglia_RNA_polyA_P17_Temporal.sorted.bam
+linyong@fry /lab/solexa_page/linyong/autism$ samtools view -q 0 -b -o human_Microglia_RNA_polyA_P17_Temporal.region1.bam human_Microglia_RNA_polyA_P17_Temporal.sorted.bam chr6:20123456-40123456
+samtools index human_Microglia_RNA_polyA_P17_Temporal.region1.bam
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % scp linyong@fry.wi.mit.edu:/lab/solexa_page/linyong/autism/human_Microglia_RNA_polyA_P17_Temporal.region1.bam ./
+
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
