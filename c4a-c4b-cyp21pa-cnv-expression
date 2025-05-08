@@ -1,0 +1,154 @@
+t1 <- read.delim("gtex-dna-c4a-c4b.gene.depth.samtools.q20.txt", header=T)
+  head(t1)
+  t2 <- read.delim("cnv.dna.depth.gtex.donors.txt", header=F)
+  head(t2)
+  t2$seq.dep <- (t2$V3 + t2$V5)/2
+  t2$c4.tot <- (t2$V15 + t2$V18)/t2$seq.dep * 2 
+  colnames(t2)
+  t3 <- t2[ , c(1,2,4,19,20)]
+  t6 <- merge(t3, t1, by.x="V1", by.y="donor")
+  dim(t6)
+#  [1] 838  25  
+  t6$c4a <- t6$C4A.meandepth / t6$seq.dep
+  t6$c4b <- t6$C4B.meandepth / t6$seq.dep
+  t6$c4a.cn <- t6$c4a / median(t6$c4a)*2
+  t6$c4b.cn <- t6$c4b / median(t6$c4b)*2
+  hist(t6$c4.tot, breaks=seq(0, 12, 0.5/2/2))
+ t6.c4a.c4b.cn <- t6
+ t7 <- read.delim("c4a-depth-no.intron9-01.txt")
+ t8 <- merge(t6, t7, by.x="V1", by.y="file")
+ dim(t8)
+ #  [1] 838  73  
+ t8$c4.tot.no.intron9 <- (t8$meandepth * 2352 + t8$meandepth.1 * 11490 + t8$meandepth.2 *  2352 + t8$meandepth.3 * 11489) / (2352 + 11489.5) / t8$seq.dep * 2
+ t9 <- read.delim("CYP21A2-depth.txt")
+ dim(t9)
+ #  [1] 838  41  
+  t10 <- merge(t8, t9, by.x="V1", by.y="file")
+  dim(t10)
+ #  [1] 838 114 
+  t10$cyp21.tot <- (t10$meandepth.y + t10$meandepth.1.y) / t10$seq.dep * 2 
+  t10$CYP21A2 <- t10$meandepth.3.y / t10$seq.dep * 2 
+  t10$CYP21A1P <- t10$meandepth.2.y / t10$seq.dep * 2 
+ 
+ t11 <- t10[, c(1,26,27,117, 116)]
+ t11$c4a <- t10$c4a    *  20.0916  + 0.2 
+ t11$c4b <- t10$c4b    *  19.2208  + 0.2 
+ t11$CYP21A1P <- t10$CYP21A1P * 1.23306
+ t11$CYP21A2  <- t10$CYP21A2  * 1.08333
+ head(t11)
+#                          V1      c4a      c4b CYP21A1P  CYP21A2
+#  1 GTEX-1117F-0003-SM-6WBT7 2.238200 3.004190 2.087051 2.593960
+#  2 GTEX-111CU-0003-SM-6WBUD 1.996287 2.294424 1.262617 2.627241
+#  3 GTEX-111FC-0001-SM-6WBTJ 1.253624 2.644533 1.042663 2.756853
+
+ summary(t11$CYP21A2)
+#     Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#    1.038   2.273   2.553   2.629   2.894   6.492 
+ cor(t11[, c(2:5)])
+#                 c4a       c4b  CYP21A1P   CYP21A2
+#  c4a      1.0000000 0.3932559 0.8178293 0.5840609
+#  c4b      0.3932559 1.0000000 0.6020017 0.6997227
+#  CYP21A1P 0.8178293 0.6020017 1.0000000 0.4165759
+#  CYP21A2  0.5840609 0.6997227 0.4165759 1.0000000
+
+info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+ info$sid <-  gsub("-", ".", info$SAMPID)
+ info$sid <-  paste( info$sid, ".", sep="")
+ t12 <- merge(t11, info, by.x="V1", by.y="SAMPID")
+ dim(t12)
+#  [1] 838  11
+
+raw <- read.delim("gtex-all-samples.gene.count.txt", header=T)
+dim(raw)
+
+ t <- read.delim("/Users/linyongmao/Documents/dir-GTExV8/dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt")
+ t1 <- data.frame(t$SAMPID, t$SMRIN, t$SMTSISCH)
+ t2 <- t1[ !( is.na(t1$t.SMTSISCH) | is.na(t1$t.SMRIN)),]
+ dim(t2)
+#  [1] 19745     3
+rin <- t2
+for (index in 1:54  ) {
+t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+file <- read.delim("gtex-54tiss.txt", header=F)
+tissue = file[index,1]
+t2 <- t1[ t1$V2 == tissue, ]
+ t2$id <- gsub("-", ".", t2$V1)
+ t2$id <- paste(t2$id, ".", sep="")
+ raw2 <- raw[, colnames(raw) %in% t2$id ]
+ str1 <- paste(tissue, dim(raw2)[2], sep="\t")
+ cat(str1)
+ cat("\n")
+ rownames(raw2) <- raw$geneID
+y <- DGEList(counts=raw2)
+y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+
+diff <- as.data.frame(cpm(y))
+gene.name <- raw[, 1:2]
+ gene.name[ gene.name$name %in% c("C4A", "C4B", "CYP21A2", "ENSG00000290788"),]
+#                    geneID            name
+#  25277  ENSG00000224389.9             C4B
+#  30323  ENSG00000231852.9         CYP21A2
+#  37237 ENSG00000244731.10             C4A
+#  62195  ENSG00000290788.1 ENSG00000290788
+  g1 <- gene.name[ gene.name$name %in% c("C4A", "C4B", "CYP21A2", "ENSG00000290788"),]$geneID
+g2 <- as.data.frame( t(diff[ rownames(diff) %in% g1,]))
+ str(g2)
+ g2$sample <- rownames(g2)
+ g3 <- merge(g2, info, by.x="sample", by.y="sid")
+ dim(g3)
+#  [1] 258  11
+ dim(info)
+#  [1] 22951     7
+ g4 <- merge(g3, t12, by.x="SUBJID", by.y="SUBJID")
+ dim(g4)
+#  [1] 233  21
+ g5 <- merge(g4, rin, by.x="SAMPID", by.y="t.SAMPID")
+ dim(g5)
+#  [1] 233  23
+ t5 <- read.delim("gtex-981subjects-tsvs/subject.tsv")
+ info3 <- t5[, c(16,31,46, 106)]
+ head(info3)
+#    age_value body_mass_index source_subject_id height
+#  1        49           21.41         GTEX-YB5E     68
+ g6 <- merge(g5, info3, by.x="SUBJID", by.y="source_subject_id")
+ dim(g6)
+# [1] 233  26
+if(dim(g4)[1] >= 50 & dim(g6[ g6$SEX.x == 2,])[1] >= 10 & dim(g6[ g6$SEX.x == 1,])[1] >= 10) {
+# CYP21A1P 0CN
+ lm1 <- lm(log2(g6$ENSG00000290788.1+1) ~ log2(g6$CYP21A1P + 0.1) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+ s1 <- summary(lm1)
+ s1
+ lm2 <- lm(log2(g6$ENSG00000231852.9+1) ~ log2(g6$CYP21A2) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+ s2 <- summary(lm2)
+ s2
+
+ lm3 <- lm(log2(g6$ENSG00000244731.10+1) ~ log2(g6$c4a - 0.2) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+ s3 <- summary(lm3)
+ s3
+
+ lm4 <- lm(log2(g6$ENSG00000224389.9+1) ~ log2(g6$c4b - 0.2) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index  )
+ s4 <- summary(lm4)
+ s4
+
+str3 <- paste(str1, dim(g6)[1] , dim(g6[ g6$SEX.x == 2,])[1] , dim(g6[ g6$SEX.x == 1,])[1], 
+s1$coefficients[2,1], s1$coefficients[2,4],
+s1$coefficients[3,1], s1$coefficients[3,4],s1$coefficients[4,1], s1$coefficients[4,4],s1$coefficients[5,1], s1$coefficients[5,4],
+s1$coefficients[6,1], s1$coefficients[6,4],s1$coefficients[7,1], s1$coefficients[7,4], s1$r.squared^(1/2),
+"ENSG00000290788-CYP21A2",
+s2$coefficients[2,1], s2$coefficients[2,4],
+s2$coefficients[3,1], s2$coefficients[3,4],s2$coefficients[4,1], s2$coefficients[4,4],s2$coefficients[5,1], s2$coefficients[5,4],
+s2$coefficients[6,1], s2$coefficients[6,4],s2$coefficients[7,1], s2$coefficients[7,4],s2$r.squared^(1/2), sep="\t")
+cat(str3)
+cat("\n")
+
+ }
+}
