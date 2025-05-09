@@ -88,7 +88,7 @@ for(i in 1:dim(y)[1]) {
  med$logic[i] <- median(d[i,]) >= 0.1
 }
 ####median >= 1 for pathway genes
-y<-y[med$logic,]
+### y<-y[med$logic,]
 print(dim(y))
 
 diff <- as.data.frame(cpm(y))
