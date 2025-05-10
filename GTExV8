@@ -7077,6 +7077,20 @@ linyong@fry /lab/solexa_page/linyong/autism$ samtools view -q 0 -b -o human_Micr
 samtools index human_Microglia_RNA_polyA_P17_Temporal.region1.bam
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % scp linyong@fry.wi.mit.edu:/lab/solexa_page/linyong/autism/human_Microglia_RNA_polyA_P17_Temporal.region1.bam ./
 
+#####################################
+C4A     ENSG00000290788 C4B     CYP21A2
+> sink("median-c4a-cyp21a2-expression.R.out")
+ # all rna-seq samples in a tissue
+ g2 <- as.data.frame( t(diff[ rownames(diff) %in% g1,]))
+ str(g2)
+ res <- paste(tissue, median(g2$ENSG00000244731.10), median(g2$ENSG00000290788.1), median(g2$ENSG00000224389.9), median(g2$ENSG00000231852.9), sep="\t")
+ cat(res)
+ cat("\n")
+                  geneID            name
+25277  ENSG00000224389.9             C4B
+30323  ENSG00000231852.9         CYP21A2
+37237 ENSG00000244731.10             C4A
+62195  ENSG00000290788.1 ENSG00000290788
 
 ######################################
 > summary(c4.cn$c4a.cn)
