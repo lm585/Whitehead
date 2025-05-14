@@ -7092,6 +7092,37 @@ C4A     ENSG00000290788 C4B     CYP21A2
 37237 ENSG00000244731.10             C4A
 62195  ENSG00000290788.1 ENSG00000290788
 
+############################################
+> identical(t10$V1, t11$V1)
+[1] TRUE
+> t11$c4a.int <- round(t11$c4a, digits=0)
+> t11$c4b.int <- round(t11$c4b, digits=0)
+> t11$c4.tot.no.intron9.int <- round(t10$c4.tot.no.intron9 - 0.2, digits=0)
+> t12 <- t11[ t11$c4a.int + t11$c4b.int == t11$c4.tot.no.intron9.int,]
+> dim(t12)
+[1] 466 (55.60%)   8
+> h1 <- hist(t12$c4.tot.no.intron9.int, breaks=seq(-0.5, 11.5, 1))
+> h1
+$counts
+ [1]   0   0   6  43 133 128 113  33   8   1   0   1
+$mids
+ [1]  0  1  2  3  4  5  6  7  8  9 10 11
+> hist(t10[ t10$V1 %in% t12$V1,] $c4.tot.no.intron9 - 0.2, breaks=seq(0, 12, 0.5/2/2))
+> dim(t10[ t10$V1 %in% t12$V1,])
+[1] 466 117
+ d <- density(t10[ t10$V1 %in% t12$V1,] $c4.tot.no.intron9 - 0.2, bw = 0.15)
+ plot(d$x, d$y, col="red")
+ lines(d$x, d$y, col="red")
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "blue")
+ abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "blue")
+ abline(h = seq(-0.5,10.5,1), lty = 5, lwd = 0.5, col = "grey")
+ abline(v = seq(-0.5,100,1), lty = 5, lwd = 0.5, col = "grey")
+ x=0:10
+ y=x
+ abline(lm(y~x), col="red")
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
