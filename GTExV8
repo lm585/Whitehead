@@ -7123,6 +7123,38 @@ $mids
  y=x
  abline(lm(y~x), col="red")
 
+#############################################
+# c4a-c4b-cyp21pa-cnv-expression
+
+ sid <-  log2(g6$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g6$t.SMRIN  - s3$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g6$SEX.x - s3$coefficients[6,1] * g6$age_value - s3$coefficients[7,1] * g6$body_mass_index - s3$coefficients[1,1] 
+ lm1 <- lm(sid ~ log2(g6$c4a - 0.2))
+ summary(lm1)
+
+Call:
+lm(formula = sid ~ log2(g6$c4a - 0.2))
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)
+(Intercept)        -1.478e-15  1.288e-01    0.00        1
+log2(g6$c4a - 0.2)  1.183e+00  9.580e-02   12.35   <2e-16 ***
+
+Multiple R-squared:  0.4253,    Adjusted R-squared:  0.4225
+F-statistic: 152.4 on 1 and 206 DF,  p-value: < 2.2e-16
+
+> g7 <- data.frame(resid = sid, C4A = g6$c4a , expr = g6$ENSG00000244731.10)
+
+ g7$C4A.int <- round(g7$C4A, digits=0)
+ g7$C4A.minus0.2.int <- round(g7$C4A - 0.2, digits=0)
+ boxplot(g7$resid ~ g7$C4A.int, ylab="residual C4A expression (log2(cpm+1))")
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+
+ wilcox.test(g7[ g7$C4A.int == 2,]$resid, g7[ g7$C4A.int == 3,]$resid)
+ wilcox.test(g7[ g7$C4A.int == 3,]$resid, g7[ g7$C4A.int == 4,]$resid)
+ wilcox.test(g7[ g7$C4A.int == 2,]$resid, g7[ g7$C4A.int == 4,]$resid)
+
+ h1 <- hist(g7$C4A, breaks=seq(-0.5, 6.5,1))
+
+
 ######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
