@@ -7154,6 +7154,23 @@ F-statistic: 152.4 on 1 and 206 DF,  p-value: < 2.2e-16
 
  h1 <- hist(g7$C4A, breaks=seq(-0.5, 6.5,1))
 
+#######################################################################
+
+linyong@fry /lab/solexa_page/linyong/dir-temp$ cat /lab/solexa_page/linyong/dir-temp/slurm-sra-download-fastq
+linyong@fry /lab/solexa_page/linyong/dir-temp$ cat biosample_result-accession-60samp.txt
+SAMN07189912
+SAMN07189911
+SAMN07189859
+
+SAMN07189858
+SAMN07189857
+SAMN07189830
+
+linyong@fry /lab/solexa_page/linyong/dir-temp$
+linyong@fry /lab/solexa_page/linyong/dir-temp$ cat biosample_result-accession-samp.txt
+SRR33469140
+
+linyong@fry /lab/solexa_page/linyong/dir-temp$
 
 ######################################
 > summary(c4.cn$c4a.cn)
