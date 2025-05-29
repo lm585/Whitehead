@@ -7155,6 +7155,64 @@ F-statistic: 152.4 on 1 and 206 DF,  p-value: < 2.2e-16
  h1 <- hist(g7$C4A, breaks=seq(-0.5, 6.5,1))
 
 #######################################################################
+ t12$nat.c4a.int <- t12$c4a
+ t1 <- dim(t12[ t12$c4a < 0.5,])[1]
+ t1
+#  [1] 5
+
+#2016 nature figure 3A
+#CN         1,2,3,4
+ dis <- c(19,64,13,3)
+ sum(dis)
+#  [1] 99
+ d1 <- dis / sum(dis)
+ d1
+#  [1] 0.19191919 0.64646465 0.13131313 0.03030303
+ sum(d1)
+#  [1] 1
+
+ t2 <- 1:10
+ t3 <- sort(t12$c4a)
+ t4 <- round( (dim(t12)[1] - t1) * d1)
+ t4
+ t2[1] <- t3[ t4[1] + t1]
+ t2[2] <- t3[ t4[1] + t4[2] + t1]
+ t2[3] <- t3[ t4[1] + t4[2] + t4[3] + t1]
+ t2
+
+for(i in 1:dim(t12)[1]) {
+ if(t12$c4a[i] < 0.5 ) {t12$nat.c4a.int[i] = t12$c4a[i]}
+ if(t12$c4a[i] >= 0.5 & t12$c4a[i] < t2[1] ) {t12$nat.c4a.int[i] = 1}
+ if(t12$c4a[i] >= t2[1] & t12$c4a[i] < t2[2] ) {t12$nat.c4a.int[i] = 2}
+ if(t12$c4a[i] >= t2[2] & t12$c4a[i] < t2[3] ) {t12$nat.c4a.int[i] = 3}
+ if(t12$c4a[i] >= t2[3] ) {t12$nat.c4a.int[i] = 4}
+ }
+ plot(t12$c4a, t12$nat.c4a.int)
+ abline(v= seq(-100,100,1/2), lty = 5, lwd = 0.5, col = "blue")
+ abline(h= seq(-100,100,1/2), lty = 5, lwd = 0.5, col = "blue")
+
+ t5 <- hist(t12$nat.c4a.int, breaks=seq(-0.5, 6.5,1))
+ t5
+...
+...
+ lm3 <- lm(log2(g6$ENSG00000244731.10+1) ~ log2(g6$nat.c4a.int) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+ s3 <- summary(lm3)
+ s3
+ s3$coefficients
+ g6$c4a.int <- round(g6$c4a, digits=0)
+ for(i in 1:dim(g6)[1]) {
+ if(g6$c4a.int[i] == 0) {
+    g6$c4a.int[i] = g6$c4a[i]
+}
+}
+
+ lm3 <- lm(log2(g6$ENSG00000244731.10+1) ~ log2(g6$c4a.int) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+ s3 <- summary(lm3)
+ s3
+ s3$coefficients
+
+
+#######################################################################
 
 linyong@fry /lab/solexa_page/linyong/dir-temp$ cat /lab/solexa_page/linyong/dir-temp/slurm-sra-download-fastq
 linyong@fry /lab/solexa_page/linyong/dir-temp$ cat biosample_result-accession-60samp.txt
