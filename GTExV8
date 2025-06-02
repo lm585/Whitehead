@@ -7266,6 +7266,40 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp1 | wc -l
 cat temp| awk 'BEGIN {FS = "\t"; OFS = "\t"} NF == 5 && $3 == 1'  > temp2
 paste temp1 temp2 | awk 'BEGIN {FS = "\t"; OFS = "\t"}  $1 == $6' > temp3
 
+#######################################################################
+sink("temp")
+for( i in c(seq(0.5, 1.5, 0.1/2) )) {
+cat(tissue)
+cat("\t")
+cat(dim(g6)[1])
+cat("\t")
+
+cat(round(i, digits=2))
+cat("\t")
+g6$c4a.int <- round(g6$c4a * i, digits=0)
+ for(i in 1:dim(g6)[1]) {
+ if(g6$c4a.int[i] == 0) {
+    g6$c4a.int[i] = g6$c4a[i]
+}
+}
+
+ lm3 <- lm(log2(g6$ENSG00000244731.10+1) ~ log2(g6$c4a.int) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+ s3 <- summary(lm3)
+ s3
+ s3$coefficients
+ cat(s3$coefficients[2,4])
+ cat("\t")
+ h1 <- hist(g6$c4a.int, breaks=seq(-0.5, 16.5,1))
+ cat(round(h1$density, digits=2)[2:5])
+ cat("\n")
+ }
+sink()
+ s1 <- read.delim("temp", header=F)
+ plot(s1$V3, -log10(s1$V4), xlab="* scale factor", ylab="-log10 pVal", main=tissue)
+ lines(s1$V3, -log10(s1$V4))
+ abline(v = seq(0.5,10000,0.1), lty = 5, lwd = 0.5, col = "blue")
+ abline(h=max(-log10(s1$V4)))
+ abline(v = 1, col="red")
 
 #######################################################################
 
