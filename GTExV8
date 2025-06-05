@@ -7302,6 +7302,76 @@ sink()
  abline(v = 1, col="red")
 
 #######################################################################
+# from temp-c4a-c4b-cyp21pa-cnv-expression
+> dim(t13)
+#  [1] 543  13
+ t14 <- t13[ t13$cyp21a1p.int == 0,]
+ dim(t14)
+#  [1] 14 13
+ summary(t14$CYP21A1P)
+#     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#  0.00000 0.00000 0.00000 0.02054 0.02733 0.12171
+ sort(t14$cyp21a2.int)
+#   [1] 2 2 2 2 2 2 2 3 3 3 3 4 4 5
+ t14[ t14$cyp21a2.int == 4,]
+#                            V1      c4a      c4b   CYP21A1P  CYP21A2 c4.tot.no.intron9 c4.tot.no.intron9.int cyp21.tot cyp21.tot.int c4a.int c4b.int cyp21a1p.int cyp21a2.int
+#  224 GTEX-14JFF-0002-SM-DLIOQ 1.770671 2.541950 0.00000000 3.725652          3.793055                     4  3.860895             4       2       3            0           4
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/temp-dir-bams$ samtools mpileup -Q 0  -q 0 -d 1000000 -f  /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  ../GTEX-14JFF-0002-SM-DLIOQ.bam > GTEX-14JFF-0002-SM-DLIOQ.q0.pile
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv GTEX-14JFF-0002-SM-DLIOQ.q0.pile temp
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi temp
+
+> p1 <- read.delim("temp", quote=NULL, header=F)
+name: C2
+ p2 <- p1[ p1$V2 > 31927717 & p1$V2 < 31945672,  ]
+ dim(p2)
+#  [1] 17954     6
+ summary(p2$V4)
+#     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#    25.00   41.00   46.00   46.41   52.00   79.00
+ p3 <- p2[ seq(100, dim(p2)[1], 50),]
+ dim(p3)
+#  [1] 358   6
+#  > name: CYP21A1P
+ p2 <- p1[ p1$V2 > 32005636 & p1$V2 < 32008909,  ]
+ dim(p2)
+#  [1] 1891    6
+#  > name: CYP21A2
+ p2 <- p1[ p1$V2 > 32038415 & p1$V2 < 32041644,  ]
+ dim(p2)
+#  [1] 3228    6
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/temp-dir-bams$  ~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chr6 32038415 32038515
+mapped to CYP21A1P locus
+chr6    32005680        32005781        +       960     99      2       0       0       0       0       0       0
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/temp-dir-bams$ ~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chr6     32041544  32041644
+mapped to CYP21A1P locus
+chr6    32008808        32008909        +       920     97      4       0       0       0       0       0       0
+samtools view -b   ../GTEX-14JFF-0002-SM-DLIOQ.bam chr6:32005636-32008909 > temp.1.bam
+samtools view -b   ../GTEX-14JFF-0002-SM-DLIOQ.bam chr6:32038415-32041644 > temp.2.bam
+samtools merge temp.3.bam  temp.1.bam  temp.2.bam
+samtools view temp.3.bam | wc -l
+#  1844
+samtools view temp.3.bam | awk 'BEGIN {FS = "\t"; OFS = "\t"}
+{
+ print ">" $1 "seq_" NR;
+ print $10
+}'  > temp.3.fasta
+~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chr6 32038415 32041644 > CYP21A2.dna
+vi CYP21A2.dna
+bwa index CYP21A2.dna
+bwa mem -t 4 CYP21A2.dna  temp.3.fasta > temp.4.sam
+cat temp.4.sam |  cut -f 2 | sort | uniq -c
+cat temp.4.sam |  cut -f 5 | sort -g | uniq -c
+samtools view -b   temp.4.sam > temp.4.bam
+samtools sort -@ 4 -o  temp.4.sort.bam  temp.4.bam
+rm -f temp.4.pile
+samtools mpileup -Q 0  -q 0 -d 1000000 -f   CYP21A2.dna temp.4.sort.bam  > temp.4.pile
+> p8 <- read.delim("temp.4.pile", quote=NULL, header=F)
+ dim(p8)
+#  [1] 3230    6
+
+
+#######################################################################
 
 linyong@fry /lab/solexa_page/linyong/dir-temp$ cat /lab/solexa_page/linyong/dir-temp/slurm-sra-download-fastq
 linyong@fry /lab/solexa_page/linyong/dir-temp$ cat biosample_result-accession-60samp.txt
