@@ -7370,6 +7370,27 @@ samtools mpileup -Q 0  -q 0 -d 1000000 -f   CYP21A2.dna temp.4.sort.bam  > temp.
  dim(p8)
 #  [1] 3230    6
 
+p9 <- p8[ 200: (dim(p8)[1] - 200),]
+ dim(p9)
+#  [1] 2831    6
+#  name: C2
+ p2 <- p1[ p1$V2 > 31927717 & p1$V2 < 31945672,  ]
+ dim(p2)
+#  [1] 17954     6
+ p10 <- p2[sort( sample(1:dim(p2)[1], dim(p9)[1] )),]
+ p10$V5 <- p10$V2
+ p10$V2 <- p9$V2
+ p9$V5 <- p9$V2
+ p9$V6 <- "CYP21A2"
+ p10$V6 <- "C2"
+ p10$V7 <- p10$V4 / median(p10$V4) * 40.92485
+ p9$V7 <- p9$V4
+ summary(p10$V4)
+ summary(p10$V7)
+
+ p11 <- rbind(p9,p10)
+> gplot(p11, aes(x=V2, y=V7, group=V6, color=V6)) + geom_point(shape=21, size=1) + geom_smooth(method="lm") + labs(x= "relative pos.", y="seq coverage")
+
 
 #######################################################################
 
