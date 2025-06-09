@@ -7445,6 +7445,58 @@ SRR33469140
 linyong@fry /lab/solexa_page/linyong/dir-temp$
 
 ######################################
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ ~/C++/reSeqPrintChrRegion.fq /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  out chr6 1 42041644 > chr6.42M.dna
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ grep "^>" chr6.42M.dna
+>chr6 6
+bwa index chr6.42M.dna
+bwa bwasw  -f SRR33469140.sam -t 10  chr6.42M.dna /lab/solexa_page/linyong/dir-temp/SRR33469140.fastq
+bwasw Failed: [vfprintf(stdout)] Value too large for defined data type
+
+minimap2 -a -x map-ont -t 10 -o SRR33469140.sam   chr6.42M.dna /lab/solexa_page/linyong/dir-temp/SRR33469140.fastq
+
+-rw-r--r-- 1 linyong systemd-timesync 268G Jun  7 22:23 SRR33469140.sam
+31,158,725 SRR33469140.sam
+-rw-r--r-- 1 linyong systemd-timesync  25G Jun  8 02:54 temp.q20.sam
+-rw-r--r-- 1 linyong systemd-timesync 8.4G Jun  8 14:36 temp.q20.bam
+-rw-r--r-- 1 linyong systemd-timesync 8.4G Jun  8 14:46 temp.q20.sort.bam
+-rw-r--r-- 1 linyong systemd-timesync 659K Jun  8 15:00 temp.q20.sort.bam.bai
+-rw-r--r-- 1 linyong systemd-timesync 406M Jun  8 15:23 temp.q20.sort.region.bam
+-rw-r--r-- 1 linyong systemd-timesync  53K Jun  8 15:24 temp.q20.sort.region.bam.bai
+
+rm -f temp.q20.sam temp.q20.bam
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ srun -p 20 --cpus-per-task=12 --mem=64gb --pty bash -i
+srun: job 7623598 queued and waiting for resources
+srun: job 7623598 has been allocated resources
+
+cat SRR33469140.sam | awk 'BEGIN {FS = "\t"; OFS = "\t"}
+$4 > 20123456 && $5 >= 20
+' > temp.q20.sam
+
+cat SRR33469140.sam | head -2 > temp
+srun -p 20 --cpus-per-task=12 --mem=64gb --pty bash -i
+cat temp.q20.sam >> temp 
+mv temp temp.q20.sam
+samtools view -b -S -o temp.q20.bam temp.q20.sam &
+samtools sort -@ 10 -o  temp.q20.sort.bam temp.q20.bam &
+samtools index temp.q20.sort.bam &
+samtools view -b  temp.q20.sort.bam chr6:31354242-32706773 > temp.q20.sort.region.bam &
+
+samtools view -h temp.q20.sort.region.bam > temp.q20.sort.region.2.sam
+-rw-r--r-- 1 linyong systemd-timesync 1.2G Jun  8 16:09 temp.q20.sort.region.2.sam
+vi temp.q20.sort.region.2.sam
+delete duplicate line @PG       ID:minimap2     PN:minimap2     VN:2.24-r1122   CL:minimap2 -a -x map-ont -t 10 -o SRR33469140.sam chr6.42M.dna /lab/solexa_page/linyong/dir-temp/SRR33469140.fastq
+samtools view -b -S -o temp.q20.sort.region.2.bam temp.q20.sort.region.2.sam
+samtools index temp.q20.sort.region.2.bam
+
+
+> t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
+                    geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
+1601 ENSMUSG00000015451.17  C4a         24          9         14         12         15         22         34         38         29         58
+20211 ENSMUSG00000073418.5  C4b         39         38         43         49         35         42         80        111        243        142
+
+
+######################################
 > summary(c4.cn$c4a.cn)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
  0.1754  1.5679  2.0000  2.0016  2.4224  5.0299
