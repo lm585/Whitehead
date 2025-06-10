@@ -7489,6 +7489,59 @@ delete duplicate line @PG       ID:minimap2     PN:minimap2     VN:2.24-r1122   
 samtools view -b -S -o temp.q20.sort.region.2.bam temp.q20.sort.region.2.sam
 samtools index temp.q20.sort.region.2.bam
 
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ mv temp.q20.sort.region.2.bam SRR33469140.q20.sort.region.2.bam
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ mv temp.q20.sort.region.2.bam.bai  SRR33469140.q20.sort.region.2.bam.bai 
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ java -jar /usr/local/share/picard-tools/picard.jar SamToFastq I="SRR33469140.q20.sort.region.2.bam"  FASTQ=SRR33469140.q20.sort.region.2.fastq 
+-rw-r--r-- 1 linyong systemd-timesync 931M Jun  9 13:34 SRR33469140.q20.sort.region.2.fastq
+-rw-r--r-- 1 linyong systemd-timesync 406M Jun  8 16:14 SRR33469140.q20.sort.region.2.bam
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ cat SRR33469140.q20.sort.region.2.fastq | awk 'NR % 4 == 1' | wc -l
+10195
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ cat SRR33469140.q20.sort.region.2.fastq | awk 'NR % 4 == 1' | sort | uniq -d | wc
+      0       0       0
+samtools view "SRR33469140.q20.sort.region.2.bam" | cut -f 1 | wc -l
+75925
+samtools view "SRR33469140.q20.sort.region.2.bam" | cut -f 1 | sort | uniq | wc -l
+70019
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ vi /home/linyong/C++/fastq2fa.longread.divide300pb.C
+g++ -o /home/linyong/C++/fastq2fa.longread.divide300pb /home/linyong/C++/fastq2fa.longread.divide300pb.C
+
+bwa mem -t 4 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa   out > temp.sam
+
+cat temp.sam | awk 'NF > 11' | cut -f 1-9,12
+@SRR33469140.101-1	0	chr14	100089786	60	300M	*	0	0	NM:i:0
+@SRR33469140.101-2	0	chr14	100090086	60	300M	*	0	0	NM:i:0
+@SRR33469140.101-3	0	chr14	100090386	60	106M1I193M	*	0	0	NM:i:1
+@SRR33469140.101-4	0	chr14	100090685	60	300M	*	0	0	NM:i:0
+@SRR33469140.101-5	0	chr14	100090985	60	198M1D102M	*	0	0	NM:i:1
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ cat /lab/solexa_page/linyong/dir-temp/SRR33469140.fastq | head -100 > temp
+cat temp | awk 'NR % 4 == 1' | awk '{print $1}' | sed 's/@//' > temp-reads
+/home/linyong/C++/fastq.selReads  temp out 300  temp-reads
+g++ -o  /home/linyong/C++/fastq.selReads  /home/linyong/C++/fastq.selReads.C
+/home/linyong/C++/fastq.selReads  temp out 300  temp-reads
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ diff  temp out  | wc
+      0       0       0
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ samtools view "SRR33469140.q20.sort.region.2.bam" | cut -f 1 | sort | uniq > temp1 
+70019 temp1
+
+/home/linyong/C++/fastq.selReads  /lab/solexa_page/linyong/dir-temp/SRR33469140.fastq SRR33469140.q20.sort.region.2.fastq 300 temp1  
+280076 SRR33469140.q20.sort.region.2.fastq
+
+cat  SRR33469140.q20.sort.region.2.fastq | grep SRR33469140.2461042 -A 1 > temp1
+ /home/linyong/C++/fastq2fa.longread.divide300pb temp1 temp2 300
+bwa mem -t 14 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa temp2 > temp2.sam 
+samtools view -b -S -o temp2.bam temp2.sam
+samtools sort -@ 10 -o  temp2.sort.bam temp2.bam
+samtools index temp2.sort.bam 
+samtools mpileup -Q 0  -q 0 -d 1000000 -f  /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa temp2.sort.bam > temp2.pile
+
+cat temp2.sam | awk 'NF > 11' | cut -f 3 |uniq -c
+     39 chr6
+      1 chr11
+      2 chr6
+      1 chr5
+    577 chr6
 
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
