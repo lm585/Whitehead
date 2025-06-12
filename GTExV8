@@ -7543,6 +7543,51 @@ cat temp2.sam | awk 'NF > 11' | cut -f 3 |uniq -c
       1 chr5
     577 chr6
 
+######
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ samtools view -b   temp2.sort.bam chr6:31354242-32706773 >  SRR33469140.sort.readL300.region.2.bam
+
+# C4A exon #28 16-bp covering 4 SNPs between c4a and c4b
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ samtools view -q 20 SRR33469140.sort.readL300.region.2.bam  chr6:31996539-31996554 | cut -f 1-9,12 | cut -f 1 | sed 's/-[0-9]*$//' | sort | uniq -c | awk '$1 > 1'
+
+# C4B exon #28 16-bp covering 4 SNPs between c4a and c4b
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ samtools view -q 20 SRR33469140.sort.readL300.region.2.bam  chr6:32029277-32029292 | cut -f 1-9,12 | cut -f 1 | sed 's/-[0-9]*$//' | sort | uniq -c | awk '$1 > 1'
+
+rm -f temp1 temp2
+samtools view -q 20 SRR33469140.sort.readL300.region.2.bam  chr6:31996539-31996554 | cut -f 1-9,12 | cut -f 1 | sed 's/-[0-9]*$//' | sort | uniq > temp1
+samtools view -q 20 SRR33469140.sort.readL300.region.2.bam  chr6:32029277-32029292 | cut -f 1-9,12 | cut -f 1 | sed 's/-[0-9]*$//' | sort | uniq > temp2
+cat temp1 temp2 | sort | uniq -d
+
+rm -f out
+samtools view -q 20 SRR33469140.sort.readL300.region.2.bam | grep "SRR33469140.1177264-" | cut -f  1-9,12 | sed 's/-/     /' | sort -t '  ' +1 -2n > out
+> t1 <- read.delim("out", header=F)
+g1 <- read.delim("gene.coord")
+
+ plot(t1$V2, t1$V5, xlab="order of 300-bp unit within long read\nmapQ >= 20 ", ylab="chr pos.", main="Read ID SRR33469140.1177264")
+ lines(t1$V2, t1$V5, col="red")
+ abline(h = seq(0,1e8,10000/2), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(0, 10000, 25), lty = 5, lwd = 0.5, col = "gray")
+
+ lines(g1$x[1:2], g1$y[1:2], lwd = 2)
+ text(g1$x[1] + 1, g1$y[1] + 10, g1$gene[1], pos=4)
+ lines(g1$x[3:4], g1$y[3:4], lwd = 2)
+ text(g1$x[3] + 1, g1$y[3] + 10, g1$gene[3], pos=4)
+ lines(g1$x[5:6], g1$y[5:6], lwd = 2)
+ text(g1$x[5] + 1, g1$y[5] + 10, g1$gene[5], pos=4)
+ lines(g1$x[7:8], g1$y[7:8], lwd = 2)
+ text(g1$x[7] + 1, g1$y[7] + 10, g1$gene[7], pos=4)
+
+> g1
+      gene x        y
+1      c4a 1 31982057
+2      c4a 1 32002681
+3      c4b 1 32014795
+4      c4b 1 32035418
+5 cyp21a1p 1 32005636
+6 cyp21a1p 1 32008909
+7  cyp21a2 1 32038415
+8  cyp21a2 1 32041644
+
+#############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
 1601 ENSMUSG00000015451.17  C4a         24          9         14         12         15         22         34         38         29         58
