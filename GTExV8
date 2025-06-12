@@ -7587,6 +7587,40 @@ g1 <- read.delim("gene.coord")
 7  cyp21a2 1 32038415
 8  cyp21a2 1 32041644
 
+######
+## get one long read, minimap2 ref genome, 
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ cat temp-scr
+#
+cat  SRR33469140.q20.sort.region.2.fastq | grep "SRR33469140.1177264 " -A 1 > temp1
+wc -l temp1
+minimap2 -a -x map-ont -t 4  -o temp2.sam /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa temp1
+samtools view -b -S -o temp2.bam temp2.sam
+samtools sort -@ 10 -o  SRR33469140.1177264.sort.bam temp2.bam
+samtools index SRR33469140.1177264.sort.bam
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ bash -x temp-scr
+
+samtools view -q 20 SRR33469140.sort.readL300.region.2.bam  chr6:32029277-32029292 | cut -f 1-9,12 | cut -f 1 | sed 's/-[0-9]*$//' | sort | uniq | while read ll
+do
+ echo "$ll"
+ samtools view -q 20 SRR33469140.sort.readL300.region.2.bam | grep "${ll}-" | cut -f  1-9,12 | head -6 | grep "${ll}"  
+done
+
+SRR33469140.1533065
+SRR33469140.1533065-1   0       chr6    31941729        60      86M2D214M       *       0       0       NM:i:2
+SRR33469140.1533065-2   0       chr6    31942031        60      94M10I196M      *       0       0       NM:i:11
+SRR33469140.1533065-3   0       chr6    31942321        60      300M    *       0       0       NM:i:0
+SRR33469140.1533065-4   0       chr6    31942621        60      300M    *       0       0       NM:i:0
+
+linyong@c1b3 /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ cat slurm-6
+
+/home/linyong/C++/fastq2fa.longread.divide300pb   /lab/solexa_page/linyong/dir-temp/SRR33469140.fastq  temp2 300
+bwa mem -t 14 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa temp2 > temp2.sam
+samtools view -b -S -o temp2.bam temp2.sam
+
+samtools sort -@ 14 -o  temp2.sort.bam temp2.bam
+samtools index temp2.sort.bam
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
