@@ -7620,6 +7620,84 @@ samtools view -b -S -o temp2.bam temp2.sam
 samtools sort -@ 14 -o  temp2.sort.bam temp2.bam
 samtools index temp2.sort.bam
 
+###
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ samtools coverage -q 0 temp2.sort.bam
+#rname	startpos	endpos	numreads	covbases	coverage	meandepth	meanbaseq	meanmapq
+chr1	1	248956422	33376707	229583152	92.2182	39.0282	255	52.5
+chr2	1	242193529	35144170	239943160	99.0708	41.4551	255	54.8
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ cat script-call-CN-2
+# bam already indexed
+#
+
+
+file="temp2.sort.bam"
+
+# chr6 1 170,805,979 
+
+t=10000000
+while [ $t -lt 170123456 ]
+do
+ t1=`expr $t + 5000`
+ r=`echo "chr6:${t}-${t1}"`
+ echo  "\|${r}\|"
+ samtools coverage -r "$r" -q 0  "$file" 
+ t=`expr $t + 1000000`
+done
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ 
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ bash script-call-CN-2 > temp
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  temp | awk 'NR % 3 == 2' | head -1 > out
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  temp | awk 'NR % 3 == 0' >> out         
+> t1 <- read.delim("out")
+ t2 <- t1[, c(2,7)]
+ t3 <- t1[, c(3,7)]
+ colnames(t3)[1] <- colnames(t2)[1]
+ t4 <- rbind(t2, t3)
+ t5 <- t4[ order(t4$startpos),]
+ head(t5)
+
+ plot(t5$startpos, t5$meandepth, xlab="chr6 pos. (samtools coverage -r $r -q 0)")
+ lines(t5$startpos, t5$meandepth, col="red")
+ abline(h = seq(0,100,10), lty = 5, lwd = 0.5, col = "gray")
+ abline(lm(t5$meandepth ~ t5$startpos), lwd = 1, col = "blue")
+g1 <- read.delim("gene.coord")
+ lines( g1$y[1:2], c(10,10),lwd = 10)
+ text(g1$y[1] ,  10, g1$gene[1], pos=1)
+ mid=mean(g1$y[1:2])
+ abline(v=mid, lty=5)
+
+Median two chr seq depths
+chr1  1 248956422 33376707 229583152 92.2182 39.0282 255 52.5
+chr21 1  46709983 6518383 39541213 84.6526 39.1048 255 44.3
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ bash script-bam-c4a-depth SRR33469140.sort.readL300.allchr.sort.bam
+# samtools coverage -r "$R" -q 20 -H "$cram" 
+header	geneID	geneName	header	#rname	startpos	endpos	numreads	covbases	coverage	meandepth	meanbaseq	meanmapq
+SRR33469140.sort.readL300.allchr.sort	ENSG00000244731.10	C4A	geneIntv	chr6	31982057	32002681	56	1077	5.22182	0.7936	255	42.6
+SRR33469140.sort.readL300.allchr.sort	ENSG00000224389.9	C4B	geneIntv	chr6	32014795	32035418	33	1026	4.97479	0.47949	255	46.2
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024/Nanopore$ bash  script-call-CN  SRR33469140.sort.readL300.allchr.sort.bam
+SRR33469140.sort.readL300.allchr.sort.bam	C4A	start-exon#9	chr6	31982057	31984408	192	2352	100	21.1416	255	0
+SRR33469140.sort.readL300.allchr.sort.bam	C4A	exon#10-end	chr6	31991192	32002681	874	11477	99.8869	21.3498	255	3.22
+SRR33469140.sort.readL300.allchr.sort.bam	C4B	start-exon#9	chr6	32014795	32017146	190	2352	100	20.5247	255	0
+SRR33469140.sort.readL300.allchr.sort.bam	C4B	exon#10-end	chr6	32023930	32035418	868	11489	100	21.3209	255	2.56
+SRR33469140.sort.readL300.allchr.sort.bam	CYP21A2	allgene	chr6	32038415	32041644	366	3230	100	30.5604	255	27.2
+SRR33469140.sort.readL300.allchr.sort.bam	CYP21A1P	allgene	chr6	32005636	32008909	120	3139	95.8766	9.68632	255	30.4
+SRR33469140.sort.readL300.allchr.sort.bam	CYP21A2-q20	allgene	chr6	32038415	32041644	173	2417	74.8297	13.4907	255	46.8
+SRR33469140.sort.readL300.allchr.sort.bam	CYP21A1P-q20	allgene	chr6	32005636	32008909	75	2365	72.2358	5.93677	255	45.4
+
+med <- (39.0282 + 39.1048) / 2
+c4.tot.no.intron9 <- (21.1416 * 2352 + 21.3498 * 11490 + 20.5247 * 2352 + 21.3209 * 11489 ) / (2352 + 11489.5) / med * 2
+cyp21.tot <- (30.5604 + 9.68632 ) / med * 2
+c4a <- c4.tot.no.intron9 * 0.7936 / (0.7936 + 0.47949)
+c4b <-  c4.tot.no.intron9 * 0.47949/(0.7936 + 0.47949)
+CYP21A1P <-  cyp21.tot * 5.93677 / (5.93677 + 13.4907)
+CYP21A2 <-  cyp21.tot * 13.4907 / (5.93677 + 13.4907)
+c4a 
+c4b
+CYP21A1P
+CYP21A2
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
