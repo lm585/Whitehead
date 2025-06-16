@@ -7699,6 +7699,39 @@ c4b
 CYP21A1P
 CYP21A2
 
+#######################################
+###permute CN assignment
+###randomnize CN 
+ g6$resid <-  log2(g6$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g6$t.SMRIN  - s3$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g6$SEX.x - s3$coefficients[6,1] * g6$age_value - s3$coefficients[7,1] * g6$body_mass_index - s3$coefficients[1,1] 
+ g6$c4a.int <- round(g6$c4a, digits=0)
+for(i in 1:dim(g6)[1]) {
+ if(g6$c4a.int[i] == 0) {
+    g6$c4a.int[i] = g6$c4a[i]
+}
+}
+ g6$random.C4A.int <- g6[ sample(1:dim(g6)[1], dim(g6)[1]),]$c4a.int
+cor.test(g6$random.C4A.int, g6$c4a.int)
+#       Pearson's product-moment correlation
+#  t = -0.55707, df = 572, p-value = 0.5777
+
+ lm3 <- lm(log2(g6$ENSG00000244731.10+1) ~ log2(g6$c4a.int) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+ s3 <- summary(lm3)
+ s3
+ s3$coefficients
+
+ lm3 <- lm(log2(g6$ENSG00000244731.10+1) ~ log2(g6$random.C4A.int) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+ s3 <- summary(lm3)
+ s3
+ s3$coefficients
+ g6$resid <-  log2(g6$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g6$t.SMRIN  - s3$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g6$SEX.x - s3$coefficients[6,1] * g6$age_value - s3$coefficients[7,1] * g6$body_mass_index - s3$coefficients[1,1]
+
+## 0.11 round to zero
+ g6$random.C4A.int <- round(g6$random.C4A.int, digits=0)
+  boxplot(g6$resid ~ g6$random.C4A.int, ylab="residual C4A expression (log2(cpm+1))")
+  abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ h1 <- hist(g6$random.C4A.int, breaks=seq(-0.5, 6.5,1))
+ h1
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
