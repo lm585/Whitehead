@@ -7154,6 +7154,13 @@ F-statistic: 152.4 on 1 and 206 DF,  p-value: < 2.2e-16
 
  h1 <- hist(g7$C4A, breaks=seq(-0.5, 6.5,1))
 
+###6-17-2025
+>  h1 <- hist(g7$C4A, breaks=seq(-0.5, 6.5,1))
+ g8 <- g7[ g7$C4A.int == 2,]
+ dim(g8)
+ lm1 <- lm(g8$resid ~ log2(g8$C4A - 0.2))
+ summary(lm1)
+
 #######################################################################
  t12$nat.c4a.int <- t12$c4a
  t1 <- dim(t12[ t12$c4a < 0.5,])[1]
