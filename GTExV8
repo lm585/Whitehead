@@ -7732,6 +7732,89 @@ cor.test(g6$random.C4A.int, g6$c4a.int)
  h1 <- hist(g6$random.C4A.int, breaks=seq(-0.5, 6.5,1))
  h1
 
+#######################################
+### Thyroid 574 1.070459364 1.08E-43
+>  g6$c4a.int <- round(g6$c4a, digits=0)
+ g6$c4a.int.2 <- round(g6$c4a / 1.4, digits=0)
+ g7 <- g6[ order(g6$c4a),]
+ plot(1:dim(g7)[1], g7$c4a.int, pch=19, col="red", cex=0.5, xlab="donor")
+ points(1:dim(g7)[1], g7$c4a.int.2 - 0.2, pch=0, col="black", cex=1)
+ abline(v = seq(0, 10000, 50), lty = 5, lwd = 0.5, col = "gray")
+ text(350, 3, "distrib. of C4A CN (Page lab)", pos=3, col="red")
+ text(350, 1.8, "distrib. of C4A CN (McCarroll lab)", pos=1, col="black")
+
+ g8 <- g7[ g7$c4a.int == 2 & g7$c4a.int.2 == 2,]
+ dim(g8)
+#  [1] 103  29
+# 2.100356 2.102898 2.106168 ...  2.486642 2.498249 2.499057
+ g8$group <- "2C4A / 2C4A"
+
+ g9 <- g7[ g7$c4a.int == 3 & g7$c4a.int.2 == 2,]
+ dim(g9)
+# 
+# 261  29
+# 2.500026 2.502617 2.503988 2.505258 2.505993 ...  3.457456 3.459950 3.482443 3.490646 3.490730
+# 3.490730 / 1.4 = 2.493379
+ g9$group <- "3C4A / 2C4A"
+ g10 <- rbind(g8, g9)
+ dim(g10)
+#  [1] 364  30
+ l1 <- lm(log2(g10$ENSG00000244731.10 + 1) ~ g10$group)
+ summary(l1)
+
+#                       Estimate Std. Error t value Pr(>|t|)    
+#  (Intercept)           4.92644    0.09481  51.963  < 2e-16 ***
+#  g10$group3C4A / 2C4A  0.40061    0.11196   3.578 0.000393 ***
+# Multiple R-squared:  0.03416,	Adjusted R-squared:  0.03149 
+# F-statistic:  12.8 on 1 and 362 DF,  p-value: 0.0003932
+
+ lm3 <- lm(log2(g10$ENSG00000244731.10+1) ~ log2(g10$c4a.int) + g10$t.SMRIN + log10(g10$t.SMTSISCH + 1300) + g10$SEX.x + g10$age_value + g10$body_mass_index )
+ s3 <- summary(lm3)
+ s3
+#                                Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)                  13.672396   2.085374   6.556 1.93e-10 ***
+# log2(g10$c4a.int)             0.771322   0.180594   4.271 2.50e-05 ***
+# g10$t.SMRIN                   0.173334   0.074065   2.340   0.0198 *  
+# log10(g10$t.SMTSISCH + 1300) -3.051237   0.568001  -5.372 1.41e-07 ***
+# g10$SEX.x                    -0.051463   0.104612  -0.492   0.6231    
+# g10$age_value                -0.003706   0.003942  -0.940   0.3477    
+# g10$body_mass_index          -0.017602   0.012183  -1.445   0.1494    
+# ---
+# Multiple R-squared:  0.1616,	Adjusted R-squared:  0.1475 
+# F-statistic: 11.47 on 6 and 357 DF,  p-value: 9.779e-12
+
+ sid <-  log2(g10$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g10$t.SMRIN  - s3$coefficients[4,1] * log10(g10$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g10$SEX.x - s3$coefficients[6,1] * g10$age_value - s3$coefficients[7,1] * g10$body_mass_index - s3$coefficients[1,1] 
+ lm1 <- lm(sid ~ log2(g10$c4a.int))
+ summary(lm1)
+ boxplot(sid ~ g10$group, xlab="C4A typing by two models", ylab="residual C4A expression (log2(cpm+1))")
+
+ g11 <- g7[ g7$c4a.int == 2 & g7$c4a.int.2 == 1,] 
+ dim(g11)
+# 94
+# 1.516157 1.530824 1.538152 ... 2.066928 2.070889 2.071528 2.082740
+ g11$group <- "2C4A / 1C4A"
+ g12 <- rbind(g11, g8)
+ dim(g12)
+# 197 = 94 + 103
+ lm3 <- lm(log2(g12$ENSG00000244731.10+1) ~ log2(g12$c4a.int.2) + g12$t.SMRIN + log10(g12$t.SMTSISCH + 1300) + g12$SEX.x + g12$age_value + g12$body_mass_index )
+ s3 <- summary(lm3)
+ s3
+#                               Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)                  13.003125   2.940056   4.423 1.64e-05 ***
+# log2(g12$c4a.int.2)           0.028966   0.137239   0.211 0.833064    
+# g12$t.SMRIN                   0.101317   0.102463   0.989 0.324010    
+# log10(g12$t.SMTSISCH + 1300) -2.801176   0.819935  -3.416 0.000776 ***
+# g12$SEX.x                    -0.118143   0.140689  -0.840 0.402104    
+# g12$age_value                 0.005638   0.005441   1.036 0.301383    
+# g12$body_mass_index           0.007553   0.016865   0.448 0.654790    
+# Multiple R-squared:  0.0771,	Adjusted R-squared:  0.04795 
+# F-statistic: 2.645 on 6 and 190 DF,  p-value: 0.01735
+ sid <-  log2(g12$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g12$t.SMRIN  - s3$coefficients[4,1] * log10(g12$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g12$SEX.x - s3$coefficients[6,1] * g12$age_value - s3$coefficients[7,1] * g12$body_mass_index - s3$coefficients[1,1] 
+ lm1 <- lm(sid ~ log2(g12$c4a.int.2))
+ summary(lm1)
+ boxplot(sid ~ g12$group, xlab="C4A typing by two models", ylab="residual C4A expression (log2(cpm+1))")
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
