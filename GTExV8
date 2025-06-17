@@ -7814,6 +7814,17 @@ cor.test(g6$random.C4A.int, g6$c4a.int)
  summary(lm1)
  boxplot(sid ~ g12$group, xlab="C4A typing by two models", ylab="residual C4A expression (log2(cpm+1))")
 
+>  l1 <- lm(log2(g12$ENSG00000244731.10 + 1) ~ g12$group)
+>  summary(l1)
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)
+(Intercept)           4.95772    0.09938  49.888   <2e-16 ***
+g12$group2C4A / 2C4A -0.03129    0.13744  -0.228     0.82
+Residual standard error: 0.9635 on 195 degrees of freedom
+Multiple R-squared:  0.0002657, Adjusted R-squared:  -0.004861
+F-statistic: 0.05182 on 1 and 195 DF,  p-value: 0.8202
+###
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
