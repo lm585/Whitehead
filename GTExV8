@@ -7832,6 +7832,13 @@ Residual standard error: 0.9635 on 195 degrees of freedom
 Multiple R-squared:  0.0002657, Adjusted R-squared:  -0.004861
 F-statistic: 0.05182 on 1 and 195 DF,  p-value: 0.8202
 ###
+######
+> t12 <- t11[ t11$c4.tot.no.intron9.int == t11$c4a.int + t11$c4b.int & t11$cyp21.tot.int == t11$cyp21a1p.int + t11$cyp21a2.int,]
+> dim(t12)
+[1] 313  13
+> write.table(t12[, c(1,7, 9:13)], "temp-313don-c4a-cyp21a2.CN.txt", quote=F, sep="\t")
+> system("date")
+Wed Jun 18 12:51:49 EDT 2025
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
