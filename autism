@@ -6150,3 +6150,74 @@ y1 <- t7$logFC
 linyongmao@Linyong-Mao-MBP16-2019 autism %  mv -i "temp2" cyno-rna-2f2m-MvF-diff2-1.blockOnlyVar.txt
 linyongmao@Linyong-Mao-MBP16-2019 autism %  mv -i "temp" cyno-rna-2f2m-MvF-diff2-1.blockOnlyVar.noXY.txt
 #############################################################################################
+human postnatal snrna-seq, science2023
+
+srun -p 20 --cpus-per-task=12 --mem=220gb --pty bash -i
+"install-R-package"
+library(ComplexHeatmap)
+......
+> system("ls -lh | grep -i \"science\" ")
+t1 <- Read10X(data.dir = "postnatal.snRNAseq.science.2023", gene.column=1)
+ t2 <-  CreateSeuratObject(counts = t1, project = "postnat")
+# min.cells = 3, min.features = 200
+ dim(t2)
+#  [1]  20116 709372
+ t3 <- t2[ , t2$orig.ident == "U01" ]
+ dim(t3)
+#  [1]  20116 358663
+ t4 <- read.delim("../meta.tsv")
+ dim(t4)
+#  [1] 709372     15
+ t5 <- t4[ t4$Lineage == "MG", ]
+ dim(t5)
+#  [1] 15957    15
+ t6 <- t3[, colnames(t3) %in% t5$Cell_ID]
+ dim(t6)
+#  [1] 20116  7967
+#   7967 / 358663 = 0.02221305
+#  15957 / 709372 = 0.02249454
+ saveRDS(t6, file="postnatal.science.mg.7967cells.rds")
+# -rw-r--r-- 1 linyong systemd-timesync   14M Jun 25 14:47 postnatal.science.mg.7967cells.rds
+# > t1 <- readRDS("../autism/postnatal.science.mg.7967cells.rds")
+# pb <- aggregate.Matrix(t(counts(sce)),
+
+t1 <- readRDS("../autism/postnatal.science.mg.7967cells.rds")
+ counts <- t1@assays$RNA$counts
+ metadata <- t1@meta.data
+ metadata$cluster_id <- 1
+ library( SingleCellExperiment)
+# Create single cell experiment object
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+
+ t2 <- read.delim("/Users/linyongmao/Downloads/postnatal.snRNAseq.science.2023/meta.tsv")
+ head(t2)
+ t3 <- t2[ t2$Cell_ID %in% colnames(t1),]
+ identical(t3$Cell_ID, colnames(t1))
+#  [1] TRUE
+ groups <- t3$Individual
+ length(unique(groups))
+#  [1] 59
+pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+ dim(pb)
+#  [1]    59 20116
+pb[1:8, 1:6] # 8 samples
+ t4 <- as.data.frame(t(pb))
+ head(t4)
+ g1 <- c("ACTB" ,   "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
+ t5 <- t4[ rownames(t4) %in% g1,]
+ t6 <- as.data.frame( t(t5))
+ t7 <- data.frame( t6$ACTB, t6$ITGAM, t6$P2RY12, t6$TMEM119, t6$CX3CR1, t6$CCR2, t6$CD3D, t6$MS4A1 )
+ rownames(t7) <- rownames(t6)
+ colnames(t7) <- gsub("t6.", "", colnames(t7))
+ boxplot(log2(t7+1), outcol = "white", ylab = "raw read count (log2(t7+1))")
+ beeswarm(log2(t7+1), add=T, cex = 0.3, col = c("red","blue") )
+ abline(h = seq(-100, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+
+ info <- unique(t3[, c(7,2,13,14)])
+ zfy <- as.data.frame( t(t4[ rownames(t4) %in% "ZFY",]))
+ zfy$id <- rownames(zfy)
+ z2 <- merge(zfy, info, by.x="id", by.y="Individual")
+ dim(z2)
+#  [1] 59  5
