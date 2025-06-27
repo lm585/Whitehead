@@ -6221,3 +6221,22 @@ pb[1:8, 1:6] # 8 samples
  z2 <- merge(zfy, info, by.x="id", by.y="Individual")
  dim(z2)
 #  [1] 59  5
+
+############################
+heatmap
+ d = edgeR::cpm(y)
+ a <- log2(d+1)
+ a.df <- as.data.frame(a)
+...
+>  df.gene <- merge(a.df, gene.name, by.x="geneID", by.y="geneID")
+..
+> t4 <- t3[ t3$name %in% g1,]
+> info.2 <- head(meta, n= dim(y)[2])
+ identical(info.2$id, rownames(t7))
+[1] TRUE
+ col_fun = colorRamp2(c(0,5,13), c( "blue", "white",  "red"))
+ info.2$age_ <- factor(info.2$age)
+ ca <- HeatmapAnnotation(  which="row",  age = info.2$age_  )
+ Heatmap(t7, name = "log2(CPM+1)",   right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 8),  col = col_fun,)
+
+> mouse.bulk.t7 <- t7
