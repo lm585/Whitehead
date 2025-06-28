@@ -6240,3 +6240,53 @@ heatmap
  Heatmap(t7, name = "log2(CPM+1)",   right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 8),  col = col_fun,)
 
 > mouse.bulk.t7 <- t7
+#############################
+> rownames(t7) <- gsub("human_Microglia_RNA_polyA_", "", rownames(t7))
+  col_fun = colorRamp2(c(0,5,13), c( "blue", "white",  "red"))
+  ca <- HeatmapAnnotation(  which="row",  age = info.h.mg$Age, region= info.h.mg$Brain.Region  )
+  Heatmap(t7, name = "log2(CPM+1)",   right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 14),  col = col_fun,)
+> identical(rownames(t7), info.h.mg$Patient.ID)
+[1] TRUE
+ t1 <- read.delim("gencode.v42.primary_assembly.noPar.gene-chr-type-name")
+ t2 <- t1[ t1$chr == "chrY",]
+ dim(t2)
+#  [1] 553   5
+## log2(CPM+1)
+a.2 <- merge(a.df.g, t2, by.x="id", by.y="geneID")
+dim(a.2)
+ colnames(a.2) <- gsub("human_Microglia_RNA_polyA_", "", colnames(a.2))
+ a.3 <- a.2[ , colnames(a.2) %in% info.h.mg[ info.h.mg$Sex == "M",]$Patient.ID ]
+ rownames(a.3) <- a.2[, 1]
+med <- data.frame(a.3[,1])
+med$logic <- -1.0
+for(i in 1:dim(a.3)[1]) {
+ med$logic[i] <- median(as.numeric(a.3[i,]))
+}
+
+#cpm > 1, log2(c+1) > 1
+a.4 <-a.3[med$logic > 1,]
+ dim(a.4)
+#  [1] 18  5
+ eatmap(a.4, name = "log2(CPM+1)", col = col_fun )
+ y.mg.genes.human <- a.4
+
+########################pathway level z-score
+raw <- read.delim("human_Microglia_RNA-18samp.gene.count.stranded.txt")
+...
+ dim(a.df.g)
+#  [1] 62703    15
+ t1 <- a.df.g[ a.df.g$id %in% rownames(y.mg.genes.human) | a.df.g$name == "XIST",]
+ dim(t1)
+#  [1] 19 15
+ t2 <- t1[ , c(2:14)]
+ rownames(t2) <- t1[, 15]
+ colnames(t2) <- gsub("human_Microglia_RNA_polyA_", "", colnames(t2))
+ identical(info.2$Patient.ID, colnames(t2))
+ t3 <- as.data.frame(t(t2))
+ identical(info.2$Patient.ID, rownames(t3))
+
+  col_fun = colorRamp2(c(0,5,10), c( "blue", "white",  "red"))
+  ca <- HeatmapAnnotation(  which="row",  age = info.2$Age, region= info.2$Brain.Region, sex=info.2$Sex  )
+ eatmap(t3, name = "log2(CPM+1)",   right_annotation=ca, row_dend_width=unit(15, "mm"),  col = col_fun, row_names_gp = gpar(fontsize = 10))
+> write.table(t3, "y.xist.mg.genes.log2cpmPlus1.human", quote=F, sep="\t")
+
