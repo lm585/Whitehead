@@ -6205,7 +6205,65 @@ pb <- aggregate.Matrix(t(counts(sce)),
 pb[1:8, 1:6] # 8 samples
  t4 <- as.data.frame(t(pb))
  head(t4)
+
+###
+ l1 <- unique(t3[, c(2:8,12:14)])
+ dim(l1)
+#  [1] 59 10
+ 1073-77-2*365
+#  [1] 266
+#after birth, < 20-year-old
+ l2 <- l1[ l1$Age_.days. > 266 & l1$Age_.days. < 20*365,]
+ dim(l2)
+#  [1] 29 10
+ t5 <- t4[, colnames(t4) %in% l2$Individual]
+ dim(t5)
+#  [1] 20116    29
+ y <- DGEList(counts=t5)
+ y <- calcNormFactors(y)
+> summary(y$samples)
+ group     lib.size       norm.factors
+ 1:29   Min.   :  3443   Min.   :0.6992
+        1st Qu.: 58793   1st Qu.:0.8243
+        Median :219961   Median :0.8553
+        Mean   :212559   Mean   :1.0935
+        3rd Qu.:289414   3rd Qu.:1.0228
+        Max.   :538060   Max.   :3.6514
+ y2 <- y1[ y1$lib.size > 100000,]
+ dim(y2)
+#  [1] 20  3
+ t6 <- t4[, colnames(t4) %in% rownames(y2)]
+ y <- DGEList(counts=t6)
+ y <- calcNormFactors(y)
+ summary(y$samples)
+ group     lib.size       norm.factors
+ 1:20   Min.   :108147   Min.   :0.8446
+        1st Qu.:216475   1st Qu.:0.9822
+        Median :264516   Median :1.0005
+        Mean   :296232   Mean   :1.0015
+        3rd Qu.:379856   3rd Qu.:1.0441
+        Max.   :538060   Max.   :1.0833 
+
+
+d = edgeR::cpm(y)
+ a <- log2(d+1)
+ a.df <- as.data.frame(a)
  g1 <- c("ACTB" ,   "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
+ a.2 <- a.df[ rownames(a.df) %in% g1,]
+ dim(a.2)
+ a.3 <- as.data.frame(t(a.2))
+l3 <- head(l2, n=dim(a.3)[1])
+for(i in 1:dim(a.3)[1]) {
+ f1 <- l2[ l2$Individual == rownames(a.3)[i], ][1,]
+ l3[i,] <- f1
+ }
+ identical(rownames(a.3), l3$Individual)
+ col_fun = colorRamp2(c(0,5,13), c( "blue", "white",  "red"))
+ ca <- HeatmapAnnotation(  which="row",  age = (l3$Age_.days. - 266) / 365, sex=l3$Sex  )
+ eatmap(a.3, name = "log2(CPM+1)",   right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 14),  col = col_fun,)
+
+###
+g1 <- c("ACTB" ,   "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
  t5 <- t4[ rownames(t4) %in% g1,]
  t6 <- as.data.frame( t(t5))
  t7 <- data.frame( t6$ACTB, t6$ITGAM, t6$P2RY12, t6$TMEM119, t6$CX3CR1, t6$CCR2, t6$CD3D, t6$MS4A1 )
