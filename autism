@@ -6263,6 +6263,34 @@ for(i in 1:dim(a.3)[1]) {
  eatmap(a.3, name = "log2(CPM+1)",   right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 14),  col = col_fun,)
 
 ###
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- edgeR::cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y1<-y[med$logic,]
+print(dim(y1))
+y<-y[med$logic,]
+print(dim(y))
+# [1]  20116 genes -> 13477,    20
+d = edgeR::cpm(y)
+ a <- log2(d+1)
+ a.df <- as.data.frame(a)
+ g <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type-name")
+ g1 <- g[ g$chr != "chrX" & g$chr != "chrY",]$name
+ a.2 <- a.df[ rownames(a.df) %in% g1,]
+ dim(a.2)
+#  [1] 12609    20
+ a.3 <- as.data.frame(cor(a.2))
+
+ col_fun = colorRamp2(c(0.6,0.8, 1), c( "blue", "white",  "red"))
+  identical(rownames(a.3), l3$Individual)
+ ca <- HeatmapAnnotation(  which="row",  age = (l3$Age_.days. - 266) / 365, sex=l3$Sex  )
+ eatmap(a.3, name = "correlation",    right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 14),  col = col_fun,)
+
+###
 g1 <- c("ACTB" ,   "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
  t5 <- t4[ rownames(t4) %in% g1,]
  t6 <- as.data.frame( t(t5))
