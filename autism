@@ -6344,6 +6344,44 @@ diff$geneID <- rownames(diff)
 #  [1] 10 10
 
 ###
+ d = edgeR::cpm(y)
+ a <- d
+ a.df <- as.data.frame(a)
+ g = "PSME2"
+ a.2 <- a.df[ rownames(a.df) == g,]
+ a.2
+ a.3 <- as.data.frame(t(a.2))
+ identical(rownames(a.3), l3$Individual)
+ a.4 <- cbind(a.3, l3)
+ colnames(a.4)[1] <- "gname"
+ gplot(a.4, aes(x=age1, y= gname, col=Sex)) + geom_point(size = 2) + geom_smooth(se = F)  + labs(y= paste(g, " (CPM)"))
+
+###
+R-gene-pathway-corr
+> ###a is z-score of log10(cpm+1)
+...
+# remove chrX / chrY genes
+>  a.2 <- a.df[ rownames(a.df) %in% g1,]
+>  dim(a.2)
+[1] 12609    20
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i diff2-1.chr.txt human-mg-postnatal-science2023-MvF-diff2-1.name-type-chr.txt
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat  human-mg-postnatal-science2023-MvF-diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t"} !($8 == "chrX" || $8 == "chrY")'   > temp1
+cat temp1 | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+{for(i = 1; i <= 7; i++)
+   print $i "\t";
+
+ print $1 "\n";
+}' > temp
+head temp | cut -f 2
+head temp | cut -f 5
+head temp | cut -f 8
+../microglia/make-rnk-genesymble  temp  human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.rnk
+grep -iw "ddx3[xy]"   human-mg-postnatal-science2023-MvF-diff2-1.name-type-chr.txt human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.rnk
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt     -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk   human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.rnk  -scoring_scheme classic  -rpt_label   "human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+###
 g1 <- c("ACTB" ,   "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
  t5 <- t4[ rownames(t4) %in% g1,]
  t6 <- as.data.frame( t(t5))
