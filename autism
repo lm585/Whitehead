@@ -6291,6 +6291,59 @@ d = edgeR::cpm(y)
  eatmap(a.3, name = "correlation",    right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 14),  col = col_fun,)
 
 ###
+ identical(colnames(y), l3$Individual)
+ l3$age1 <- (l3$Age_.days. - 266) / 365 
+ design <- model.matrix( ~ l3$Sex + l3$age1)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+ head(top2v1)
+#  Coefficient:  l3$SexMale 
+#                logFC   logCPM        F       PValue          FDR 
+#  XIST      -8.531204 8.249986 543.3331 3.051122e-27 4.111997e-23
+#  UTY        6.776145 7.453928 368.8176 4.641508e-21 3.127680e-17
+#             logFC   logCPM         F      PValue       FDR geneID
+#  KDM6A -0.6104100 7.378679 10.970350 0.002485391 0.9104134  KDM6A
+#  KDM5C -0.5082649 5.594923  3.692202 0.064609271 0.9994030  KDM5C
+#  ZFX   -0.3756345 6.377529  3.306421 0.079365371 0.9994030    ZFX 
+#DDX3X   -0.1704598 6.629884  1.0961406 0.303764370 0.9994030   DDX3X
+
+
+# write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+ g <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type-name")
+ df.cpm.gene <- merge(diff, g, by.x="geneID", by.y="name")
+ dim(df.cpm.gene)
+#  [1] 13105    10  
+ dim(y)
+#  [1] 13477    20  
+>  write.table(df.cpm.gene, "diff2-1.chr.txt", sep="\t", quote=F)
+ g4 <- read.delim("../microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes", header=F)
+ d2 <- diff[ diff$geneID %in% g4$V1 ,]
+ dim(d2)
+#  [1] 171   6   
+ d2 <- df.cpm.gene[ df.cpm.gene$geneID %in% g4$V1 ,]
+ dim(d2)
+
+ d2[ d2$logFC < 0 & d2$PValue < 0.05,]
+#         geneID      logFC   logCPM        F      PValue      FDR           geneID.y   chr strand           type
+#  1186     BST2 -0.7157167 5.567104 4.393133 0.044989841 0.999403 ENSG00000130303.14 chr19      - protein_coding
+#  4169     GCH1 -1.0179012 4.596024 7.280013 0.011409351 0.999403 ENSG00000131979.20 chr14      - protein_coding
+#  4969    IFIH1 -0.6196128 4.515868 4.373987 0.045277950 0.999403 ENSG00000115267.10  chr2      - protein_coding
+#  7490     OAS2 -0.9403982 3.894393 4.692298 0.037250907 0.999403 ENSG00000111335.14 chr12      + protein_coding
+ d2[ d2$logFC > 0 & d2$PValue < 0.05,]
+#       geneID    logFC   logCPM        F     PValue      FDR           geneID.y   chr strand           type
+# 4932   ICAM1 1.032882 4.285761 4.657467 0.03849151 0.999403  ENSG00000090339.9 chr19      + protein_coding
+# 7246    NOD1 0.495762 5.543090 4.217635 0.04919832 0.999403 ENSG00000106100.11  chr7      - protein_coding
+# 12111  USP18 1.571363 3.549932 4.282520 0.04456009 0.999403 ENSG00000184979.11 chr22      + protein_coding
+ dim(d2[ d2$logFC > 0 & d2$PValue < 0.05,])
+#  [1]  3 10
+ dim(d2[ d2$logFC < 0 & d2$PValue < 0.05,])
+#  [1] 10 10
+
+###
 g1 <- c("ACTB" ,   "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
  t5 <- t4[ rownames(t4) %in% g1,]
  t6 <- as.data.frame( t(t5))
