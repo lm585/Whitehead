@@ -6467,3 +6467,51 @@ raw <- read.delim("human_Microglia_RNA-18samp.gene.count.stranded.txt")
  eatmap(t3, name = "log2(CPM+1)",   right_annotation=ca, row_dend_width=unit(15, "mm"),  col = col_fun, row_names_gp = gpar(fontsize = 10))
 > write.table(t3, "y.xist.mg.genes.log2cpmPlus1.human", quote=F, sep="\t")
 
+##########################################
+> r1 <- read.delim("human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.rnk", header=F)
+ r2 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk", header=F)
+ r3 <- merge(r1, r2, by.x="V1", by.y="V1")
+ dim(r1)
+#  [1] 12609     2
+ dim(r2)
+#  [1] 14586     2
+ dim(r3)
+#  [1] 9885    3
+ cor.test(r3$V2.x, r3$V2.y)
+#  t = 11.528, df = 9883, p-value < 2.2e-16
+#        cor 0.1151919
+ write.table(r3, "temp1", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi temp1
+linyongmao@Linyong-Mao-MBP16-2019 autism % tab="        "
+cat temp1 | awk 'NR > 1' |cut -f 1-2 | sort -t "$tab"  +1 -2g | awk '$2 < -1' |head  -500 | cut -f 1  >  mice-mg-f-bias
+cat temp1 | awk 'NR > 1' |cut -f 1-2 | sort -t "$tab"  +1 -2gr | awk '$2 > 1' |head  -500 | cut -f 1  > mice-mg-m-bias
+ls mice-mg-f-bias mice-mg-m-bias > temp-f1
+
+cat temp1 | awk 'NR > 1' |cut -f 1,3 | sort -t "$tab"  +1 -2g | awk '$2 < -1' |head  -500   | cut -f 1 > temp-f-bias
+cat temp1 | awk 'NR > 1' |cut -f 1,3 | sort -t "$tab"  +1 -2gr | awk '$2 > 1' |head  -500   | cut -f 1 > temp-m-bias
+
+cat temp1 | awk 'NR > 1' |cut -f 1 > temp-bg-genes
+
+wc -l mice-mg-f-bias mice-mg-m-bias temp-f-bias temp-m-bias temp-bg-genes
+#       347 mice-mg-f-bias
+#       487 mice-mg-m-bias
+#       500 temp-f-bias
+#       500 temp-m-bias
+#      9885 temp-bg-genes
+
+bash   script-inputset-pathways-overlap-fisher-fdr   temp-f-bias human-mg-f-bias.interact   temp-f1   temp-bg-genes
+echo
+echo
+echo
+
+bash   script-inputset-pathways-overlap-fisher-fdr  temp-m-bias human-mg-m-bias.interact temp-f1   temp-bg-genes
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat  mice-mg-f-bias mice-mg-m-bias temp-f-bias temp-m-bias | sort | uniq > temp2
+> g <- read.delim("temp2", header=F)
+ dim(g)
+#  [1] 1760    1
+ r4 <- r3[ r3$V1 %in% g$V1,]
+cor.test(r4$V2.x, r4$V2.y)
+#  t = 6.5368, df = 1758, p-value = 8.212e-11
+#        cor
+#  0.1540423
