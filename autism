@@ -6515,3 +6515,33 @@ cor.test(r4$V2.x, r4$V2.y)
 #  t = 6.5368, df = 1758, p-value = 8.212e-11
 #        cor
 #  0.1540423
+
+######
+> r1 <- read.delim("human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.rnk", header=F)
+> r2 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.strand.rnk")
+> r3 <- merge(r1, r2, by.x="V1", by.y="V1")
+>  cor.test(r3$V2.x, r3$V2.y)
+t = 13.96, df = 9883, p-value < 2.2e-16
+      cor
+0.1390638
+
+
+> r1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk", header=F)
+> r2 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.strand.rnk", header=F)
+> r3 <- merge(r1, r2, by.x="V1", by.y="V1")
+> dim(r3)
+[1] 10021     3
+> cor.test(r3$V2.x, r3$V2.y)
+t = 22.504, df = 10019, p-value < 2.2e-16
+      cor
+0.2193521
+
+> r1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk", header=F)
+r2 <- read.delim("human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.rnk", header=F)
+> r3 <- merge(r1, r2, by.x="V1", by.y="V1")
+> dim(r3)
+[1] 10119     3
+> cor.test(r3$V2.x, r3$V2.y)
+t = 5.0051, df = 10117, p-value = 5.679e-07
+       cor
+0.04969885
