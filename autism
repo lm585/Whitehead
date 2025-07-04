@@ -6545,3 +6545,37 @@ r2 <- read.delim("human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.rnk
 t = 5.0051, df = 10117, p-value = 5.679e-07
        cor
 0.04969885
+######
+gsea_report_for_na_neg_1718816546930.tsv
+t2 <- t1[, c(1,6, 8)]
+gsea_report_for_na_neg_1717816582258.tsv
+> t3 <- merge(t2.mouse, t2, by.x="NAME", by.y="NAME")
+> f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/gsea_report_for_na_neg_1751317616145.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/gsea_report_for_na_pos_1751317616145.tsv")
+ t1 <- rbind(f1, f2)
+ t2 <- t1[, c(1,6, 8)]
+ t4 <- merge(t3, t2, by.x="NAME", by.y="NAME")
+ dim(t4)
+#  [1] 49  7
+#                                           NAME      NES.x  FDR.q.val.x      NES.y  FDR.q.val.y        NES    FDR.q.val
+#  27         HALLMARK_INTERFERON_GAMMA_RESPONSE -3.3057260 0.0000000000 -8.2630880 0.000000e+00 -3.7644136 0.0000000000
+#  36         HALLMARK_OXIDATIVE_PHOSPHORYLATION -6.1208270 0.0000000000 -7.3809257 0.000000e+00  3.1450920 0.0000000000
+ t5 <- t4[,c(2,4,6)]
+ rownames(t5) <- t4[, 1]
+ head(t5)
+ colnames(t5) <- c("mouse-MG", "human-MG-Immu.data", "human-MG-Sci.data")
+ cor(t5)
+#                      mouse-MG human-MG-Immu.data human-MG-Sci.data
+#  mouse-MG           1.0000000          0.7592459         0.3084722
+#  human-MG-Immu.data 0.7592459          1.0000000         0.4982932
+#  human-MG-Sci.data  0.3084722          0.4982932         1.0000000
+  t6 <- as.data.frame(cor(t5))
+
+ col_fun = colorRamp2(c(0,0.4,0.8), c( "blue", "white",  "red"))
+ eatmap(t6, name="correlation", col = col_fun)
+ b1 <- t4[ t4$FDR.q.val.x <= 0.05 & t4$FDR.q.val.y <= 0.05 & t4$FDR.q.val <= 0.05,]
+ dim(b1)
+#  [1] 7 7
+ b2 <- t4[ t4$FDR.q.val.x <= 0.05 | t4$FDR.q.val.y <= 0.05 | t4$FDR.q.val <= 0.05,]
+ dim(b2)
+#  [1] 47  7
