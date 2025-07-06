@@ -6579,3 +6579,44 @@ gsea_report_for_na_neg_1717816582258.tsv
  b2 <- t4[ t4$FDR.q.val.x <= 0.05 | t4$FDR.q.val.y <= 0.05 | t4$FDR.q.val <= 0.05,]
  dim(b2)
 #  [1] 47  7
+
+#########################################
+> VlnPlot(pbmc, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Warning: Default search for "data" layer in "RNA" assay yielded no results; utilizing "counts" layer instead.
+
+ pdf("./temp.pdf", width=8, height=4)
+ # Visualize QC metrics as a violin plot
+ VlnPlot(pbmc, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3, pt.size=0)
+#  Warning: Default search for "data" layer in "RNA" assay yielded no results; utilizing "counts" layer instead.
+
+ dev.off()
+#  quartz
+#       2
+
+> pbmc.data <- Read10X(data.dir = "/Users/linyongmao/Documents/scRNA-seq-1/filtered_gene_bc_matrices/hg19")
+ pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+ pbmc
+#  An object of class Seurat
+13714 features across 2700 samples within 1 assay
+> pbmc <- subset(pbmc, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5)
+> pbmc
+13714 features across 2638 samples within 1 assay
+> 2638 / 2700
+[1] 0.977037
+-rw-r--r--  1 linyongmao  staff   274M Jul  4 22:10 ../pbmc_tutorial.rds
+
+###
+>  t4 <- read.delim("./meta.tsv")
+ dim(t4)
+#  [1] 709372     15
+ identical(t4$Cell_ID, colnames(t2))
+ t2$type <- t4$Lineage
+ t5 <- t2[, t2$orig.ident == "U01" ]
+ dim(t5)
+#  [1]  20116 358663
+t5 <- NormalizeData(t5)
+ g1 <- c(   "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
+
+  pdf("./temp.2.pdf", width=8, height=4)
+ VlnPlot(t5, features = g1[2], pt.size=0, group.by="type")
+  dev.off()
