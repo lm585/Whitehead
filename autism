@@ -6620,3 +6620,22 @@ t5 <- NormalizeData(t5)
   pdf("./temp.2.pdf", width=8, height=4)
  VlnPlot(t5, features = g1[2], pt.size=0, group.by="type")
   dev.off()
+
+###
+for( i in 1:length(unique(t5$type)) ) {
+c1 <- unique(t5$type)[i]
+ c2 <- t5[ , t5$type == c1 ]
+cat(c1)
+cat('\t')
+cat(dim(c2)[2])
+cat('\t')
+g1 <- c( "ACTB",  "P2RY12")
+c3 <- c2[rownames(c2) %in% g1, ]
+c4 <-  as.data.frame(c3@assays$RNA$counts)
+c5 <- as.data.frame(t(c4))
+cat(dim(c5[ c5$P2RY12 > 0,] )[1])
+cat('\t')
+cat(sum(c5$P2RY12))
+
+cat('\n')
+}
