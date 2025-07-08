@@ -6639,3 +6639,64 @@ cat(sum(c5$P2RY12))
 
 cat('\n')
 }
+######
+> counts <- t5@assays$RNA$counts
+metadata <- t5@meta.data
+ metadata$cluster_id <- 1
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+groups <- colData(sce)[, c("type")]
+pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+ t6 <- as.data.frame(t(pb))
+ dim(t6)
+#  [1] 20116     9
+ write.table(t6, "postnatal.science.358663cells.celltype.counts", quote=F, sep="\t")
+
+#
+> t1 <- read.delim("postnatal.science.358663cells.celltype.counts")
+ y <- DGEList(counts=t1)
+ y <- calcNormFactors(y)
+d = edgeR::cpm(y)
+a.df <- as.data.frame(d)
+rownames(a.df[ (a.df$MG + 1) / (a.df$OUT + 1) > 20,])
+> t <- as.data.frame(cor(a.df, method="spearman"))
+ col_fun = colorRamp2(c(0.85,0.95,1), c( "blue", "white",  "red"))
+eatmap(t, name="spearman corr", col=col_fun)
+> library(celldex)
+library(SingleR)
+ ref.data <- celldex::HumanPrimaryCellAtlasData()
+ref.data
+#   head(a.df)
+#                   AST      ExNeu GLIALPROG         IN        MG       OL       OPC      OUT     VASC
+#  FAM87B    0.04942686 0.04552409  0.000000 0.03083269 0.7889371 0.000000 0.1271317 0.000000 0.000000
+#  LINC00115 4.67083832 2.19474030  2.745392 2.49304314 6.9031998 3.449725 3.3901787 2.657185 2.971328
+
+ unique(ref.data$label.main)
+ pred <- SingleR(test = a.df, ref = ref.data,  labels =  ref.data$label.main, assay.type.test=1)
+ t6 <- data.frame(cell=colnames(a.df), label= pred$labels)
+ t6
+ ref.data <- celldex::MouseRNAseqData()
+ ref.data <- celldex::ImmGenData()
+
+surveyReferences()
+
+j=2
+a.2 <- a.df[, c(1:(j-1), (j+1):9)]
+a.df$ratio = -999
+colnames(a.df)
+
+for( i in 1:dim(a.df)[1]) {
+a.df$ratio[i] <- (a.df[i,j]+1) / (max(a.2[i,]) + 1)
+
+}
+dim(a.df[ a.df$ratio > 20,])
+write.table(a.df[ a.df$ratio > 18,], "temp", quote=F, sep="\t")
+> dim(a.df[ a.df$ratio > 1.4  & a.df$ExNeu > 200,])
+[1] 68 10
+Index	Name	P-value	Adjusted p-value	Odds Ratio	Combined score
+1	Neuron Brain Mouse	1.798e-10	2.481e-8	9.91	222.46
+2	Excitatory Neuron Brain Human	2.813e-7	0.00001941	95.76	1444.51  4/17
+
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp | awk 'NR > 1' |cut -f 1|sort
