@@ -6229,7 +6229,9 @@ pb[1:8, 1:6] # 8 samples
         Mean   :212559   Mean   :1.0935
         3rd Qu.:289414   3rd Qu.:1.0228
         Max.   :538060   Max.   :3.6514
- y2 <- y1[ y1$lib.size > 100000,]
+
+y1 <- y$samples
+y2 <- y1[ y1$lib.size > 100000,]
  dim(y2)
 #  [1] 20  3
  t6 <- t4[, colnames(t4) %in% rownames(y2)]
