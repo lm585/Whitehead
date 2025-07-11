@@ -1,0 +1,52 @@
+library(ComplexHeatmap)
+library(beeswarm)
+library(edgeR)
+library("circlize")
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(MASS)
+library(vioplot)
+library(Matrix.utils)
+library(ggrepel)
+
+ setwd("/lab/solexa_page/linyong/")
+t1 <- Read10X(data.dir = "postnatal.snRNAseq.science.2023", gene.column=1)
+ t2 <-  CreateSeuratObject(counts = t1, project = "postnat")
+# min.cells = 3, min.features = 200
+ dim(t2)
+#  [1]  20116 709372
+t4 <- read.delim("./meta.tsv")
+ dim(t4)
+#  [1] 709372     15
+ identical(t4$Cell_ID, colnames(t2))
+ t2$type <- t4$Lineage
+ t2$sample <- t4$Sample
+ t2$individual <- t4$Individual
+ t5 <- t2[, t2$orig.ident == "U01" ]
+ dim(t5)
+#  [1]  20116 358663
+ sort(unique(t5$sample))
+ t5[["RNA"]] <- split(t5[["RNA"]], f = t5$sample)
+ t5
+#  An object of class Seurat
+#  20116 features across 358663 samples within 1 assay
+#  Active assay: RNA (20116 features, 0 variable features)
+#   108 layers present: counts.5387_BA9, counts.5163_BA24, counts.5958_BA24,
+ t5 <- NormalizeData(t5)
+ t5 <- FindVariableFeatures(t5)
+ t5 <- ScaleData(t5 )
+ t5 <- RunPCA(t5)
+t1=0
+t2=0
+t3=0
+t4=0
+# saveRDS(t5, "postnatal.science.358663cells.108layers.rds")
+##-rw-r--r-- 1 linyong systemd-timesync 3.8G Jul  9 17:06 /lab/solexa_page/linyong/postnatal.science.358663cells.108layers.rds
+t5 <- IntegrateLayers(object = t5, method = CCAIntegration, orig.reduction = "pca", new.reduction = "integrated.cca",   verbose = T)
+saveRDS(t5, "postnatal.science.358663cells.108layers.rds")
+t5 <- FindNeighbors(t5, reduction = "integrated.cca", dims = 1:30)
+t5 <- FindClusters(t5, resolution = 0.8)
+saveRDS(t5, "postnatal.science.358663cells.108layers.clusters.rds")
+
