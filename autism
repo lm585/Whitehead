@@ -6702,3 +6702,20 @@ Index	Name	P-value	Adjusted p-value	Odds Ratio	Combined score
 
 
 linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp | awk 'NR > 1' |cut -f 1|sort
+
+################################################
+>  dim(a.2)
+[1] 12609    20
+> r3 <- as.data.frame(t(a.2))
+pca <- prcomp(r3, center = TRUE, scale. = TRUE)
+ boxplot(pca$x[,1:20])
+ s <- summary(pca)
+ s$importance[,1:10]
+ p1 <- as.data.frame( pca$x[,1:2])
+ p1$id <- rownames(p1)
+ identical(p1$id, l3$Individual)
+#  [1] TRUE
+ l3$pc1 <- p1$PC1
+ l3$pc2 <- p1$PC2
+> gplot(l3, aes(x=pc1, y=pc2, color = age1, shape= Sex, )) + geom_point(size=4) + labs(y="PC2 (10.7%)", x="PC1 (13.3%)")
+
