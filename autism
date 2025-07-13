@@ -6367,6 +6367,7 @@ R-gene-pathway-corr
 >  dim(a.2)
 [1] 12609    20
 
+                         vi         diff2-1.chr.txt
 linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i diff2-1.chr.txt human-mg-postnatal-science2023-MvF-diff2-1.name-type-chr.txt
 linyongmao@Linyong-Mao-MBP16-2019 autism % cat  human-mg-postnatal-science2023-MvF-diff2-1.name-type-chr.txt | awk 'BEGIN {FS = "\t"} !($8 == "chrX" || $8 == "chrY")'   > temp1
 cat temp1 | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
