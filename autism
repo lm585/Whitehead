@@ -6720,3 +6720,64 @@ pca <- prcomp(r3, center = TRUE, scale. = TRUE)
  l3$pc2 <- p1$PC2
 > gplot(l3, aes(x=pc1, y=pc2, color = age1, shape= Sex, )) + geom_point(size=4) + labs(y="PC2 (10.7%)", x="PC1 (13.3%)")
 
+####################################
+> dim(y)
+[1] 13477    20
+> d = edgeR::cpm(y)
+a <- log10(d+1)
+a.df <- as.data.frame(a)
+a.df[1:6,1:6]
+ identical(colnames(y), l3$Individual)
+ identical(colnames(a.df), l3$Individual)
+ resid2 <- a.df
+for(i in 1:dim(a.df)[1] ) {
+ t1 <- data.frame(y = t(a.df[i,]), sex = l3$Sex )
+ t2 <- lm(t1[,1] ~ sex, data=t1)
+ t3 <- resid(t2)
+ resid2[i,] <- t3
+
+}
+ r3 <- t(resid2)
+ pca <- prcomp(r3, center = TRUE, scale. = TRUE)
+ t1 <- as.data.frame(pca$x[,1:3])
+ boxplot(t1, outcol="white")
+ beeswarm(t1, add=T)
+ s <- summary(pca)
+s$importance[,1:6]
+p1 <- as.data.frame( pca$x[,1:6])
+ p1$id <- rownames(p1)
+ identical(l3$Individual, p1$id)
+ l3$pc1 <- p1$PC1
+ l3$pc2 <- p1$PC2
+ t1 <- lm(l3$pc1 ~ l3$Sex)
+ summary(t1)
+ t1 <- lm(l3$pc2 ~ l3$Sex)
+ summary(t1)
+ identical(colnames(y), l3$Individual)
+ design <- model.matrix( ~ l3$Sex + l3$age1 + l3$pc1 + l3$pc2)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+ head(top2v1)
+#  Coefficient:  l3$SexMale 
+#             logFC   logCPM        F       PValue          FDR
+#  XIST   -8.493700 8.242703 671.3443 2.944440e-28 3.968221e-24
+#  UTY     6.814761 7.459576 409.1254 2.846125e-21 1.917862e-17
+
+#  Coefficient:  l3$SexMale 
+#             logFC   logCPM         F      PValue       FDR
+#  KDM6A -0.5913640 7.377661 10.769703 0.002735602 0.8778025
+#  KDM5C -0.4352384 5.590031  2.814483 0.104467011 0.9787634
+#  ZFX   -0.2914464 6.374534  2.304866 0.140041508 0.9846869
+#  DDX3X -0.2010828 6.627722  1.663003 0.207611112 0.9846869
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+ g <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type-name")
+ df.cpm.gene <- merge(diff, g, by.x="geneID", by.y="name")
+ dim(df.cpm.gene)
+#  [1] 13105    10  
+ dim(y)
+#  [1] 13477    20  
+# > write.table(df.cpm.gene, "diff2-1.txt", sep="\t", quote=F)
+human-mg-postnatal-science2023-MvF-diff2-1.age.PC1.PC2.noX.Y.rnk 
