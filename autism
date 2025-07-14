@@ -6781,3 +6781,22 @@ diff$geneID <- rownames(diff)
 #  [1] 13477    20  
 # > write.table(df.cpm.gene, "diff2-1.txt", sep="\t", quote=F)
 human-mg-postnatal-science2023-MvF-diff2-1.age.PC1.PC2.noX.Y.rnk 
+
+#####################
+linyongmao@Linyong-Mao-MBP16-2019 autism % cp  temp temp2
+indi    MGcell-count
+5387    349
+
+t1 <- readRDS("../autism/postnatal.science.mg.7967cells.rds")
+ t2 <- read.delim("/Users/linyongmao/Downloads/postnatal.snRNAseq.science.2023/meta.tsv")
+ head(t2)
+t3 <- t2[ t2$Cell_ID %in% colnames(t1),]
+ identical(t3$Cell_ID, colnames(t1))
+ t1$ind <- t3$Individual
+ for(i in 1:length(unique(t1$ind))){
+ f1 <- t1[ , t1$ind == unique(t1$ind)[i]]
+ cat(unique(t1$ind)[i])
+ cat('\t')
+ cat(dim(f1)[2])
+ cat('\n')
+}
