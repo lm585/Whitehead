@@ -6800,3 +6800,21 @@ t3 <- t2[ t2$Cell_ID %in% colnames(t1),]
  cat(dim(f1)[2])
  cat('\n')
 }
+#########
+> t6 <- read.delim("temp2", header=F)
+> head(t6)
+    V1  V2
+1 5387 349
+2 5163  28
+6 5554 215
+> y1 <- as.data.frame(y$samples)
+> y1$id <- rownames(y1)
+> y2 <- merge(t6, y1, by.x="V1", by.y="id")
+> dim(y2)
+[1] 29  5
+> colnames(y2)[2] <- "MG.cellCount"
+> plot(y2$MG.cellCount, y2$lib.size, ylab="edgeR-lib.size of Individ donor")
+> y3 <- (y2[ y2$lib.size > 100000,])
+> y4 <- merge(y3, l2, by.x="V1", by.y="Individual")
+> dim(y4)
+[1] 20 14
