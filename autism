@@ -6818,3 +6818,66 @@ t3 <- t2[ t2$Cell_ID %in% colnames(t1),]
 > y4 <- merge(y3, l2, by.x="V1", by.y="Individual")
 > dim(y4)
 [1] 20 14
+###################################################
+>  setwd("/lab/solexa_page/linyong/")
+> t1 <- readRDS("postnatal.science.358663cells.108layers.clusters.rds")
+> dim(t1)
+[1]  20116 358663
+> t2 <- t1[ ,t1$type == "MG"]
+> dim(t2)
+[1] 20116  7967
+> t3 <- as.data.frame(t2@meta.data)
+> dim(t3[ t3$seurat_clusters == t3$RNA_snn_res.0.8,])
+[1] 7967    8
+> dim(t3[ t3$RNA_snn_res.0.8 == 19,])
+[1] 6486    8
+> dim(t1[ ,t1$RNA_snn_res.0.8 == 19])
+[1] 20116  7226
+> 6486 / 7967 = 0.8141082
+
+##########################
+# of cells per individual
+t1 <- Read10X(data.dir = "postnatal.snRNAseq.science.2023", gene.column=1)
+......
+> t5
+An object of class Seurat 
+20116 features across 358663 samples within 1 assay 
+Active assay: RNA (20116 features, 0 variable features)
+ 1 layer present: counts
+for(i in 1:length(unique(t5$individual))){
+cat(unique(t5$individual)[i])
+ cat('\t')
+ f1 <- t5[ , t5$individual == unique(t5$individual)[i]]
+cat(dim(f1)[2])
+ cat('\n')
+}
+
+
+##########################
+MG.cell.count / # of cells per individual
+> t6 <- read.delim("temp2", header=F)
+> head(t6)
+    V1  V2
+1 5387 349
+2 5163  28
+3 5958 192
+> t7 <- read.delim("temp3", header=F)
+> dim(t7)
+[1] 60  2
+> head(t7)
+    V1   V2
+1 5387 6771
+2 5163 1798
+3 5958 4802
+> dim(t6)
+[1] 59  2
+> t8 <- merge(t6, t7, by.x="V1", by.y="V1")
+> dim(t8)
+[1] 59  3
+> colnames(t8) <- c("ind", "MG.cellCount", "all.cell.count")
+> t9 <- merge(t8, y4, by.x="ind", by.y="V1")
+> dim(t9)
+[1] 20 16
+> t9$MG.cell.freq <- t9$MG.cellCount.x / t9$all.cell.count
+> boxplot(t9$MG.cell.freq ~ t9$Sex)
+> abline(h = seq(-100,100,0.02), lty = 5, lwd = 0.5, col = "gray")
