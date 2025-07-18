@@ -6881,3 +6881,61 @@ MG.cell.count / # of cells per individual
 > t9$MG.cell.freq <- t9$MG.cellCount.x / t9$all.cell.count
 > boxplot(t9$MG.cell.freq ~ t9$Sex)
 > abline(h = seq(-100,100,0.02), lty = 5, lwd = 0.5, col = "gray")
+##########################################
+>  setwd("/lab/solexa_page/linyong/")
+> t5 <- readRDS("postnatal.science.358663cells.108layers.clusters.rds")
+> t6 <- as.data.frame(t5@meta.data)
+> dim(t6)
+[1] 358663      8
+
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % head temp
+orig.ident	nCount_RNA	nFeature_RNA	type	sample	individual	RNA_snn_res.0.8	seurat_clusters
+U01_AAACCTGAGAAACCAT-1_5387_BA9	U01	2036	1293	OPC	5387_BA9	5387	23	23
+U01_AAACCTGAGACTCGGA-1_5387_BA9	U01	481	378	VASC	5387_BA9	5387	28	28
+U01_AAACCTGCAGGGATTG-1_5387_BA9	U01	3986	2174	ExNeu	5387_BA9	5387	9	9
+U01_AAACCTGCAGGTCGTC-1_5387_BA9	U01	3440	1939	OPC	5387_BA9	5387	16	16
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp  | cut -f 5,8 | awk 'NR > 1' | sort | uniq -c > temp1
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi temp1                                                      
+cat temp  | cut -f 8 | awk 'NR > 1' | sort | uniq -c |   awk 'BEGIN { OFS = "\t"} {print $1, $2}' > temp2          
+tab="        "
+sort -t "$tab" +1 -2g temp2 > temp3
+# 30211	cluster0
+# 26237	cluster1
+# 7226	cluster19
+
+cat temp1 | grep -w MG | while read ll
+do
+ echo -n "$ll${tab}"
+ cl=`echo "$ll" | cut -f 3`
+ n=`grep "${tab}${cl}$" temp3 | cut -f 1`
+ echo "$n"
+done > temp4
+cat temp4 | sort -t "$tab" +0 -1gr | awk '{print $0 "\t" $1/$4}' | awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 > 0.25'
+linyongmao@Linyong-Mao-MBP16-2019 autism % cp -i temp1 postnatal.science.paper-cell-type.page-cell-type.overlap
+linyongmao@Linyong-Mao-MBP16-2019 autism % cp -i temp postnatal.science.paper-cell-type.page-cell-type.358663cells
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp  | cut -f 5 | awk 'NR > 1' | sort | uniq -c |   awk 'BEGIN { OFS = "\t"} {print $1, $2}' | sort -gr > postnatal.science.paper-cell-type.count
+cat temp  | cut -f  8 | awk 'NR > 1' | sort | uniq -c |   awk 'BEGIN { OFS = "\t"} {print $1, $2}' | sort -gr > postnatal.science.page-cell-type.count 
+
+cat postnatal.science.paper-cell-type.page-cell-type.overlap | grep "${tab}7$" | while read ll 
+do
+ echo -n "$ll${tab}"
+ cl=`echo "$ll" | cut -f 2`
+ n=`grep "${tab}${cl}$" postnatal.science.paper-cell-type.count | cut -f 1`
+ echo "$n"
+done > temp4
+cat temp4 | sort -gr | awk '{print $0 "\t" $1/$4}'  > temp.txt
+
+cat postnatal.science.paper-cell-type.page-cell-type.overlap | cut -f 3 | sort | uniq | while read ll 
+do
+ grep "${tab}${ll}$" postnatal.science.paper-cell-type.page-cell-type.overlap | sort -gr | head -3
+done > temp4
+
+cat temp4 | while read ll 
+do
+ echo -n "$ll${tab}"
+ cl=`echo "$ll" | cut -f 3`
+ n=`grep "${tab}${cl}$" postnatal.science.page-cell-type.count  | cut -f 1`
+ echo "$n"
+done | awk '{print $0 "\t" $1/$4}'
