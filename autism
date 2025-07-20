@@ -6939,3 +6939,22 @@ do
  n=`grep "${tab}${cl}$" postnatal.science.page-cell-type.count  | cut -f 1`
  echo "$n"
 done | awk '{print $0 "\t" $1/$4}'
+
+############
+> t1 <- read.delim("postnatal.science.358663cells.celltype.counts")
+ y <- DGEList(counts=t1)
+ y <- calcNormFactors(y)
+d = edgeR::cpm(y)
+a.df <- as.data.frame(d)
+## rm OUT cell type
+ a.df <- a.df[, c(1:7,9)]
+ j=5 
+# problem here, if j=1, 1:0 == (1,0)
+ a.2 <- a.df[, c(1:(j-1), (j+1):8)]
+ a.df$ratio = -999
+ colnames(a.df)
+for( i in 1:dim(a.df)[1]) {
+a.df$ratio[i] <- (a.df[i,j]+1) / (max(a.2[i,]) + 1)
+}
+ dim(a.df[ a.df$ratio > 50,])
+#  [1] 21  9
