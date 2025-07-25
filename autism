@@ -6958,3 +6958,77 @@ a.df$ratio[i] <- (a.df[i,j]+1) / (max(a.2[i,]) + 1)
 }
  dim(a.df[ a.df$ratio > 50,])
 #  [1] 21  9
+#############################################
+>  t1 <- readRDS("postnatal.science.358663cells.108layers.clusters.rds")
+ dim(t1)
+#  [1]  20116 358663
+ t1 <- JoinLayers(t1)
+ t1
+#  An object of class Seurat 
+#  20116 features across 358663 samples within 1 assay 
+#  Active assay: RNA (20116 features, 2000 variable features)
+#   3 layers present: data, counts, scale.data
+#   2 dimensional reductions calculated: pca, integrated.cca
+ metadata <- t1@meta.data
+ metadata$cluster_id <- 1
+counts <- t1@assays$RNA$counts
+library( SingleCellExperiment)
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+ groups <- colData(sce)[, c("RNA_snn_res.0.8")]
+pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+ dim(pb)
+#  [1]    38 20116
+ t2 <- as.data.frame(t(pb))
+ write.table(t2, "temp", sep="\t", quote = F)
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i ../dir-GTExV8/temp  postnatal.science.page-cell-type.gene.count.matrix
+> t1 <- read.delim("postnatal.science.page-cell-type.gene.count.matrix")
+ colnames(t1)[28:32]
+#  [1] "X33" "X34" "X35" "X36" "X37"
+ t2 <- t1[, c(1:27, 33:38)]
+ dim(t2)
+#  [1] 20116    33
+ y <- DGEList(counts=t2)
+ y <- calcNormFactors(y)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- edgeR::cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+#  [1] 14672    33
+
+ d = edgeR::cpm(y)
+ a <- log10(d+1)
+ a.df <- as.data.frame(a)
+a.df[1:6,1:6]
+ r3 <- t(a.df)
+ pca <- prcomp(r3, center = TRUE, scale. = TRUE)
+ boxplot(pca$x[,1:20])
+ s <- summary(pca)
+ s$importance[,1:10]
+
+  p1 <- as.data.frame( pca$x[,1:2])
+  p1$id <- rownames(p1)
+> gplot(p1, aes(x=PC1, y=PC2, label=id)) + geom_point(shape=21, size=2) + geom_text_repel(show.legend=F, size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red")
+######
+> t3 <- CreateSeuratObject(counts= t2)
+ t3
+#  An object of class Seurat 
+#  20116 features across 33 samples within 1 assay 
+#  Active assay: RNA (20116 features, 0 variable features)
+#   1 layer present: counts
+
+ t3 <- NormalizeData(t3)
+t3 <- FindVariableFeatures(t3, selection.method = "vst", nfeatures = 2000)
+
+ t3 <- ScaleData(t3)
+ t3 <- RunPCA(t3, npcs=30)
+ ElbowPlot(t3, ndims=30)
+t3$lab <- colnames(t3)
+t3 <- RunUMAP(t3, dims = 1:2)
+DimPlot(t3, reduction = "umap", group.by= "lab", label=T, label.size=2) + NoLegend()
