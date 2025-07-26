@@ -7032,3 +7032,13 @@ t3 <- FindVariableFeatures(t3, selection.method = "vst", nfeatures = 2000)
 t3$lab <- colnames(t3)
 t3 <- RunUMAP(t3, dims = 1:2)
 DimPlot(t3, reduction = "umap", group.by= "lab", label=T, label.size=2) + NoLegend()
+#########
+>  dim(a.df[ a.df$ratio > 50,])
+
+#a.df is z-scored (log10(d+1)) over 9 cell types
+ g <- read.delim("postnatal.science.author-cell-type-marker-gene.genes", header=F)
+ dim(g)
+#  [1] 224   1
+ a.2 <- a.df[ rownames(a.df) %in% g$V1,]
+ dim(a.2)
+> col_fun = colorRamp2(c(-3,0,3), c( "blue", "white",  "red"))
