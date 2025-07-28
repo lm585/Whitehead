@@ -7840,6 +7840,40 @@ F-statistic: 0.05182 on 1 and 195 DF,  p-value: 0.8202
 > system("date")
 Wed Jun 18 12:51:49 EDT 2025
 
+#######################################
+65 individual long read sequencing and assembly
+Glennis A. Logsdon, nature2025
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % wc -l temp
+     130 temp
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % head temp
+HG01890.hap1    STK19_C4AL_CYP21A1P_TNXA_STK19B_C4BS_CYP21A2_TNXB
+HG01890.hap2    STK19_C4AL_CYP21A1P_TNXA_STK19B_C4BS_CYP21A2_TNXB
+
+cat temp | cut -f 1 | sed 's/.hap.*//' | uniq -d | while read ll
+do
+ c4a=`grep "${ll}.hap" temp | cut -f 2 | grep -oi C4A | wc -l | awk '{print $1}'`
+ c4b=`grep "${ll}.hap" temp | cut -f 2 | grep -oi C4B | wc -l | awk '{print $1}'`
+ cyp1=`grep "${ll}.hap" temp | cut -f 2 | grep -oi CYP21A1 | wc -l | awk '{print $1}'`
+ cyp2=`grep "${ll}.hap" temp | cut -f 2 | grep -oi CYP21A2 | wc -l | awk '{print $1}'`
+ echo "${ll}${tab}${c4a}${tab}${c4b}${tab}${cyp1}${tab}$cyp2"
+
+done > out
+
+> t1 <- read.delim("out", header=F)
+ dim(t1)
+#  [1] 65  5
+ colnames(t1) <- c("id", "c4a", "c4b", "cyp1", "cyp2")
+ t2 <- t1[, c(2:5)]
+ cor(t2)
+ t1$c4.tot <- t1$c4a + t1$c4b
+ t1$cyp.tot <- t1$cyp1 + t1$cyp2
+ head(t1)
+ cor.test(t1$c4.tot, t1$cyp.tot)
+#  t = 376647565, df = 63, p-value < 2.2e-16
+#  cor
+#    1
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
