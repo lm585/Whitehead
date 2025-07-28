@@ -7042,3 +7042,12 @@ DimPlot(t3, reduction = "umap", group.by= "lab", label=T, label.size=2) + NoLege
  a.2 <- a.df[ rownames(a.df) %in% g$V1,]
  dim(a.2)
 > col_fun = colorRamp2(c(-3,0,3), c( "blue", "white",  "red"))
+
+#############################
+KISS1 (KISS1+ cell frequency)
+> f1 <- t5[ rownames(t5) %in% c("KISS1", "ACTB"), t5$individual == "5538"]
+ f2 <- as.data.frame(f1@assays$RNA$counts)
+ dim(f2)
+f3 <- as.data.frame(t(f2))
+ f4 <- f3[ f3$KISS1 > 0,]
+dim(f4)
