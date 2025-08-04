@@ -7955,6 +7955,60 @@ done > out
  l1 <- lm(g7$resid ~ log2(g7$c4a.int))
  l2 <- summary(l1)
  l2$coefficients
+#############################################################
+> i=1
+> g6$c4a.int <- round(g6$c4a * i, digits=0)
+ g6$c4a.int.2 <- round(g6$c4a * 0.8, digits=0)
+ g7 <- g6[ order(g6$c4a),]
+ plot(1:dim(g7)[1], g7$c4a.int, pch=19, col="red", cex=0.5, xlab="donor")
+ points(1:dim(g7)[1], g7$c4a.int.2 - 0.2, pch=0, col="black", cex=1)
+ abline(v = seq(0, 10000, 50), lty = 5, lwd = 0.5, col = "gray")
+ text(350, 3, "distrib. of C4A CN (Page lab)", pos=3, col="red")
+ text(350, 1.8, "distrib. of C4A CN (x 0.8 scale.F)", pos=1, col="black")
+  g8 <- g7[ g7$c4a.int == 2 & g7$c4a.int.2 == 2,]
+  dim(g8)
+#  [1] 139  29
+ g8$group <- "2C4A / 2C4A"
+  g9 <- g7[ g7$c4a.int == 3 & g7$c4a.int.2 == 2,]
+  dim(g9)
+#  [1] 186  29
+ g9$group <- "3C4A / 2C4A"
+ g10 <- rbind(g8, g9)
+ dim(g10)
+ lm3 <- lm(log2(g10$ENSG00000244731.10+1) ~ log2(g10$c4a.int) + g10$t.SMRIN + log10(g10$t.SMTSISCH + 1300) + g10$SEX.x + g10$age_value + g10$body_mass_index )
+ s3 <- summary(lm3)
+ s3
+  sid <-  log2(g10$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g10$t.SMRIN  - s3$coefficients[4,1] * log10(g10$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g10$SEX.x - s3$coefficients[6,1] * g10$age_value - s3$coefficients[7,1] * g10$body_mass_index - s3$coefficients[1,1] 
+  lm1 <- lm(sid ~ log2(g10$c4a.int))
+  summary(lm1)
+  boxplot(sid ~ g10$group, xlab="C4A typing by two distrib", ylab="residual C4A expression (log2(cpm+1))")
+ unique((g10$c4a.int))
+#  [1] 2 3
+ unique((g10$c4a.int.2))
+#  [1] 2
+
+######
+  g8 <- g7[ g7$c4a.int == 3 & g7$c4a.int.2 == 3,]
+  dim(g8)
+#  [1] 139  29
+ g8$group <- "3C4A / 3C4A"
+  g9 <- g7[ g7$c4a.int == 3 & g7$c4a.int.2 == 2,]
+  dim(g9)
+#  [1] 186  29
+ g9$group <- "3C4A / 2C4A"
+ g10 <- rbind(g8, g9)
+ dim(g10)
+ lm3 <- lm(log2(g10$ENSG00000244731.10+1) ~ log2(g10$c4a.int.2) + g10$t.SMRIN + log10(g10$t.SMTSISCH + 1300) + g10$SEX.x + g10$age_value + g10$body_mass_index )
+ s3 <- summary(lm3)
+ s3
+  sid <-  log2(g10$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g10$t.SMRIN  - s3$coefficients[4,1] * log10(g10$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g10$SEX.x - s3$coefficients[6,1] * g10$age_value - s3$coefficients[7,1] * g10$body_mass_index - s3$coefficients[1,1]  
+  lm1 <- lm(sid ~ log2(g10$c4a.int.2))
+  summary(lm1)
+  boxplot(sid ~ g10$group, xlab="C4A typing by two distrib", ylab="residual C4A expression (log2(cpm+1))")
+ unique((g10$c4a.int))
+#  [1] 2 3
+ unique((g10$c4a.int.2))
+#  [1] 2
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
