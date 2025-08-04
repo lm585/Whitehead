@@ -7930,6 +7930,32 @@ done > out
  abline(h = seq(2, 132, by=3), lty = 5, lwd = 0.5, col = "gray")
  legend(0.8, 2+3*5, c( "C4A", "C4B"), fill=c( "orange", "blue"), cex = 0.6, inset = 0.05)
 
+#################################################
+>  g6$resid <-  log2(g6$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g6$t.SMRIN  - s3$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g6$SEX.x - s3$coefficients[6,1] * g6$age_value - s3$coefficients[7,1] * g6$body_mass_index - s3$coefficients[1,1]
+ l1 <- lm(g6$resid ~ log2(g6$c4a.int))
+ l2 <- summary(l1)
+ l2$coefficients
+ g7 <- g6[ g6$c4a.int == 1 | g6$c4a.int == 2,]
+ dim(g7)
+ l1 <- lm(g7$resid ~ log2(g7$c4a.int))
+ l2 <- summary(l1)
+ l2$coefficients
+ g7 <- g6[ g6$c4a.int == 2 | g6$c4a.int == 3,]
+ dim(g7)
+ l1 <- lm(g7$resid ~ log2(g7$c4a.int))
+ l2 <- summary(l1)
+ l2$coefficients
+ g7 <- g6[ g6$c4a.int == 3 | g6$c4a.int == 4,]
+ dim(g7)
+ l1 <- lm(g7$resid ~ log2(g7$c4a.int))
+ l2 <- summary(l1)
+ l2$coefficients
+ g7 <- g6[ g6$c4a.int == 4 | g6$c4a.int == 5,]
+ dim(g7)
+ l1 <- lm(g7$resid ~ log2(g7$c4a.int))
+ l2 <- summary(l1)
+ l2$coefficients
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
