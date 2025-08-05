@@ -8009,6 +8009,32 @@ done > out
 #  [1] 2 3
  unique((g10$c4a.int.2))
 #  [1] 2
+############################################################
+log2(g6$c4a - 0.2)           1.070459364 0.070747250 15.1307559 1.083739e-43
+ sid <-  log2(g6$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g6$t.SMRIN  - s3$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g6$SEX.x - s3$coefficients[6,1] * g6$age_value - s3$coefficients[7,1] * g6$body_mass_index - s3$coefficients[1,1]
+......
+> g8 <- g7[ g7$C4A.int >= 2 & g7$C4A.int <= 4,]
+> dim(g8)
+[1] 526   5
+> unique(g8$C4A.int)
+[1] 2 3 4
+
+ g8$sub <- 999999
+for(i in 1:dim(g8)[1]) {
+ f1 <- g8[i,]
+ f2 <- floor( (f1$C4A - f1$C4A.int) / 0.25)
+ g8[i,]$sub = f2[1]
+
+}
+ unique(g8$sub)
+ head(g8[ g8$sub == 0,])
+ head(g8[ g8$sub == 2,])
+ g8$C4A.int.4groups <- paste(g8$C4A.int, ".g", g8$sub + 3, sep="")
+
+  boxplot(g8$resid ~ g8$C4A.int, ylab="residual C4A expression (log2(cpm+1))")
+ boxplot(g8$resid ~ g8$C4A.int.4groups, ylab="residual C4A expression (log2(cpm+1))", col=c(rep("grey", 4), rep("red", 4)))
+ abline(h = seq(-100,100,1/2), lty = 5, lwd = 0.5, col = "grey")
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
