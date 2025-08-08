@@ -7930,6 +7930,37 @@ done > out
  abline(h = seq(2, 132, by=3), lty = 5, lwd = 0.5, col = "gray")
  legend(0.8, 2+3*5, c( "C4A", "C4B"), fill=c( "orange", "blue"), cex = 0.6, inset = 0.05)
 
+######
+"temp1.c4a.R.sort"
+## c4a CN coeff, brain vs non-brain tissues
+ t2 <- data.frame(t1$X, t1$c4a.g6.c4a.cn.pVal, t1$c4b.g6.c4b.cn.pVal, t1$c4a.g6.c4a.cn.coeff, t1$c4b.g6.c4b.cn.coeff)
+
+ t2$fdr.c4a.cn <- p.adjust(t2$t1.c4a.g6.c4a.cn.pVal, method="fdr")
+ t2$fdr.c4b.cn <- p.adjust(t2$t1.c4b.g6.c4b.cn.pVal, method="fdr")
+ head(t2)
+ t3 <- t2[ t2$fdr.c4a.cn < 0.01,]
+ dim(t3)
+#  [1] 43  7
+ t4 <- t3[ grep("brain", t3$t1.X, ignore.case=T),]
+ dim(t4)
+#  [1] 13  7
+ t4.ord <- t4[ order(t4$t1.c4a.g6.c4a.cn.coeff),]
+ t5 <- t3[ !grepl("brain", t3$t1.X, ignore.case=T),]
+ dim(t5)
+#  [1] 30  7
+ t5.ord <- t5[ order(t5$t1.c4a.g6.c4a.cn.coeff),]
+ t4.ord$group <- "brain tissues"
+ t5.ord$group <- "non-brain tissues"
+ t6 <- rbind(t4.ord, t5.ord)
+ colnames(t6)
+ t7 <- data.frame(t6$t1.c4a.g6.c4a.cn.coeff)
+ rownames(t7) <- t6$t1.X
+ t8  <- as.data.frame(t(t7))
+ par( mar=c(12,5,2,2))
+ barplot(as.matrix(t8), horiz=F, beside=T, xaxt="n", col=c(rep( "blue", 13), rep("black",30 )), ylab="expr~C4A.CN coeff")#, xlim= c(-0.15, 0.45))
+ axis(side=1, at = seq(1.5, 1.5+2*42, by=2), labels=colnames(t8), las =2, cex.axis = 0.6)
+ abline(h = seq(-2, 132, by=0.2), lty = 5, lwd = 0.5, col = "gray")
+
 #################################################
 >  g6$resid <-  log2(g6$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g6$t.SMRIN  - s3$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g6$SEX.x - s3$coefficients[6,1] * g6$age_value - s3$coefficients[7,1] * g6$body_mass_index - s3$coefficients[1,1]
  l1 <- lm(g6$resid ~ log2(g6$c4a.int))
