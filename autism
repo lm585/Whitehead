@@ -7051,3 +7051,54 @@ KISS1 (KISS1+ cell frequency)
 f3 <- as.data.frame(t(f2))
  f4 <- f3[ f3$KISS1 > 0,]
 dim(f4)
+#############################
+excital neuron pseudobulk per individ
+
+t1 <- Read10X(data.dir = "postnatal.snRNAseq.science.2023", gene.column=1)
+ t2 <-  CreateSeuratObject(counts = t1, project = "postnat")
+ # min.cells = 3, min.features = 200
+ dim(t2)
+ #  [1]  20116 709372
+  t3 <- t2[ , t2$orig.ident == "U01" ]
+  dim(t3)
+#  [1]  20116 358663
+
+ t4 <- read.delim("./meta.tsv")
+  dim(t4)
+#  [1] 709372     15
+  t5 <- t4[ t4$Lineage == "ExNeu", ]
+ dim(t5)
+#  [1] 374558     15
+#  t3 <- t2[ , t2$orig.ident == "U01" ] ; cells from the "U01" project
+# t5 "ExNeu"
+ t6 <- t3[, colnames(t3) %in% t5$Cell_ID]
+  dim(t6)
+#  [1]  20116 204683
+ counts <- t6@assays$RNA$counts
+ metadata <- t6@meta.data
+ metadata$cluster_id <- 1
+ library( SingleCellExperiment)
+# Create single cell experiment object
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+ t7 <- t4[ t4$Cell_ID %in% colnames(t6),]
+  identical(t7$Cell_ID, colnames(t6))
+#  [1] TRUE
+  identical(t7$Cell_ID, colnames(sce))
+
+  groups <- t7$Individual
+  length(unique(groups))
+#  [1] 60
+pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+ dim(pb)
+# 60 20116
+pb[1:8, 1:6] # 8 samples
+ t8 <- as.data.frame(t(pb))
+ dim(t8)
+#  [1] 20116    60
+>  write.table(t8, "temp.2.txt", sep="\t", quote = F)
+ l1 <- unique(t7[, c(2:8,12:14)])
+ dim(l1)
+#  [1] 736  10
+> write.table(l1, "temp.3.txt", sep="\t", quote = F)
