@@ -7102,3 +7102,93 @@ pb[1:8, 1:6] # 8 samples
  dim(l1)
 #  [1] 736  10
 > write.table(l1, "temp.3.txt", sep="\t", quote = F)
+###
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i temp.2.txt postnatal.science.ExNeu.pseudobulk.raw.count.txt
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i temp.3.txt meta.ExNeu.info.txt
+> l1 <- read.delim("meta.ExNeu.info.txt")
+ dim(l1)
+#  [1] 736  10
+ #after birth, < 20-year-old
+  l2 <- l1[ l1$Age_.days. > 266 & l1$Age_.days. < 20*365,]
+  dim(l2)
+#  [1] 353  10
+# rm "Seurat_clusters" column
+ l3 <- unique( l2[, c(1:7,9:10)] )
+ dim(l3)
+#  [1] 30  9
+ sort(unique(l3$Age))
+ summary((l3$Age_.days.))
+ t4 <- read.delim("postnatal.science.ExNeu.pseudobulk.raw.count.txt")
+ dim(t4)
+#  [1] 20116    60
+ l3$Indi <- paste("X", l3$Individual, sep="")
+ t5 <- t4[, colnames(t4) %in% l3$Indi]
+ dim(t5)
+#  [1] 20116    30
+ y <- DGEList(counts=t5)
+ y <- calcNormFactors(y)
+ summary(y$samples)
+ group     lib.size         norm.factors   
+ 1:30   Min.   : 1921494   Min.   :0.8660  
+        1st Qu.: 6173721   1st Qu.:0.9627  
+        Median : 9623550   Median :1.0043  
+        Mean   :13391643   Mean   :1.0020  
+        3rd Qu.:18612636   3rd Qu.:1.0393  
+        Max.   :44031014   Max.   :1.1319  
+##
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- edgeR::cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.5
+}
+ y<-y[med$logic,]
+ print(dim(y))
+#  [1] 15351    30
+
+l4 <- l3
+for(i in 1:dim(y)[2]) {
+ f1 <- l3[ l3$Indi == colnames(y)[i], ][1,]
+ l4[i,] <- f1
+ }
+ identical(colnames(y), l4$Indi)
+ l4$age1 <- (l4$Age_.days. - 266) / 365 
+ design <- model.matrix( ~ l4$Sex + l4$age1)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+ head(top2v1)
+#  Coefficient:  l4$SexMale 
+#            logFC   logCPM        F       PValue          FDR
+#  DDX3Y  6.451951 4.065218 722.4304 1.370565e-26 2.103954e-22
+#  USP9Y  5.866211 6.738908 705.8026 3.787024e-23 2.508769e-19
+#  UTY    4.590101 6.193063 693.1073 4.902812e-23 2.508769e-19
+
+           logFC   logCPM         F       PValue         FDR geneID
+KDM6A -0.1486319 6.399674  1.802764 1.889390e-01 0.999924858  KDM6A
+KDM5C -0.4023269 5.238803  7.072455 1.218221e-02 0.999924858  KDM5C
+ZFX   -0.6308914 5.144863 35.166435 1.390344e-06 0.001333948    ZFX
+DDX3X -0.2351429 5.672418  2.545918 1.205278e-01 0.999924858  DDX3X
+XIST  -5.9253621 7.915730 31.214816 3.772319e-06 0.003406404   XIST
+
+> write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+ g <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type-name")
+ df.cpm.gene <- merge(diff, g, by.x="geneID", by.y="name")
+ dim(df.cpm.gene)
+# [1] 14845    10
+>  write.table(df.cpm.gene, "diff2-1.chr.txt", sep="\t", quote=F)
+
+d = edgeR::cpm(y)
+ a <- log2(d+1)
+ a.df <- as.data.frame(a)
+g1 <-  c("DDX3Y",  "KDM5D",  "NLGN4Y", "PRKY",   "RPS4Y1", "TXLNGY", "USP9Y",  "UTY",    "ZFY", "XIST"   )
+ a.2 <- a.df[ rownames(a.df) %in% g1,]
+ dim(a.2)
+ a.3 <- as.data.frame(t(a.2))
+ identical(rownames(a.3), l4$Indi)
+ col_fun = colorRamp2(c(0,5,10), c( "blue", "white",  "red"))
+ ca <- HeatmapAnnotation(  which="row",  age = l4$age1, sex= l4$Sex  )
+ eatmap(a.3, name = "log2(CPM+1)",   right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 14),  col = col_fun,)
