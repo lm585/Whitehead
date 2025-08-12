@@ -7192,3 +7192,33 @@ g1 <-  c("DDX3Y",  "KDM5D",  "NLGN4Y", "PRKY",   "RPS4Y1", "TXLNGY", "USP9Y",  "
  col_fun = colorRamp2(c(0,5,10), c( "blue", "white",  "red"))
  ca <- HeatmapAnnotation(  which="row",  age = l4$age1, sex= l4$Sex  )
  eatmap(a.3, name = "log2(CPM+1)",   right_annotation=ca, row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 14),  col = col_fun,)
+
+########rm outlier 1547
+Excitatory Neuron Brain Human   4/17    7.265717081088537E-7    3.3422298573007273E-5   0       0       74.67542213883678       1055.5317642357313      CNKSR2;CAMK2A;SLC17A7;NRGN
+Excitatory Neuron Brain Mouse   2/6     2.7107354046006227E-4   0.007481629716697719    0       0       118.51190476190476      973.3525434590061       SATB2;SLC17A7
+g1 <- c("CNKSR2", "CAMK2A", "SLC17A7", "NRGN", "SATB2")
+
+> t5 <- t5[, colnames(t5) != "X1547"]
+> dim(t5)
+[1] 20116    29
+> y <- DGEList(counts=t5)
+...
+>  print(dim(y))
+[1] 15371    29
+> l4 <- head(l3, n= dim(y)[2])
+>  dim(df.cpm.gene)
+[1] 14863    10
+> diff[c("DDX3Y", "XIST", "UTY", "ZFX" ),]
+           logFC   logCPM         F       PValue          FDR geneID
+DDX3Y  6.4895277 4.079916 775.93872 1.047258e-26 1.609740e-22  DDX3Y
+XIST  -9.0253869 7.866183 305.39965 6.354631e-18 1.220963e-14   XIST
+UTY    4.6069769 6.192699 686.28177 1.956095e-22 1.002238e-18    UTY
+ZFX   -0.6796871 5.136962  45.89759 1.502008e-07 1.442960e-04    ZFX
+> diff[c( "KDM6A","KDM5C","DDX3X" ),]
+           logFC   logCPM        F     PValue       FDR geneID
+KDM6A -0.1903593 6.388234 3.263157 0.08072705 0.9998984  KDM6A
+KDM5C -0.3882545 5.254078 6.034369 0.01993022 0.9998984  KDM5C
+DDX3X -0.2311691 5.682891 2.235059 0.14518521 0.9998984  DDX3X
+
+-rw-r--r--@ 1 linyongmao  staff   2.0M Aug 11 14:06 human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.name-type-chr.txt
+
