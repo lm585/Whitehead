@@ -7222,3 +7222,21 @@ DDX3X -0.2311691 5.682891 2.235059 0.14518521 0.9998984  DDX3X
 
 -rw-r--r--@ 1 linyongmao  staff   2.0M Aug 11 14:06 human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.name-type-chr.txt
 
+######
+-rw-r--r--  1 linyongmao  staff    32K Jul 28  2023 /Users/linyongmao/Documents/autism/safari.genes.syndrome
+-rw-r--r--  1 linyongmao  staff    27K Jul 28  2023 /Users/linyongmao/Documents/autism/safari.genes.cater1
+-rw-r--r--  1 linyongmao  staff    50K Aug 13  2025 13:21 h.all.v7.4.safari.others.symbols.gmt
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat /Users/linyongmao/Documents/autism/safari.genes.syndrome |cut -f 2|awk 'NR > 1' |sort | uniq | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} BEGIN {print "safari.genes.syndrome" "\t" "safari.genes.syndrome"  } {print "\t" $1 ;} END {print "\n"}'  > safari.genes.symbols.gmt
+
+cat /Users/linyongmao/Documents/autism/safari.genes.cater1 |cut -f 2|awk 'NR > 1' |sort | uniq |  awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""} BEGIN {print "safari.genes.cater1" "\t" "safari.genes.cater1"  } {print "\t" $1 ;} END {print "\n"}'  >> safari.genes.symbols.gmt
+
+cat  /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt  > h.all.v7.4.safari.others.symbols.gmt
+cat safari.genes.symbols.gmt >> h.all.v7.4.safari.others.symbols.gmt
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   h.all.v7.4.safari.others.symbols.gmt  -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.age-covar.noX.Y.rnk -scoring_scheme classic  -rpt_label  "human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.age-covar.noX.Y" -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   h.all.v7.4.safari.others.symbols.gmt  -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk  human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.age-covar.chrX.only.rnk  -scoring_scheme classic  -rpt_label   "human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.age-covar.chrX.only.genes" -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+
+
