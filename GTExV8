@@ -8126,6 +8126,85 @@ for(i in 1:dim(g8)[1]) {
  legend(0.4, 2+3*30, c( "CYP21A1P", "CYP21A2"), fill=c( "orange", "blue"), cex = 0.6, inset = 0.05)
 
 
+#########################################################
+temp-c4a-c4b-cyp21pa-cnv-expression
+c4a-c4b-cyp21pa-cnv-expression
+ t12.f <- t12[ t12$SEX == 2,]
+ dim(t12.f)
+#  [1] 281  19
+ t12.m <- t12[ t12$SEX == 1,]
+ dim(t12.m)
+#  [1] 557  19
+ t13.m <- hist(t12.m$c4.tot.no.intron9.int, breaks=seq(1.5, 11.5, 1))
+ t13.f <- hist(t12.f$c4.tot.no.intron9.int, breaks=seq(1.5, 11.5, 1))
+ sum(t13.f$density)
+#  [1] 1
+ sum(t13.m$density)
+#  [1] 1
+ t14 <- data.frame(F.density = t13.f$density, M.density= t13.m$density)
+ t15 <- as.data.frame(t(t14))
+
+  contingency_table <- table(t12$SEX, t12$c4.tot.no.intron9.int)
+  contingency_table
+   
+#        2   3   4   5   6   7   8   9  11
+#    1   5  49 167 132 136  48  14   6   0
+#    2   4  30  79  74  62  21   7   3   1
+
+# column CN
+# row 1=Male, 2=Female
+
+ chi_square_result <- chisq.test(contingency_table)
+ chi_square_result
+
+	Pearson's Chi-squared test
+
+data:  contingency_table
+X-squared = 4.6476, df = 8, p-value = 0.7945
+
+>     chisq.test(contingency_table, simulate.p.value = TRUE, B = 10000)
+
+	Pearson's Chi-squared test with simulated p-value (based on 10000 replicates)
+
+data:  contingency_table
+X-squared = 4.6476, df = NA, p-value = 0.8198
+
+> fisher.test(contingency_table, simulate.p.value=T, B=10000)
+
+	Fisher's Exact Test for Count Data with simulated p-value (based on 10000 replicates)
+
+data:  contingency_table
+p-value = 0.805
+alternative hypothesis: two.sided
+
+#########
+> # Create a data frame (example data)
+    data <- data.frame(
+      Gender = c(rep("Male", 30), rep("Female", 35), rep("Male", 20), rep("Female", 15)),
+      Genre = c(rep("Action", 20), rep("Action", 10), rep("Comedy", 10), rep("Comedy", 25), rep("Drama", 20), rep("Drama", 15))
+    )
+
+    # Create a contingency table
+    contingency_table <- table(data$Gender, data$Genre)
+    print(contingency_table)
+
+
+         Action Comedy Drama
+  Female      0     35    15
+  Male       30      0    20
+
+ chi_square_result <- chisq.test(contingency_table)
+ print(chi_square_result)
+
+	Pearson's Chi-squared test
+
+data:  contingency_table
+X-squared = 65.714, df = 2, p-value = 5.374e-15
+
+df (Degrees of Freedom): This is calculated as (number of rows - 1) * (number of columns - 1)
+suggest a significant association between gender and preferred movie genre.
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
