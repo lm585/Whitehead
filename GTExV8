@@ -8143,7 +8143,21 @@ c4a-c4b-cyp21pa-cnv-expression
 #  [1] 1
  t14 <- data.frame(F.density = t13.f$density, M.density= t13.m$density)
  t15 <- as.data.frame(t(t14))
+> par( mar=c(6,6,2,2))
+ barplot(as.matrix(t15), horiz=F, beside=T, xaxt="n", col=c("red", "blue"), xlab="total C4 CN (C4A+C4B)", ylab="freq", ylim=c(0, 0.35))
+ axis(side=1, at = seq(2, 2+9*3, by=3), labels=t13.f$mids, las =1, cex.axis = 1)
+ abline(h = seq(-100, 100, 0.01), lty = 5, lwd = 0.5, col = "grey")
+ abline(h = seq(-100, 100, 0.05), lty = 5, lwd = 1, col = "black")
+ legend(2+6*3, 0.25, c( "F (n=281)", "M (n=557)"), fill=c( "red", "blue"), cex = 1, inset = 0.05)
 
+> a=5
+ b=557 - a
+ c=4
+ d=281 - c
+ fis <- matrix(c(c,d, a,b), nrow=2, ncol=2, byrow=T )
+ fis
+
+######
   contingency_table <- table(t12$SEX, t12$c4.tot.no.intron9.int)
   contingency_table
    
