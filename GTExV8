@@ -8218,6 +8218,17 @@ X-squared = 65.714, df = 2, p-value = 5.374e-15
 df (Degrees of Freedom): This is calculated as (number of rows - 1) * (number of columns - 1)
 suggest a significant association between gender and preferred movie genre.
 
+######
+> t13.m <- hist(t12.m$c4a.int, breaks=seq(-0.5, 6.5, 1))
+> t13.f <- hist(t12.f$c4a.int, breaks=seq(-0.5, 6.5, 1))
+  t14 <- data.frame(F.density = t13.f$density, M.density= t13.m$density)
+ t15 <- as.data.frame(t(t14))
+ par( mar=c(6,6,2,2))
+ barplot(as.matrix(t15), horiz=F, beside=T, xaxt="n", col=c("red", "blue"), xlab="C4A CN", ylab="freq", ylim=c(0, 0.5))
+ axis(side=1, at = seq(2, 2+6*3, by=3), labels=t13.f$mids, las =1, cex.axis = 1)
+ abline(h = seq(-100, 100, 0.01), lty = 5, lwd = 0.5, col = "grey")
+ abline(h = seq(-100, 100, 0.05), lty = 5, lwd = 1, col = "black")
+ legend(2+5*3, 0.3, c( "F (n=281)", "M (n=557)"), fill=c( "red", "blue"), cex = 0.8, inset = 0.05)
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
