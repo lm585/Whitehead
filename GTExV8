@@ -8230,6 +8230,17 @@ suggest a significant association between gender and preferred movie genre.
  abline(h = seq(-100, 100, 0.05), lty = 5, lwd = 1, col = "black")
  legend(2+5*3, 0.3, c( "F (n=281)", "M (n=557)"), fill=c( "red", "blue"), cex = 0.8, inset = 0.05)
 
+ f1 <- dim(t12[ t12$c4a.int <= 1 & t12$SEX == 2,])[1]
+ f2 <- dim(t12[ t12$c4a.int > 1 & t12$SEX == 2,])[1]
+ m1 <- dim(t12[ t12$c4a.int <= 1 & t12$SEX == 1,])[1]
+ m2 <- dim(t12[ t12$c4a.int > 1 & t12$SEX == 1,])[1]
+ f1 + f2
+#  [1] 281
+ m1 + m2
+#  [1] 557
+ (matrix(c(f1,f2,m1,m2), nrow=2, ncol=2, byrow=T))
+ fisher.test(matrix(c(f1,f2,m1,m2), nrow=2, ncol=2, byrow=T))
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
