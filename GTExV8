@@ -8240,6 +8240,41 @@ suggest a significant association between gender and preferred movie genre.
 #  [1] 557
  (matrix(c(f1,f2,m1,m2), nrow=2, ncol=2, byrow=T))
  fisher.test(matrix(c(f1,f2,m1,m2), nrow=2, ncol=2, byrow=T))
+######
+t12.f <- t12[ t12$SEX == 2,] 
+ dim(t12.f)
+#  [1] 281  19  
+ t12.m <- t12[ t12$SEX == 1,] 
+ dim(t12.m)
+#  [1] 557  19  
+c4.tot.no.intron9.int
+ t13.m <- hist(t12.m$c4.tot.no.intron9.int, breaks=seq(1.5, 13.5, 1))
+ t13.f <- hist(t12.f$c4.tot.no.intron9.int, breaks=seq(1.5, 13.5, 1))
+
+  t14 <- data.frame(F.density = t13.f$density, M.density= t13.m$density)
+
+t14$or <- -12345
+t14$p <- -9
+ j=1 
+
+for(cn in t13.f$mids) {
+ f1 <- dim(t12[ t12$c4.tot.no.intron9.int == cn & t12$SEX == 2,])[1]
+ f2 <- dim(t12[ t12$c4.tot.no.intron9.int != cn & t12$SEX == 2,])[1]
+ m1 <- dim(t12[ t12$c4.tot.no.intron9.int == cn & t12$SEX == 1,])[1]
+ m2 <- dim(t12[ t12$c4.tot.no.intron9.int != cn & t12$SEX == 1,])[1]
+ f1 + f2
+#  [1] 281 
+ m1 + m2
+#  [1] 557 
+ (matrix(c(f1,f2,m1,m2), nrow=2, ncol=2, byrow=T))
+ fish <-  fisher.test(matrix(c(f1,f2,m1,m2), nrow=2, ncol=2, byrow=T))
+ t14$or[j] <- fish$estimate
+ t14$p[j] <- fish$p.value
+ j <- j+1 
+ }
+
+t14$CYP21A1P.CN <- t13.f$mids
+t14
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
