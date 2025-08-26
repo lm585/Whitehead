@@ -8276,6 +8276,43 @@ for(cn in t13.f$mids) {
 t14$CYP21A1P.CN <- t13.f$mids
 t14
 
+######
+t12.f <- t12[ t12$SEX == 2,]
+ dim(t12.f)
+#  [1] 281  19
+ t12.m <- t12[ t12$SEX == 1,]
+ dim(t12.m)
+#  [1] 557  19  
+ da.f <- hist(t12.f$c4a.int, breaks=seq(-0.5, 6.5,1))
+ db.f <- hist(t12.f$c4b.int, breaks=seq(-0.5, 6.5,1))
+ da.m <- hist(t12.m$c4a.int, breaks=seq(-0.5, 6.5,1))
+ db.m <- hist(t12.m$c4b.int, breaks=seq(-0.5, 6.5,1))
+ res <- as.data.frame(matrix(nrow= length(da.f$mids) * length(db.f$mids), ncol=7))
+ colnames(res) <- c("observed", "or", "p", "C4A.cn", "C4B.cn", "F", "M")
+
+k = 0
+ for(i in 1:length(da.f$mids)) {
+ for(j in 1:length(db.f$mids)) {
+ k = k+1
+ res$C4A.cn[k] <- da.f$mids[i]
+ res$C4B.cn[k] <- db.f$mids[j]
+ f1 <- dim(t12.f[ t12.f$c4a.int == res$C4A.cn[k] & t12.f$c4b.int == res$C4B.cn[k],])[1]
+ f2 <- dim(t12.f)[1] - f1
+ m1 <- dim(t12.m[ t12.m$c4a.int == res$C4A.cn[k] & t12.m$c4b.int == res$C4B.cn[k],])[1]
+ m2 <- dim(t12.m)[1] - m1
+ (matrix(c(f1,f2,m1,m2), nrow=2, ncol=2, byrow=T))
+ fish <-  fisher.test(matrix(c(f1,f2,m1,m2), nrow=2, ncol=2, byrow=T))
+ res$or[k] <- fish$estimate
+ res$p[k]  <- fish$p.value
+ res$F[k]  <- f1
+ res$M[k]  <- m1
+}
+}
+ r2 <- res[ res$F > 0 | res$M > 0,]
+ r2$A <- r2$F + r2$M
+> gplot(r2, aes(x=C4A.cn, y=C4B.cn, size=A, label=A)) + geom_point(col="black") + geom_text_repel(show.legend=F, data=r2 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red") + labs(x="C4A CN", y="C4B CN") + scale_x_continuous(breaks=seq(0, 6, 1)) + scale_y_continuous(breaks=seq(0, 6, 1))
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
