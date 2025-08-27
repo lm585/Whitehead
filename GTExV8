@@ -8312,6 +8312,29 @@ k = 0
  r2$A <- r2$F + r2$M
 > gplot(r2, aes(x=C4A.cn, y=C4B.cn, size=A, label=A)) + geom_point(col="black") + geom_text_repel(show.legend=F, data=r2 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red") + labs(x="C4A CN", y="C4B CN") + scale_x_continuous(breaks=seq(0, 6, 1)) + scale_y_continuous(breaks=seq(0, 6, 1))
 
+######
+t12.f <- t12[ t12$SEX == 2,]
+ dim(t12.f)
+#  [1] 281  19
+ t12.m <- t12[ t12$SEX == 1,]
+ dim(t12.m)
+#  [1] 557  19 
+c4.tot.no.intron9.int
+ t13.m <- hist(t12.m$c4.tot.no.intron9.int, breaks=c(seq(1.5,5.5, 1), 20))
+ t13.f <- hist(t12.f$c4.tot.no.intron9.int, breaks=c(seq(1.5,5.5, 1), 20))
+
+ sum(t13.f$density)
+#  0.6885507
+ sum(t13.m$density)
+#  0.6590107
+
+ t12$c4.tot.int <- t12$c4.tot.no.intron9.int
+ t12[ t12$c4.tot.no.intron9.int > 5,]$c4.tot.int <- "gt5"
+
+  contingency_table <- table(t12$SEX, t12$c4.tot.int)
+  contingency_table
+chisq.test(contingency_table)
+chisq.test(contingency_table, simulate.p.value = TRUE, B = 10000)
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
