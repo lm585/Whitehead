@@ -7266,5 +7266,61 @@ t1 <- readRDS("../autism/postnatal.science.mg.7967cells.rds")
  beeswarm(a.7$a.4.DDX3X ~ a.7$CORE.ENRICHMENT, outcol="white", main="DDX3X corr with 171 IFNG genes", add=T)
  abline(h = seq(-100, 100, 1/10), lty = 5, lwd = 0.5, col = "gray")
 
+######
+a.2 <- as.data.frame(t(a.df))
+ dim(a.2)
+#  [1]    20 13477
+ a.3 <- cor(a.2)
+ a.4 <- as.data.frame(a.3)
+ dim(a.4)
+#  [1] 13477 13477
+ a.3  <- 0
+ res <- a.4[, 1:10]
+ colnames(res)[1:5] <- c("name", "no.group.mean", "yes.mean", "pval", "fdr")
+ colnames(res)[6] <- "cor.test.r"
+
+ res$name <- rownames(res)
+ g1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/HALLMARK_INTERFERON_GAMMA_RESPONSE.tsv")
+
+ for(i in 1:dim(res)[1]){
+ id <- res$name[i]
+ a.6 <- data.frame(a.4[ , colnames(a.4) == id] , a.4$ZFX)
+ a.7 <- data.frame(ddx = a.6[,1], temp = a.4$ZFX)
+ rownames(a.7) <- rownames(a.4)
+ t1 <- cor.test(a.7$ddx, data.frame( a.4[ , colnames(a.4) == id])[,1])
+ res$cor.test.r[i] <- t1$estimate
+ a.8 <- a.7[rownames(a.7) %in% g1$SYMBOL ,]
+ a.7$name <- rownames(a.7)
+ a.9 <- merge(a.7, g1, by.x="name", by.y="SYMBOL")
+ t2 <- a.9[ a.9$name != id & a.9$CORE.ENRICHMENT == "No",]$ddx
+ t3 <- a.9[ a.9$name != id & a.9$CORE.ENRICHMENT == "Yes",]$ddx
+ t4 <- t.test(t2, t3)
+ res$no.group.mean[i] <- mean(t2)
+ res$yes.mean[i] <- mean(t3)
+ res$pval[i] <- t4$p.value
+
+}
+
+> g2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-infect-ddx3x-KOvWT.F.prerank_h.all.v7.4.GseaPreranked.1664399478913/HALLMARK_INTERFERON_GAMMA_RESPONSE.tsv")
+> dim(g2)
+[1] 182   7
+ g3 <- merge(g1, g2, by.x="SYMBOL", by.y="SYMBOL")
+ dim(g3)
+#  [1] 157  13
+ plot(g3$RANK.METRIC.SCORE.x, g3$RANK.METRIC.SCORE.y, xlab="human-mg-postnatal-science2023-MvF-diff2-1(logP)", ylab="mouse-infect-ddx3x-KOvWT.F (logP)")
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,1/2), lty = 5, lwd = 0.5, col = "gray")
+ abline(h=0)
+ abline(v=0)
+
+> g4 <- g3[ abs(g3$RANK.METRIC.SCORE.x) > 1 & abs(g3$RANK.METRIC.SCORE.y) > 1,]
+ a <- dim(g4[ g4$CORE.ENRICHMENT.x == "Yes" & g4$CORE.ENRICHMENT.y == "Yes",])[1]
+ a
+ b <- dim(g4[ g4$CORE.ENRICHMENT.x == "No" & g4$CORE.ENRICHMENT.y == "Yes",])[1]
+ c <- dim(g4[ g4$CORE.ENRICHMENT.x == "Yes" & g4$CORE.ENRICHMENT.y == "No",])[1]
+ d <- dim(g4[ g4$CORE.ENRICHMENT.x == "No" & g4$CORE.ENRICHMENT.y == "No",])[1]
+ matrix(c(a,b,c,d), nrow=2, ncol=2, byrow=T)
+ dim(g4)
+ fisher.test(matrix(c(a,b,c,d), nrow=2, ncol=2, byrow=T))
 
 
