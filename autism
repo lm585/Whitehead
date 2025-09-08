@@ -7419,4 +7419,25 @@ t = 6.8593, df = 47, p-value = 1.336e-08
       cor 
 0.7072958 
 
+######
+> t.m <- merge(t2, t2.mouse.ddx3x.ko, by.x="NAME", by.y="NAME")
+> f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717816582258/gsea_report_for_na_pos_1717816582258.tsv")
+...
+> t.m.2 <- merge(t.m, t2, by.x="NAME", by.y="NAME")
+> dim(t.m.2)
+[1] 49  7
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/gsea_report_for_na_pos_1751317616145.tsv")
+...
+> t.m.3 <- merge(t.m.2, t2, by.x="NAME", by.y="NAME")
+> t.m.4 <- (t.m.3[, c(2,4,6,8)])
+ colnames(t.m.4) <- c("human-MG-Immu.data","mouse-Ddx3xKO-infect", "mouse-MG", "human-MG-Sci.data")
+> t6 <- as.data.frame(cor(t.m.4))
+ col_fun = colorRamp2(c(0,0.4,0.8), c( "blue", "white",  "red"))
+ eatmap(t6, name="correlation", col = col_fun)
+
+> t.m.4$name <- t.m.3$NAME
+> colnames(t.m.4) <- gsub("-", ".", colnames(t.m.4))
+> t.m.4$n2 <- gsub("HALLMARK", "h", t.m.4$name)
+t7 <- t.m.4[ abs(t.m.4$human.MG.Immu.data) > 2 & abs(t.m.4$mouse.Ddx3xKO.infect) > 2, ]
+> gplot(t.m.4, aes(x= human.MG.Immu.data, y= mouse.Ddx3xKO.infect, label=n2)) + geom_point(size=3, shape=21)  + labs(x="NES (M vs F, human-MG-ImmuPaper-data )", y="NES(Ddx3x KO vs WT, mouse macrophage after infect)") + scale_y_continuous(breaks=seq(-8, 4, 2)) + geom_smooth(method="lm") + geom_text_repel(show.legend=T, data=t7 , size=2.5, max.overlaps=100, min.segment.length = 0.1, col="red") + geom_hline(yintercept=0, col="black", size = 0.25) + geom_vline(xintercept=0, size=0.25)
 
