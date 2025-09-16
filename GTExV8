@@ -8337,6 +8337,21 @@ chisq.test(contingency_table)
 chisq.test(contingency_table, simulate.p.value = TRUE, B = 10000)
 
 #############################################################
+c4a primer & probe seq
+CCTTTGTGTTGAAGGTCCTGAGTT
+TCCTGTCTAACACTGGACAGGGGT
+CCAGGAGCAGGTAGGAGGCTCGC
+
+TGCAGGAGACATCTAACTGGCTTCT
+CATGCTCCTATGTATCACTGGAGAGA
+AGCAGGCTGACGGC
+
+RPP30 primer
+GATTTGGACCTGCGAGCG
+GCGGCTGTCTCCACAAGT
+CTGACCTGAAGGCTCT
+
+#############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
 1601 ENSMUSG00000015451.17  C4a         24          9         14         12         15         22         34         38         29         58
