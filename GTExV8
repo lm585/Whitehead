@@ -8351,6 +8351,42 @@ GATTTGGACCTGCGAGCG
 GCGGCTGTCTCCACAAGT
 CTGACCTGAAGGCTCT
 
+#############################################
+> boxplot(t11$c4.tot.no.intron9 - 0.2 ~ t11$c4.c4a.and.c4b, xlab="C4A CN + C4B CN", ylab="total C4 CN", col=c("red", "grey", "red", rep("grey", 3), "red", rep("grey",10)))
+> abline(h = seq(0,100, by=1), lty = 5, lwd = 0.5, col = "gray")
+> abline(h = seq(0,100, by=2), lty = 5, lwd = 0.5, col = "blue")
+
+> boxplot( t11$cyp21.tot ~ t11$cyp21.add.two, xlab="CYP21A1P CN + CYP21A2 CN", ylab="total CYP21 CN", col=c("red", "grey", "red", rep("grey", 3), "red", rep("grey",10)))
+> abline(h = seq(0,100, by=1), lty = 5, lwd = 0.5, col = "gray")
+> abline(h = seq(0,100, by=2), lty = 5, lwd = 0.5, col = "blue")
+
+y <- t11$c4.tot.no.intron9 - 0.2 
+x <- t11$c4a + t11$c4b
+Call:
+lm(formula = y ~ x)
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept) 0.003231   0.071148   0.045    0.964
+x           0.999999   0.013816  72.378   <2e-16 ***
+Residual standard error: 0.4841 on 836 degrees of freedom
+Multiple R-squared:  0.8624,    Adjusted R-squared:  0.8622 
+
+t11$cyp21.tot ~ t11$CYP21A1P + t11$CYP21A2
+y <- t11$cyp21.tot
+x <- t11$CYP21A1P + t11$CYP21A2
+Call:
+lm(formula = y ~ x)
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)  0.19209    0.03066   6.265 5.95e-10 ***
+x            1.00000    0.00619 161.554  < 2e-16 ***
+Residual standard error: 0.2212 on 836 degrees of freedom
+Multiple R-squared:  0.969,     Adjusted R-squared:  0.9689
+ plot(y ~ x, xlab="CYP21A1P CN + CYP21A2 CN", ylab="total CYP21 CN")
+ abline(h = seq(0,100, by=2), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(0,100, by=2), lty = 5, lwd = 0.5, col = "gray")
+ abline(lm(y ~ x))
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
