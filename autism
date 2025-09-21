@@ -7460,7 +7460,7 @@ cor(t.m.4)
  head(t.m.4)
 
  t7 <- t.m.4[ t.m.4$name %in% hn,]
-> gplot(t.m.4, aes(x= human.MG.Immu.data, y= mouse.MG, label=n2)) + geom_point(size=3, shape=21, col="black")  + labs(x="NES (M vs F, human-microglia)", y="NES(M vs F, mouse-microglia)") + geom_smooth(method="lm") + scale_y_continuous(breaks=seq(-6, 5, 2)) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + geom_text_repel(show.legend=T, data=t7 , size=2, max.overlaps=100, min.segment.length = 0.1, col="red")
+> gplot(t.m.4, aes(x= human.MG.Immu.data, y= mouse.MG, label=n2)) + geom_point(size=3, shape=21, col="black")  + labs(x="NES (M vs F, human-microglia)", y="NES (M vs F, mouse-microglia)") + geom_smooth(method="lm") + scale_y_continuous(breaks=seq(-6, 5, 2)) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + geom_text_repel(show.legend=T, data=t7 , size=2, max.overlaps=100, min.segment.length = 0.1, col="red")
 
 ############################################################
 > r1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/HALLMARK_INTERFERON_GAMMA_RESPONSE.tsv")
