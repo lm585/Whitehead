@@ -8408,6 +8408,18 @@ Multiple R-squared:  0.8956,    Adjusted R-squared:  0.8955
  abline(h = seq(0,100, by=1/2), lty = 5, lwd = 0.25, col = "gray")
   abline(h = seq(0,100, by=1), lty = 5, lwd = 0.5, col = "blue")
 
+############
+# c4a-c4b-cyp21pa-cnv-expression
+ sid <-  log2(g6$ENSG00000224389.9 + 1) - s4$coefficients[3,1] * g6$t.SMRIN  - s4$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s4$coefficients[5,1] * g6$SEX.x - s4$coefficients[6,1] * g6$age_value - s4$coefficients[7,1] * g6$body_mass_index - s4$coefficients[1,1]  
+ lm1 <- lm(sid ~ log2(g6$c4b - 0.2))
+ summary(lm1)
+g7 <- data.frame(resid = sid, C4B = g6$c4b , expr = g6$ENSG00000224389.9)
+
+ g7$C4B.int <- round(g7$C4B, digits=0)
+ g7$C4B.minus0.2.int <- round(g7$C4B - 0.2, digits=0)
+ boxplot(g7$resid ~ g7$C4B.int, ylab="residual C4B expression (log2(cpm+1))")
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
