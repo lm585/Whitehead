@@ -8420,6 +8420,102 @@ g7 <- data.frame(resid = sid, C4B = g6$c4b , expr = g6$ENSG00000224389.9)
  boxplot(g7$resid ~ g7$C4B.int, ylab="residual C4B expression (log2(cpm+1))")
  abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
 
+######average +/- error bar
+# c4a-c4b-cyp21pa-cnv-expression
+
+ sid <-  log2(g6$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g6$t.SMRIN  - s3$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g6$SEX.x - s3$coefficients[6,1] * g6$age_value - s3$coefficients[7,1] * g6$body_mass_index - s3$coefficients[1,1] 
+ lm1 <- lm(sid ~ log2(g6$c4a - 0.2))
+ summary(lm1)
+ g7 <- data.frame(resid = sid, C4A = g6$c4a , expr = g6$ENSG00000244731.10)
+
+ g7$C4A.int <- round(g7$C4A, digits=0)
+ g8 <- g7
+
+ t1 <- as.data.frame( matrix(nrow=5, ncol=4))
+ colnames(t1) <- c("CN", "c4a.mean", "c4a.sd", "c4a.N" )
+
+j=1
+ for(i in 1:5) {
+t2 <- g7[ g7$C4A.int == i,]
+ t1$CN[j] = i
+ t1$c4a.mean[j] = mean(log2(t2$expr + 1))
+ t1$c4a.sd[j] = sd(log2(t2$expr + 1))
+ t1$c4a.N[j] = dim(t2)[1]
+j=j+1
+}
+
+#...C4B....
+sid <-  log2(g6$ENSG00000224389.9 + 1) - s4$coefficients[3,1] * g6$t.SMRIN  - s4$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s4$coefficients[5,1] * g6$SEX.x - s4$coefficients[6,1] * g6$age_value - s4$coefficients[7,1] * g6$body_mass_index - s4$coefficients[1,1]  
+ lm1 <- lm(sid ~ log2(g6$c4b - 0.2))
+ summary(lm1)
+g7 <- data.frame(resid = sid, C4B = g6$c4b , expr = g6$ENSG00000224389.9)
+
+ g7$C4B.int <- round(g7$C4B, digits=0)
+
+t3 <- as.data.frame( matrix(nrow=5, ncol=4))
+ colnames(t3) <- c("CN", "c4b.mean", "c4b.sd", "c4b.N" )
+
+j=1
+ for(i in 1:5) {
+t2 <- g7[ g7$C4B.int == i,]
+ t3$CN[j] = i
+ t3$c4b.mean[j] = mean(log2(t2$expr + 1))
+ t3$c4b.sd[j] = sd(log2(t2$expr + 1))
+ t3$c4b.N[j] = dim(t2)[1]
+j=j+1
+}
+
+ identical(t3$CN, t1$CN)
+ res <- cbind(t1, t3)
+res$p = 10
+for(i in 1:5) {
+ a <- log2(g7[ g7$C4B.int == i,]$expr + 1)
+ b <- log2(g8[ g8$C4A.int == i,]$expr + 1)
+c <- t.test(a,b)
+res[ res$CN == i,]$p <- c$p.value
+
+}
+
+ r2 <- res[, c(2,6)]
+ rownames(r2) <- res$CN
+  t3 <- as.data.frame(t(r2))
+# par( mar=c(6,2,2,12))
+ barplot(as.matrix(t3), horiz=F, beside=T, xlab="copy number", ylab="gene expression (log2(cpm+1))", col=c("red", "blue"), ylim=c(0,10))
+
+ for(i in 1:5) {
+ t4 <- as.data.frame(matrix(,nrow=2, ncol=2))
+# x-coord of two points
+ t4$V1 <- 1 + (i-1) *3 + 0.5
+# y-coord of two points
+ t4$V2[1] <- res[ res$CN == i,]$c4a.mean
+ t4$V2[2] <- res[ res$CN == i,]$c4a.mean + res[ res$CN == i,]$c4a.sd
+lines(t4$V1, t4$V2, col="red")
+#horiz bar of error, y-coord of two points
+ t4$V2 <- t4$V2[2]
+ a <- t4$V1[1]
+ t4$V1[1] <- a - 0.5/2
+ t4$V1[2] <- a + 0.5/2
+lines(t4$V1, t4$V2, col="red")
+
+####c4b....
+ t4 <- as.data.frame(matrix(,nrow=2, ncol=2))
+# x-coord of two points
+ t4$V1 <- 1 + (i-1) *3 + 1 + 0.5
+ # y-coord of two points
+ t4$V2[1] <- res[ res$CN == i,]$c4b.mean
+ t4$V2[2] <- res[ res$CN == i,]$c4b.mean + res[ res$CN == i,]$c4b.sd
+lines(t4$V1, t4$V2, col="blue")
+ #horiz bar of error, y-coord of two points
+ t4$V2 <- t4$V2[2]
+ a <- t4$V1[1]
+ t4$V1[1] <- a - 0.5/2
+ t4$V1[2] <- a + 0.5/2
+lines(t4$V1, t4$V2, col="blue")
+}
+  abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(h=0)
+ legend(4, 10, c( "C4A", "C4B"), fill=c( "red", "blue"), cex = 1, inset = 0.05)
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
