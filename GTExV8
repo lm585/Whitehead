@@ -8516,6 +8516,41 @@ lines(t4$V1, t4$V2, col="blue")
  abline(h=0)
  legend(4, 10, c( "C4A", "C4B"), fill=c( "red", "blue"), cex = 1, inset = 0.05)
 
+####################################
+######
+> sink("median-c4a-cyp21a2-expression.R.out")
+
+> sink("temp2")
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | awk 'BEGIN {FS = "\t"; OFS = "\t"} NF == 5' > temp3
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | grep 'data.frame' | awk '{print $2}' > temp4
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % wc -l temp3 temp4
+      54 temp3
+      54 temp4
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % paste temp3 temp4 > median-c4a-cyp21a2-expression.R.out.oct3.2025
+### add header
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi median-c4a-cyp21a2-expression.R.out.oct3.2025
+
+> t1 <- read.delim("median-c4a-cyp21a2-expression.R.out.oct3.2025")
+ summary(t1)
+### $Nsamp: 4   9   9  10  21  85 139 142 152 156 159 162 174 176 180 187 197
+ t2 <- t1[ t1$Nsamp > 21,]
+ dim(t2)
+#  [1] 49  6
+ t3 <- t2[, c(2,4,5)]
+ rownames(t3) <- t2[, 1]
+ head(t3)
+#                                     C4A        C4B      CYP21A2
+#  Adipose - Subcutaneous        3.215713   2.201968    0.4085480
+#  Adipose - Visceral (Omentum) 17.235059  16.314238    1.2656753
+#  Adrenal Gland                82.803835 147.885320 1578.0085731
+   t4 <- as.data.frame(t(t3))
+ par( mar=c(12,6,2,2))
+> barplot(as.matrix(log2(t4+1)), horiz=F, beside=T, ylab="log2(cpm+1)", col=c("green", "blue", "red"), xaxt="n")
+ axis(side=1, at = seq(2, 2+4*48, by=4), labels=rownames(t3), las =2, cex.axis = 0.7)
+ abline(h = seq(0, 100, 1), lty = 5, lwd = 0.5, col = "gray")
+ legend(2+4*8, 10, c( "C4A", "C4B", "CYP21A2"), fill=c("green", "blue", "red"), cex = 0.8, inset = 0.05)
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
