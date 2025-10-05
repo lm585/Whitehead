@@ -8550,6 +8550,28 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi median-c4a-cyp21a2-expression.
  abline(h = seq(0, 100, 1), lty = 5, lwd = 0.5, col = "gray")
  legend(2+4*8, 10, c( "C4A", "C4B", "CYP21A2"), fill=c("green", "blue", "red"), cex = 0.8, inset = 0.05)
 
+#########
+# c4a-c4b-cyp21pa-cnv-expression
+> g6$c4a.resid.expr <- log2(g6$ENSG00000244731.10 + 1) - s3$coefficients[2,1] * log2(g6$c4a - 0.2)
+ g6$c4b.resid.expr <- log2(g6$ENSG00000224389.9 + 1)  - s4$coefficients[2,1] * log2(g6$c4b - 0.2)
+ cor.test(g6$c4a.resid.expr, g6$c4b.resid.expr)
+# t = 54.613, df = 572, p-value < 2.2e-16
+#       cor
+#  0.916014
+cor.test(log2(g6$ENSG00000244731.10 + 1), log2(g6$ENSG00000224389.9 + 1))
+#        cor
+#  0.7801029
+> plot(log2(g6$ENSG00000244731.10 + 1), log2(g6$ENSG00000224389.9 + 1), xlab="C4A expression (log2(CPM+1))", ylab="C4B expression (log2(CPM+1))", main="Thyroid (N= 574)")
+ abline(lm(log2(g6$ENSG00000224389.9 + 1) ~ log2(g6$ENSG00000244731.10 + 1)), col="blue")
+  abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+
+plot(g6$c4a.resid.expr, g6$c4b.resid.expr, xlab="CN-adjusted C4A expression (log2(CPM+1))", ylab="CN-adjusted C4B expression (log2(CPM+1))", main="Thyroid (N= 574)")
+ abline(lm(g6$c4b.resid.expr ~ g6$c4a.resid.expr), col="blue")
+  abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+> g6[ g6$c4a - 0.2 < 0.5, c(2,6,4, 7, 5, 13,14,15,16)]
+> g6[ g6$c4a - 0.2 < 0.5, c(2,27,28)]
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
