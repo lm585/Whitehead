@@ -8573,6 +8573,40 @@ plot(g6$c4a.resid.expr, g6$c4b.resid.expr, xlab="CN-adjusted C4A expression (log
 > g6[ g6$c4a - 0.2 < 0.5, c(2,6,4, 7, 5, 13,14,15,16)]
 > g6[ g6$c4a - 0.2 < 0.5, c(2,27,28)]
 
+##########
+linyong@c3b1 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ vdb-config --prefetch-to-cwd
+
+linyong@c3b1 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ prefetch --ngc /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/prj_6177_D12900.ngc  SAMN04597568
+
+2025-10-06T21:50:26 prefetch.3.0.7: Current preference is set to retrieve SRA Normalized Format files with full base quality scores.
+2025-10-06T21:50:26 prefetch.3.0.7 warn: Maximum file size download limit is 20GB
+2025-10-06T21:50:26 prefetch.3.0.7: 1) 'SRR3478691' (21GB) is larger than maximum allowed: skipped
+2025-10-06T21:50:26 prefetch.3.0.7: 1) Downloading 'SRR3478691.vdbcache'...
+2025-10-06T21:50:26 prefetch.3.0.7:  Downloading via HTTPS...
+2025-10-06T21:50:56 prefetch.3.0.7:  HTTPS download succeed
+2025-10-06T21:51:01 prefetch.3.0.7:  'SRR3478691.vdbcache' is valid
+2025-10-06T21:51:01 prefetch.3.0.7: 1) 'SRR3478691.vdbcache' was downloaded successfully
+
+Download of some files was skipped because they are too large
+You can change size download limit by setting
+--min-size and --max-size command line arguments
+linyong@it-bigboy /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ fasterq-dump --ngc /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/prj_6177_D12900.ngc SAMN04597568
+###cram file type for the raw data
+-rw-r--r-- 1 linyong systemd-timesync 168G Oct  7 14:37 SAMN04597568_1.fastq
+-rw-r--r-- 1 linyong systemd-timesync 108G Oct  7 14:31 SAMN04597568_2.fastq
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ fasterq-dump SRR5642491
+spots read      : 1,521,848
+reads read      : 1,521,848
+reads written   : 1,521,848
+
+SRR5642491:
+total 92M
+-rw-r--r-- 1 linyong systemd-timesync 92M Oct  6 17:47 SRR5642491.sra
+
+-rw-r--r-- 1 linyong systemd-timesync 505M Oct  7 12:18 SRR5642491.fastq
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
