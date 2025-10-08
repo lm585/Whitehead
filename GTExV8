@@ -8606,6 +8606,71 @@ total 92M
 
 -rw-r--r-- 1 linyong systemd-timesync 505M Oct  7 12:18 SRR5642491.fastq
 
+#########
+######
+> t1 <- read.csv("/Users/linyongmao/Downloads/SraRunTable.24455samp.GTEx.csv")
+> dim(t1)
+[1] 24455    82
+> write.table(t1, "SraRunTable.24455samp.GTEx.tab.txt", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi SraRunTable.24455samp.GTEx.tab.txt 
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat SraRunTable.24455samp.GTEx.tab.txt| cut -f 1 | sort | uniq -d | wc -l
+       0
+Run header
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat SraRunTable.24455samp.GTEx.tab.txt| cut -f 8 | head                  
+BioSample
+SAMN04596666
+SAMN02787786
+SAMN02793034
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat SraRunTable.24455samp.GTEx.tab.txt| cut -f 8 | sort | uniq  | wc -l
+   14117
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat SraRunTable.24455samp.GTEx.tab.txt| cut -f 19 | sort | uniq  | head
+Experiment
+SRX1142720
+SRX1142756
+SRX1142759
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat SraRunTable.24455samp.GTEx.tab.txt| cut -f 19 | sort | uniq  | wc -l
+   24456
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat SraRunTable.24455samp.GTEx.tab.txt| cut -f 3 | sort | uniq -c      
+   1 Assay.Type
+22544 RNA-Seq
+1302 WGS
+ 609 WXS
+
+> t1 <- read.delim("gtex-dna-c4a-c4b.gene.depth.samtools.q20.txt", header=T)
+  head(t1)
+ t2 <- read.delim("SraRunTable.24455samp.GTEx.tab.txt")
+ dim(t2)
+#  [1] 24455    82
+ t3 <- t2[ t2$biospecimen_repository_sample_id %in% t1$donor,]
+ dim(t3)
+#  [1] 1202   82
+ head(t3, n=10)
+ unique(t3$Assay.Type)
+#  [1] "WGS"
+
+ length(unique( t3$biospecimen_repository_sample_id))
+#  [1] 602  donors 
+
+ t4 <- t2[ t2$Assay.Type == "WGS",]
+ dim(t4)
+#  [1] 1302   82
+ unique(t4$AssemblyName)
+#  [1] "GCF_000001405.25" "GRCh38"           "GCA_000001405.13"
+ write.table(t4[ t4$AssemblyName == "GCF_000001405.25", ]$biospecimen_repository_sample_id, "temp1", quote=F, sep="\t")
+ write.table(t4[ t4$AssemblyName == "GRCh38", ]$biospecimen_repository_sample_id, "temp2", quote=F, sep="\t")
+ write.table(t4[ t4$AssemblyName == "GCA_000001405.13", ]$biospecimen_repository_sample_id, "temp3", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % wc -l temp[1-3]
+     567 temp1
+     652 temp2
+      83 temp3
+    1302 total
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | sed 's/-/@/'  | sed 's/-/    /' |cut -f 1 |sort | uniq  | head 
+GTEX@1117F
+GTEX@111CU
+GTEX@111FC
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | sed 's/-/@/'  | sed 's/-/    /' |cut -f 1 |sort | uniq  | wc -l   
+     652
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
