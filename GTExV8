@@ -8671,6 +8671,56 @@ GTEX@111FC
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat temp2 | sed 's/-/@/'  | sed 's/-/    /' |cut -f 1 |sort | uniq  | wc -l   
      652
 
+>  write.table(t4[ t4$AssemblyName == "GRCh38", ]$Experiment, "SraRunTable.652samp.wgs.GRCh38.exper.access", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % vi SraRunTable.652samp.wgs.GRCh38.exper.access
+
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ vdb-config --prefetch-to-cwd
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ prefetch --ngc /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/prj_6177_D12900.ngc  --max-size u SAMN04595635
+
+2025-10-08T19:10:19 prefetch.3.0.7: Current preference is set to retrieve SRA Normalized Format files with full base quality scores.
+2025-10-08T19:10:19 prefetch.3.0.7: 1) Downloading 'SRR3481676'...
+2025-10-08T19:10:19 prefetch.3.0.7: SRA Normalized Format file is being retrieved, if this is different from your preference, it may be due to current file availability.
+2025-10-08T19:10:19 prefetch.3.0.7:  Downloading via HTTPS...
+2025-10-08T19:28:41 prefetch.3.0.7:  HTTPS download succeed
+2025-10-08T19:28:41 prefetch.3.0.7: 1.2) Downloading 'SRR3481676.vdbcache'...
+2025-10-08T19:28:41 prefetch.3.0.7:  Downloading via HTTPS...
+2025-10-08T19:29:24 prefetch.3.0.7:  HTTPS download succeed
+2025-10-08T19:29:31 prefetch.3.0.7:  'SRR3481676.vdbcache' is valid
+2025-10-08T19:29:31 prefetch.3.0.7: 1.2) 'SRR3481676.vdbcache' was downloaded successfully
+2025-10-08T19:29:31 prefetch.3.0.7:   verifying 'SRR3481676'...
+2025-10-08T19:34:13 prefetch.3.0.7:  'SRR3481676' is valid
+2025-10-08T19:34:13 prefetch.3.0.7: 1) 'SRR3481676' was downloaded successfully
+2025-10-08T19:34:22 prefetch.3.0.7: 'SAMN04595635' has 85 unresolved dependencies
+2025-10-08T19:34:22 prefetch.3.0.7: 2) Downloading 'ncbi-acc:GL000191.1?vdb-ctx=refseq'...
+2025-10-08T19:34:22 prefetch.3.0.7:  Downloading via HTTPS...
+2025-10-08T19:34:22 prefetch.3.0.7:  HTTPS download succeed
+2025-10-08T19:34:22 prefetch.3.0.7: 2) 'ncbi-acc:GL000191.1?vdb-ctx=refseq' was downloaded successfully
+......
+2025-10-08T19:34:42 prefetch.3.0.7: 86) Downloading 'ncbi-acc:NC_012920.1?vdb-ctx=refseq'...
+2025-10-08T19:34:42 prefetch.3.0.7:  Downloading via HTTPS...
+2025-10-08T19:34:42 prefetch.3.0.7:  HTTPS download succeed
+2025-10-08T19:34:42 prefetch.3.0.7: 86) 'ncbi-acc:NC_012920.1?vdb-ctx=refseq' was downloaded successfully
+2025-10-08T19:34:42 prefetch.3.0.7: 1) Downloading 'SRR3481676.vdbcache'...
+2025-10-08T19:34:42 prefetch.3.0.7: 1) 'SRR3481676.vdbcache' was downloaded successfully
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ fasterq-dump --ngc /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/prj_6177_D12900.ngc SAMN04595635
+
+spots read      : 432,535,722 read pairs, 151x151bp
+reads read      : 865,071,444
+reads written   : 865,071,444
+-rw-r--r-- 1 linyong systemd-timesync 159G Oct  8 19:07 SAMN04595635_1.fastq
+-rw-r--r-- 1 linyong systemd-timesync 159G Oct  8 19:07 SAMN04595635_2.fastq
+
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ vdb-dump --info SRR3481676
+2025-10-08T21:15:08 vdb-dump.3.0.7 err: query unauthorized while resolving query within virtual file system module - failed to resolve accession 'SRR3481676' - Access denied - please request permission to access phs000424 / GRU in dbGaP. ( 403 )
+acc    : SRR3481676
+path   : /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/SRR3481676/SRR3481676.sra
+size   : 39,798,410,464
+type   : Database
+platf  : SRA_PLATFORM_ILLUMINA
+SEQ    : 432,535,722
+40G x 7 = 280G for tmp files and 280G for output
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
