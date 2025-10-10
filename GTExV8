@@ -8721,6 +8721,11 @@ platf  : SRA_PLATFORM_ILLUMINA
 SEQ    : 432,535,722
 40G x 7 = 280G for tmp files and 280G for output
 
+#########
+linyong@c4b5 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ ls -lh
+-rw-r--r-- 1 linyong systemd-timesync  767 Oct 10 14:13 script-download-fastq-GTEx-control-acc
+-rw-r--r-- 1 linyong systemd-timesync 1.1K Oct 10 14:30 slurm-sra-download-fastq-GTEx-control-acc
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
