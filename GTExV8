@@ -8078,6 +8078,62 @@ for(i in 1:dim(g8)[1]) {
   abline(h = seq(-100,100,1/2), lty = 5, lwd = 0.5, col = "grey")
  l2 <- lm(g10$resid ~ g10$C4A.int.4groups)
  summary(l2)
+ l2.s <- summary(l2)
+######average +/- error bar
+  t1 <- as.data.frame( matrix(nrow=20, ncol=4))
+  colnames(t1) <- c("CN", "c4a.mean", "c4a.sd", "c4a.N" )
+j=1
+ sub.g <- sort( unique(g10$C4A.int.4groups))
+ sub.g
+#   [1] "1.g"  "2.g1" "2.g2" "2.g3" "2.g4" "3.g1" "3.g2" "3.g3" "3.g4" "4.g1" "4.g2" "4.g3" "4.g4"
+ length(sub.g)
+#  [1] 13
+for(i in 1:length(sub.g)) {
+t2 <- g10[ g10$C4A.int.4groups == sub.g[i],]
+  t1$CN[j] = sub.g[i]
+  t1$c4a.mean[j] = mean(t2$resid)
+  t1$c4a.sd[j] = sd(t2$resid)
+  t1$c4a.N[j] = dim(t2)[1]
+ j=j+1
+
+}
+
+ t3 <- t1[ 1:13, ]$c4a.mean
+ t4 <- data.frame(c4a.mean = t3)
+ rownames(t4) <-  t1[ 1:13, ]$CN
+  t5 <- as.data.frame(t(t4))
+# par( mar=c(6,2,2,12))
+ barplot(as.matrix(t5), horiz=T, beside=T, ylab="copy number sub-groups", xlab="residual C4A expression (log2(cpm+1))",  col=c("blue", rep("grey", 4), rep("red", 4), rep("grey", 4)) ,  yaxt = "n", xlim=c(0, 3.5))
+ axis(side=2, at = seq(1.5, 1.5+2*12, by=2), labels=rownames(t4),  las =1, cex.axis = 0.8)
+col1 <- c("blue", rep("black", 4), rep("red", 4), rep("black", 4))
+
+for(i in 1:length(sub.g)) {
+  t6 <- as.data.frame(matrix(,nrow=2, ncol=2))
+# x-coord of two points
+  t6$V1[1] <- t1[t1$CN == sub.g[i],]$c4a.mean[1]
+  t6$V1[2] <- t1[t1$CN == sub.g[i],]$c4a.mean[1] + t1[t1$CN == sub.g[i],]$c4a.sd[1]
+# y-coord of two points
+  t6$V2 <- 1 + (i-1)*2  + 0.5
+  lines(t6$V1, t6$V2, col=col1[i])
+  if(i > 1)
+  {
+  text(3, t6$V2[1], paste("P=", format(l2.s$coefficients[i,4] , digits=2), sep=""), col=col1[i], pos=4, cex=0.8)
+  }
+
+#vert bar of error, x-coord of two points identical, equal to prev t6$V1
+ t6$V1 <- t6$V1[2]
+ a <- t6$V2[2]
+ t6$V2[1] <- a - 0.5/2
+ t6$V2[2] <- a + 0.5/2
+ lines(t6$V1, t6$V2, col=col1[i])
+}
+ abline(v = seq(-100,100,1/2/2), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,1/2), lty = 5, lwd = 0.8, col = "gray")
+
+> t15 <- paste("[", seq(1.5, 4.5, 0.25), ",",  seq(1.5+0.25, 4.5+0.25, 0.25), ")", sep="")
+> data.frame(a=t15)
+
+
 ############################################################
 > t1 <- read.delim("cyp21.multiVar.R")
  dim(t1)
