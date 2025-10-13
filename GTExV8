@@ -8782,6 +8782,39 @@ linyong@c4b5 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ ls -lh
 -rw-r--r-- 1 linyong systemd-timesync  767 Oct 10 14:13 script-download-fastq-GTEx-control-acc
 -rw-r--r-- 1 linyong systemd-timesync 1.1K Oct 10 14:30 slurm-sra-download-fastq-GTEx-control-acc
 
+#########
+spots read      : 436,599,073
+reads read      : 873,198,146
+reads written   : 873,198,146
+Oct 10 14:57 40G     .
+Oct 10 18:07 361G    . two fq files
+Oct 11 12:29 705G    . sam alignment file
+
+GTEX-1122O-0004-SM-6WBTE chr2 32.0554 chr8 32.1101 chrX 31.5644 chrY 2.34224  C3 chr19 37.4325 C4A chr6 14.915 C4B chr6 18.9709
+
+SAMN04595896, Downloading 'SRR3478746', GTEX-1122O-0004-SM-6WBTE
+downloaded data
+mao GTEX-1122O-0004-SM-6WBTE chr5 41.4977 chr12 41.5534 chrX 40.0482 chrY 4.08164 C3 chr19 49.1235 C4A chr6 17.3353 C4B chr6 23.1135
+CYP21A2 59.2948 TNFSF14 50.7238 GPR108 48.959 C4A-C4B   18.5905
+linyong@c1b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04595896$ samtools index SAMN04595896.sorted.bam &
+[1] 741433
+
+Thyroid.574samp.dnaseq.429inSRA.
+-rw-r--r--  1 linyongmao  staff   5.4K Oct 13 14:26 Thyroid.574samp.dnaseq.429inSRA.BioSample.txt
+     429 Thyroid.574samp.dnaseq.429inSRA.BioSample.txt
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % head Thyroid.574samp.dnaseq.429inSRA.BioSample.txt
+SAMN04596666
+SAMN04596530
+SAMN04596771
+SAMN04598707
+SAMN04598120
+SAMN04598744
+
+ cat ~/Thyroid.574samp.dnaseq.429inSRA.BioSample.txt | head -10 | while read ll
+do
+ echo "bash script-download-fastq-GTEx-control-acc  $ll"
+done
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
