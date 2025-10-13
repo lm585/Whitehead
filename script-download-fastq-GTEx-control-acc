@@ -35,5 +35,8 @@ samtools sort -@ 12 -o $1.sorted.bam $1.bam
 ls -lh
 du -sh .
 rm $1.bam
+rm -f  */*
+samtools index $1.sorted.bam
+
 cd ..
 
