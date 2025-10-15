@@ -64,7 +64,7 @@ for(i in 1:dim(y)[2]) {
  }
  identical(info.2$sid, y.cn)
 # > 20 females && > 20 males
- if(dim(info.2[ info.2$SEX == 1,])[1] > 20 & dim(info.2[ info.2$SEX == 2,])[1]) {
+ if(dim(info.2[ info.2$SEX == 1,])[1] > 20 & dim(info.2[ info.2$SEX == 2,])[1] > 20) {
  design <- model.matrix( ~ info.2$SEX + info.2$ageV + info.2$bmi)
 y <- estimateDisp(y,design)
 fit <- glmQLFit(y, design)
