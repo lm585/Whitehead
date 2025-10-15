@@ -8815,6 +8815,17 @@ do
  echo "bash script-download-fastq-GTEx-control-acc  $ll"
 done
 
+#########
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666$ grep geneIntv  /lab/page_human_data/linyong2/gtex-dna-oct102023/GTEX-14PJM-0003-SM-7DLG8.gene.exon.depth  | cut -f 5-7 | sed 's/    /:/' | sed 's/  /-/' | while read ll
+> do
+> samtools coverage -r "$ll" -q 0  SAMN04596666.sorted.bam
+> done
+
+# chromosome-wide meandepth
+samtools coverage  -q 0  SAMN04596666.sorted.bam
+chr5    38.4444
+chr7    38.7678
+(38.4444 + 38.7678) / 2 = 38.6061
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
