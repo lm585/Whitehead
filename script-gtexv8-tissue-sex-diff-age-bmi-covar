@@ -1,8 +1,21 @@
+library(ComplexHeatmap)
+library(beeswarm)
+library(edgeR)
+library("circlize")
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(MASS)
+library(vioplot)
+library(Matrix.utils)
+library(ggrepel)
  setwd("/Users/linyongmao/Documents/dir-GTExV8/")
 raw <- read.delim("gtex-all-samples.gene.count.txt", header=T)
 dim(raw)
 t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
 file <- read.delim("gtex-54tiss.txt", header=F)
+# get a specific tissue
  index = 32
 tissue = file[index,1]
  t2 <- t1[ t1$V2 == tissue, ]
@@ -12,7 +25,8 @@ tissue = file[index,1]
  str1 <- paste(tissue, dim(raw2)[2], sep="\t")
  cat(str1)
  cat("\n")
- rownames(raw2) <- raw$geneID
+# Heart - Atrial Appendage	429
+rownames(raw2) <- raw$geneID
 y <- DGEList(counts=raw2)
 y <- calcNormFactors(y)
 med <- data.frame(y$counts[,1])
@@ -24,7 +38,8 @@ for(i in 1:dim(y)[1]) {
 ####median >= 1 for pathway genes
 y<-y[med$logic,]
 print(dim(y))
-
+# [1] 16731   429
+# after filter out low/no expressed genes, 16731 genes remained
  y.cn <- colnames(y)
  info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
  info$sid <-  gsub("-", ".", info$SAMPID)
@@ -48,6 +63,8 @@ for(i in 1:dim(y)[2]) {
  info.2[i,]$bmi = info4[ info4$SUBJID == t1,]$body_mass_index[1]
  }
  identical(info.2$sid, y.cn)
+# > 20 females && > 20 males
+ if(dim(info.2[ info.2$SEX == 1,])[1] > 20 & dim(info.2[ info.2$SEX == 2,])[1]) {
  design <- model.matrix( ~ info.2$SEX + info.2$ageV + info.2$bmi)
 y <- estimateDisp(y,design)
 fit <- glmQLFit(y, design)
@@ -60,23 +77,7 @@ gene.name <- raw[, 1:2]
 df.gene <- merge(diff, gene.name, by.x="geneID", by.y="geneID")
 chr <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type")
 df.cpm.gene <- merge(df.gene, chr, by.x="geneID", by.y="geneID")
- head(top2v1)
- y[,1:11]
+#                    geneID     logFC   logCPM        F       PValue          FDR  name  chr strand           type
+#  13631 ENSG00000215301.11 0.4157981 7.685576 124.4003 1.523788e-25 1.214023e-22 DDX3X chrX      + protein_coding
  write.table(df.cpm.gene, "diff2-1.txt", sep="\t", quote=F)
-#################################################################
-linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i diff2-1.txt diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt
-vi diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt
-
-cat diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt  | awk 'BEGIN {FS = "\t"} !($8 == "chrX" || $8 == "chrY")'   > temp1
-
-cat temp1 | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
-{for(i = 1; i <= 7; i++)
-   print $i "\t";
-
- print $7 "\n";
-}' > temp
-../microglia/make-rnk-genesymble  temp   diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.noX.Y.rnk
-
- grep -iw "ddx3[xy]"  diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt 
-grep -iw "ddx3[xy]"  diff2-1-Heart-Atrial-Appendage-FvsM.age-bmi-covar.txt | cut -f 7,8
-
+}
