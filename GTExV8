@@ -8827,6 +8827,42 @@ chr5    38.4444
 chr7    38.7678
 (38.4444 + 38.7678) / 2 = 38.6061
 
+#########
+
+linyong@c4b3 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666$ cat /lab/solexa_page/linyong/gtex-dna-aug2024/script-bam-c4a-depth 
+samtools coverage -r "$R" -q 20 C4A     C4B     CYP21A1P        CYP21A2 
+-q 0 CYP21A1P-q0        CYP21A2-q0
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666$ bash /lab/solexa_page/linyong/gtex-dna-aug2024/script-bam-c4a-depth SAMN04596666.sorted.bam > temp-c4a-q20
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666$ bash script-cnv-02-fq-downloaded > temp-c4a-q20-1line
+> t1 <- read.delim("temp-c4a-q20-1line", header=F)
+ t1$c4a <- t1$V9 / dep
+ t1$c4b <- t1$V19 / dep
+ t1$CYP21A1P <- t1$V29 / dep * 2
+ t1$CYP21A2 <- t1$V39 / dep * 2
+ t1$cyp21.tot <- (t1$V49 + t1$V59) / dep *2
+ t1$c4a.cn <- t1$c4a  *  20.0916  + 0.2 
+ t1$c4b.cn <- t1$c4b    *  19.2208  + 0.2 
+ t1$cyp1.cn <- t1$CYP21A1P * 1.23306
+ t1$cyp2.cn <- t1$CYP21A2  * 1.08333
+ t1[, 66:70]
+linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$ bash script-cnv-02 > temp.txt
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i temp.txt gtex-dna-c4a-c4b.gene.depth.samtools.q20.txt
+
+linyong@c2b15 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04595896$ bash /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666/script-bam-C4A-start-exon9-q0 > temp-start-exon9.q0
+linyongmao@Linyong-Mao-MBP16-2019 Whitehead-main % grep  start-exon#9 *
+linyong@c2b15 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04595896$ vi /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666/scr1
+linyong@c2b15 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04595896$ bash /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666/scr1 > temp-start-exon9.q0-1line
+> t8 <- read.delim("temp-start-exon9.q0-1line")
+ t8$seq.dep <- dep
+ t8[,46:47]
+
+linyong@c1b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666$ bash /lab/solexa_page/linyong/gtex-dna/script-cram-genecount-03-download-fq SAMN04596666.sorted.bam > temp-chr-dep &
+-q 0 c2, c3, actb
+-q 0 chr1, chr2, chr3,..
+
+script-cnv-01
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
