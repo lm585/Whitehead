@@ -8092,7 +8092,8 @@ for(i in 1:length(sub.g)) {
 t2 <- g10[ g10$C4A.int.4groups == sub.g[i],]
   t1$CN[j] = sub.g[i]
   t1$c4a.mean[j] = mean(t2$resid)
-  t1$c4a.sd[j] = sd(t2$resid)
+  ###t1$c4a.sd[j] = sd(t2$resid)
+  t1$c4a.sd[j] = sd(t2$resid) / sqrt(dim(t2)[1])
   t1$c4a.N[j] = dim(t2)[1]
  j=j+1
 
