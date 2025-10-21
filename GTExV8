@@ -8863,6 +8863,12 @@ linyong@c1b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666$ bas
 
 script-cnv-01
 
+#######################################
+> for( index in 1:dim(file)[1]) {
+ t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+ tissue = file[index,1]
+ t2 <- t1[ t1$V2 == tissue, ]
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
