@@ -8864,6 +8864,54 @@ linyong@c1b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666$ bas
 script-cnv-01
 
 #######################################
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04597091$ cat /lab/solexa_page/linyong/gtex-dna-aug2024/script-bam-c4a-depth 
+#
+if [ $# -lt 1 ]
+then
+  echo $0 "	bam-file"
+  echo $#
+  exit 1
+fi
+
+cram="$1"
+f=`echo "$cram" | sed 's/.bam$//' `
+# samtools index "$cram"
+ls -lh "$f".bam*
+
+prev="header	geneID	geneName	header	"
+echo -n "$prev"
+samtools coverage -r chr1:1-1000 -q 0   "$cram" | head -1
+
+for g in `echo C4A C4B `
+do
+   ll=`cat /lab/solexa_page/linyong/gencode.v42.primary_assembly.annotation.gtf | grep "	gene	.*	.*	.*	.* gene_name \"$g\";" | head -1`
+  t1=`echo "$ll" |  awk 'BEGIN {FS = "\t";} {print NF}' `
+
+  if [ "$t1" -gt 8 ]
+  then
+     geneid=`echo "$ll" | cut -f 9 | awk 'BEGIN {FS=";"} {print $1}' | sed 's/gene_id "//' | sed 's/"//' `
+     prev="$f	$geneid	$g	geneIntv	"
+     R=`echo "$ll" | awk 'BEGIN {FS="\t"} {print  $1 ":" $4 "-" $5 }' `
+     echo -n "$prev"
+     samtools coverage -r "$R" -q 20 -H "$cram" 
+
+  fi 
+done
+
+echo -n "$f	geneid	CYP21A1P-q20	geneIntv	"
+samtools coverage -r chr6:32005636-32008909 -q 20 -H   "$cram"
+echo -n "$f	geneid	CYP21A2-q20	geneIntv	"
+samtools coverage -r chr6:32038415-32041644 -q 20 -H   "$cram"
+
+echo -n "$f	geneid	CYP21A1P-q0	geneIntv	"
+samtools coverage -r chr6:32005636-32008909 -q 0 -H   "$cram"
+echo -n "$f	geneid	CYP21A2-q0	geneIntv	"
+samtools coverage -r chr6:32038415-32041644 -q 0 -H   "$cram"
+
+# rm "$f".bam.bai
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04597091$ 
+
+#######################################
 > for( index in 1:dim(file)[1]) {
  t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
  tissue = file[index,1]
