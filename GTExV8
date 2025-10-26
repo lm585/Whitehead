@@ -8927,6 +8927,117 @@ s=`echo "$ll" | sed 's/.*\///' | sed 's/.c4a.q20.depth//' `
 
 
 linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04597091$ 
+#########
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04597091$ cat /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666/script-bam-C4A-start-exon9-q0 
+#
+
+file="GTEX-11DXX-0004-SM-6WBT9.bam"
+
+ls *.sorted.bam | head -60000 | while read file
+do
+ 
+# samtools index "$file"
+
+echo -n "file	gene	region	"
+samtools coverage -r chr6:29982057-30982057 -q 0   "$file" | head -1
+
+## c4a upstream -2mbp - -1mbp
+echo -n "$file	C4A	upstream-2mbp.-1mbp	"
+samtools coverage -r chr6:29982057-30982057 -q 0  -H "$file"
+
+## c4a start-exon#9
+echo -n "$file	C4A	start-exon#9	"
+samtools coverage -r chr6:31982057-31984408 -q 0  -H "$file"
+
+## c4a exon#10-end
+echo -n "$file	C4A	exon#10-end	"
+samtools coverage -r chr6:31991192-32002681 -q 0   -H "$file"
+
+##c4a start-end
+echo -n "$file	C4A	start-end	"
+samtools coverage -r chr6:31982057-32002681 -q 0  -H "$file"
+
+## c4b downstream 1mbp-2mbp
+echo -n "$file	C4B	downstream+1mbp-2mbp	"
+samtools coverage -r chr6:33035418-34035418 -q 0  -H "$file"
+
+## c4b start-exon#9
+echo -n "$file	C4B	start-exon#9	"
+samtools coverage -r chr6:32014795-32017146 -q 0  -H "$file"
+
+## c4b exon#10-end
+echo -n "$file	C4B	exon#10-end	"
+samtools coverage -r chr6:32023930-32035418 -q 0  -H "$file"
+
+##c4b  start-end
+echo -n "$file	C4B	start-end	"
+samtools coverage -r chr6:32014795-32035418  -q 0  -H "$file"
+
+done
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04597091$ cat /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666/scr1
+#
+#
+#file	gene	region	#rname	startpos	endpos	numreads	covbases	coverage	meandepth	meanbaseq	meanmapq
+#SAMN04596666.sorted.bam	C4A	upstream-2mbp.-1mbp	chr6	29982057	30982057	307136	999881	99.988	45.3586	37.7	59.1
+#SAMN04596666.sorted.bam	C4A	start-exon#9	chr6	31982057	31984408	1015	2352	100	60.6641	37.8	0
+
+t1=`head -1 temp-start-exon9.q0 | cut -f 2-12`
+echo "file	$t1	$t1	$t1	$t1"
+
+ll="SAMN04598707.sorted.bam"
+t1=`echo "$ll" | sed 's/.bam//' `
+  t2=`grep -w "$ll" temp-start-exon9.q0 | grep -w "C4A	start-exon#9" | head -1 | cut -f 2-12`
+  t3=`grep -w "$ll" temp-start-exon9.q0 | grep -w "C4A	exon#10-end" | head -1 | cut -f 2-12`
+  t4=`grep -w "$ll" temp-start-exon9.q0 | grep -w "C4B	start-exon#9" | head -1 | cut -f 2-12`
+  t5=`grep -w "$ll" temp-start-exon9.q0 | grep -w "C4B	exon#10-end" | head -1 | cut -f 2-12`
+  echo "$t1	$t2	$t3	$t4	$t5"
+
+
+
+
+
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04597091$ cat /lab/solexa_page/linyong/gtex-dna/script-cram-genecount-03-download-fq
+#
+if [ $# -lt 1 ]
+then
+  echo $0 "	bam-file"
+  echo $#
+  exit 1
+fi
+
+cram="$1"
+f=`echo "$cram" | sed 's/.bam$//' `
+# samtools index "$cram"
+ls -lh "$f".bam*
+
+prev="header	geneID	geneName	header	"
+echo -n "$prev"
+samtools coverage -r chr1:1-1000 -q 0   "$cram" | head -1
+
+for g in `echo C2  C3 ACTB`
+do
+  ll=`cat /lab/solexa_page/linyong/gencode.v42.primary_assembly.noPar.protein.xist.exons.gtf | grep "	gene	.*	.*	.*	.* gene_name \"$g\";" | head -1`
+  t1=`echo "$ll" |  awk 'BEGIN {FS = "\t";} {print NF}' `
+
+  if [ "$t1" -gt 8 ]
+  then
+     geneid=`echo "$ll" | cut -f 9 | awk 'BEGIN {FS=";"} {print $1}' | sed 's/gene_id "//' | sed 's/"//' `
+     prev="$f	$geneid	$g	geneIntv	"
+     R=`echo "$ll" | awk 'BEGIN {FS="\t"} {print  $1 ":" $4 "-" $5 }' `
+     echo -n "$prev"
+     samtools coverage -r "$R" -q 0 -H "$cram" 
+  fi 
+done
+
+
+samtools coverage -q 0 -H "$cram" | while read t2
+do
+   prev="$f	geneID	geneName	chrom	"
+   echo -n "$prev"
+   echo "$t2"
+done
+
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04597091$ 
 
 #######################################
 > for( index in 1:dim(file)[1]) {
