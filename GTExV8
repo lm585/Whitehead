@@ -8910,6 +8910,23 @@ samtools coverage -r chr6:32038415-32041644 -q 0 -H   "$cram"
 
 # rm "$f".bam.bai
 linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04597091$ 
+######
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04597091$ cat /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666/script-cnv-02-fq-downloaded
+#
+
+ll="temp-c4a-q20"
+s=`echo "$ll" | sed 's/.*\///' | sed 's/.c4a.q20.depth//' `
+ c4a=`cat "$ll" | grep "	C4A	" | grep -w geneIntv |head -1 | cut -f 5-20`
+ c4b=`cat "$ll" | grep "	C4B	" | grep -w geneIntv |head -1 | cut -f 5-20`
+ cyp1q20=`cat "$ll" | grep "	CYP21A1P-q20	" | grep -w geneIntv |head -1 | cut -f 5-20`
+ cyp2q20=`cat "$ll" | grep "	CYP21A2-q20	" | grep -w geneIntv |head -1 | cut -f 5-20`
+ cyp1q0=`cat "$ll" | grep "	CYP21A1P-q0	" | grep -w geneIntv |head -1 | cut -f 5-20`
+ cyp2q0=`cat "$ll" | grep "	CYP21A2-q0	" | grep -w geneIntv |head -1 | cut -f 5-20`
+
+ echo "$s	C4A	$c4a	C4B	$c4b	cyp1.q20	$cyp1q20	cyp2.q20	$cyp2q20	cyp1.q0	$cyp1q0	cyp2.q0	$cyp2q0"
+
+
+linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04597091$ 
 
 #######################################
 > for( index in 1:dim(file)[1]) {
