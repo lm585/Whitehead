@@ -23,7 +23,7 @@ du -sh .
 fasterq-dump --ngc /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/prj_6177_D12900.ngc $1
 ls -lh
 du -sh .
-bwa mem -t 14 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  $1_1.fastq  $1_2.fastq > $1.sam
+bwa mem -t 24 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  $1_1.fastq  $1_2.fastq > $1.sam
 ls -lh
 du -sh .
 rm  $1_1.fastq  $1_2.fastq 
@@ -31,7 +31,7 @@ samtools view -b -S -o $1.bam $1.sam
 ls -lh
 du -sh .
 rm $1.sam
-samtools sort -@ 12 -o $1.sorted.bam $1.bam
+samtools sort -@ 24 -o $1.sorted.bam $1.bam
 ls -lh
 du -sh .
 rm $1.bam
