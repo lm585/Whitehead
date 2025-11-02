@@ -9045,6 +9045,37 @@ linyong@c4b8 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04597091$
  tissue = file[index,1]
  t2 <- t1[ t1$V2 == tissue, ]
 
+########################################
+linyongmao@Linyong-Mao-MBP16-2019 dir-sex-diff-all-tissues-age-bmi-covar-cpm0d1 % cat ../script-gene-sex-bias
+#
+cd "/Users/linyongmao/Documents/dir-GTExV8/dir-sex-diff-all-tissues-age-bmi-covar-cpm0d1"
+
+cat * | grep "	chrX	" |awk 'BEGIN {FS = "\t"; OFS = "\t"} $7 < 0.01 ' | cut -f 2,8 | sort | uniq -c | awk '$1 > 42' 
+
+grep "	chrX	" * | grep "	$1	"  | awk 'BEGIN {FS = "\t"; OFS = "\t"} $7 < 0.01 ' > ../temp-1
+
+ls -lh ../temp-1
+###
+> setwd("dir-sex-diff-all-tissues-age-bmi-covar-cpm0d1/")
+ gene="JPX"
+ cmd <- paste(" bash ../script-gene-sex-bias ", gene, sep=" ")
+ cmd
+ system(cmd)
+
+ t1 <- read.delim("../temp-1", header=F)
+ head(t1)
+ unique(t1$V8)
+# [1] "JPX"
+ t1$tissue <- "non-brain"
+ dim(t1[ grep("Brain", t1$V1, ignore.case=F),])
+ t1[ grep("Brain", t1$V1, ignore.case=F),]$tissue <- "brain"
+ head(t1, n= 20)
+ wilcox.test(t1[ grep("Brain", t1$V1, ignore.case=F),]$V3, t1[ !grepl("Brain", t1$V1, ignore.case=F),]$V3)
+      t.test(t1[ grep("Brain", t1$V1, ignore.case=F),]$V3, t1[ !grepl("Brain", t1$V1, ignore.case=F),]$V3)
+  t2 <- wilcox.test(t1[ grep("Brain", t1$V1, ignore.case=F),]$V3, t1[ !grepl("Brain", t1$V1, ignore.case=F),]$V3)
+ boxplot(t1$V3 ~ t1$tissue, ylab="log2(Female / Male)", main=paste(gene, "\n", "P=", format(t2$p.value, digits=3), sep=""), outcol="white")
+ beeswarm(t1$V3 ~ t1$tissue, add=T, cex=2)
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
