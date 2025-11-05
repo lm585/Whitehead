@@ -9076,6 +9076,26 @@ ls -lh ../temp-1
  boxplot(t1$V3 ~ t1$tissue, ylab="log2(Female / Male)", main=paste(gene, "\n", "P=", format(t2$p.value, digits=3), sep=""), outcol="white")
  beeswarm(t1$V3 ~ t1$tissue, add=T, cex=2)
 
+###
+linyongmao@Linyong-Mao-MBP16-2019 dir-sex-diff-all-tissues-age-bmi-covar-cpm0d1 % cat * | grep "        chrX    " |awk 'BEGIN {FS = "\t"; OFS = "\t"} $7 < 0.01 ' | cut -f 2,8 | sort | uniq -c | awk '$1 > 22 && $1 <= 420'   | sort +0 -1n | awk '{print $2}' > ../temp.gt22.genes
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-sex-diff-all-tissues-age-bmi-covar-cpm0d1 % cat ../script-fbias.mbias.tissues
+#
+# Whole Blood:11903     ENSG00000183943.6       0.369710112475252       4.14218418866467        31.0531880857114        3.4865483779713e-08     4.34777110717928e-06    PRKXchrX        -       protein_coding
+
+
+cat ../temp.gt22.genes | head -123 | while read g
+do
+  grep "        $g      " *  > ../temp2
+  t1=`cat ../temp2 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $7 < 0.01  && $3 > 0' | wc -l | awk '{print $1}'`
+  t2=`cat ../temp2 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $7 < 0.01  && $3 < 0' | wc -l | awk '{print $1}'`
+  t3=`cat ../temp2 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $7 < 0.01 '  | wc -l | awk '{print $1}'`
+  name=`head -1  ../temp2 | cut -f 8-11`
+  echo "$g      $name   $t1     $t2     $t3"
+done
+linyongmao@Linyong-Mao-MBP16-2019 dir-sex-diff-all-tissues-age-bmi-covar-cpm0d1 %
+linyongmao@Linyong-Mao-MBP16-2019 dir-sex-diff-all-tissues-age-bmi-covar-cpm0d1 % bash ../script-fbias.mbias.tissues > ../temp.2.txt
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
