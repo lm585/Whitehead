@@ -9096,6 +9096,13 @@ done
 linyongmao@Linyong-Mao-MBP16-2019 dir-sex-diff-all-tissues-age-bmi-covar-cpm0d1 %
 linyongmao@Linyong-Mao-MBP16-2019 dir-sex-diff-all-tissues-age-bmi-covar-cpm0d1 % bash ../script-fbias.mbias.tissues > ../temp.2.txt
 
+######
+> identical( sub(":[0-9]*", "", t1$V1), sub(":[0-9]*", "", t1.6a$V1))
+[1] TRUE
+> identical( sub(":[0-9]*", "", t1$V1), sub(";[0-9]*", "", t1.6a$V1))
+[1] FALSE
+> t1.ab <- data.frame( cbind(t1, t1.6a))
+ ggplot(t1.ab, aes(x=V3.1, y= V3)) + geom_point(aes(color= tissue), shape=21, size=3, ) + geom_smooth(method="lm", col="black") + labs(title="log2(Female / Male)", x="KDM6A", y="KDM5C")
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
