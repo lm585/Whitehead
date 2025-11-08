@@ -9104,6 +9104,26 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-sex-diff-all-tissues-age-bmi-covar-cpm0d1 
 > t1.ab <- data.frame( cbind(t1, t1.6a))
  ggplot(t1.ab, aes(x=V3.1, y= V3)) + geom_point(aes(color= tissue), shape=21, size=3, ) + geom_smooth(method="lm", col="black") + labs(title="log2(Female / Male)", x="KDM6A", y="KDM5C")
 
+##########################################################
+slide #103 > hist(t8$c4.tot.no.intron9 - 0.5, breaks=seq(0, 12, 0.5/2/2))
+      #105 density plot, > d <- density(t8$c4.tot.no.intron9 - 0.3, bw = 0.15)
+      #120 hist, density total C4 GCN, 466 donors
+      #109 C2 GCN, median=2.1740
+>  t8$c2.CN <- t8$meandepth / t8$seq.dep * 2
+  t8$C2.CN <- t8$c2.CN / median(t8$c2.CN) * 2
+ set.seed(1234)
+ t8$c2.random.cn <- t8[ sample(1:dim(t8)[1], dim(t8)[1]),]$c2.CN
+ cor.test(t8$c2.CN, t8$c2.random.cn)
+ t8$c2.tot <- t8$c2.CN + t8$c2.random.cn
+ hist(t8$c2.tot,breaks=seq(0, 12, 0.5/2/2) )
+  abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = seq(-100,100,2), lty = 5, lwd = 0.5, col = "blue")
+ d <- density(t8$c2.tot, bw = 0.15)
+ plot(d$x, d$y, col="red")
+ lines(d$x, d$y, col="red")
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+ dim(t8[ t8$c2.tot >= 4.5,])
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
