@@ -1,0 +1,45 @@
+#
+
+if [ $# -eq 0 ]
+then
+  echo $0 " sample.accession.id"
+  exit 2
+fi
+
+t=` ls | grep -w dir-$1 | wc -l | awk '{print $1}' `
+echo $t
+if [ "$t" -gt 0 ]
+then
+  echo "dir-$1 already existed"
+  exit 3
+fi
+
+mkdir dir-$1
+cd dir-$1
+vdb-config --prefetch-to-cwd
+prefetch --ngc /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/prj_6177_D12900.ngc  --max-size u $1
+ls -lh
+du -sh .
+d1=`pwd`
+d2=`ls */* | grep -i vdbcache | head -1 | sed 's#/.*##'`
+ls -lh  "${d1}/${d2}" | tail
+fastq-dump  --split-3     "${d1}/${d2}"
+ls -lh
+du -sh .
+bwa mem -t 24 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  "${d2}_1.fastq"  "${d2}_2.fastq" > $1.sam
+ls -lh
+du -sh .
+rm *.fastq
+samtools view -b -S -o $1.bam $1.sam
+ls -lh
+du -sh .
+rm $1.sam
+samtools sort -@ 24 -o $1.sorted.bam $1.bam
+ls -lh
+du -sh .
+rm $1.bam
+rm -f  */*
+samtools index $1.sorted.bam
+
+cd ..
+
