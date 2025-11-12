@@ -33,7 +33,7 @@ med <- data.frame(y$counts[,1])
 med$logic <- TRUE
 d <- cpm(y)
 for(i in 1:dim(y)[1]) {
- med$logic[i] <- median(d[i,]) >= 0.5
+ med$logic[i] <- median(d[i,]) >= 0.1
 }
 ####median >= 1 for pathway genes
 y<-y[med$logic,]
