@@ -8698,6 +8698,11 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat SraRunTable.24455samp.GTEx.ta
  t2 <- read.delim("SraRunTable.24455samp.GTEx.tab.txt")
  dim(t2)
 #  [1] 24455    82
+# t2[ t2$BioSample == "SAMN04598045",]
+#             Run    analyte_type Assay.Type     AssemblyName AvgSpotLen       Bases BioProject    BioSample biospecimen_repository biospecimen_repository_sample_id   body_site
+# 8087  SRR8233287 DNA:DNA Genomic        WGS           GRCh38        301 2.63693e+11 PRJNA75899 SAMN04598045                   GTEx         GTEX-14ASI-0001-SM-7DROX Whole Blood
+# 13804 SRR3482284 DNA:DNA Genomic        WGS GCF_000001405.25        302 2.63693e+11 PRJNA75899 SAMN04598045                   GTEx         GTEX-14ASI-0001-SM-7DROX Whole Blood
+
  t3 <- t2[ t2$biospecimen_repository_sample_id %in% t1$donor,]
  dim(t3)
 #  [1] 1202   82
