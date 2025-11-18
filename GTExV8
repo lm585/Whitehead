@@ -9130,6 +9130,20 @@ slide #103 > hist(t8$c4.tot.no.intron9 - 0.5, breaks=seq(0, 12, 0.5/2/2))
  dim(t8[ t8$c2.tot >= 4.5,])
 
 #############################################################
+linyong@fry /lab/solexa_page/linyong/homer$ grep -wi c4a-as1 /lab/solexa_page/linyong/gencode.v42.primary_assembly.annotation.gtf | grep -w exon | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1,  $4, $5, "c4a-as1-exon" NR, "nov18", "+"}' > temp-c4-as
+linyong@fry /lab/solexa_page/linyong/homer$ grep -wi c4b-as1 /lab/solexa_page/linyong/gencode.v42.primary_assembly.annotation.gtf | grep -w exon | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1,  $4, $5, "c4b-as1-exon" NR, "nov18", "+"}' >> temp-c4-as
+linyong@fry /lab/solexa_page/linyong/homer$ cat temp-c4-as
+chr6    32003020        32003521        c4a-as1-exon1   nov18   +
+chr6    31999976        32001568        c4a-as1-exon2   nov18   +
+chr6    32035757        32036258        c4b-as1-exon1   nov18   +
+chr6    32032713        32034305        c4b-as1-exon2   nov18   +
+linyong@fry /lab/solexa_page/linyong/homer$ homerTools extract temp-c4-as  hg38  -fa > temp-c4-as.fa
+cat temp-c4-as.fa | head -4 > temp-c4a-as.fa
+bwa index temp-c4a-as.fa
+bwa bwasw  -f temp.sam -t 10   temp-c4a-as.fa temp-c4-as.fa
+
+
+#############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
 1601 ENSMUSG00000015451.17  C4a         24          9         14         12         15         22         34         38         29         58
