@@ -9191,6 +9191,27 @@ SRR1335236.13638323
 ENSG00000229776.1       C4B-AS1 1
 SRR1335236.13638536
 ENSG00000229776.1       C4B-AS1 1
+#################
+linyong@fry /lab/solexa_page/linyong/gtex-temp/dir-SAMN02789817$ samtools view -o temp.chr6.q10.C4B-region.sorted.bam temp.chr6.q10.sorted.bam chr6:32014795-32035418
+samtools view temp.chr6.q10.C4B-region.sorted.bam |  awk 'BEGIN {FS = "\t"; OFS = "\t"} $9 > 30000' | cut -f 1 | sort | uniq > temp-id
+wc -l temp-id
+383 temp-id
+samtools view  -o temp.sam temp.chr6.bam
+/lab/solexa_page/linyong/getSam-ID  temp-id temp.sam > temp-read-id.sam
+766 temp-read-id.sam
+samtools view -h temp.chr6.bam | head -500 | grep ^@ > temp
+cat temp-read-id.sam >> temp
+mv temp temp-read-id.sam
+htseq-count  --mode=union --stranded=no --idattr=gene_id --format=sam --additional-attr=gene_name --order=name --type=exon  temp-read-id.sam  temp-c4.gtf
+ENSG00000168477.19      TNXB    3
+ENSG00000224389.9       C4B     5
+ENSG00000229776.1       C4B-AS1 4
+__no_feature            21
+__ambiguous             350
+__too_low_aQual         0
+__not_aligned           0
+__alignment_not_unique          0
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
