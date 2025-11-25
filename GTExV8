@@ -9212,6 +9212,17 @@ __too_low_aQual         0
 __not_aligned           0
 __alignment_not_unique          0
 
+##############################################
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ cat script-c4a
+#
+cat file-dirs | while read dir 
+do 
+  cd "$dir"
+  f1=`ls *.sorted.bam | head -1 | awk '{print $1}' `
+  bash /lab/solexa_page/linyong/gtex-dna-aug2024/script-bam-c4a-depth "$f1" > temp-c4a-q20
+
+done
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ bash script-c4a
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
