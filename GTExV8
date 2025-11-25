@@ -9284,6 +9284,26 @@ done
 file	gene	region	#rname	startpos	endpos	numreads	covbases	coverage	meandepth	meanbaseq	meanmapq	gene	region	#rname	startpos	endpos	numreads	covbases	coverage	meandepth	meanbaseq	meanmapq	gene	region	#rname	startpos	endpos	numreads	covbases	coverage	meandepth	meanbaseq	meanmapq	gene	region	#rname	startpos	endpos	numreads	covbases	coverage	meandepth	meanbaseq	meanmapq
 SAMN04595632.sorted	C4A	start-exon#9	chr6	31982057	31984408	1020	2352	100	60.7406	35.9	0	C4A	exon#10-end	chr6	31991192	32002681	49211490	100	63.0809	35.9	6.47	C4B	start-exon#9	chr6	32014795	32017146	1034	2352	100	61.6573	36.1	0	C4B	exon#10-end	chr6	32023930	32035418	4932	11489	100	63.1017	35.8	5.6
 ####
+
+###
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ cat script-c4a-1line-q0-combin  
+#
+rm /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-q0-1line-combin
+
+cat file-dirs | while read dir 
+do 
+  cd "$dir"
+  bf=`ls  | grep "SAMN.*.sorted.bam$"`
+  ls -lh "$bf"
+  cat temp-start-exon9.q0-1line  >> /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-q0-1line-combin
+done
+
+head -1 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-q0-1line-combin > /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-2
+awk 'NR % 2 == 0' /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-q0-1line-combin >> /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-2
+mv /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-2 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-q0-1line-combin
+head -20 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-q0-1line-combin
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ bash script-c4a-1line-q0-combin  
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
