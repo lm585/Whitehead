@@ -9224,6 +9224,17 @@ do
 done
 linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ bash script-c4a
 
+###
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ cat script-c4a-1line
+#
+cat file-dirs | while read dir 
+do 
+  cd "$dir"
+  bash /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/dir-SAMN04596666/script-cnv-02-fq-downloaded > temp-c4a-q20-1line
+done
+
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ bash script-c4a-1line
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
