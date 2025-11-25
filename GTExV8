@@ -9235,6 +9235,23 @@ done
 
 linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ bash script-c4a-1line
 
+###
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ cat script-c4a-1line-combin
+#
+rm /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-q20-1line-combin
+
+cat file-dirs | while read dir 
+do 
+  cd "$dir"
+  bf=`ls  | grep "SAMN.*.sorted.bam$"`
+  ls -lh "$bf"
+  echo -n "$bf	" >> /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-q20-1line-combin
+  cat temp-c4a-q20-1line >> /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-q20-1line-combin
+done
+
+head -20 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-q20-1line-combin
+########SAMN04595632.sorted.bam	temp-c4a-q20	C4A	chr6	31982057	32002681	811	3568	17.2994	5.87321	36	39	C4B	chr6	32014795	32035418	773	3357	16.2772	5.58383	35.7	35	cyp1.q20	chr6	32005636	32008909	1305	3274	100	56.0128	35.9	48.3	cyp2.q20	chr6	32038415	32041644	1190	323100	53.5331	35.8	47.8	cyp1.q0	chr6	32005636	32008909	1503	3274	100	64.3763	35.8	42.1	cyp2.q0	chr6	32038415	32041644	1401	3230	100	62.8969	35.7	40.7
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
