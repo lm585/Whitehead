@@ -9304,6 +9304,31 @@ mv /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-2 /lab/solexa_page/linyong
 head -20 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-q0-1line-combin
 linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ bash script-c4a-1line-q0-combin  
 
+########
+linyong@fry /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ cat script-c4a-1line-chrdep-combin
+#
+rm /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin
+
+cat file-dirs | while read dir 
+do 
+  cd "$dir"
+  bf=`ls  | grep "SAMN.*.sorted.bam$"`
+  ls -lh "$bf"
+  echo -n "$bf	" >> /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin
+  t1=`cat chr-dep | grep -w chrom |head -22 | sort -t '	' +10 -11n | awk 'NR == 11 ' | cut -f 5,11 `
+  echo -n "$t1	" >> /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin
+  t1=`cat chr-dep | grep -w chrom |head -22 | sort -t '	' +10 -11n | awk 'NR == 12 ' | cut -f 5,11 `
+  echo "$t1" >> /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin
+
+done
+
+head -20 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin
+###output####
+SAMN04595632.sorted.bam	chr12	44.4567	chr5	44.6936
+SAMN04595896.sorted.bam	chr5	41.4977	chr12	41.5534
+SAMN04596035.sorted.bam	chr3	36.1588	chr12	36.1807
+#############
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
