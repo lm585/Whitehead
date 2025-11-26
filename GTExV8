@@ -9329,6 +9329,51 @@ SAMN04595896.sorted.bam	chr5	41.4977	chr12	41.5534
 SAMN04596035.sorted.bam	chr3	36.1588	chr12	36.1807
 #############
 
+###########################################
+> t1 <- read.delim("temp-c4a-q20-1line-combin", header=F)
+ t2 <- read.delim("temp-c4a-chr-dep-combin", header=F)
+ t3 <- merge(t1, t2, by.x="V1", by.y="V1")
+ dim(t3)
+#  [1] 31 66
+ t3$dep <- (t3$V3.y + t3$V5.y) / 2
+ t1 <- t3
+ t1$c4a <- t1$V10 / t1$dep
+ t1$c4b <- t1$V20 / t1$dep
+ t1$CYP21A1P <- t1$V30 / t1$dep * 2
+ t1$CYP21A2 <- t1$V40 / t1$dep * 2
+ t1$cyp21.tot <- (t1$V50 + t1$V60) / t1$dep *2
+ t1$c4a.cn <- t1$c4a  *  20.0916  + 0.2
+ t1$c4b.cn <- t1$c4b    *  19.2208  + 0.2
+ t1$cyp1.cn <- t1$CYP21A1P * 1.23306
+ t1$cyp2.cn <- t1$CYP21A2  * 1.08333
+ t1[1:6, c(1, 72:76)]
+ t5 <- t1[, c(1, 67,72:76)]
+ t6 <- read.delim("temp-c4a-q0-1line-combin")
+ t6$file <- paste(t6$file, ".bam", sep="")
+ t8 <- merge(t6, t5, by.x="file", by.y="V1")
+ dim(t8)
+ t8$c4.tot.no.intron9 <- (t8$meandepth * 2352 + t8$meandepth.1 * 11490 + t8$meandepth.2 *  2352 + t8$meandepth.3 * 11489) / (2352 + 11489.5) / t8$dep * 2
+ t9 <- t8[, c(1,46:52)]
+ t9$file <- gsub(".sorted.bam", "", t9$file)
+ s1 <- read.delim("SraRunTable.24455samp.GTEx.tab.txt")
+ s2 <-unique( data.frame(sample = s1$BioSample, id=s1$biospecimen_repository_sample_id))
+ dim(s2)
+#  [1] 14116     2
+ t10 <- merge(t9, s2, by.x="file", by.y="sample")
+ dim(t10)
+ sra <- t10
+ sra2 <- merge(sra, t11, by.x="id", by.y="V1")
+ dim(sra2)
+ plot(sra2$c4.tot.no.intron9.y, sra2$c4.tot.no.intron9.x, xlab="c4.tot.no.intron9", ylab="SRA fq download, bwa map" )
+ abline(lm(sra2$c4.tot.no.intron9.x ~ sra2$c4.tot.no.intron9.y))
+ abline(v = seq(-0.5, 100, 1), lty = 5, lwd = 0.5, col = "blue")
+ abline(v = seq(0, 1000, 1), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = seq(-0.5, 100, 1), lty = 5, lwd = 0.5, col = "blue")
+ abline(h = seq(0, 1000, 1), lty = 5, lwd = 0.5, col = "gray")
+
+ l1 <- lm(sra2$c4.tot.no.intron9.x ~ sra2$c4.tot.no.intron9.y)
+ summary(l1)
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
