@@ -9375,6 +9375,75 @@ SAMN04596035.sorted.bam	chr3	36.1588	chr12	36.1807
  summary(l1)
 
 #############################################################
+### script-gtexv8-tissue-sex-diff-age-bmi-covar
+ f.mean <- as.data.frame( matrix(nrow=60, ncol=4))
+ colnames(f.mean) <- c("tissf", "F.mean", "F.sd", "F.N" )
+ m.mean <- as.data.frame( matrix(nrow=60, ncol=4))
+ colnames(m.mean) <- c("tissm", "M.mean", "M.sd", "M.N" )
+> 
+ for(index in 1:54) {
+ t1 <- read.delim("dir-gtex-website-data/sample-tissue.2colum", header=F)
+ tissue = file[index,1]
+  t2 <- t1[ t1$V2 == tissue, ]
+  t2$id <- gsub("-", ".", t2$V1)
+  t2$id <- paste(t2$id, ".", sep="")
+  raw2 <- raw[, colnames(raw) %in% t2$id ]
+  str1 <- paste(tissue, dim(raw2)[2], sep="\t")
+  cat(str1)
+  cat("\n")
+ # Heart - Atrial Appendage	429
+ rownames(raw2) <- raw$geneID
+ y <- DGEList(counts=raw2)
+ y <- calcNormFactors(y)
+ y.cn <- colnames(y)
+  info <- read.delim("dir-gtex-website-data/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.sampleID.txt")
+  info$sid <-  gsub("-", ".", info$SAMPID)
+  info$sid <-  paste( info$sid, ".", sep="")
+  info.2 <- head(info, n= dim(y)[2])
+ for(i in 1:dim(y)[2]) {
+  t1 <- info[ info$sid == y.cn[i],]
+  info.2[i,] <- t1[1,]
+  }
+  t5 <- read.delim("gtex-981subjects-tsvs/subject.tsv")
+  info3 <- t5[, c(16,31,46, 106)]
+  summary(info3)
+  info.2$ageV = 0
+  info.2$bmi = 0
+  info4 <- merge(info.2, info3, by.x="SUBJID", by.y="source_subject_id")
+  dim(info4)
+ # [1] 429  12
+ for(i in 1:dim(y)[2]) {
+  t1 <- info.2[i,]$SUBJID
+  info.2[i,]$ageV = info4[ info4$SUBJID == t1,]$age_value[1]
+  info.2[i,]$bmi = info4[ info4$SUBJID == t1,]$body_mass_index[1]
+  }
+  identical(info.2$sid, y.cn)
+ if(dim(info.2[ info.2$SEX == 1,])[1] > 20 & dim(info.2[ info.2$SEX == 2,])[1] > 20) {
+ d <- as.data.frame(cpm(y))
+  gene.name <- raw[, 1:2]
+  g1 <- "KDM6A"
+  gid <- gene.name[ gene.name$name == g1,]$geneID[1]
+  d2 <- as.data.frame( t(d[ rownames(d) == gid,]))
+  identical(rownames(d2), info.2$sid)
+  d2$SEX <- info.2$SEX
+  f.mean$tissf[index] <- tissue
+  f.mean$F.mean[index] <- mean( log2( d2[ d2$SEX == 2, 1] +1))
+  f.mean$F.sd[index] <- sd( log2( d2[ d2$SEX == 2, 1] +1))
+  m.mean$tissm[index] <- tissue
+  m.mean$M.mean[index] <- mean( log2( d2[ d2$SEX == 1, 1] +1))
+  m.mean$M.sd[index] <- sd( log2( d2[ d2$SEX == 1, 1] +1))
+  f.mean$F.N[index] <- dim(d2[ d2$SEX == 2,])[1]
+  m.mean$M.N[index] <- dim(d2[ d2$SEX == 1,])[1]
+ }
+ }
+> cbind(f.mean, m.mean)
+                                       tissf   F.mean      F.sd F.N                                     tissm   M.mean      M.sd M.N
+1                     Adipose - Subcutaneous 5.748470 0.2091421 218                    Adipose - Subcutaneous 5.137692 0.2153187 445
+2               Adipose - Visceral (Omentum) 5.501333 0.3106984 170              Adipose - Visceral (Omentum) 4.876791 0.2655769 371
+3                              Adrenal Gland 5.339622 0.2502080 101                             Adrenal Gland 4.694908 0.2781138 157
+
+
+#############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
 1601 ENSMUSG00000015451.17  C4a         24          9         14         12         15         22         34         38         29         58
