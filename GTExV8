@@ -9442,6 +9442,17 @@ SAMN04596035.sorted.bam	chr3	36.1588	chr12	36.1807
 2               Adipose - Visceral (Omentum) 5.501333 0.3106984 170              Adipose - Visceral (Omentum) 4.876791 0.2655769 371
 3                              Adrenal Gland 5.339622 0.2502080 101                             Adrenal Gland 4.694908 0.2781138 157
 
+> r1 <- cbind(f.mean, m.mean)
+ res <- r1[ !( is.na(r1$F.N)), ]
+ r2 <- res[, c(2,6)]
+ rownames(r2) <- res$tissf
+  t3 <- as.data.frame(t(r2))
+  par( mar=c(12,5,2,2))
+  barplot(as.matrix(2^t3-1), horiz=F, beside=T, xlab="", ylab="gene expression (CPM)", col=c("red", "blue"), xaxt="n", main=g1)
+ axis(side=1, at = seq(2, 2+ 42*3,by=3), labels=colnames(t3), las =2, cex.axis = 0.6)
+  abline(h = seq(0, 100, by=10), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(1, 1000, by=3*2), lty = 5, lwd = 0.5, col = "gray")
+  legend(2, 70, c( "F", "M"), fill=c( "red", "blue"), cex = 1, inset = 0.05)
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
