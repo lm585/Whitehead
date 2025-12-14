@@ -9474,6 +9474,26 @@ SAMN04596035.sorted.bam	chr3	36.1588	chr12	36.1807
 #  [1] 23 15
 > gplot(t4, aes(x=deltaEx, y = logFC,  label = Gene)) + geom_point(size=2, shape=21, col="red") + labs( x = "LCL deltaEx (Adrianna San Roman)", y="GTEx V8 LCL log2FC (F vs. M)", title="23 chrX genes sig. female biased in GTEx") + geom_smooth(method="lm") + geom_text_repel(show.legend=F, data=t4, size=3, max.overlaps=100, min.segment.length = 0.1)
 
+###
+> fib <- read.delim("Andrianna-Fibro.deltaExi.txt")
+ dim(fib)
+#  [1] 377   6
+ t1 <- read.delim("dir-sex-diff-all-tissues-age-bmi-covar-cpm0d1/Cells - Cultured fibroblasts")
+ dim(t1)
+#  [1] 20420    10
+  t2 <- t1[ t1$PValue < 0.05  & t1$chr == "chrX",]
+ dim(t2)
+#  [1] 187  10
+ t3 <- merge(fib, t2, by.x="Gene", by.y="name")
+ dim(t3)
+#  [1] 108  15
+ length(unique(t3$Gene))
+#  [1] 108
+ t4 <- t3[ t3$logFC < 1,]
+ dim(t4)
+#  [1] 107  15
+> gplot(t4, aes(x=deltaEx, y = logFC,  label = Gene)) + geom_point(size=2, shape=21, col="red") + labs( x = "fibroblasts deltaEx (Adrianna San Roman)", y="GTEx V8 fibroblasts log2FC (F vs. M)", title="107 chrX genes sig. sex biased (raw P< 0.05) in GTEx") + geom_smooth(method="lm") + geom_text_repel(show.legend=F, data=t4, size=1.5, max.overlaps=100, min.segment.length = 0.1) + geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue")
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
