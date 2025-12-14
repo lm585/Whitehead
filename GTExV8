@@ -9494,6 +9494,62 @@ SAMN04596035.sorted.bam	chr3	36.1588	chr12	36.1807
 #  [1] 107  15
 > gplot(t4, aes(x=deltaEx, y = logFC,  label = Gene)) + geom_point(size=2, shape=21, col="red") + labs( x = "fibroblasts deltaEx (Adrianna San Roman)", y="GTEx V8 fibroblasts log2FC (F vs. M)", title="107 chrX genes sig. sex biased (raw P< 0.05) in GTEx") + geom_smooth(method="lm") + geom_text_repel(show.legend=F, data=t4, size=1.5, max.overlaps=100, min.segment.length = 0.1) + geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue")
 
+#############################################
+oliva science 2020 sept paper
+>  mash <- read.delim("~/Downloads/GTEx_Analysis_v8_sbgenes/effect_size.tsv")
+  summary(mash[, c(28:29, 21)])
+ left <- mash[,c(28:29, 21)]
+ left$id <- rownames(left)
+ head(left)
+#                     Heart_Atrial_Appendage Heart_Left_Ventricle Cells_Cultured_fibroblasts                 id
+#  ENSG00000229807.10              9.3982897            8.7421071                 10.6698516 ENSG00000229807.10
+#  ENSG00000147050.14              0.6327016            0.6564894                  0.6419361 ENSG00000147050.14
+ t1 <- read.delim("gencodeV26.id.v42.name")
+ t2 <- read.delim("gencode.v42.primary_assembly.noPar.gene-chr-type.2")
+ t3 <- merge(t1, t2, by.x="geneID", by.y="geneID")
+ dim(t3)
+#  [1] 34960     9
+ left.gene <- merge(left, t3, by.x="id", by.y="id")
+ dim(left)
+#  [1] 35431     4
+ dim(left.gene)
+#  [1] 34960    12
+ lfsr <-  read.delim("~/Downloads/GTEx_Analysis_v8_sbgenes/LFSR.tsv")
+  lfsr.l <- lfsr[ , c(28:29, 21)]
+  lfsr.l$id <- rownames(lfsr.l)
+  eff.p <- merge(left, lfsr.l, by.x="id", by.y="id")
+  dim(eff.p)
+#  [1] 35431     7
+  eff.p.g <- merge(eff.p, t3, by.x="id", by.y="id")
+  dim(eff.p.g)
+#  [1] 34960    15
+fib <- read.delim("Andrianna-Fibro.deltaExi.txt")
+ dim(fib)
+#  [1] 377   6
+ ol <- eff.p.g[ , c(4,7,12:15)]
+ head(ol)
+#    Cells_Cultured_fibroblasts.x Cells_Cultured_fibroblasts.y     name   chr strand           type
+#  1                  0.047298394                 3.842022e-05   TSPAN6  chrX      - protein_coding
+ ol2 <- ol[ !is.na(ol$Cells_Cultured_fibroblasts.x),]
+ summary(ol2)
+ t5 <- merge(fib, ol2, by.x="Gene", by.y="name")
+ dim(t5)
+#  [1] 372  11
+ t6 <- t5[ t5$Cells_Cultured_fibroblasts.y < 0.05,]
+ dim(t6)
+#  [1] 151  11
+ length(unique(t6$Gene))
+ t7 <- t6[ t6$Gene != "XIST",]
+
+ t6 <- t5[ t5$Cells_Cultured_fibroblasts.y < 0.015,]
+  dim(t6)
+#  [1] 105  11
+ t7 <- t6[ t6$Gene != "XIST",]
+ t8 <- t7[ t7$region == "NPX",]
+ dim(t8)
+#  [1] 100  11
+> gplot(t8, aes(x=deltaEx, y = Cells_Cultured_fibroblasts.x,  label = Gene)) + geom_point(size=2, shape=21, col="red") + labs( x = "fibroblasts deltaEx (Adrianna San Roman)", y="GTEx V8 fibroblasts effect.size.Oliva", title="100 NPX genes sig. sex biased (LFSR <0.015) in GTEx") + geom_smooth() + geom_text_repel(show.legend=F, data=t8, size=1.5, max.overlaps=100, min.segment.length = 0.1) + geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue")
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
