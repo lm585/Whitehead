@@ -1,6 +1,12 @@
 setwd("/Users/linyongmao/Documents/microglia-mouse")
 
 t1 <- read.delim("nameDir-id", header=F)
+# > t1
+#                         V1        V2
+# 1  dir-GSM4039241_f-ctrl-1  f-ctrl-1
+# 2  dir-GSM4039242_f-ctrl-2  f-ctrl-2
+# 3 dir-GSM4039243_f-tumor-1 f-tumor-1
+
 ss <- list()
 for(i in 1:dim(t1)[1])
 {
