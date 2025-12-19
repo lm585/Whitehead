@@ -34,6 +34,9 @@ for(i in 3:8)
 #  Active assay: RNA (14618 features, 0 variable features)
 #   8 layers present: counts.f-ctrl-1, counts.f-ctrl-2, counts.f-tumor-1, counts.f-tumor-2, counts.m-ctrl-1, counts.m-ctrl-2, counts.m-tumor-1, counts.m-tumor-2
 
+ # The [[ operator can add columns to object metadata. This is a great place to stash QC stats
+ mg[["percent.mt"]] <- PercentageFeatureSet(mg, pattern = "mt-")
+
 mg.1 <- mg[, mg$nFeature_RNA > 200 & mg$nFeature_RNA < 3000 & mg$percent.mt < 5 ]
 mg.1
 #  An object of class Seurat 
