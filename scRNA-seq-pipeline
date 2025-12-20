@@ -2728,3 +2728,26 @@ mg.3[["RNA"]] <- JoinLayers(mg.3[["RNA"]])
  DimPlot(mg.3, reduction = "umap", group.by = c( "RNA_snn_res.0.2"), label=T)
  VlnPlot(mg.3, features = c("Ms4a1", "Cd3d"),  group.by = "RNA_snn_res.0.2", pt.size = 0.1, combine = T)
  FeaturePlot(mg.3, features = c( "Ms4a1", "Cd3d"),   cols = c("grey", "red"), reduction = "umap", label=T)
+
+#################################################################
+Dec 20, 2025
+no data integration among 8 mice
+> mg.1[["RNA"]] <- JoinLayers(mg.1[["RNA"]])
+mg.1 <- NormalizeData(mg.1)
+mg.1 <- FindVariableFeatures(mg.1)
+mg.1 <- ScaleData(mg.1)
+mg.1 <- RunPCA(mg.1)
+ mg.1 <- FindNeighbors(mg.1, reduction = "pca", dims = 1:30)
+ mg.1 <- FindClusters(mg.1, resolution = 0.6)
+
+#  Number of nodes: 40401
+#  Number of edges: 1286671
+#  Maximum modularity in 10 random starts: 0.8789
+#  Number of communities: 22
+ mg.1 <- RunUMAP(mg.1, dims = 1:30)
+ DimPlot(mg.1, reduction = "umap", label=T)
+ mg.1$tum <- "tumor"
+ t22 <- grep("ctrl", mg.1$orig.ident)
+ mg.1$tum[t22] <- "ctrl"
+ mg.1@meta.data[ sample(1:40401, 20), c(1,7)]
+ DimPlot(mg.1, reduction = "umap", label=F, group.by= "tum", shuffle=TRUE)
