@@ -2751,3 +2751,23 @@ mg.1 <- RunPCA(mg.1)
  mg.1$tum[t22] <- "ctrl"
  mg.1@meta.data[ sample(1:40401, 20), c(1,7)]
  DimPlot(mg.1, reduction = "umap", label=F, group.by= "tum", shuffle=TRUE)
+#######
+>  mg.1 <- readRDS("mouse.scRNA.mg.1.seurat5.nov2024.rds")
+mg.1 <- SetIdent(mg.1, value="RNA_snn_res.0.6")
+mg.1 <- RunUMAP(mg.1, dims = 1:30, reduction = "integrated.cca")
+ # Visualization
+  DimPlot(mg.1, reduction = "umap", group.by = c( "RNA_snn_res.0.6"), label=T)
+mg.1$tum <- "tumor"
+ t22 <- grep("ctrl", mg.1$orig.ident)
+ mg.1$tum[t22] <- "ctrl"
+ mg.1@meta.data[ sample(1:40401, 20), c(1,7)]
+ DimPlot(mg.1, reduction = "umap", label=F, group.by= "tum", shuffle=TRUE)
+> ta <- table(mg.1$RNA_snn_res.0.6, mg.1$tum)
+ write.table(ta, "temp2", sep="\t", quote=F)
+ t1 <- read.delim("temp2")
+ t1$cluster <- rownames(t1)
+ sc <- sum(t1$ctrl)
+ st <- sum(t1$tumor)
+ t1$ctrl.freq <- t1$ctrl / sc
+ t1$tumor.freq <- t1$tumor / st
+
