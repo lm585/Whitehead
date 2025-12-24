@@ -2771,3 +2771,41 @@ mg.1$tum <- "tumor"
  t1$ctrl.freq <- t1$ctrl / sc
  t1$tumor.freq <- t1$tumor / st
 
+##################################
+ dim(pb)
+ # [1]    17 14618
+ t1 <- as.data.frame(t(pb))
+ head(t1)
+#             0    1  10  11  12 13 14  15 16   2   3    4   5   6   7   8   9   
+#  Sox17      1    0   0   0   0  0  1 139  0   0   1    0   0   0   0   0   0   
+#  Mrpl15  1115 1021 132  84 139 49 10  12  7 602 684 1218 297 617 150 137 214 
+ dim(t1)
+#  [1] 14618    17  
+ group <- factor(rep(1, 17))
+ y <- DGEList(counts=t1,group=group)
+ y <- calcNormFactors(y)
+ y
+ d = edgeR::cpm(y)
+ a.df <- as.data.frame(d)
+ a.df[1:6,1:6]
+
+ j=6 
+ a.2 <- a.df[, c(1:5,7:17)]
+ a.df$ratio = -999
+ colnames(a.df)
+for( i in 1:dim(a.df)[1]) {
+a.df$ratio[i] <- (a.df[i,j]+1) / (max(a.2[i,]) + 1)
+}
+  dim(a.df[ a.df$ratio > 50,])
+
+# 6th column, cluster #13
+# 23 marker gene
+# Term  Overlap P-value Adjusted P-value        Old P-value     Old Adjusted P-value    Odds Ratio      Combined Score  Genes
+# Astrocyte Brain Mouse 15/582  3.007170870993788E-18   2.706453783894409E-16   0       0       64.18650793650794       2589.638806524734       ENTPD2;TTYH1;NRXN1;SLC1A2;AQP4;GPR37L1;SLC4A4;BCAN;CLDN10;PTPRZ1;GJB6;GPC5;ALDOC;PLPP3;FJX1
+
+> (a.df[ a.df$ratio > 20,c(6,18)])
+                13     ratio
+Gpr37l1  295.78960 122.72827
+Fjx1      95.11256  47.26700
+Slc1a2   367.90791  28.22175
+...
