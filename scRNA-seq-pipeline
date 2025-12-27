@@ -2790,8 +2790,8 @@ mg.1$tum <- "tumor"
  a.df[1:6,1:6]
 
  j=6 
- a.2 <- a.df[, c(1:5,7:17)]
- a.df$ratio = -999
+a.2 <- a.df[, c(1:(j-1),(j+1):17)]
+a.df$ratio = -999
  colnames(a.df)
 for( i in 1:dim(a.df)[1]) {
 a.df$ratio[i] <- (a.df[i,j]+1) / (max(a.2[i,]) + 1)
