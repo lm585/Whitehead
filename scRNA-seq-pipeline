@@ -2822,6 +2822,8 @@ for( i in 1:dim(a.df)[1]) {
                  11           4           9     ratio
 Ifi205  1994.082057  705.095636 1657.267955  81.29818
 ###
+> identical(mg.1$RNA_snn_res.0.6, Idents(mg.1))
+[1] TRUE
 > x=c(4,9,11)
 > y=c(0:3,5:8,10,12:16)
 > markers <- FindMarkers(mg.1, ident.1 = x, ident.2 = y, min.pct= 0.25)
