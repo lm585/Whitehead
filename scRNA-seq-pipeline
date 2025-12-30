@@ -2839,3 +2839,19 @@ Itgam   3.690344e-110  -1.531314 0.217 0.324 5.394545e-106
 > dim(markers[ markers$p_val == 0 & markers$avg_log2FC > 0,])
 [1] 488   5   
 
+##########
+dim(pb)
+# [1]    17 14618
+t1 <- as.data.frame(t(pb))
+head(t1)
+dim(t1)
+ sce1 <- SingleCellExperiment(assays = list(counts = t1))
+ sce1@assays@data$counts[1:11,1:17]
+ celldex::
+ ref.data <-celldex::MouseRNAseqData()
+ pred <- SingleR(test = sce1 , ref = ref.data,  labels =  ref.data$label.fine, assay.type.test=1)
+ data.frame(colnames(t1), pred$labels, pred$delta.next, pred$pruned.labels)
+#    colnames.t1.       pred.labels pred.delta.next pred.pruned.labels
+# 1             0         Microglia      0.11154070          Microglia
+# 2             1         Microglia      0.08699047          Microglia
+# 3            10          NK cells      0.08801227           NK cells
