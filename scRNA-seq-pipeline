@@ -2851,6 +2851,9 @@ dim(t1)
  ref.data <-celldex::MouseRNAseqData()
 #  It is perfectly satisfactory to provide the raw counts for the test dataset to SingleR(), 
 #  which is the reason for setting assay.type.test=1 in our previous SingleR() call for the Grun dataset. 
+# The exception to this rule occurs when comparing data from full-length technologies to the celldex references.  
+# Thus, when annotating Smart-seq2 test datasets against the celldex references, 
+# better performance can often be achieved by processing the test counts to transcripts-per-million values.
 pred <- SingleR(test = sce1 , ref = ref.data,  labels =  ref.data$label.fine, assay.type.test=1)
  data.frame(colnames(t1), pred$labels, pred$delta.next, pred$pruned.labels)
 #    colnames.t1.       pred.labels pred.delta.next pred.pruned.labels
