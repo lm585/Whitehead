@@ -2860,6 +2860,9 @@ pred <- SingleR(test = sce1 , ref = ref.data,  labels =  ref.data$label.fine, as
 # 1             0         Microglia      0.11154070          Microglia
 # 2             1         Microglia      0.08699047          Microglia
 # 3            10          NK cells      0.08801227           NK cells
+
+library(celldex)
+surveyReferences()
 ###########################
 > sum(mg.1$RNA_snn_res.0.6 == mg.1$seurat_clusters)
 [1] 40401
