@@ -2855,3 +2855,23 @@ dim(t1)
 # 1             0         Microglia      0.11154070          Microglia
 # 2             1         Microglia      0.08699047          Microglia
 # 3            10          NK cells      0.08801227           NK cells
+###########################
+> ta <- table( mg.1$seurat_clusters, mg.1$orig.ident)
+> ta
+
+     f-ctrl-1 f-ctrl-2 f-tumor-1 f-tumor-2 m-ctrl-1 m-ctrl-2 m-tumor-1 m-tumor-2
+  0      1397     1651      1037      1256     1233      940       764      1091
+  1       997      822       715       778      868     1017       522       688
+  2       788      671       559       621      830      981       316       468
+ 
+ write.table(ta, "temp1", quote=F, sep="\t")
+ t1 <- read.table("temp1")
+#  t1
+ t2 <- data.frame(colSums(t1))
+ t3 <- t1[rownames(t1) %in% c("4","9", "11"),]
+ t2$monocyte <-(colSums(t3))
+ t2$mono.freq <- t2[,2] / t2[,1]
+ tum <- t2$mono.freq[c(3,4,7,8)]
+ ct  <- t2$mono.freq[c(1,2,5,6)]
+ t.test(ct, tum)
+ wilcox.test(ct, tum)
