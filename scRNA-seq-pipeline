@@ -2856,6 +2856,8 @@ dim(t1)
 # 2             1         Microglia      0.08699047          Microglia
 # 3            10          NK cells      0.08801227           NK cells
 ###########################
+> sum(mg.1$RNA_snn_res.0.6 == mg.1$seurat_clusters)
+[1] 40401
 > ta <- table( mg.1$seurat_clusters, mg.1$orig.ident)
 > ta
 
