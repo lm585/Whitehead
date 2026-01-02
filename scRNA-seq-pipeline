@@ -2861,6 +2861,11 @@ pred <- SingleR(test = sce1 , ref = ref.data,  labels =  ref.data$label.fine, as
 # 2             1         Microglia      0.08699047          Microglia
 # 3            10          NK cells      0.08801227           NK cells
 
+> s1 <- as.data.frame(pred$scores)
+ rownames(s1) <- colnames(sce1)
+  col_fun = colorRamp2(c(-0.2, 0.5, 0.8), c( "blue", "white",  "red"))
+eatmap(s1, row_order=c(1,2,10,11,13,16, 14, 12, 17, 4, 15, 3,5,6,7,8,9), name="corr.", col=col_fun)
+
 library(celldex)
 surveyReferences()
 ###########################
