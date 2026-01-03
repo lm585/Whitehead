@@ -2890,3 +2890,21 @@ surveyReferences()
  ct  <- t2$mono.freq[c(1,2,5,6)]
  t.test(ct, tum)
  wilcox.test(ct, tum)
+######
+> t1 <- data.frame(cl=(mg.1$RNA_snn_res.0.6))
+ head(t1, n=10)
+ t1$cell.type <- "microglia"
+ t1[ t1$cl %in% c("13"),]$cell.type <- "Astrocyte"
+#  t1[ t1$cl %in% c("6"),]$cell.type <- "TAM"
+ t1[ t1$cl %in% c("12"),]$cell.type <- "Basal"
+ t1[ t1$cl %in% c("7"),]$cell.type <- "Macrophage"
+ t1[ t1$cl %in% c("4","9","11"),]$cell.type <- "Monocyte"
+ t1[ t1$cl %in% c("10"),]$cell.type <- "NK"
+ t1[ t1$cl %in% c("14"),]$cell.type <- "Neutrophil"
+ t1[ t1$cl %in% c("15"),]$cell.type <- "Endothelial"
+ t1[ t1$cl %in% c("16"),]$cell.type <- "Ependymal"
+ mg.1$cell.type <- t1$cell.type
+ imPlot(mg.1, reduction = "umap", group.by = c( "cell.type"), label=T, shuffle=TRUE)
+ my_colors <- c("TAM" = "red")
+ DimPlot(mg.1, reduction = "umap", group.by = c( "cell.type"), label=T, shuffle=TRUE, cols = my_colors )
+
