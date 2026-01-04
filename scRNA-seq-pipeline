@@ -2908,3 +2908,52 @@ surveyReferences()
  my_colors <- c("TAM" = "red")
  DimPlot(mg.1, reduction = "umap", group.by = c( "cell.type"), label=T, shuffle=TRUE, cols = my_colors )
 
+######
+ str(mg.1@meta.data)
+ mg.2 <- mg.1[, mg.1$cell.type %in% c("microglia", "Monocyte", "Macrophage")]
+ mg.2
+counts <- mg.2@assays$RNA$counts
+ metadata <- mg.2@meta.data
+ metadata$cluster_id <- metadata$RNA_snn_res.0.6
+# Create single cell experiment object
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+# Identify groups for aggregation of counts
+# groups: character class
+groups <- colData(sce)[, c("cell.type","orig.ident")]
+
+# Aggregate across cluster-sample groups
+pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+
+class(pb)
+
+dim(pb)
+# [1]    24 14618
+t1 <- as.data.frame(t(pb))
+head(t1)
+dim(t1)
+ t2 <- t1[ , !grepl("Monocyte.*ctrl", colnames(t1))]
+ dim(t2)
+# [1] 14618    20  
+ sort(colnames(t2))
+#  [1] "Macrophage_f-ctrl-1"  "Macrophage_f-ctrl-2"  "Macrophage_f-tumor-1" "Macrophage_f-tumor-2" "Macrophage_m-ctrl-1"  "Macrophage_m-ctrl-2"  "Macrophage_m-tumor-1"
+# [15] "microglia_m-tumor-1"  "microglia_m-tumor-2"  "Monocyte_f-tumor-1"   "Monocyte_f-tumor-2"   "Monocyte_m-tumor-1"   "Monocyte_m-tumor-2"  
+
+ group <- factor(rep(1, 20))
+ y <- DGEList(counts=t2,group=group)
+ y <- calcNormFactors(y)
+ d = edgeR::cpm(y)
+  a <- log2(d+1)
+  a.df <- as.data.frame(a)
+ g1 <-  scan(what="", sep = "\n")
+Actb
+Itgam
+P2ry12
+Tmem119
+Cx3cr1
+Ccr2
+Gpr141
+F10
+> a.df.orig <- a.df
+ a.2 <- a.df[ rownames(a.df) %in% g1,]
