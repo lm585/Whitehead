@@ -2972,3 +2972,18 @@ F10
 beeswarm(a.3[, c(1:4)], add=T, pwcol= rep(a.3$col,4), cex=2)
  legend(1/2, 12, c("microglia", "Monocyte", "Macrophage"), pch=c(20), col = c( "black", "red", "green" ))
 
+######
+> gene = "Kdm5c"
+ a.2 <- a.df[rownames(a.df) %in% gene,]
+ a.3 <- as.data.frame(t(a.2))
+
+ a.3$sex <- c(rep("female", 4), rep("male", 4))
+ g1 <- gsub("[fm]-", "", rownames(a.3))
+ g2 <- gsub("-[12]", "", g1)
+ a.3$tum <- g2
+ a.3
+ a.3$col = "red"
+ a.3[ a.3$tum == "ctrl",]$col <- "green"
+ boxplot(a.3[,1] ~ a.3$sex, ylab="CPM", outcol="white", main=paste(gene, ", p=", format(df[ rownames(df) == gene,]$PValue, digits=3),sep=""))
+ beeswarm(a.3[,1] ~ a.3$sex, add=T, pwcol=a.3$col, cex=2)
+ legend(1/2, 12, c("ctrl", "tumor"), pch=c(20), col = c( "green", "red" ), cex=2)
