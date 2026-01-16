@@ -107,7 +107,17 @@ dim(t1)
 group <- factor(rep(1, 8))
 y <- DGEList(counts=t1,group=group)
 y <- calcNormFactors(y)
- info <- data.frame(id = colnames(y))
+med <- data.frame(y$counts[,1])
+ med$logic <- TRUE
+ d <- edgeR::cpm(y)
+ for(i in 1:dim(y)[1]) {
+  med$logic[i] <- median(d[i,]) >= 0.5
+ }
+ ####median >= 1 for pathway genes
+ y<-y[med$logic,]
+ print(dim(y))
+
+info <- data.frame(id = colnames(y))
  info$sex <- c("f", "f","f","f","m","m","m","m")
  info$tumor <- c("c", "c", "t", "t", "c", "c", "t", "t")
  design <- model.matrix( ~ info$sex + info$tumor)
