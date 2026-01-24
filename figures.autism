@@ -1,0 +1,34 @@
+# figure 101
+raw <- read.delim("human_Microglia_RNA-18samp.gene.count.stranded.txt")
+#remove 3 adult samples, and only keep P17_Temporal & P8_Parietal
+#search raw.samp
+ raw.samp <- raw[, c(6:7,9:18, 20)]
+ dim(raw.samp)
+# [1] 62703    13
+rownames(raw.samp) <- raw$geneID
+dim(raw.samp)
+# [1] 62703    13
+summary( raw.samp[,1] - raw[, 6]  )
+y <- DGEList(counts=raw.samp)
+y <- calcNormFactors(y)
+dim(y)
+summary(y$samples$norm.factors)
+#5 male samples
+keep <-rowSums(edgeR::cpm(y)>=1) >= 4
+y<-y[keep,]
+dim(y)
+# [1] 15089    13
+info <- read.delim("human.postnatal.18samp.info")
+info.2 <- info[1:13,]
+cna <- gsub("human_Microglia_RNA_polyA_", "", colnames(y))
+for(i in 1:13) {
+ info.2[i,] = info[ info$Patient.ID == cna[i], ]
+ }
+identical(info.2$Patient.ID, cna)
+ li <- list()
+ li[[1]] <- info.2[ info.2$Sex == "F", ]$Age
+ li[[2]] <- info.2[ info.2$Sex == "M", ]$Age
+ names(li) <- c("female", "male")
+ boxplot(li, ylab="age", outcol="white")
+ beeswarm(li, add=T, cex=1.5)
+
