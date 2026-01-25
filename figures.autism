@@ -32,3 +32,21 @@ identical(info.2$Patient.ID, cna)
  boxplot(li, ylab="age", outcol="white")
  beeswarm(li, add=T, cex=1.5)
 
+# figure 102
+from fig.101
+> a <- edgeR::cpm(y)
+ a.df <- as.data.frame(log2(a+1))
+ gene.name <- raw[, 1:2]
+ a.df$id <- rownames(a.df)
+ a.2 <- merge(gene.name, a.df, by.x="geneID", by.y="id")
+ g1 <- c("ACTB", "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
+ a.3 <- a.2[ a.2$name %in% g1,]
+ dim(a.3)
+# [1]  8 15
+ a.4 <- a.3[, 3:15]
+ rownames(a.4) <- a.3$name
+ a.5 <- as.data.frame(t(a.4))
+ a.6 <- a.5[,c(1,7,6,8,5,2,3,4)]
+ boxplot(a.6, ylab="log2(CPM+1)")
+ abline(h = seq(-100,100,2), lty = 5, lwd = 0.5, col = "gray")
+
