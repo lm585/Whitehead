@@ -69,3 +69,39 @@ head(t8)
  dim(t9)
 # [1] 16  5
 > ggplot(t8, aes(x= NES.y, y= NES.x, label=gsub("HALLMARK_", "", NAME))) + geom_point(size=3, shape=21, col="black") + labs(x="human (NES)", y="mouse (NES)") + geom_smooth(method="lm") + scale_y_continuous(breaks=seq(-6, 5, 2)) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + geom_text_repel(show.legend=T, data=t9 , size=2, max.overlaps=100, min.segment.length = 0.1, col="red")
+
+######
+figure 201
+f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717816582258/gsea_report_for_na_pos_1717816582258.tsv")
+  f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717816582258/gsea_report_for_na_neg_1717816582258.tsv")
+  t1 <- rbind(f1, f2)
+  t2 <- t1[, c(1,6, 8)]
+ head(t2)
+ t2.m <- t2
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.no-interac.strand-weight0-hallmark.GseaPreranked.1718816589477/gsea_report_for_na_pos_1718816589477.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.no-interac.strand-weight0-hallmark.GseaPreranked.1718816589477/gsea_report_for_na_neg_1718816589477.tsv")
+  t1 <- rbind(f1, f2)
+  t2 <- t1[, c(1,6, 8)]
+t8 <- merge(t2.m, t2, by.x="NAME", by.y="NAME")
+head(t8)
+  t9 <- t8[ t8$FDR.q.val.x < 0.05 & t8$FDR.q.val.y < 0.05,]
+  dim(t9)
+# [1] 13  5
+>  gplot(t8, aes(x= NES.y, y= NES.x, label=gsub("HALLMARK_", "", NAME))) + geom_point(size=3, shape=21, col="black") + labs(x="human (NES)", y="mouse (NES)") + geom_smooth(method="lm") + scale_y_continuous(breaks=seq(-6, 5, 2)) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + geom_text_repel(show.legend=T, data=t9 , size=2, max.overlaps=100, min.segment.length = 0.1, col="red")
+> cor.test(t8$NES.x, t8$NES.y)
+### both human
+> gplot(t8, aes(x= NES.y, y= NES.x, )) + geom_point(size=3, shape=21, col="black") + labs(x="with interaction term (NES)", y="without interaction term (NES)") + geom_smooth(method="lm")  + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + scale_y_continuous(breaks=seq(-8, 2, 2))
+> t8b <- t8[ t8$FDR.q.val.x < 0.05 & t8$FDR.q.val.y < 0.05,]
+ dim(t8b)
+# [1] 34  5
+ t9 <- t8b[, c(2,4)]
+ rownames(t9) <- t8b$NAME
+ head(t9)
+#                    NES.x.no.interaction.term      NES.y
+# HALLMARK_ADIPOGENESIS        -3.0155020 -4.5545583
+ t10 <- t9[ order(t9$NES.y, decreasing=T),]
+ t11 <- as.data.frame(t(t10))
+ par( mar=c(6,2,2,12))
+ barplot(as.matrix(t11), horiz=T, beside=T, yaxt="n", col=c("blue", "orange"), xlab="NES")#, xlim= c(-0.15, 0.45))
+ axis(side=4, at = seq(2, 2+3*33, by=3), labels=gsub("HALLMARK_","",colnames(t11)), las =1, cex.axis = 0.6)
+  legend(-8, 2+3*10, c( "with interaction term", "without interaction term"), fill=c( "orange", "blue"), cex = 0.6, inset = 0.05)
