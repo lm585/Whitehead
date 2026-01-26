@@ -50,3 +50,22 @@ from fig.101
  boxplot(a.6, ylab="log2(CPM+1)")
  abline(h = seq(-100,100,2), lty = 5, lwd = 0.5, col = "gray")
 
+#figure 103
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717816582258/gsea_report_for_na_pos_1717816582258.tsv")
+  f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717816582258/gsea_report_for_na_neg_1717816582258.tsv")
+  t1 <- rbind(f1, f2)
+  t2 <- t1[, c(1,6, 8)]
+ head(t2)
+ t2.m <- t2
+f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/gsea_report_for_na_pos_1718816546930.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/gsea_report_for_na_neg_1718816546930.tsv")
+t1 <- rbind(f1, f2)
+   t2 <- t1[, c(1,6, 8)]
+dim(t2)
+t8 <- merge(t2.m, t2, by.x="NAME", by.y="NAME")
+head(t8)
+ ggplot(t8, aes(x= NES.y, y= NES.x)) + geom_point(size=3, shape=21, col="black") + labs(x="human (NES)", y="mouse (NES)") + geom_smooth(method="lm") + scale_y_continuous(breaks=seq(-6, 5, 2)) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5)
+ t9 <- t8[ t8$FDR.q.val.x < 0.05 & t8$FDR.q.val.y < 0.05,]
+ dim(t9)
+# [1] 16  5
+> ggplot(t8, aes(x= NES.y, y= NES.x, label=gsub("HALLMARK_", "", NAME))) + geom_point(size=3, shape=21, col="black") + labs(x="human (NES)", y="mouse (NES)") + geom_smooth(method="lm") + scale_y_continuous(breaks=seq(-6, 5, 2)) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + geom_text_repel(show.legend=T, data=t9 , size=2, max.overlaps=100, min.segment.length = 0.1, col="red")
