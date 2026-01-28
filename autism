@@ -7512,3 +7512,80 @@ cor(t.m.4)
  rownames(r.m.4) <- r.m.3$SYMBOL
  colnames(r.m.4) <- c("human.Microglia", "mouse.mg", "human.mg.postnatal.science2023", "mouse.infect.ddx3x.KO")
 eatmap(r.m.4, cluster_columns=T, col=col_fun, row_names_gp = gpar(fontsize = 8), name="logP (M vs F)")
+
+############
+outlier
+a.3, log2(d+1) scale
+> outl <- a.3[ a.3$MS4A1 > 2 | a.3$CD3D > 3,]
+> dim(outl)
+[1] 5 8
+......
+>  t6 <- t4[, colnames(t4) %in% rownames(y2)]
+> dim(t6)
+[1] 20116    20
+> head(t6[c( "CD3D"  ,  "MS4A1", "P2RY12" ),rownames(outl)])
+t6, read count
+       1443 4369 4396 4670 5242
+CD3D      2    0    0    2    3
+MS4A1     0    2    3    2    1
+P2RY12  173  389  672  360  607
+> t6.1 <- t6[, ! colnames(t6) %in% rownames(outl)]
+> dim(t6.1)
+[1] 20116    15
+ head(t6.1[c( "CD3D"  ,  "MS4A1", "P2RY12" ),])
+ y <- DGEList(counts=t6.1)
+ y <- calcNormFactors(y)
+ summary(y$samples)
+###
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- edgeR::cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 1
+}
+####median >= 1 for pathway genes
+y1<-y[med$logic,]
+print(dim(y1))
+[1] 13308    15
+ y <- y1
+l3 <- head(l2, n=15)
+for(i in 1:dim(y)[2]) {
+ f1 <- l2[ l2$Individual == colnames(y)[i], ][1,]
+ l3[i,] <- f1
+ }
+ identical(colnames(y), l3$Individual)
+[1] TRUE
+  l3$age1 <- (l3$Age_.days. - 266) / 365 
+  design <- model.matrix( ~ l3$Sex + l3$age1)
+ y <- estimateDisp(y,design)
+ fit <- glmQLFit(y, design)
+ qlf <- glmQLFTest(fit, coef=2)
+ top2v1 <- topTags(qlf, n = 91234)
+  head(top2v1)
+# Coefficient:  l3$SexMale 
+#               logFC   logCPM         F       PValue          FDR
+# XIST      -8.006285 8.158844 408.66510 7.372964e-21 9.811941e-17
+# UTY        6.447660 7.470107 275.68038 1.630249e-16 1.084767e-12
+diff <- as.data.frame(top2v1)
+diff$geneID <- rownames(diff)
+ g <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type-name")
+ df.cpm.gene <- merge(diff, g, by.x="geneID", by.y="name")
+ dim(df.cpm.gene)
+# 12950    10
+> write.table(df.cpm.gene, "diff2-1.chr.txt", sep="\t", quote=F)
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi diff2-1.chr.txt
+mv -i diff2-1.chr.txt  human-mg-postnatal-science2023-MvF-diff2-1.age-cov.15samp.name-type-chr.txt
+cat  human-mg-postnatal-science2023-MvF-diff2-1.age-cov.15samp.name-type-chr.txt | awk 'BEGIN {FS = "\t"} !($8 == "chrX" || $8 == "chrY")'   > temp1
+cat temp1 | awk 'BEGIN {FS = "\t"; OFS = ""; ORS = ""}
+{for(i = 1; i <= 7; i++)
+   print $i "\t";
+
+ print $1 "\n";
+}' > temp
+head temp | cut -f 2
+head temp | cut -f 5
+head temp | cut -f 8
+../microglia/make-rnk-genesymble  temp   human-mg-postnatal-science2023-MvF-diff2-1.age-cov.15samp.noX.Y.rnk 
+grep -iw "ddx3[xy]"     human-mg-postnatal-science2023-MvF-diff2-1.age-cov.15samp*
+
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx   /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt     -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk   human-mg-postnatal-science2023-MvF-diff2-1.age-cov.15samp.noX.Y.rnk  -scoring_scheme classic  -rpt_label   "human-mg-postnatal-science2023-MvF-diff2-1.age-cov.15samp.noX.Y"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
