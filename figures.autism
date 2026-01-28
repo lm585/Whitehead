@@ -105,3 +105,63 @@ head(t8)
  barplot(as.matrix(t11), horiz=T, beside=T, yaxt="n", col=c("blue", "orange"), xlab="NES")#, xlim= c(-0.15, 0.45))
  axis(side=4, at = seq(2, 2+3*33, by=3), labels=gsub("HALLMARK_","",colnames(t11)), las =1, cex.axis = 0.6)
   legend(-8, 2+3*10, c( "with interaction term", "without interaction term"), fill=c( "orange", "blue"), cex = 0.6, inset = 0.05)
+
+#figure 202
+t1 <- readRDS("../autism/postnatal.science.mg.7967cells.rds")
+counts <- t1@assays$RNA$counts
+ metadata <- t1@meta.data
+ metadata$cluster_id <- 1
+ library( SingleCellExperiment)
+# Create single cell experiment object
+sce <- SingleCellExperiment(assays = list(counts = counts),
+                           colData = metadata)
+ t2 <- read.delim("/Users/linyongmao/Downloads/postnatal.snRNAseq.science.2023/meta.tsv")
+ head(t2)
+ t3 <- t2[ t2$Cell_ID %in% colnames(t1),]
+ identical(t3$Cell_ID, colnames(t1))
+#  [1] TRUE
+ groups <- t3$Individual
+ length(unique(groups))
+#  [1] 59
+pb <- aggregate.Matrix(t(counts(sce)),
+                       groupings = groups, fun = "sum")
+ dim(pb)
+#  [1]    59 20116
+pb[1:8, 1:6] # 8 samples
+ t4 <- as.data.frame(t(pb))
+ head(t4)
+###
+ l1 <- unique(t3[, c(2:8,12:14)])
+ dim(l1)
+#  [1] 59 10
+ 1073-77-2*365
+#  [1] 266
+#after birth, < 20-year-old
+ l2 <- l1[ l1$Age_.days. > 266 & l1$Age_.days. < 20*365,]
+ dim(l2)
+#  [1] 29 10
+ t5 <- t4[, colnames(t4) %in% l2$Individual]
+ dim(t5)
+#  [1] 20116    29
+ y <- DGEList(counts=t5)
+ y <- calcNormFactors(y)
+ summary(y$samples)
+y1 <- y$samples
+y2 <- y1[ y1$lib.size > 100000,]
+ dim(y2)
+#  [1] 20  3
+ t6 <- t4[, colnames(t4) %in% rownames(y2)]
+ y <- DGEList(counts=t6)
+ y <- calcNormFactors(y)
+ summary(y$samples)
+d = edgeR::cpm(y)
+ a <- log2(d+1)
+ a.df <- as.data.frame(a)
+ g1 <- c("ACTB" ,   "ITGAM",   "P2RY12" , "TMEM119" ,"CX3CR1",  "CCR2" ,   "CD3D"  ,  "MS4A1" )
+ a.2 <- a.df[ rownames(a.df) %in% g1,]
+ dim(a.2)
+ a.3 <- as.data.frame(t(a.2))
+ a.6 <- a.3[, c(4,8,3,7,1,2,5,6)]
+ boxplot(a.6, ylab="log2(CPM+1)")
+  abline(h = seq(-100,100,2), lty = 5, lwd = 0.5, col = "gray")
+> 
