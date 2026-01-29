@@ -7614,3 +7614,16 @@ colnames(t2) [2:3] <- paste("snRNA.15samp", colnames(t2)[2:3], sep="_")
  t4 <- t3[ t3$snRNA.20samp_FDR.q.val < 0.05 & t3$snRNA.15samp_FDR.q.val < 0.05,]
  dim(t4)
 # [1] 5 5
+ t3.1 <- t3
+...#figure 103
+> t8 <- merge(t2.m, t2, by.x="NAME", by.y="NAME")
+ colnames(t8) <- c("NAME", "mouse.NES", "mouse.q", "human.bulk.interac.NES", "human.bulk.interac.q" )
+ t9 <- merge(t8, t3.1, by.x="NAME", by.y="NAME")
+ dim(t9)
+# [1] 49  9
+ t10 <- t9[, c(2,4,6,8)]
+ rownames(t10) <- t9$NAME
+ t10[ c("HALLMARK_OXIDATIVE_PHOSPHORYLATION", "HALLMARK_TNFA_SIGNALING_VIA_NFKB"),]
+#                                     mouse.NES human.bulk.interac.NES snRNA.20samp_NES snRNA.15samp_NES
+# HALLMARK_OXIDATIVE_PHOSPHORYLATION -6.1208270              -7.380926         3.145092       -0.9830693
+# HALLMARK_TNFA_SIGNALING_VIA_NFKB   -0.9956031              -5.057998        -1.908072        1.2671287
