@@ -7627,3 +7627,55 @@ colnames(t2) [2:3] <- paste("snRNA.15samp", colnames(t2)[2:3], sep="_")
 #                                     mouse.NES human.bulk.interac.NES snRNA.20samp_NES snRNA.15samp_NES
 # HALLMARK_OXIDATIVE_PHOSPHORYLATION -6.1208270              -7.380926         3.145092       -0.9830693
 # HALLMARK_TNFA_SIGNALING_VIA_NFKB   -0.9956031              -5.057998        -1.908072        1.2671287
+
+#########
+ med$logic[i] <- median(d[i,]) >= 1
+...
+> dim(y)
+[1] 13477    20
+ d = edgeR::cpm(y)
+ a <- log10(d+1)
+ a.df <- as.data.frame(a)
+ a.df[1:6,1:6]
+ a.df$name <- rownames(a.df)
+ g <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type-name")
+ a.2 <- merge(a.df, g, by.x="name", by.y="name")
+ dim(a.2)
+# [1] 13105    25
+ a.3 <- a.2[ a.2$chr != "chrX" & a.2$chr != "chrY",]
+ dim(a.3)
+# [1] 12621    25
+ a.df.2 <- a.3[, c(2:21)]
+ rownames(a.df.2) <- a.3$geneID
+  r3 <- t(a.df.2)
+  pca <- prcomp(r3, center = TRUE, scale. = TRUE)
+  boxplot(pca$x[,1:20])
+  s <- summary(pca)
+  s$importance[,1:10]
+#                             PC1      PC2      PC3      PC4      PC5      PC6      PC7      PC8      PC9     PC10
+# Standard deviation     41.09107 36.79433 34.32997 31.98664 28.87706 27.28630 26.55718 24.57839 24.24336 23.02699
+# Proportion of Variance  0.13378  0.10727  0.09338  0.08107  0.06607  0.05899  0.05588  0.04786  0.04657  0.04201
+# Cumulative Proportion   0.13378  0.24105  0.33443  0.41550  0.48157  0.54056  0.59644  0.64431  0.69088  0.73289
+ 
+ l3 <- head(l2, n=20)
+for(i in 1:dim(y)[2]) {
+ f1 <- l2[ l2$Individual == colnames(y)[i], ][1,]
+ l3[i,] <- f1
+ }
+ identical(colnames(y), l3$Individual)
+[1] TRUE
+
+ p1 <- as.data.frame( pca$x[,1:2])
+ p1$id <- rownames(p1)
+ identical(p1$id, l3$Individual)
+[1] TRUE
+ p1$age <- (l3$Age_.days. - 266) / 365 
+ p1$sex <- l3$Sex
+>  boxplot(a.6, ylab="log2(CPM+1)")
+> a.6
+          ACTB    ITGAM    P2RY12  TMEM119    CX3CR1 CCR2    MS4A1     CD3D
+1158 10.244316 7.774645  9.430059 6.144721  9.501217    0 0.000000 0.000000
+1443  9.993966 7.989469 10.062207 6.344532  9.715409    0 0.000000 3.738573
+> a.6$id <- rownames(a.6)
+ p2 <- merge(p1, a.6, by.x="id", by.y="id")
+> gplot(p2, aes(x=PC1, y=PC2, color= sex, size= MS4A1, label=id)) + geom_point(shape=21) + labs(y="PC2 (10.7%)", x="PC1 (13.3%)") + geom_text_repel(show.legend=F,  size=2.2, max.overlaps=100, min.segment.length = 0.1, col="black")
