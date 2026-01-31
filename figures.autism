@@ -165,3 +165,8 @@ d = edgeR::cpm(y)
  boxplot(a.6, ylab="log2(CPM+1)")
   abline(h = seq(-100,100,2), lty = 5, lwd = 0.5, col = "gray")
 > 
+......
+ identical(colnames(y), l3$Individual)
+[1] TRUE
+> boxplot((l3$Age_.days. - 266) / 365 ~ l3$Sex,  ylab="Age", outcol="white", xlab="")
+ beeswarm((l3$Age_.days. - 266) / 365 ~ l3$Sex, add=T, cex=1.5)
