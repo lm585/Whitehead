@@ -7679,3 +7679,40 @@ for(i in 1:dim(y)[2]) {
 > a.6$id <- rownames(a.6)
  p2 <- merge(p1, a.6, by.x="id", by.y="id")
 > gplot(p2, aes(x=PC1, y=PC2, color= sex, size= MS4A1, label=id)) + geom_point(shape=21) + labs(y="PC2 (10.7%)", x="PC1 (13.3%)") + geom_text_repel(show.legend=F,  size=2.2, max.overlaps=100, min.segment.length = 0.1, col="black")
+
+######
+ setwd("/lab/solexa_page/linyong/")
+t1 <- Read10X(data.dir = "postnatal.snRNAseq.science.2023", gene.column=1)
+ t2 <-  CreateSeuratObject(counts = t1, project = "postnat")
+# min.cells = 3, min.features = 200
+ dim(t2)
+#  [1]  20116 709372
+t4 <- read.delim("./meta.tsv")
+ dim(t4)
+#  [1] 709372     15
+ identical(t4$Cell_ID, colnames(t2))
+ t2$type <- t4$Lineage
+ t2$sample <- t4$Sample
+ t2$individual <- t4$Individual
+ t5 <- t2[, t2$orig.ident == "U01" ]
+ dim(t5)
+#  [1]  20116 358663
+ head(t5@meta.data)
+ table(t5@meta.data$individual, t5$orig.ident)
+#                 Herring Ramos Trevino   U01
+#   1158                0     0       0  1631
+#   1443                0     0       0  1969
+#   4396                0     0       0 12758
+#   5936                0     0       0  2097
+#   814                 0     0       0  2762
+ t6 <- t5[ ,t5$type == "MG" ]
+ dim(t6)
+# [1] 20116  7967
+ head( unique( t6$type))
+ table(t6@meta.data$individual, t6$orig.ident)
+#                 Herring Ramos Trevino U01
+#   1158                0     0       0  87
+#   1443                0     0       0 120
+#   4396                0     0       0 456
+#   5936                0     0       0 225
+#   814                 0     0       0 211
