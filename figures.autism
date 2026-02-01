@@ -170,3 +170,22 @@ d = edgeR::cpm(y)
 [1] TRUE
 > boxplot((l3$Age_.days. - 266) / 365 ~ l3$Sex,  ylab="Age", outcol="white", xlab="")
  beeswarm((l3$Age_.days. - 266) / 365 ~ l3$Sex, add=T, cex=1.5)
+
+######
+    ind MG.cellCount.x all.cell.count MG.cell.freq    Sex
+9  4396            456          12758   0.03574228   Male
+> t1 <- read.delim("temp")
+ dim(t1)
+# [1] 20  5
+ sum(t1$all.cell.count)
+# [1] 96752
+ sum(t1$MG.cellCount.x)
+# [1] 5241 over 20 samples (
+ boxplot(t1$MG.cellCount.x / t1$all.cell.count ~ t1$Sex, ylab="Freq of microglia in cortex", outcol="white", xlab="")
+ beeswarm(t1$MG.cellCount.x / t1$all.cell.count ~ t1$Sex, add=T, cex=1.5)
+
+ t1$freq <- t1$MG.cellCount.x / t1$all.cell.count
+ t2 <- t1[ t1$Sex == "Female",]
+ t3 <- t1[ t1$Sex == "Male",]
+ wilcox.test(t2$freq, t3$freq)
+# p-value = 0.9385
