@@ -189,3 +189,26 @@ d = edgeR::cpm(y)
  t3 <- t1[ t1$Sex == "Male",]
  wilcox.test(t2$freq, t3$freq)
 # p-value = 0.9385
+#########
+> t8 <- merge(t2.m, t2, by.x="NAME", by.y="NAME")
+> head(t8)
+f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/gsea_report_for_na_neg_1751317616145.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/gsea_report_for_na_pos_1751317616145.tsv")
+ t1 <- rbind(f1, f2)
+ t2 <- t1[, c(1,6, 8)]
+ t9 <- merge(t8, t2, by.x="NAME", by.y="NAME")
+ t9$sig.m = "No"
+ t9[ t9$FDR.q.val.x < 0.05,]$sig.m <- "Yes"
+ t9$sig.h = "No"
+ t9[ t9$FDR.q.val.y < 0.05,]$sig.h <- "Yes"
+ t9$sig.sn = "No"
+ t9[ t9$FDR.q.val < 0.05,]$sig.sn <- "Yes"
+ head(t9, n=11)
+#                                NAME      NES.x  FDR.q.val.x      NES.y  FDR.q.val.y        NES   FDR.q.val sig.m sig.h sig.sn
+# 1             HALLMARK_ADIPOGENESIS -1.9955513 0.0178291480 -4.5545583 0.000000e+00  1.6375663 0.370093580   Yes   Yes     No
+ col_fun = colorRamp2(c(-4,0,4), c( "blue", "white",  "red"))
+ ca <- HeatmapAnnotation(  which="row", snRNA= t9$sig.sn, mouse=t9$sig.m, human=t9$sig.h, col=list(mouse=c("Yes"="blue", "No"="gray85"), human=c("Yes"="blue", "No"="gray85"), snRNA=c("Yes"="blue", "No"="gray85")) )
+ t10 <- t9[, c(2,4,6)]
+ rownames(t10) <- gsub("HALLMARK_", "", t9$NAME)
+ colnames(t10) <- c("mouse", "human", "snRNA")
+ Heatmap(t10, name="NES", right_annotation=ca,  row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 8),  col = col_fun, clustering_distance_columns ="pearson")
