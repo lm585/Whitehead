@@ -211,3 +211,37 @@ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-m
  rownames(t10) <- gsub("HALLMARK_", "", t9$NAME)
  colnames(t10) <- c("mouse", "human", "snRNA")
  Heatmap(t10, name="NES", right_annotation=ca,  row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 8),  col = col_fun, clustering_distance_columns ="pearson")
+
+#figure 203
+f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/gsea_report_for_na_neg_1751317616145.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/gsea_report_for_na_pos_1751317616145.tsv")
+  t1 <- rbind(f1, f2)
+  t2 <- t1[, c(1,6, 8)]
+ dim(t2)
+[1] 50  3
+ colnames(t2) [2:3] <- paste("snRNA.20samp", colnames(t2)[2:3], sep="_")
+ t2.snRNA.20 <- t2
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-cov.15samp.noX.Y.GseaPreranked.1769639264100/gsea_report_for_na_pos_1769639264100.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-cov.15samp.noX.Y.GseaPreranked.1769639264100/gsea_report_for_na_neg_1769639264100.tsv")
+ t1 <- rbind(f1, f2)
+ t2 <- t1[, c(1,6, 8)]
+ dim(t2)
+[1] 50  3
+colnames(t2) [2:3] <- paste("snRNA.15samp", colnames(t2)[2:3], sep="_")
+ t3 <- merge(t2.snRNA.20, t2, by.x="NAME", by.y="NAME")
+ cor.test(t3$snRNA.20samp_NES, t3$snRNA.15samp_NES)
+ cor.test(t3$snRNA.20samp_NES, t3$snRNA.15samp_NES, method="sp")
+ t4 <- t3[ t3$snRNA.20samp_FDR.q.val < 0.05 | t3$snRNA.15samp_FDR.q.val < 0.05,]
+ dim(t4)
+# [1] 9 5
+ dim(t4[ t4$snRNA.20samp_FDR.q.val < 0.05,])
+# [1] 9 5
+ dim(t4[ t4$snRNA.15samp_FDR.q.val < 0.05,])
+# [1] 5 5
+ t3$FDR <- "no.sig"
+ t3[ t3$snRNA.20samp_FDR.q.val < 0.05 & t3$snRNA.15samp_FDR.q.val < 0.05,]$FDR <- "both"
+ t3[ t3$snRNA.20samp_FDR.q.val < 0.05 & ! (t3$snRNA.15samp_FDR.q.val < 0.05),]$FDR <- "20-sample only"
+ colnames(t3)[6] <- "Significant"
+
+ ggplot(t3, aes(x= snRNA.20samp_NES, y= snRNA.15samp_NES, label= gsub("HALLMARK_", "", NAME), col=Significant)) +  geom_point(size=3, shape=19 ) + geom_text_repel(show.legend=F, data=t4 , size=2.5, max.overlaps=100, min.segment.length = 0.1, col="black")  + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + scale_color_manual(values = my.cols) + labs(x="snRNA 20-sample-full-set (NES)", y="15 samples (NES)") +  theme(axis.title.x = element_text(size = 16),  axis.title.y = element_text(size = 16) ) + theme(axis.text = element_text(size = 14))
+
