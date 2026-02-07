@@ -7763,3 +7763,5 @@ t4 <- read.delim("./meta.tsv")
  t7$rank.human <- 1:dim(t7)[1]
  t7$human.pert <- (dim(t7)[1] - t7$rank.human) / dim(t7)[1] * 100
 
+ t8$perc.geo.mean <- (t8$snRNA.pert * t8$human.pert * t8$mouse.pert)^(1/3)
+ t9 <- t8[order(t8$perc.geo.mean, decreasing=T), ]
