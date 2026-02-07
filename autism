@@ -7763,5 +7763,11 @@ t4 <- read.delim("./meta.tsv")
  t7$rank.human <- 1:dim(t7)[1]
  t7$human.pert <- (dim(t7)[1] - t7$rank.human) / dim(t7)[1] * 100
 
+ t7$mouse.sign.p <- -log10(t7$mouse.PValue)
+ t7[ t7$mouse.logFC > 0,]$mouse.sign.p <- (-1) * t7[ t7$mouse.logFC > 0,]$mouse.sign.p
+ t8 <- t7[ order(t7$mouse.sign.p, decreasing=T),]
+ t8$rank.mouse <- 1:dim(t8)[1]
+ t8$mouse.pert <- (dim(t8)[1] - t8$rank.mouse) / dim(t8)[1] * 100
+
  t8$perc.geo.mean <- (t8$snRNA.pert * t8$human.pert * t8$mouse.pert)^(1/3)
  t9 <- t8[order(t8$perc.geo.mean, decreasing=T), ]
