@@ -7716,3 +7716,50 @@ t4 <- read.delim("./meta.tsv")
 #   4396                0     0       0 456
 #   5936                0     0       0 225
 #   814                 0     0       0 211
+
+#########
+> t1 <- read.delim("human-mg-postnatal-science2023-MvF-diff2-1.name-type-chr.txt")
+ t2 <- t1[ t1$chr == "chrX",]
+ dim(t2)
+# [1] 470  10
+ colnames(t2) <- paste("snRNA", colnames(t2), sep=".")
+ t2.s <- t2
+
+# t1 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt")
+# using non-interac for chrX genes ranking
+ t1 <-  read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.strand.name-type-chr.txt")
+ t2 <- t1[ t1$chr == "chrX",]
+ dim(t2)
+# [1] 469  10
+ colnames(t2) <- paste("human", colnames(t2), sep=".")
+ t3 <- t2[, c(1,2,5,7)]
+ dim(merge(t2.s, t3, by.x="snRNA.geneID.y", by.y="human.geneID"))
+# [1] 353  13
+ dim(merge(t2.s, t3, by.x="snRNA.geneID", by.y="human.name"))
+# [1] 353  13
+ t4 <- merge(t2.s, t3, by.x="snRNA.geneID.y", by.y="human.geneID")
+
+ t1 <- read.delim("mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.txt")
+ t2 <- t1[ t1$chr == "chrX",]
+ dim(t2)
+# [1] 429  14
+ colnames(t2) <- paste("mouse", colnames(t2), sep=".")
+ t3 <- t2[, c(3,6,8,10,11,13,14)]
+ t5 <- merge(t4, t3, by.x="human.name", by.y="mouse.Gene.Symbol")
+ dim(t5)
+# [1] 294  19
+
+ t5$snRNA.sign.p <- -log10( t5$snRNA.PValue)
+ t5[ t5$snRNA.logFC > 0,]$snRNA.sign.p <- (-1) * t5[ t5$snRNA.logFC > 0,]$snRNA.sign.p
+ head(t5[ order(t5$snRNA.sign.p, decreasing=T),], n=20)
+ tail(t5[ order(t5$snRNA.sign.p, decreasing=T),], n=20)
+ t6 <- t5[ order(t5$snRNA.sign.p, decreasing=T),]
+ t6$rank <- 1:dim(t6)[1]
+ t6$snRNA.pert <- (dim(t6)[1] - t6$rank) / dim(t6)[1] * 100
+
+ t6$human.sign.p <- -log10(t6$human.PValue)
+ t6[ t6$human.logFC > 0,]$human.sign.p <- (-1) * t6[ t6$human.logFC > 0,]$human.sign.p
+ t7 <- t6[ order(t6$human.sign.p, decreasing=T),]
+ t7$rank.human <- 1:dim(t7)[1]
+ t7$human.pert <- (dim(t7)[1] - t7$rank.human) / dim(t7)[1] * 100
+
