@@ -7718,7 +7718,7 @@ t4 <- read.delim("./meta.tsv")
 #   814                 0     0       0 211
 
 #########
-> t1 <- read.delim("human-mg-postnatal-science2023-MvF-diff2-1.name-type-chr.txt")
+t1 <- read.delim("human-mg-postnatal-science2023-MvF-diff2-1.name-type-chr.txt")
  t2 <- t1[ t1$chr == "chrX",]
  dim(t2)
 # [1] 470  10
@@ -7751,23 +7751,23 @@ t4 <- read.delim("./meta.tsv")
 
  t5$snRNA.sign.p <- -log10( t5$snRNA.PValue)
  t5[ t5$snRNA.logFC > 0,]$snRNA.sign.p <- (-1) * t5[ t5$snRNA.logFC > 0,]$snRNA.sign.p
- head(t5[ order(t5$snRNA.sign.p, decreasing=T),], n=20)
- tail(t5[ order(t5$snRNA.sign.p, decreasing=T),], n=20)
+ head(t5[ order(t5$snRNA.sign.p, decreasing=T),], n=11)
+ tail(t5[ order(t5$snRNA.sign.p, decreasing=T),], n=11)
  t6 <- t5[ order(t5$snRNA.sign.p, decreasing=T),]
- t6$rank <- 1:dim(t6)[1]
- t6$snRNA.pert <- (dim(t6)[1] - t6$rank) / dim(t6)[1] * 100
+ t6$rank <- rank(t6$snRNA.sign.p)
+ t6$snRNA.pert <- t6$rank / dim(t6)[1] * 100
 
  t6$human.sign.p <- -log10(t6$human.PValue)
  t6[ t6$human.logFC > 0,]$human.sign.p <- (-1) * t6[ t6$human.logFC > 0,]$human.sign.p
  t7 <- t6[ order(t6$human.sign.p, decreasing=T),]
- t7$rank.human <- 1:dim(t7)[1]
- t7$human.pert <- (dim(t7)[1] - t7$rank.human) / dim(t7)[1] * 100
+ t7$rank.human <- rank(t7$human.sign.p)
+ t7$human.pert <-  t7$rank.human / dim(t7)[1] * 100
 
  t7$mouse.sign.p <- -log10(t7$mouse.PValue)
  t7[ t7$mouse.logFC > 0,]$mouse.sign.p <- (-1) * t7[ t7$mouse.logFC > 0,]$mouse.sign.p
  t8 <- t7[ order(t7$mouse.sign.p, decreasing=T),]
- t8$rank.mouse <- 1:dim(t8)[1]
- t8$mouse.pert <- (dim(t8)[1] - t8$rank.mouse) / dim(t8)[1] * 100
+ t8$rank.mouse <- rank(t8$mouse.sign.p)
+ t8$mouse.pert <- t8$rank.mouse / dim(t8)[1] * 100
 
  t8$perc.geo.mean <- (t8$snRNA.pert * t8$human.pert * t8$mouse.pert)^(1/3)
- t9 <- t8[order(t8$perc.geo.mean, decreasing=T), ]
+ t9 <- t8[order(t8$perc.geo.mean, decreasing=T), ] 
