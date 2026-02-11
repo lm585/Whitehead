@@ -7771,3 +7771,23 @@ t1 <- read.delim("human-mg-postnatal-science2023-MvF-diff2-1.name-type-chr.txt")
 
  t8$perc.geo.mean <- (t8$snRNA.pert * t8$human.pert * t8$mouse.pert)^(1/3)
  t9 <- t8[order(t8$perc.geo.mean, decreasing=T), ] 
+
+###########################
+> t1 <- read.csv("/Users/linyongmao/Documents/autism/SFARI-Gene_genes_01-14-2026release_02-10-2026export.csv")
+> dim(t1)
+[1] 1267   10
+> head(t1, n=2)
+  status gene.symbol                                            gene.name ensembl.id chromosome                               genetic.category gene.score syndromic eagle
+1      9        ABAT                     4-aminobutyrate aminotransferase         NA         16 Rare Single Gene Mutation, Genetic Association          2         0    NA
+2      9      ABCA10 ATP-binding cassette, sub-family A (ABC1), member 10         NA         17                      Rare Single Gene Mutation          2         0    NA
+  number.of.reports
+1                 9
+2                 4
+> g1
+ [1] "XIST"   "KDM6A"  "KDM5C"  "EIF2S3" "RPS4X"  "DDX3X"  "MAGT1"  "ZFX"    "RBM3"   "SAT1"
+> t2 <- t1[ t1$gene.symbol %in% g1,]
+> dim(t2)
+[1]  4 10
+> t3 <- t2[, c(2,7,8,10)]
+> write.table(t3, "temp", sep="\t")
+
