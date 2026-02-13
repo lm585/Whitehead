@@ -245,3 +245,22 @@ colnames(t2) [2:3] <- paste("snRNA.15samp", colnames(t2)[2:3], sep="_")
 
  ggplot(t3, aes(x= snRNA.20samp_NES, y= snRNA.15samp_NES, label= gsub("HALLMARK_", "", NAME), col=Significant)) +  geom_point(size=3, shape=19 ) + geom_text_repel(show.legend=F, data=t4 , size=2.5, max.overlaps=100, min.segment.length = 0.1, col="black")  + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + scale_color_manual(values = my.cols) + labs(x="snRNA 20-sample-full-set (NES)", y="15 samples (NES)") +  theme(axis.title.x = element_text(size = 16),  axis.title.y = element_text(size = 16) ) + theme(axis.text = element_text(size = 14))
 
+################################
+#figure 204
+f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-infect-ddx3x-KOvWT-diff2-1.F.sep2025.human.gene.name.wt0.hallv7.4.GseaPreranked.1757271492212/gsea_report_for_na_neg_1757271492212.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-infect-ddx3x-KOvWT-diff2-1.F.sep2025.human.gene.name.wt0.hallv7.4.GseaPreranked.1757271492212/gsea_report_for_na_pos_1757271492212.tsv")
+ t1 <- rbind(f1, f2)
+ t2.F.mouse.ddx3x.ko <- t1[, c(1,6, 8)]
+ colnames(t2.F.mouse.ddx3x.ko) <- paste(colnames(t2.F.mouse.ddx3x.ko), ".F.ddx3x.ko", sep="")
+
+f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-infect-ddx3x-KOvWT-diff2-1.M.sep2022.human.gene.wt0.hallv7.4.GseaPreranked.1770922171051/gsea_report_for_na_neg_1770922171051.tsv")
+f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-infect-ddx3x-KOvWT-diff2-1.M.sep2022.human.gene.wt0.hallv7.4.GseaPreranked.1770922171051/gsea_report_for_na_pos_1770922171051.tsv")
+ t1 <- rbind(f1, f2)
+ t2.M.mouse.ddx3x.ko <- t1[, c(1,6, 8)]
+ colnames(t2.M.mouse.ddx3x.ko) <- paste(colnames(t2.M.mouse.ddx3x.ko), ".M.ddx3x.ko", sep="")
+
+ t3 <- merge(t2.F.mouse.ddx3x.ko, t2.M.mouse.ddx3x.ko, by.x="NAME.F.ddx3x.ko", by.y="NAME.M.ddx3x.ko")
+ dim(t3)
+# [1] 49  5
+> ggplot(t3, aes(x=NES.F.ddx3x.ko, y=NES.M.ddx3x.ko)) +  geom_point(size=3, shape=21 ) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + labs(x="Female Ddx3x.KO.macrophage (NES)", y="Male Ddx3x.KO.macrophage (NES)") +  theme(axis.title.x = element_text(size = 15),  axis.title.y = element_text(size = 16) ) + theme(axis.text = element_text(size = 14)) + geom_smooth(method="lm") +  scale_y_continuous(breaks=seq(-6, 4, 2)) + scale_x_continuous(breaks=seq(-6, 4, 2)) + geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +  annotate("text", x = -2.5, y = -3, label = "y=x", color = "red", size = 8)
+
