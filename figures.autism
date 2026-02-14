@@ -264,3 +264,17 @@ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-i
 # [1] 49  5
 > ggplot(t3, aes(x=NES.F.ddx3x.ko, y=NES.M.ddx3x.ko)) +  geom_point(size=3, shape=21 ) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + labs(x="Female Ddx3x.KO.macrophage (NES)", y="Male Ddx3x.KO.macrophage (NES)") +  theme(axis.title.x = element_text(size = 15),  axis.title.y = element_text(size = 16) ) + theme(axis.text = element_text(size = 14)) + geom_smooth(method="lm") +  scale_y_continuous(breaks=seq(-6, 4, 2)) + scale_x_continuous(breaks=seq(-6, 4, 2)) + geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +  annotate("text", x = -2.5, y = -3, label = "y=x", color = "red", size = 8)
 
+###
+f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/gsea_report_for_na_pos_1718816546930.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/gsea_report_for_na_neg_1718816546930.tsv")
+t1 <- rbind(f1, f2)
+   t2 <- t1[, c(1,6, 8)]
+dim(t2)
+ t8 <- merge(t2, t2.F.mouse.ddx3x.ko, by.x="NAME", by.y="NAME.F.ddx3x.ko")
+ dim(t8)
+# [1] 49  5
+ t9 <- t8[ t8$FDR.q.val < 0.05 & t8$FDR.q.val.F.ddx3x.ko < 0.05,]
+  dim(t9)
+[1] 21  5
+> ggplot(t8, aes(x= NES, y= NES.F.ddx3x.ko, label=gsub("HALLMARK_", "", NAME))) + geom_point(size=3, shape=21, col="black") + labs(x="human sex difference (NES)", y="Ddx3x knockout in female macrophages (NES)") + geom_smooth() + scale_y_continuous(breaks=seq(-6, 5, 2)) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + geom_text_repel(show.legend=T, data=t9 , size=2.5, max.overlaps=100, min.segment.length = 0.1, col="red") +  theme(axis.title.x = element_text(size = 18),  axis.title.y = element_text(size = 18) ) + theme(axis.text = element_text(size = 15))
+
