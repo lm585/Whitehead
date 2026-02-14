@@ -278,3 +278,25 @@ dim(t2)
 [1] 21  5
 > ggplot(t8, aes(x= NES, y= NES.F.ddx3x.ko, label=gsub("HALLMARK_", "", NAME))) + geom_point(size=3, shape=21, col="black") + labs(x="human sex difference (NES)", y="Ddx3x knockout in female macrophages (NES)") + geom_smooth() + scale_y_continuous(breaks=seq(-6, 5, 2)) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + geom_text_repel(show.legend=T, data=t9 , size=2.5, max.overlaps=100, min.segment.length = 0.1, col="red") +  theme(axis.title.x = element_text(size = 18),  axis.title.y = element_text(size = 18) ) + theme(axis.text = element_text(size = 15))
 
+###
+> t <- read.delim("mouse-ddx3x-ko-infect-16samples.txt", header = T, row.names = 1)
+dim(t)
+# [1] 24411    16
+ rawCount <- t[, c(9,11,13,15)]
+ head(rawCount)
+#four male mice, after infection,two KO, two WT
+#               GSM2306450_mKOh GSM2306452_mWTh GSM2306454_mKOl GSM2306456_mWTl
+# 0610005C13Rik            0.00            0.00            0.00            0.00
+# 0610007P14Rik          158.00          220.00          216.00          198.89
+
+group <- factor(rep(1, 4))
+y <- DGEList(counts=rawCount,group=group)
+y <- calcNormFactors(y)
+sort(y$samples$norm.factors)
+ a.1 <- edgeR::cpm(y)[c("Ddx3y", "Xist"),]
+ a.2 <- as.data.frame(t(a.1))
+ a.2$genotype <- c("Ddx3x KO", "WT", "Ddx3x KO", "WT")
+ a.2$gt <- factor(a.2$genotype, levels=c("WT", "Ddx3x KO"))
+ boxplot(a.2$Ddx3y ~ a.2$gt, ylim=c(0, 60), ylab="Ddx3y (CPM)", xlab="")
+ beeswarm(a.2$Ddx3y ~ a.2$gt, add=T, cex=1.5)
+
