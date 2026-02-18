@@ -7819,4 +7819,35 @@ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-i
       rho
 0.7981633
 
+##############
+t1 <- read.delim("/Users/linyongmao/Documents/microglia-mouse/dir-ddx3x-list-infection/GSE86591_RAW/mouse-infect-ddx3x-KOvWT-diff2-1.F.sep2025.human.gene.name.txt")
+ dim(t1)
+# [1] 10831    12
+ t2 <- read.delim("/Users/linyongmao/Documents/microglia-mouse/dir-ddx3x-list-infection/GSE86591_RAW/dir-sep-2022-dif-res/mouse-infect-ddx3x-KOvWT-diff2-1.M.human.gene.name.txt")
+ dim(t2)
+# [1] 10603    14
+ head(t1)
+#                   ID  name       logFC   logCPM           F     PValue        FDR   chr           type known Gene.Symbol
+# 1 ENSMUSG00000000001 Gnai3  0.02900347 6.857715  0.03194856 0.86603921 0.90528157  chr3 protein_coding KNOWN       GNAI3
+ t3 <- merge(t1, t2, by.x="name", by.y="geneID")
+ dim(t3)
+# [1] 10523    25
+ df.r1 <- data.frame(pathway="path",N=-999, mean.dif=999, P=999 )
+ df.r1
+
+ t7 <- read.delim("/Users/linyongmao/Documents/microglia/file1", header=F)
+ head(t7)
+#                                                                               V1
+# 1       /Users/linyongmao/Documents/microglia/HALLMARK_ALLOGRAFT_REJECTION.genes
+ for(i in 1:dim(t7)[1]) { 
+ g1 <- read.delim(t7[i,], header=F)
+ t11 <-  t3[ t3$Gene.Symbol.x %in% g1$V1,]
+ t12 <- t11[ t11$PValue.x < 0.05 & t11$PValue.y < 0.05,]
+ dim(t12)
+ t13 <- t.test(t12$logFC.y, t12$logFC.x, paired=T)
+ df.r1[i,] <- list(t7[i,], dim(t12)[1], t13$estimate, t13$p.value)
+ }
+###assume female 2-fold change, what's male fold change?
+ df.r1$male.fold.fe2 <- 2^( -( (-1) + df.r1$mean.dif))
+
 
