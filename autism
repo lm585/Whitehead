@@ -7835,19 +7835,20 @@ t1 <- read.delim("/Users/linyongmao/Documents/microglia-mouse/dir-ddx3x-list-inf
  df.r1 <- data.frame(pathway="path",N=-999, mean.dif=999, P=999 )
  df.r1
 
- t7 <- read.delim("/Users/linyongmao/Documents/microglia/file1", header=F)
+ t7 <- read.delim("/Users/linyongmao/Documents/microglia/file2", header=F)
  head(t7)
 #                                                                               V1
 # 1       /Users/linyongmao/Documents/microglia/HALLMARK_ALLOGRAFT_REJECTION.genes
- for(i in 1:dim(t7)[1]) { 
+ for(i in 1:dim(t7)[1]) {
  g1 <- read.delim(t7[i,], header=F)
  t11 <-  t3[ t3$Gene.Symbol.x %in% g1$V1,]
  t12 <- t11[ t11$PValue.x < 0.05 & t11$PValue.y < 0.05,]
  dim(t12)
+ if(dim(t12)[1] > 1) {
  t13 <- t.test(t12$logFC.y, t12$logFC.x, paired=T)
  df.r1[i,] <- list(t7[i,], dim(t12)[1], t13$estimate, t13$p.value)
  }
+}
 ###assume female 2-fold change, what's male fold change?
  df.r1$male.fold.fe2 <- 2^( -( (-1) + df.r1$mean.dif))
-
 
