@@ -326,3 +326,32 @@ sort(y$samples$norm.factors)
  boxplot(a.2$Ddx3y ~ a.2$gt, ylim=c(0, 60), ylab="Ddx3y (CPM)", xlab="")
  beeswarm(a.2$Ddx3y ~ a.2$gt, add=T, cex=1.5)
 
+###
+> t1 <- read.delim("/Users/linyongmao/Documents/microglia-mouse/dir-ddx3x-list-infection/GSE86591_RAW/mouse-infect-ddx3x-KOvWT-diff2-1.F.sep2025.human.gene.name.txt")
+ dim(t1)
+# [1] 10831    12
+ t2 <- read.delim("/Users/linyongmao/Documents/microglia-mouse/dir-ddx3x-list-infection/GSE86591_RAW/dir-sep-2022-dif-res/mouse-infect-ddx3x-KOvWT-diff2-1.M.human.gene.name.txt")
+ dim(t2)
+# [1] 10603    14
+ head(t1)
+#                   ID  name       logFC   logCPM           F     PValue        FDR   chr           type known Gene.Symbol
+# 1 ENSMUSG00000000001 Gnai3  0.02900347 6.857715  0.03194856 0.86603921 0.90528157  chr3 protein_coding KNOWN       GNAI3
+ t3 <- merge(t1, t2, by.x="name", by.y="geneID")
+ dim(t3)
+# [1] 10523    25
+ g1 <- read.delim("/Users/linyongmao/Documents/microglia/HALLMARK_INTERFERON_GAMMA_RESPONSE.genes", header=F)
+ head(g1)
+ dim(g1)
+ t4 <- t3[ t3$Gene.Symbol.x %in% g1$V1,]
+ dim(t4)
+# [1] 190  25
+ dim(t4[ t4$PValue.x < 0.05 & t4$PValue.y < 0.05,])
+# [1] 39 25
+ t5 <- t4[ t4$PValue.x < 0.05 & t4$PValue.y < 0.05,]
+ dim(t5)
+# [1] 39 25
+
+> ggplot(t5, aes(x=logFC.y, y=logFC.x)) +  geom_point(size=3, shape=21 ) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + labs(x="Ddx3x knockout in male macrophages (log2 FC)", y="Ddx3x knockout in female macrophages (log2 FC)") + geom_smooth(method="lm") + geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +  annotate("text", x = -1, y = -1, label = "y=x", color = "red", size = 8)  +  theme(axis.title.x = element_text(size = 15),  axis.title.y = element_text(size = 15) ) + theme(axis.text = element_text(size = 13))
+> t.test(t5$logFC.y, t5$logFC.x, paired=T)
+> cor.test(t5$logFC.y, t5$logFC.x)
+
