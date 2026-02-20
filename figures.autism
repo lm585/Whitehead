@@ -266,7 +266,9 @@ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-i
 
 ###
 t4 <- t3[ t3$NAME.F.ddx3x.ko %in% c("HALLMARK_INTERFERON_ALPHA_RESPONSE", "HALLMARK_INTERFERON_GAMMA_RESPONSE", "HALLMARK_MYC_TARGETS_V1", "HALLMARK_ALLOGRAFT_REJECTION", "HALLMARK_PROTEIN_SECRETION", "HALLMARK_OXIDATIVE_PHOSPHORYLATION"),]
- t4
+t4 <- t3[ t3$NAME.F.ddx3x.ko %in% c("HALLMARK_INTERFERON_ALPHA_RESPONSE", "HALLMARK_INTERFERON_GAMMA_RESPONSE", "HALLMARK_MYC_TARGETS_V1", "HALLMARK_ALLOGRAFT_REJECTION", "HALLMARK_PROTEIN_SECRETION"),]
+ 
+t4
  dim(t4)
 # [1] 6 5
  t5 <- t4[ t4$FDR.q.val.F.ddx3x.ko < 0.05,]
@@ -285,9 +287,9 @@ t4 <- t3[ t3$NAME.F.ddx3x.ko %in% c("HALLMARK_INTERFERON_ALPHA_RESPONSE", "HALLM
  rownames(t6) <- t5$NAME.F.ddx3x.ko
  t7 <- as.data.frame(t(t6))
  par( mar=c(2,5,12,2))
- barplot(as.matrix(t7), horiz=F, beside=T, ylab="Ddx3x knockout (NES)", xaxt="n", col=c("orange", "purple"))
- axis(side=3, at = seq(2, 2+3*4, by=3), labels=gsub("HALLMARK_","",colnames(t7)), las =2, cex.axis = 0.7)
- legend( 2+3*3, -6,c( "Female", "Male"), fill=c( "orange", "purple"), cex = 0.8, inset = 0.05)
+barplot(as.matrix(t7), horiz=F, beside=T, ylab="DDX3X deletion (NES)", xaxt="n", col=c("orange", "purple"))
+  axis(side=3, at = seq(2, 2+3*3, by=3), labels=gsub("HALLMARK_","",colnames(t7)), las =2, cex.axis = 0.7)
+  legend( 2+3*2.5, -6,c( "Female", "Male"), fill=c( "orange", "purple"), cex = 0.8, inset = 0.05)
 
 
 ###
