@@ -353,7 +353,8 @@ sort(y$samples$norm.factors)
  dim(t5)
 # [1] 39 25
 
-> ggplot(t5, aes(x=logFC.y, y=logFC.x)) +  geom_point(size=3, shape=21 ) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + labs(x="Ddx3x knockout in male macrophages (log2 FC)", y="Ddx3x knockout in female macrophages (log2 FC)") + geom_smooth(method="lm") + geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +  annotate("text", x = -1, y = -1, label = "y=x", color = "red", size = 8)  +  theme(axis.title.x = element_text(size = 15),  axis.title.y = element_text(size = 15) ) + theme(axis.text = element_text(size = 13))
+> ggplot(t5, aes(x=logFC.y, y=logFC.x)) +  geom_point(size=3, shape=21 ) + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + labs(x="DDX3X deletion in male macrophages (log2 FC)", y="DDX3X deletion in female macrophages (log2 FC)") + geom_smooth(method="lm") + geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +  annotate("text", x = -1, y = -1, label = "y=x", color = "red", size = 8)  +  theme(axis.title.x = element_text(size = 15),  axis.title.y = element_text(size = 15) ) + theme(axis.text = element_text(size = 13))
+
 > t.test(t5$logFC.y, t5$logFC.x, paired=T)
 > cor.test(t5$logFC.y, t5$logFC.x)
 
