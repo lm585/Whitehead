@@ -7852,3 +7852,21 @@ t1 <- read.delim("/Users/linyongmao/Documents/microglia-mouse/dir-ddx3x-list-inf
 ###assume female 2-fold change, what's male fold change?
  df.r1$male.fold.fe2 <- 2^( -( (-1) + df.r1$mean.dif))
 
+################################
+> t1 <- Read10X(data.dir = "postnatal.snRNAseq.science.2023", gene.column=1)
+>  t2 <-  CreateSeuratObject(counts = t1, project = "postnat")
+
+linyong@fry /lab/solexa_page/linyong$ ls postnatal.snRNAseq.science.2023/ -lh
+total 3.8G
+-rw-r--r-- 1 linyong systemd-timesync 3.5M Jun 24  2025 barcodes.tsv.gz
+-rw-r--r-- 1 linyong systemd-timesync  66K Jun 24  2025 features.tsv.gz
+-rw-r--r-- 1 linyong systemd-timesync 3.8G Jun 24  2025 matrix.mtx.gz
+# t3 <- t2[ , t2$orig.ident == "U01" ]
+# t5 <- t4[ t4$Lineage == "IN", ]
+>  t6 <- t3[, colnames(t3) %in% t5$Cell_ID]
+>   dim(t6)
+[1] 20116 71370
+linyong@fry /lab/solexa_page/linyong$ mv -i temp.2.txt postnatal.science.IN.pseudobulk.raw.count.txt
+linyong@fry /lab/solexa_page/linyong$ mv -i temp.3.txt meta.IN.info.txt
+
+
