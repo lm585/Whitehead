@@ -7949,3 +7949,18 @@ vi human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.20samplesMG.name-type-chr.tx
 cat  human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.20samplesMG.name-type-chr.txt |  awk 'BEGIN {FS = "\t"; OFS = "\t"} $8 != "chrX" && $5 < 0.01 && $2 < 0' | wc      
       17  
 
+######
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat c2.all.v2026.1.Hs.symbols.gmt| grep -i reactome | grep  ^REACTOME > c2.reactome.wiki.v2026.1.Hs.symbols.gmt
+linyongmao@Linyong-Mao-MBP16-2019 autism % wc -l c2.reactome.wiki.v2026.1.Hs.symbols.gmt
+
+    1839 c2.reactome.wiki.v2026.1.Hs.symbols.gmt
+cat c2.all.v2026.1.Hs.symbols.gmt | grep  "^WP_" >> c2.reactome.wiki.v2026.1.Hs.symbols.gmt
+wc -l c2.reactome.wiki.v2026.1.Hs.symbols.gmt
+    2764 c2.reactome.wiki.v2026.1.Hs.symbols.gmt
+
+ human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.20samplesMG.noX.Y.rnk  
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp-s 
+#
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx  c2.reactome.wiki.v2026.1.Hs.symbols.gmt   -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.20samplesMG.noX.Y.rnk  -scoring_scheme classic  -rpt_label   "human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.20samplesMG.noX.Y.weight0.c2" -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 50  -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+
