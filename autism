@@ -7869,4 +7869,83 @@ total 3.8G
 linyong@fry /lab/solexa_page/linyong$ mv -i temp.2.txt postnatal.science.IN.pseudobulk.raw.count.txt
 linyong@fry /lab/solexa_page/linyong$ mv -i temp.3.txt meta.IN.info.txt
 
+###################################
+>  summary(y$samples)
+ group     lib.size       norm.factors   
+ 1:20   Min.   :108147   Min.   :0.8446  
+        1st Qu.:216475   1st Qu.:0.9822  
+        Median :264516   Median :1.0005  
+        Mean   :296232   Mean   :1.0015  
+        3rd Qu.:379856   3rd Qu.:1.0441  
+        Max.   :538060   Max.   :1.0833  
+# 20 samples used for sex DEGs in microglia
+> samples <- colnames(y)
+ t1 <- read.delim("postnatal.science.ExNeu.pseudobulk.raw.count.txt")
+ dim(t1)
+# [1] 20116    60
+ t2 <- t1[, colnames(t1) %in% paste("X", samples, sep="")]
+ dim(t2)
+# [1] 20116    20
+ y <- DGEList(counts=t2)
+ y <- calcNormFactors(y)
+ summary(y$samples)
+#  group     lib.size         norm.factors   
+ 1:20   Min.   : 4236525   Min.   :0.9030  
+        1st Qu.: 9051247   1st Qu.:0.9631  
+        Median :16803766   Median :1.0147  
+        Mean   :17491354   Mean   :1.0018  
+        3rd Qu.:21717982   3rd Qu.:1.0257  
+        Max.   :44031014   Max.   :1.1432  
+
+  t5 <- read.delim("/Users/linyongmao/Downloads/postnatal.snRNAseq.science.2023/meta.tsv")
+  l1 <- unique(t5[, c(2:8,12:14)])
+ dim(l1)
+# [1] 2667   10
+ l2 <- l1[ l1$Age_.days. > 266 & l1$Age_.days. < 20*365,]
+  dim(l2)
+# [1] 1224   10
+ l3 <- head(l2, n=dim(y)[2])
+for(i in 1:dim(l3)[1]) {
+  f1 <- l2[ l2$Individual == gsub("X","", colnames(y)[i]), ][1,]
+  l3[i,] <- f1
+ }
+ identical(gsub("X", "", colnames(y)), l3$Individual)
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- edgeR::cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.5
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+# [1] 15365    20
+y
+
+ identical(gsub("X", "", colnames(y)), l3$Individual)
+
+l3$age1 <- (l3$Age_.days. - 266) / 365 
+ design <- model.matrix( ~ l3$Sex + l3$age1)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y, design)
+qlf <- glmQLFTest(fit, coef=2)
+top2v1 <- topTags(qlf, n = 91234)
+ head(top2v1)
+#           logFC   logCPM         F       PValue          FDR
+# KDM5D  8.515951 5.039037 1025.0744 6.436295e-24 9.889367e-20
+# XIST -9.619242 7.468704 363.7796 8.318378e-15 1.825884e-11
+> write.table(top2v1, "diff2-1.txt", sep="\t", quote = F)
+ diff <- as.data.frame(top2v1)
+ diff$geneID <- rownames(diff)
+  g <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type-name")
+  df.cpm.gene <- merge(diff, g, by.x="geneID", by.y="name")
+  dim(df.cpm.gene)
+# [1] 14856    10
+ dim(y)
+# [1] 15365    20
+>  write.table(df.cpm.gene, "diff2-1.chr.txt", sep="\t", quote=F)
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i diff2-1.chr.txt human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.20samplesMG.name-type-chr.txt
+vi human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.20samplesMG.name-type-chr.txt
+cat  human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.20samplesMG.name-type-chr.txt |  awk 'BEGIN {FS = "\t"; OFS = "\t"} $8 != "chrX" && $5 < 0.01 && $2 < 0' | wc      
+      17  
 
