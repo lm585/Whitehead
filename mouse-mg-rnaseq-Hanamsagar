@@ -27,7 +27,7 @@ raw2 <- raw[ , colnames(raw) %in% t2$id]
  ####median >= 1 for pathway genes
  y<-y[med$logic,]
  print(dim(y))
-# [1] 13688    53
+# [1] 13862    40
 
 y.cn <- colnames(y)
 info.2 <- head(meta, n= dim(y)[2])
