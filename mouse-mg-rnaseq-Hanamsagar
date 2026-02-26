@@ -6,7 +6,11 @@ meta <- read.delim("mouse-mg-rnaseq-Hanamsagar.metadata.2.txt")
  raw <- read.delim("mouse-mg-rnaseq-60samp-stranded-Hanamsagar.counts_gene")
  dim(raw)
 # [1] 56980    62
- t2 <- meta[ meta$EorP != "E" & meta$age == 60 & meta$lps != "LPS",]
+# t2 <- meta[ meta$EorP != "E" & meta$age == 60 & meta$lps != "LPS",]
+ t2 <- meta[ meta$EorP != "E" & meta$lps != "LPS",]
+ dim(t2)
+# [1] 40  7
+
 t2
 raw2 <- raw[ , colnames(raw) %in% t2$id]
  rownames(raw2) <- raw[, 1]
