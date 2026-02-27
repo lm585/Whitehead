@@ -8109,3 +8109,37 @@ l2 <- lm(as.numeric(l1) ~ info.2$Sex)
 # Residual standard error: 0.8204 on 11 degrees of freedom
 # Multiple R-squared:  0.9034,	Adjusted R-squared:  0.8947 
 
+###
+ r1 <- df.cpm.gene[, 1:6]
+ colnames(r1) <- c("name", "logFC", "P", "chr")
+ r1$P = 999
+for(i in 1:dim(r1)[1]) {
+ l1 <-  df.cpm.gene[ i,2:14]
+ l2 <- lm(as.numeric(l1) ~ info.2$Sex)
+ l3 <- summary(l2)
+ r1$name[i] <- df.cpm.gene$name[i]
+ r1$logFC[i] <- l3$coefficients[2,1]
+ r1$P[i] <- l3$coefficients[2,4]
+ r1$chr[i] <- df.cpm.gene$chr[i]
+ }
+  identical(gsub("human_Microglia_RNA_polyA_", "", colnames(l1)), info.2$Patient.ID)
+# 5833              PGD  -0.9442161 8.647394e-08  chr1  -0.8553154 -2.245779e-01
+# 6096            SLIT2   1.8768152 3.467103e-08  chr4   1.9679894 -4.771874e-02
+> write.table(r1, "diff2-1", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 autism % vi diff2-1
+cat diff2-1 | awk 'BEGIN {FS = "\t"} !($4 == "chrX" || $4 == "chrY")'   > temp1
+cat temp1 | awk '$3 == 0' |head
+cat temp1 | awk '$3 < 1e-6' |head
+cat temp1 | awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+ print 1, $2,3,4,$3,6,7,$1 "\n";
+}' > temp
+
+../microglia/make-rnk-genesymble  temp   diff2-1-human-mg-rm.age.agesexinterac.variations.MvF.noX.Y.rnk
+PGD     -7.06311
+SLIT2   7.46003
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp-s
+#
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx  /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt      -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk diff2-1-human-mg-rm.age.agesexinterac.variations.MvF.noX.Y.rnk  -scoring_scheme classic  -rpt_label   "human-mg-rm.age.agesexinterac.variations.MvF.noX.Y.weight0.h.all.v7.4" -create_svgs false -inclu
+de_only_symbols true   -make_sets true -plot_top_x 50  -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
