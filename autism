@@ -7964,3 +7964,77 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp-s
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx  c2.reactome.wiki.v2026.1.Hs.symbols.gmt   -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.20samplesMG.noX.Y.rnk  -scoring_scheme classic  -rpt_label   "human-mg-postnatal-science2023-ExNeu-MvF-diff2-1.20samplesMG.noX.Y.weight0.c2" -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 50  -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
 
 
+############################
+mouse-mg-rnaseq-Hanamsagar
+ design <- model.matrix( ~ info.2$sex + info.2$age + info.2$pc1 + info.2$pc2) 
+ design
+#    (Intercept) info.2$sexM info.2$age  info.2$pc1 info.2$pc2
+# 1            1           0         60  -84.292848 168.126739
+# 2            1           1         60  -36.878202  78.128908
+# 3            1           1         60  -67.448184  83.076541
+
+
+ lm3 <- lm(log2(g6$ENSG00000244731.10+1) ~ log2(g6$c4a - 0.2) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+ s3 <- summary(lm3)
+ sid <-  log2(g6$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g6$t.SMRIN  - s3$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g6$SEX.x - s3$coefficients[6,1] * g6$age_value - s3$coefficients[7,1] * g6$body_mass_index - s3$coefficients[1,1] 
+
+y
+d = cpm(y)
+a <- log2(d+1)
+a.df <- as.data.frame(a)
+a.df[1:6,1:6]
+ identical(colnames(a.df), info.2$id)
+resid2 <- a.df
+for(i in 1:dim(a.df)[1] ) {
+ lm3 <- lm(as.numeric( a.df[i,]) ~ info.2$sex + info.2$age + info.2$pc1 + info.2$pc2)
+ s3 <- summary(lm3)
+ sid <- as.numeric(a.df[i, ]) - s3$coefficients[3,1] * info.2$age - s3$coefficients[4,1] * info.2$pc1 - s3$coefficients[5,1] * info.2$pc2 - s3$coefficients[1,1]
+ resid2[i,] <- sid
+}
+> write.table(resid2, "temp-mouse40samp-sex-resid.expr.txt", sep="\t")
+> dim(resid2)
+[1] 13862    40
+> t1 <- read.delim("temp-mouse40samp-sex-resid.expr.txt")
+
+ diff <- resid2
+diff$geneID <- rownames(diff)
+gene.name <- raw[, 1:2]
+df.gene <- merge(diff, gene.name, by.x="geneID", by.y="geneID")
+t6 <- read.delim("../microglia-mouse/Mouse_ENSEMBL_Gene_ID_Human_Orthologs_MSigDB.v7.4.chip")
+ dim(t6)
+# [1] 19341     3
+  t2 <- read.delim("../dir-GTExV8/gencode.vM31.mouse-id-chr-name")
+  t3 <- merge(df.gene, t2, by.x="geneID", by.y="geneID")
+  dim(t3)
+ df.cpm.gene <- t3
+ df.cpm.gene$id <- gsub("\\.[0-9][0-9]*", "", df.cpm.gene$geneID)
+ t8 <- merge(df.cpm.gene, t6, by.x="id", by.y="ID")
+ dim(t8)
+# [1] 12750    49
+ l1 <- t8[ t8$name.x == "Xist",3:42]
+ identical(colnames(l1), info.2$id)
+ boxplot(as.numeric(l1) ~ info.2$sex)
+  l1 <- t8[ t8$name.x == "Kdm6a",3:42]
+  identical(colnames(l1), info.2$id)
+  boxplot(as.numeric(l1) ~ info.2$sex)
+ l2 <- lm(as.numeric(l1) ~ info.2$sex)
+ summary(l2)
+
+# Coefficients:
+#               Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) -2.107e-15  4.722e-02    0.00        1    
+# info.2$sexM -7.417e-01  6.852e-02  -10.82  3.6e-13 ***
+
+# Residual standard error: 0.2164 on 38 degrees of freedom
+# Multiple R-squared:  0.7551,	Adjusted R-squared:  0.7487 
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.txt | grep -i kdm6a
+ENSMUSG00000037369.18	-0.741430691280923	6.73393063882748	96.9919778855013	1.37465106380651e-12	3.17590217441431e-09	Kdm6a	chrX	+	protein_coding	Kdm6a
+
+"Zfx":
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)  
+(Intercept)  1.194e-15  3.205e-02   0.000   1.0000  
+info.2$sexM -9.077e-02  4.650e-02  -1.952   0.0583 .
+Residual standard error: 0.1469 on 38 degrees of freedom
+Multiple R-squared:  0.09113,	Adjusted R-squared:  0.06722 
+ENSMUSG00000079509.11	-0.0866524655459808	6.93145586461279	2.46122562944744	0.124020639517038	0.56794651634793	Zfx	chrX	-	protein_coding	Zfx
