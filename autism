@@ -7974,10 +7974,6 @@ mouse-mg-rnaseq-Hanamsagar
 # 3            1           1         60  -67.448184  83.076541
 
 
- lm3 <- lm(log2(g6$ENSG00000244731.10+1) ~ log2(g6$c4a - 0.2) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
- s3 <- summary(lm3)
- sid <-  log2(g6$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g6$t.SMRIN  - s3$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g6$SEX.x - s3$coefficients[6,1] * g6$age_value - s3$coefficients[7,1] * g6$body_mass_index - s3$coefficients[1,1] 
-
 y
 d = cpm(y)
 a <- log2(d+1)
