@@ -8149,3 +8149,33 @@ de_only_symbols true   -make_sets true -plot_top_x 50  -rnd_seed 1234 -set_max 5
 linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i diff2-1 diff2-1-human-mg-rm.age.agesexinterac.variations.MvF.txt
 -rw-r--r--  1 linyongmao  staff    79M Feb 28 12:36 my_workspace.mg.rm-age-other-variable.residue.RData
 
+###
+> t1 <- read.delim("diff2-1-human-mg-rm.age.agesexinterac.variations.MvF.noX.Y.rnk", header=F)
+ head(t1)
+ dim(t1)
+# [1] 14586     2
+ t2 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand.rnk", header=F)
+ dim(t2)
+# [1] 14586     2
+ t3 <- merge(t2, t1, by.x="V1", by.y="V1")
+> cor.test(t3$V2.x, t3$V2.y, method="sp")
+
+        Spearman's rank correlation rho
+S = 7294226035, p-value < 2.2e-16
+      rho
+0.9858967
+> cor.test(t3$V2.x, t3$V2.y)
+
+        Pearson's product-moment correlation
+t = 479.37, df = 14584, p-value < 2.2e-16
+sample estimates:
+      cor
+0.9697019
+> plot(t3$V2.x, t3$V2.y, xlab="human-mg-MvF-diff2-1.noX.Y.interac.strand.rnk", ylab="rm.age.agesexinterac.variations")
+ abline(h=0)
+ abline(v=0)
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ x=-10:10
+ y=x
+ abline(lm(y~x), lwd = 1, col="blue") 
