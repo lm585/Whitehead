@@ -8143,3 +8143,9 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp-s
 bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx  /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt      -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk diff2-1-human-mg-rm.age.agesexinterac.variations.MvF.noX.Y.rnk  -scoring_scheme classic  -rpt_label   "human-mg-rm.age.agesexinterac.variations.MvF.noX.Y.weight0.h.all.v7.4" -create_svgs false -inclu
 de_only_symbols true   -make_sets true -plot_top_x 50  -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
 
+> t8.human.mg <- df.cpm.gene
+> info.2.human.mg <- info.2
+> save.image(file = "my_workspace.mg.rm-age-other-variable.residue.RData")
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i diff2-1 diff2-1-human-mg-rm.age.agesexinterac.variations.MvF.txt
+-rw-r--r--  1 linyongmao  staff    79M Feb 28 12:36 my_workspace.mg.rm-age-other-variable.residue.RData
+
