@@ -8192,3 +8192,70 @@ sample estimates:
  dim(t9)
 # [1] 11  5
 > ggplot(t8, aes(x= NES.x, y= NES.y, label=gsub("HALLMARK_", "", NAME))) + geom_point(size=3, shape=21, col="black") + labs(x="human (NES)", y="regress out other variables (NES)") + geom_smooth(method="lm") + geom_hline(yintercept=0, col="black", size = 0.5) + geom_vline(xintercept=0, size=0.5) + geom_text_repel(show.legend=T, data=t9 , size=2.5, max.overlaps=100, min.segment.length = 0.1, col="red") +  theme(axis.title.x = element_text(size = 16),  axis.title.y = element_text(size = 16) ) + theme(axis.text = element_text(size = 14))   + scale_y_continuous(breaks=seq(-8, 3, 2))
+
+####################################################
+ r1 <- t8.mouse.mg[, 1:6]
+ colnames(r1) <- c("name", "logFC", "P", "chr")
+ r1$P = 999
+for(i in 1:dim(r1)[1]) {
+ l1 <-  t8.mouse.mg[ i,3:42]
+ l2 <- lm(as.numeric(l1) ~ info.2.mouse.mg$sex )
+ l3 <- summary(l2)
+ r1$name[i] <- t8.mouse.mg$Gene.Symbol[i]
+ r1$logFC[i] <- l3$coefficients[2,1]
+ r1$P[i] <- l3$coefficients[2,4]
+ r1$chr[i] <- t8.mouse.mg$chr[i]
+ }
+ identical(colnames(t8.mouse.mg)[3:42], info.2.mouse.mg$id)
+> write.table(r1, "diff2-1", quote=F, sep="\t")
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i diff2-1 diff2-1-mouse-mg-rm.age-pc1-pc2.variations.MvF.txt
+vi diff2-1-mouse-mg-rm.age-pc1-pc2.variations.MvF.txt
+DDX3X	-0.342826075579715	2.24811291863761e-07	chrX	-0.496619457145599	-0.353119460576684
+DDX3Y	6.97662733775197	2.72268043154239e-24	chrY	6.76093298558137	5.8812599064381
+cat  diff2-1-mouse-mg-rm.age-pc1-pc2.variations.MvF.txt | awk 'BEGIN {FS = "\t"} !($4 == "chrX" || $4 == "chrY")'   > temp1
+cat temp1 | awk '$3 == 0' |head
+cat temp1 | awk '$3 < 1e-6' |head
+cat temp1 | awk 'BEGIN {FS = "\t"; OFS = "\t"; ORS = ""}
+{
+ print 1, $2,3,4,$3,6,7,$1 "\n";
+}' > temp
+../microglia/make-rnk-genesymble  temp    diff2-1-mouse-mg-rm.age-pc1-pc2.variations.MvF.noX.Y.rnk
+AUTS2	3.15308
+B2M	-3.09041
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat temp-s
+#
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx  /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt      -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk diff2-1-mouse-mg-rm.age-pc1-pc2.variations.MvF.noX.Y.rnk  -scoring_scheme classic  -rpt_label   "mouse-mg-rm.age-pc1-pc2.variations.MvF.noX.Y.weight0.h.all.v7.4" -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 50  -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
+
+> t1 <- read.delim("/Users/linyongmao/Documents/autism/mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk", header=F)
+ dim(t1)
+# [1] 12171     2
+ t2 <- read.delim("diff2-1-mouse-mg-rm.age-pc1-pc2.variations.MvF.noX.Y.rnk", header=F)
+ dim(t2)
+# [1] 12171     2
+ t3 <- merge( t1, t2,by.x="V1", by.y="V1")
+> cor.test(t3$V2.x, t3$V2.y, method="sp")
+
+	Spearman's rank correlation rho
+S = 1.0292e+10, p-value < 2.2e-16
+      rho 
+0.9657474 
+>
+Call:
+lm(formula = t3$V2.y ~ t3$V2.x)
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 0.028805   0.002419   11.91   <2e-16 ***
+t3$V2.x     1.138836   0.002838  401.31   <2e-16 ***
+
+Residual standard error: 0.2645 on 12169 degrees of freedom
+Multiple R-squared:  0.9297,	Adjusted R-squared:  0.9297 
+> plot(t3$V2.x, t3$V2.y, xlab="mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.\nage-residPC1-residPC2-covar.name-type-chr.humanname.noXY.rnk", ylab="rm.age-pc1-pc2.variations")
+  abline(h=0)
+  abline(v=0)
+  abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+  abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ x=-10:10
+ y=x
+  abline(lm(y~x), lwd = 1, col="blue") 
+
