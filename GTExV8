@@ -7850,6 +7850,7 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % head temp
 HG01890.hap1    STK19_C4AL_CYP21A1P_TNXA_STK19B_C4BS_CYP21A2_TNXB
 HG01890.hap2    STK19_C4AL_CYP21A1P_TNXA_STK19B_C4BS_CYP21A2_TNXB
 
+tab="	"
 cat temp | cut -f 1 | sed 's/.hap.*//' | uniq -d | while read ll
 do
  c4a=`grep "${ll}.hap" temp | cut -f 2 | grep -oi C4A | wc -l | awk '{print $1}'`
@@ -7859,7 +7860,9 @@ do
  echo "${ll}${tab}${c4a}${tab}${c4b}${tab}${cyp1}${tab}$cyp2"
 
 done > out
-
+#########################
+#linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i temp Logsdon.nature2025.c4.cn.txt
+#########################
 > t1 <- read.delim("out", header=F)
  dim(t1)
 #  [1] 65  5
