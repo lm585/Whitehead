@@ -9553,6 +9553,19 @@ fib <- read.delim("Andrianna-Fibro.deltaExi.txt")
 #  [1] 100  11
 > gplot(t8, aes(x=deltaEx, y = Cells_Cultured_fibroblasts.x,  label = Gene)) + geom_point(size=2, shape=21, col="red") + labs( x = "fibroblasts deltaEx (Adrianna San Roman)", y="GTEx V8 fibroblasts effect.size.Oliva", title="100 NPX genes sig. sex biased (LFSR <0.015) in GTEx") + geom_smooth() + geom_text_repel(show.legend=F, data=t8, size=1.5, max.overlaps=100, min.segment.length = 0.1) + geom_hline(yintercept=0, col="blue") + geom_vline(xintercept=0, col="blue")
 
+########################################
+> df1 <- as.data.frame(matrix(nrow=2, ncol=10))
+ colnames(df1) <- paste("total.CN", 2:11, sep="_")
+ rownames(df1) <- c("GTEx", "Logsdon.nature2025")
+ dim(t11[ t11$c4.tot.no.intron9.int == t11$c4a.int + t11$c4b.int,])
+#  [1] 466  13
+ df1[1,] <- c(9,79,246,206,198,69,21,9,0,1)
+ df1[2,] <- c(1,14,37, 11,  2, rep(0, 5))
+ rowSums(df1)
+ df2 <- df1[, c(1:8,10)]
+rowSums(df2)
+ chisq.test(df2, simulate.p.value=T, B=100000)
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
