@@ -9565,6 +9565,25 @@ fib <- read.delim("Andrianna-Fibro.deltaExi.txt")
  df2 <- df1[, c(1:8,10)]
 rowSums(df2)
  chisq.test(df2, simulate.p.value=T, B=100000)
+###############################################
+ boxplot(g7$resid ~ g7$C4A.int, ylab="residual C4A expression (log2(cpm+1))")
+ boxplot(g7$expr ~ g7$C4A.int, ylab="CPM")
+ abline(h = seq(-100,1000,10), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = seq(-100,1000,50), lty = 5, lwd = 0.8, col = "blue")
+
+ df1 <- as.data.frame(matrix(ncol=7, nrow=10))
+
+ colnames(df1) <- c("C4A.CN", "Min.", "1st Qu.",  "Median",    "Mean",  "3rd Qu.",    "Max.")
+ df1
+for(i in 0:6) {
+e <- g7[ g7$C4A.int == i,]$expr
+df1[i+1,]$C4A.CN <- i
+ df1[i+1,2:7] <- as.numeric(summary(e))
+
+}
+ df1
+ rownames(df1) <- 0:9
+ df1
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
