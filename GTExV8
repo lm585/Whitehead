@@ -9640,6 +9640,60 @@ set.seed(50) # 8.183456e-28
 # Multiple R-squared:  0.1899,	Adjusted R-squared:  0.1885 
  boxplot(sid ~ x)
  abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+#################################################
+> g6$c4a.int <- round(g6$c4a * i, digits=0)
+>  for(i in 1:dim(g6)[1]) {
++  if(g6$c4a.int[i] == 0) {
++     g6$c4a.int[i] = g6$c4a[i]
++ }
++ }
+> 
+> lm3 <- lm(log2(g6$ENSG00000244731.10+1) ~ log2(g6$c4a.int) + g6$t.SMRIN + log10(g6$t.SMTSISCH + 1300) + g6$SEX.x + g6$age_value + g6$body_mass_index )
+>  s3 <- summary(lm3)
+>  s3
+> sid <-  log2(g6$ENSG00000244731.10 + 1) - s3$coefficients[3,1] * g6$t.SMRIN  - s3$coefficients[4,1] * log10(g6$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g6$SEX.x - s3$coefficients[6,1] * g6$age_value - s3$coefficients[7,1] * g6$body_mass_index - s3$coefficients[1,1] 
+ g7 <- data.frame(resid = sid, C4A = g6$c4a , expr = g6$ENSG00000244731.10, subjid = g6$SUBJID)
+ g7$C4A.int <- round(g7$C4A, digits=0)
+ g7$C4A.int.fact0.75 <- round(g7$C4A * 0.75, digits=0)
+ table(g7$C4A.int)
+ table(g7$C4A.int.fact0.75)
+ dim(g7[ g7$C4A.int == g7$C4A.int.fact0.75,])
+# [1] 188   6
+ dim(g7)
+# [1] 574   6
+ dim(g7[ g7$C4A.int == g7$C4A.int.fact0.75 & g7$C4A.int == 3,])
+# [1] 29  6
+ g8 <- (g7[ g7$C4A.int == g7$C4A.int.fact0.75 & g7$C4A.int == 3,])
+ summary(g8$C4A)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#   3.333   3.368   3.403   3.407   3.436   3.491 
+ g9 <- g7[  g7$C4A.int == 4,]
+ dim(g9)
+# [1] 68  6
+ boxplot(g8$resid, g9$resid, ylab="residual C4A expression (log2(cpm+1))", xlab="C4A CN")
+ axis(1, at=1:2, labels=c("3 (n=29, common)", "4 (n=68)"))
+ abline(h = seq(0,100,0.5), lty = 5, lwd = 0.5, col = "gray")
+ wilcox.test(g8$resid, g9$resid)
+ g8 <- (g7[ g7$C4A.int == g7$C4A.int.fact0.75 & g7$C4A.int == 2,])
+ dim(g8)
+# 121
+g9 <- g7[  g7$C4A.int == 3 & g7$C4A.int.fact0.75 == 2,]
+dim(g9)
+# 232   6
+ wilcox.test(g8$resid, g9$resid)
+# W = 10549, p-value = 0.0001275
+ g10 <- g7[ order(g7$C4A),]
+ g10$x <- 1:dim(g10)[1]
+ plot(g10$x, g10$C4A.int, pch=19, col="red", cex=0.5, xlab="donor" )
+ points(g10$x, g10$C4A.int.fact0.75 + 0.2, pch=0, col="black", cex=0.5)
+ text(350, 2.2, "scale factor=0.75", pos=3, col="black")
+ v1 <- min(g10[ g10$C4A.int == 2 & g10$C4A.int.fact0.75 == 2,]$x)
+ abline(v=v1, lty = 5, lwd = 0.8, col = "green")
+ v2 <- max(g10[ g10$C4A.int == 2 & g10$C4A.int.fact0.75 == 2,]$x)
+ abline(v=v2, lty = 5, lwd = 0.8, col = "green")
+ v3 <- max(g10[ g10$C4A.int == 3 & g10$C4A.int.fact0.75 == 2,]$x)
+ abline(v=v3, lty = 5, lwd = 0.8, col = "green")
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
