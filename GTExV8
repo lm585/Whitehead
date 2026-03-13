@@ -9693,7 +9693,7 @@ dim(g9)
  abline(v=v2, lty = 5, lwd = 0.8, col = "green")
  v3 <- max(g10[ g10$C4A.int == 3 & g10$C4A.int.fact0.75 == 2,]$x)
  abline(v=v3, lty = 5, lwd = 0.8, col = "green")
-
+  text(160, 2, "our result", pos=1, col="red")
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
