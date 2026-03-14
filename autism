@@ -8259,3 +8259,58 @@ Multiple R-squared:  0.9297,	Adjusted R-squared:  0.9297
  y=x
   abline(lm(y~x), lwd = 1, col="blue") 
 
+#############################################
+> y<-y[med$logic,]
+> print(dim(y))
+[1] 13477    20
+> # [1]  20116 genes -> 13477,    20
+> d = edgeR::cpm(y)
+>  a <- log2(d+1)
+>  a.df <- as.data.frame(a)
+
+ a.df.MG <- a.df
+
+# ExNeu.pseudobulk
+# correlation MG gene with neuron gene expression
+        Mean   :17491354   Mean   :1.0018  
+med <- data.frame(y$counts[,1])
+med$logic <- TRUE
+d <- edgeR::cpm(y)
+for(i in 1:dim(y)[1]) {
+ med$logic[i] <- median(d[i,]) >= 0.5
+}
+####median >= 1 for pathway genes
+y<-y[med$logic,]
+print(dim(y))
+# [1] 15365    20
+y
+ d = edgeR::cpm(y)
+  a <- log2(d+1)
+  a.df.exn <- as.data.frame(a)
+ colnames(a.df.MG) <- paste("X", colnames(a.df.MG), sep="")
+ identical(colnames(a.df.MG), colnames(a.df.exn))
+# weighted GSEA LEGs
+ f1 <- "file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.weighted.age-covar.noX.Y.GseaPreranked.1773427881848/HALLMARK_MYC_TARGETS_V1.tsv"
+ t1 <- read.delim(f1)
+ g1 <- t1[ t1$CORE.ENRICHMENT == "Yes" & t1$RANK.METRIC.SCORE < log10(0.5),]
+ dim(g1)
+# [1] 46  7
+ x <- a.df.MG[ rownames(a.df.MG) %in% g1$SYMBOL,]
+ dim(x)
+# [1] 46 20
+ res <- a.df.exn[, c(1:3)]
+ colnames(res) <- c("mean.corr", "median.corr", "c3")
+
+ for(i in 1:dim(a.df.exn)[1]){
+  f1 <- c()
+for(j in 1:dim(x)[1]){
+ c1 <- cor.test(as.numeric(a.df.exn[i,]), as.numeric(x[j,]))
+ f1 <- c(f1, c1$estimate)
+}
+res[i,]$mean.corr <- mean(f1)
+res[i,]$median.corr <- median(f1)
+}
+ summary(res)
+> write.table(res, "temp", sep="\t")
+
+
