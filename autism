@@ -8318,6 +8318,7 @@ identical(colnames(x), colnames(a.df.exn))
  dim(a.2)
 summary(a.2)
 identical(rownames(res), rownames(a.df.exn))
- write.table(a.2, "temp", sep="\t")
+# write.table(a.2, "temp", sep="\t")
+ write.table(a.2, "temp", sep="\t", quote=F)
 
 
