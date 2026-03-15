@@ -8312,6 +8312,12 @@ res[i,]$median.corr <- median(f1)
 }
  summary(res)
 identical(colnames(x), colnames(a.df.exn))
-> write.table(res, "temp", sep="\t")
+ g <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type-name")
+ g1 <- g[ g$chr != "chrX" & g$chr != "chrY",]$name
+ a.2 <- res[ rownames(res) %in% g1,]
+ dim(a.2)
+summary(a.2)
+identical(rownames(res), rownames(a.df.exn))
+ write.table(a.2, "temp", sep="\t")
 
 
