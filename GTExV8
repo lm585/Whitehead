@@ -9694,6 +9694,18 @@ dim(g9)
  v3 <- max(g10[ g10$C4A.int == 3 & g10$C4A.int.fact0.75 == 2,]$x)
  abline(v=v3, lty = 5, lwd = 0.8, col = "green")
   text(160, 2, "our result", pos=1, col="red")
+#################################################
+> setwd("Documents/dir-GTExV8/")
+ t1 <- read.delim("temp1.c4a.R.sort")
+ t2 <- t1[ grep("brain", t1$X, ignore.case=T),]
+ dim(t2)
+# [1] 13 32
+ t2[ t2$c4a.g6.c4a.cn.pVal < 1e-5, c(1:7)]
+#                                X X.samp X.samp.genotype X.samp.F X.samp.M c4a.g6.c4a.cn.coeff c4a.g6.c4a.cn.pVal
+# 10 Brain - Cerebellar Hemisphere    215             175       51      124           0.3729064           5.09e-06
+# 26            Brain - Cerebellum    241             209       58      151           0.4923775           8.94e-11
+# 33           Brain - Hippocampus    197             165       49      116           0.6339057           4.28e-06
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
