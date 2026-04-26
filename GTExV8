@@ -9706,6 +9706,30 @@ dim(g9)
 # 26            Brain - Cerebellum    241             209       58      151           0.4923775           8.94e-11
 # 33           Brain - Hippocampus    197             165       49      116           0.6339057           4.28e-06
 
+#####################################
+SRA downloaded fastq
+linyong@fry ~$ cat temp | while read ll; do grep -n "$ll" Thyroid.574samp.dnaseq.429inSRA.BioSample.txt ; done | sort -g
+31:SAMN03877781
+32:SAMN03878300
+33:SAMN04596477
+34:SAMN04598347
+35:SAMN04597509
+36:SAMN04599070
+37:SAMN04596286
+38:SAMN04597466
+39:SAMN04595445
+40:SAMN04598124
+41:SAMN04597676
+42:SAMN04597859
+43:SAMN04596058
+44:SAMN04598469
+45:SAMN04598868
+46:SAMN04596424
+47:SAMN04598395
+48:SAMN04599093
+49:SAMN04596345
+50:SAMN04598225
+51:SAMN04596053
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
