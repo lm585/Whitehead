@@ -9730,6 +9730,37 @@ linyong@fry ~$ cat temp | while read ll; do grep -n "$ll" Thyroid.574samp.dnaseq
 49:SAMN04596345
 50:SAMN04598225
 51:SAMN04596053
+########################################
+#[12] Downloading fastq files from SRA:
+bash /lab/solexa_page/linyong/gtex-dna-aug2024/script-bam-c4a-depth SAMN04596666.sorted.bam > temp-c4a-q20
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1/dir-SAMN03877781$ bash  /archive/page_human_data/2025.12.01-50349/lab/solexa_page/linyong/gtex-dna/dir-dna-sra/gtex-dna-bam-archive-11292025/dir-SAMN04596666/script-cnv-02-fq-downloaded >  temp-c4a-q20-1line
+bash /archive/page_human_data/2025.12.01-50349/lab/solexa_page/linyong/gtex-dna/dir-dna-sra/gtex-dna-bam-archive-11292025/dir-SAMN04596666/script-bam-C4A-start-exon9-q0  > temp-start-exon9.q0
+bash /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1/dir-SAMN03877781/scr1 > temp-start-exon9.q0-1line
+bash /lab/solexa_page/linyong/gtex-dna/script-cram-genecount-03-download-fq SAMN04596666.sorted.bam > temp-chr-dep
+
+cat temp-chr-dep | head -40 | grep -w chrom | head -22 | sort -t '      '  +10 -11g | awk 'NR == 11 || NR == 12' | cut -f 5,11
+chr7    49.8124
+chr1    49.9033
+> dep =(49.8124+49.9033)/2
+ t1 <- read.delim("temp-c4a-q20-1line", header=F)
+  t1$c4a <- t1$V9 / dep
+  t1$c4b <- t1$V19 / dep
+  t1$CYP21A1P <- t1$V29 / dep * 2
+  t1$CYP21A2 <- t1$V39 / dep * 2
+  t1$cyp21.tot <- (t1$V49 + t1$V59) / dep *2
+  t1$c4a.cn <- t1$c4a  *  20.0916  + 0.2 
+  t1$c4b.cn <- t1$c4b    *  19.2208  + 0.2 
+  t1$cyp1.cn <- t1$CYP21A1P * 1.23306
+  t1$cyp2.cn <- t1$CYP21A2  * 1.08333
+  t1[, 66:70]
+#   cyp21.tot   c4a.cn   c4b.cn cyp1.cn  cyp2.cn
+# 1  3.539439 1.560686 2.641525 1.12881 2.384915
+ t8 <- read.delim("temp-start-exon9.q0-1line")
+ t8$seq.dep <- dep
+ t8$c4.tot.no.intron9 <- (t8$meandepth * 2352 + t8$meandepth.1 * 11490 + t8$meandepth.2 *  2352 + t8$meandepth.3 * 11489) / (2352 + 11489.5) / t8$seq.dep * 2
+ t8[,46:47]
+#    seq.dep c4.tot.no.intron9
+# 1 49.85785          3.965127
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
