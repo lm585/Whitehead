@@ -9811,6 +9811,39 @@ samtools coverage -r chr10:90872002-90872064  -q 20  -H "$file"
 
 done
 linyong@fry /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1/dir-SAMN04598225$
+########################################
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ cat slurm-chr-dep
+#!/bin/bash
+# Configuration values for SLURM job submission.
+# One leading hash ahead of the word SBATCH is not a comment, but two are.
+#SBATCH --job-name="chr-depth" # friendly name for job.
+#SBATCH --time=21-00                    # run time for job
+#SBATCH --nodes=1                      # ensure cores are on one node
+#SBATCH --ntasks=1                     # run a single task
+#SBATCH --cpus-per-task=4              # number of cores/threads requested. sort bam according to read name
+#SBATCH --mem=200gb                      # memory requested.
+#SBATCH --partition=20                 # partition (queue) to use
+#SBATCH --output out-2026.5.1.1149am
+#SBATCH --mail-type=ALL               # send email on job start/finish.
+#SBATCH --mail-user=linyong@wi.mit.edu
+
+# This is the actual section for commands to run
+
+# Uncomment the last line to email output file to specified address.
+# Slurm doesn't do this automatically, regardless of the mail-type setting above.
+#/usr/bin/mail -s "$SLURM_JOB_NAME $SLURM_JOB_ID" your_username@wi.mit.edu < friendlyname-${SLURM_JOB_ID}.out
+
+t=1
+cat file-dirs | while read dir
+do
+  cd "$dir"
+  f1=`ls *.sorted.bam | head -1 | awk '{print $1}' `
+  bash /lab/solexa_page/linyong/gtex-dna/script-cram-genecount-03-download-fq "$f1"  > temp-chr-dep
+  cat temp-chr-dep > chr-dep
+  cd ..
+done
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ 
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
