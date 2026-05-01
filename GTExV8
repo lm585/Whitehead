@@ -5763,7 +5763,7 @@ do
   fi 
 done
 
-rm "$f".bam.bai
+###rm "$f".bam.bai
 linyong@fry /lab/solexa_page/linyong/gtex-dna-aug2024$  
 
 ######################################################################################################
