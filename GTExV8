@@ -9843,6 +9843,20 @@ do
   cd ..
 done
 linyong@fry /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ 
+########################################
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-sra-download$ pwd
+/lab/page_human_data/linyong2/gtex-dna-sra-download
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat file-dirs | wc -l
+52
+
+cat file-dirs | while read dir
+do
+  cd "$dir"
+  bash /lab/page_human_data/linyong2/gtex-dna-sra-download/script-bam-C4A-primer-depth
+done > temp-res1 &
+linyong@fry /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat  temp-res1 | grep -i rpp30 | grep pcr-q0 | cut -f 1,2,3,10
+
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
