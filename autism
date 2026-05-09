@@ -8331,3 +8331,35 @@ linyongmao@Linyong-Mao-MBP16-2019 autism % vi ./temp-s
 
 bash ./temp-s
 
+#########################################
+> t3 <- t2[ , t2$orig.ident == "Ramos" ]
+> dim(t3)
+[1]  20116 186980
+...
+>  t6 <- t3[, colnames(t3) %in% t5$Cell_ID]
+ dim(t6)
+[1] 20116  2134
+    Whitehead
+/figures.autism
+18 Individual with MG  in Ramos
+>  l2 <- l1[ l1$Age_.days. > 266 & l1$Age_.days. < 20*365,]
+ dim(l2)
+[1]  1 10
+            Age Age_.days.     Age_Range Chemistry Dataset Individual PMI
+445977     GW41      273.0 3rd trimester        V3   Ramos          6  48
+
+
+
+"ExNeu"
+18 Individual with "ExNeu"  in Ramos
+>  l2 <- l1[ l1$Age_.days. > 266 & l1$Age_.days. < 20*365,]
+ dim(l2)
+[1] 1 9
+> l2
+        Age Age_.days.     Age_Range Chemistry Dataset Individual PMI    Sex
+363261 GW41        273 3rd trimester        V3   Ramos          6  48 Female
+> t4["MKI67",]
+#read count
+      10  11 2 20 23  24 26 3 30 31 34 56 6 60 62 63  64   9
+MKI67  5 327 0  1  9 330 96 7 55  2  4  4 7  6 28 11 353 483
+
