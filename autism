@@ -8363,3 +8363,34 @@ bash ./temp-s
       10  11 2 20 23  24 26 3 30 31 34 56 6 60 62 63  64   9
 MKI67  5 327 0  1  9 330 96 7 55  2  4  4 7  6 28 11 353 483
 
+#####################################
+"U01"
+>  t5 <- t4[ t4$Lineage == "IN", ]
+[1] 20116 genes X  71370 "IN" cells from U01 dataset
+> counts <- t1@assays$RNA$counts
+> ki.in <- as.data.frame( counts[c("MKI67", "MKI67"), ])
+> dim(ki.in)
+[1]     2 71370
+> ki.in.2 <- as.data.frame(t(ki.in))
+>  t2 <- read.delim("./meta.tsv")
+ head(t2)
+> ki.in.2$id <- rownames(ki.in.2)
+> ki3 <- merge(ki.in.2, t2, by.x="id", by.y ="Cell_ID")
+> dim(ki3)
+[1] 71370    17
+> res <- data.frame(id = indi, ki.gt.0=0, cells=-999)
+
+> indi <- unique(ki3$Individual)
+for(i in 1:length(indi)) {
+ res$id[i] <- indi[i]
+ r1 <- ki3[ ki3$Individual == indi[i], ]
+ res$cells[i] <- dim(r1)[1]
+ res$ki.gt.0[i] <- sum(r1$MKI67 > 0)
+}
+ sum(res$cells)
+# [1] 71370
+ r2 <- merge(res, t2, by.x="id",  by.y = "Individual")
+ dim(r2)
+ r3 <- unique(r2[, c(1:3, 5:7,9,15:16)])
+ dim(r3)
+
