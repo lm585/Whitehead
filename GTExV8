@@ -9856,6 +9856,11 @@ do
 done > temp-res1 &
 linyong@fry /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat  temp-res1 | grep -i rpp30 | grep pcr-q0 | cut -f 1,2,3,10
 
+##############################################################
+max 21 days
+linyong@fry24 ~$ cat Thyroid.574samp.dnaseq.429inSRA.BioSample.txt | awk 'NR > 51' | head -30 > temp
+linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-2$ cat slurm-sra-download-fastq-GTEx-control-acc-samn-numb52-81  | tail
+bash /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/script-download-fastq-GTEx-control-acc-fastq-dump   SAMN04596013
 
 
 #############################################################
