@@ -9862,6 +9862,12 @@ linyong@fry24 ~$ cat Thyroid.574samp.dnaseq.429inSRA.BioSample.txt | awk 'NR > 5
 linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-2$ cat slurm-sra-download-fastq-GTEx-control-acc-samn-numb52-81  | tail
 bash /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/script-download-fastq-GTEx-control-acc-fastq-dump   SAMN04596013
 
+linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat dir-5/slurm-sra-download-fastq-GTEx-control-acc-samn-numb52-81
+bash /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/script-download-fastq-GTEx-control-acc-fastq-dump   SAMN04598013
+linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ grep -n SAMN04598013 ~/Thyroid.574samp.dnaseq.429inSRA.BioSample.txt
+126:SAMN04598013
+next run: cat ~/Thyroid.574samp.dnaseq.429inSRA.BioSample.txt | awk 'NR > 126' | head -15
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
