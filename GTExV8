@@ -9868,6 +9868,50 @@ linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ grep -n SAMN0
 126:SAMN04598013
 next run: cat ~/Thyroid.574samp.dnaseq.429inSRA.BioSample.txt | awk 'NR > 126' | head -15
 
+##############################################
+linyong@c1b6 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ ls | grep ^dir | while read ll
+do
+ cd "$ll"
+ bash  /lab/page_human_data/linyong2/gtex-dna-sra-download/script-bam-C4A-primer-depth  >> /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-300
+ cd ..
+done
+linyong@c1b6 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ head /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-300
+-rw-r--r-- 1 linyong syslog 80G Dec  1 13:17 SAMN03877781.sorted.bam
+file    gene    region  #rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+SAMN03877781.sorted.bam RPP30   gene-q0 chr10   90871974        90902191        10136   30218   100     48.0449 36.1    59.8
+SAMN03877781.sorted.bam RPP30   gene-q20        chr10   90871974        90902191        10115   30218   100     48.0127 36.1    60
+
+
+linyong@c1b6 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ bash /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/script-c4a-1line-chrdep-combin
+linyong@c1b6 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ cat /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin
+SAMN04598395.sorted.bam chr2    82.8607 chr8    82.879
+SAMN04599093.sorted.bam chr8    38.345  chr5    38.3823
+mv -i /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin-333
+mv -i /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin-347
+ mv -i /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin-355
+linyong@c1b6 /lab/solexa_page/linyong/gtex-dna/dir-dna-sra$ cat temp-c4a-chr-dep-combin-3* > temp-c4a-chr-dep-combin
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i temp-300 gtex-dna-sra-download-2026.5-rpp30.depth
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i temp-c4a-chr-dep-combin gtex-dna-sra-download-2026.5-chr-dep
+
+> t1 <- read.delim("gtex-dna-sra-download-2026.5-chr-dep", header=F)
+ dim(t1)
+# [1] 52  5
+ t1$seq.dep <- (t1$V3 + t1$V5) / 2
+ system("cat gtex-dna-sra-download-2026.5-rpp30.depth| grep RPP30 | grep gene-q0 > temp1")
+ t2 <- read.delim("temp1", header=F)
+ t3 <- merge(t1, t2, by.x="V1", by.y="V1")
+ dim(t3)
+# [1] 52 17
+t3$rpp30.cn <- t3$V10 / t3$seq.dep * 2
+ summary(t3$rpp30.cn)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   1.686   1.886   1.925   1.916   1.965   2.067
+ hist(t3$rpp30.cn, breaks=seq(1, 3, 0.5/2/2))
+ d <- density(t3$rpp30.cn, bw = 0.15)
+ plot(d$x, d$y, col="red")
+ lines(d$x, d$y, col="red")
+ abline(v = seq(0,10000,0.1), lty = 5, lwd = 0.5, col = "blue")
+ abline(v=2)
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
