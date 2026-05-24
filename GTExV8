@@ -9912,6 +9912,55 @@ t3$rpp30.cn <- t3$V10 / t3$seq.dep * 2
  lines(d$x, d$y, col="red")
  abline(v = seq(0,10000,0.1), lty = 5, lwd = 0.5, col = "blue")
  abline(v=2)
+###
+> system("cat gtex-dna-sra-download-2026.5-rpp30.depth| grep RPP30 | grep pcr-q20 > temp1")
+...
+> t3$rpp30.pcr63bp.cn <- t3$V10 / t3$seq.dep * 2
+...
+> colnames(t3)[15] <- "rpp30.pcr63bp.dep"
+ summary(t3$rpp30.pcr63bp.dep / t3$seq.dep * 2)
+ t3.rpp <- t3
+ system("cat gtex-dna-sra-download-2026.5-rpp30.depth| grep C4A | grep pcr-q20 > temp1")
+ system("head temp1")
+ t2 <- read.delim("temp1", header=F)
+ t4 <- merge(t3.rpp, t2, by.x="V1", by.y="V1")
+ dim(t4)
+# [1] 52 29
+ colnames(t4)[27]
+# [1] "V10"
+ colnames(t4)[27] <- "c4a.pcr142bp.dep"
+ summary(t4$c4a.pcr142bp.dep)
+ t4$c4a.pcr142bp.2chrdep.cn <- t4$c4a.pcr142bp.dep / t4$seq.dep * 2
+ hist(t4$c4a.pcr142bp.2chrdep.cn, breaks=seq(0, 4, 0.5/2/2))
+ abline(v = seq(0,10000,0.5), lty = 5, lwd = 0.5, col = "grey")
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+  d <- density(t4$c4a.pcr142bp.2chrdep.cn, bw = 0.15)
+  plot(d$x, d$y, col="red")
+  lines(d$x, d$y, col="red")
+ abline(v = seq(0,10000,0.5), lty = 5, lwd = 0.5, col = "grey")
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+ t4$c4a.pcr142bp.2rpp30.pcr63bp.cn <-  t4$c4a.pcr142bp.dep / t4$rpp30.pcr63bp.dep * 2
+ plot(t4$c4a.pcr142bp.2chrdep.cn, t4$c4a.pcr142bp.2rpp30.pcr63bp.cn)
+ abline(h = seq(0,10000,1), lty = 5, lwd = 0.5, col = "grey")
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "grey")
+ abline(v = seq(0.5,10000,1), lty = 5, lwd = 0.5, col = "blue")
+ abline(h = seq(0.5,10000,1), lty = 5, lwd = 0.5, col = "blue")
+
+ t4.pcr <- t4
+  s1 <- read.delim("SraRunTable.24455samp.GTEx.tab.txt")
+  s2 <-unique( data.frame(sample = s1$BioSample, id=s1$biospecimen_repository_sample_id))
+  dim(s2)
+# [1] 14116     2
+ t4.pcr$sample <- gsub(".sorted.bam", "", t4.pcr$V1)
+ t5.pcr <- merge(t4.pcr, s2, by.x="sample", by.y="sample")
+ dim(t5.pcr)
+# [1] 52 33
+temp-c4a-c4b-cyp21pa-cnv-expression
+ t12 <- merge(t5.pcr, t11, by.x="id", by.y="V1")
+ dim(t12)
+# [1] 52 45
+> plot(t12$c4a, t12$c4a.pcr142bp.2chrdep.cn)
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
