@@ -9960,6 +9960,70 @@ temp-c4a-c4b-cyp21pa-cnv-expression
  dim(t12)
 # [1] 52 45
 > plot(t12$c4a, t12$c4a.pcr142bp.2chrdep.cn)
+###
+> system("cat gtex-dna-sra-download-2026.5-rpp30.depth| grep C4A | grep c4a-c4b-diff-6bp-q20 > temp1")
+  t2 <- read.delim("temp1", header=F)
+ colnames(t2)[10] <- "c4a.diff.6bp.q20.dep"
+ colnames(t2) <- paste("c4a.6bp.", colnames(t2), sep="")
+ t13 <- merge(t12, t2, by.x="V1", by.y="c4a.6bp.V1")
+ dim(t13)
+# [1] 52 56
+ t13$c4a.6bp.cn <- t13$c4a.6bp.c4a.diff.6bp.q20.dep / t13$seq.dep * 2
+ plot(t13$c4a.6bp.cn ~ t13$c4a)
+ x=0:10
+ y=x
+ abline(lm(y ~ x), col="blue")
+
+linyong@c1b6 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ cat /lab/page_human_data/linyong2/gtex-dna-sra-download/script-bam-C4A-primer-depth 
+#
+
+
+ls *.sorted.bam | head -1 | while read file
+do
+ 
+# samtools index "$file"
+ls -lh "$file"
+
+echo -n "file	gene	region	"
+samtools coverage -r chr6:29982057-30982057 -q 0   "$file" | head -1
+
+
+## c4a start-exon#9
+echo -n "$file	C4A	pcr-q0	"
+samtools coverage -r chr6:31995963-31996104 -q 0  -H "$file"
+echo -n "$file	C4A	pcr-q20	"
+samtools coverage -r chr6:31995963-31996104 -q 20  -H "$file"
+
+
+
+## c4b start-exon#9
+echo -n "$file	C4B	pcr-q0	"
+samtools coverage -r chr6:32028761-32028847 -q 0  -H "$file"
+echo -n "$file	C4B	pcr-q20	"
+samtools coverage -r chr6:32028761-32028847 -q 20  -H "$file"
+
+##c4b  start-end
+echo -n "$file	RPP30	pcr-q0	"
+samtools coverage -r chr10:90872002-90872064  -q 0  -H "$file"
+echo -n "$file	RPP30	pcr-q20	"
+samtools coverage -r chr10:90872002-90872064  -q 20  -H "$file"
+
+# RPP30 whole gene
+echo -n "$file	RPP30	gene-q0	"
+samtools coverage -r chr10:90871974-90902191 -q 0  -H "$file"
+echo	-n	"$file	RPP30	gene-q20	"
+samtools coverage -r chr10:90871974-90902191 -q 20  -H "$file"
+
+#c4a 6-bp (c4a-c4b-diff-6bp)
+echo -n "$file	C4A	c4a-c4b-diff-6bp-q0	"
+samtools coverage -r chr6:31996090-31996095  -q 0  -H "$file"
+echo -n "$file	C4A	c4a-c4b-diff-6bp-q20	"
+samtools coverage -r chr6:31996090-31996095  -q 20  -H "$file"
+
+
+done
+linyong@c1b6 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ 
+
 
 
 #############################################################
