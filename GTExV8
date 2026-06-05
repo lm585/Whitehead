@@ -10024,6 +10024,26 @@ samtools coverage -r chr6:31996090-31996095  -q 20  -H "$file"
 done
 linyong@c1b6 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ 
 
+#################################################
+linyong@c3b12 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls dir-*/dir-SAM*/*.bam | grep ^dir-1 |wc
+     21      21     987
+linyong@c3b12 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls dir-*/dir-SAM*/*.bam | grep ^dir-2 |wc
+     28      28    1316
+linyong@c3b12 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls dir-*/dir-SAM*/*.bam | grep ^dir-3 |wc
+     15      15     705
+linyong@c3b12 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls dir-*/dir-SAM*/*.bam | grep ^dir-4 |wc
+     15      15     705
+linyong@c3b12 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls dir-*/dir-SAM*/*.bam | grep ^dir-5 |wc
+     15      15     705
+total 94
+linyong@c3b12 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls /archive/page_human_data/2025.12.01-50349/lab/page_human_data/linyong2/gtex-dna-sra-download/gtex-dna-bam-archive-11292025-humanDir/ |wc
+     10      10     180
+linyong@c3b12 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls /archive/page_human_data/2025.12.01-50349/lab/solexa_page/linyong/gtex-dna/dir-dna-sra/gtex-dna-bam-archive-11292025/dir-*/*.bam | wc
+     21      21    3318
+
+2026-june 5
+125 (94 + 10 + 21)
+they are uniq
 
 
 #############################################################
