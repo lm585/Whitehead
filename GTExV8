@@ -10045,6 +10045,37 @@ linyong@c3b12 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls /archive/p
 125 (94 + 10 + 21)
 they are uniq
 
+######
+ hapmap.162 <- c(1,8,52,30,2,1)
+ sum(hapmap.162)
+# [1] 94
+ hapmap.162 / sum(hapmap.162)
+# [1] 0.01063830 0.08510638 0.55319149 0.31914894 0.02127660 0.01063830
+ hapmap.162.2 <- round( 162 * hapmap.162 / sum(hapmap.162), digits=0)
+ hapmap.162.2
+# [1]  2 14 90 52  3  2
+ df.1 <- data.frame(c4a.cn= 0:6, hapmap=c(hapmap.162.2,0), gtex=0)
+ df.1
+ h1 <- hist(t4$c4a.6bp.relative.rpp30.pcr63bp, breaks=seq(-0.5, 6.5,1))
+ df.1$gtex <- h1$counts
+ df.1
+#   c4a.cn hapmap gtex
+# 1      0      2    1
+# 2      1     14   16
+# 3      2     90   56
+# 4      3     52   33
+ df.2 <- as.data.frame(t(df.1[, 2:3]))
+ df.2
+#        V1 V2 V3 V4 V5 V6 V7
+# hapmap  2 14 90 52  3  2  0
+# gtex    1 16 56 33 13  4  2
+ sum(df.2[1,])
+# [1] 163
+ sum(df.2[2,])
+# [1] 125
+ chisq.test(df.2, simulate.p.value=T, B=1e5)
+ fisher.test(df.2, simulate.p.value=T, B=1e5)
+ cor.test(c(hapmap.162, 0), df.1$gtex, method="spearman")
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
