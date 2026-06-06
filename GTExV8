@@ -10076,6 +10076,69 @@ they are uniq
  chisq.test(df.2, simulate.p.value=T, B=1e5)
  fisher.test(df.2, simulate.p.value=T, B=1e5)
  cor.test(c(hapmap.162, 0), df.1$gtex, method="spearman")
+#############################################
+linyong@c2b10 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat script-c4a-q20
+#
+rm /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q20-1line-combin
+
+cat file-dirs  | head -1023 |   while read dir 
+ do
+  cd "$dir"
+  f1=`ls *.sorted.bam | head -1 | awk '{print $1}' `
+  bf=`ls  | grep "SAMN.*.sorted.bam$"`
+  ls -lh "$bf"
+
+  bash /lab/solexa_page/linyong/gtex-dna-aug2024/script-bam-c4a-depth "$f1" > /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q20
+  cd  /lab/page_human_data/linyong2/gtex-dna-sra-download/
+  bash  /archive/page_human_data/2025.12.01-50349/lab/solexa_page/linyong/gtex-dna/dir-dna-sra/gtex-dna-bam-archive-11292025/dir-SAMN04596666/script-cnv-02-fq-downloaded >  temp-c4a-q20-1line
+  echo -n "$bf	" >> temp-c4a-q20-1line-combin
+  cat temp-c4a-q20-1line >> temp-c4a-q20-1line-combin
+done 
+
+linyong@c2b10 /lab/page_human_data/linyong2/gtex-dna-sra-download$ bash script-c4a-q20
+125 temp-c4a-q20-1line-combin
+
+linyong@c2b10 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat script-c4a-q0
+###
+rm /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin
+
+cat file-dirs | head -1023 | while read dir 
+do 
+  cd "$dir"
+  bf=`ls  | grep "SAMN.*.sorted.bam$"`
+  ls -lh "$bf"
+  bash /archive/page_human_data/2025.12.01-50349/lab/solexa_page/linyong/gtex-dna/dir-dna-sra/gtex-dna-bam-archive-11292025/dir-SAMN04596666/script-bam-C4A-start-exon9-q0  > /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0
+#
+#
+#file	gene	region	#rname	startpos	endpos	numreads	covbases	coverage	meandepth	meanbaseq	meanmapq
+#SAMN04596666.sorted.bam	C4A	upstream-2mbp.-1mbp	chr6	29982057	30982057	307136	999881	99.988	45.3586	37.7	59.1
+#SAMN04596666.sorted.bam	C4A	start-exon#9	chr6	31982057	31984408	1015	2352	100	60.6641	37.8	0
+
+  t1=`head -1 /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0 | cut -f 2-12`
+  echo "file	$t1	$t1	$t1	$t1" > /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0-1line
+
+  ll="$bf"
+  t1=`echo "$ll" | sed 's/.bam//' `
+  t2=`grep -w "$ll"  /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0 | grep -w "C4A	start-exon#9" | head -1 | cut -f 2-12`
+  t3=`grep -w "$ll"  /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0 | grep -w "C4A	exon#10-end" | head -1 | cut -f 2-12`
+  t4=`grep -w "$ll"  /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0 | grep -w "C4B	start-exon#9" | head -1 | cut -f 2-12`
+  t5=`grep -w "$ll"  /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0 | grep -w "C4B	exon#10-end" | head -1 | cut -f 2-12`
+  echo "$t1	$t2	$t3	$t4	$t5" >> /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0-1line
+  bf=`ls  | grep "SAMN.*.sorted.bam$"`
+  #ls -lh "$bf"
+  cat /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0-1line  >> /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin
+done
+
+head -1 /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin > /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-2
+awk 'NR % 2 == 0' /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin >> /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-2
+mv /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-2 /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin
+head -20 /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin
+
+
+linyong@c2b10 /lab/page_human_data/linyong2/gtex-dna-sra-download$ 
+linyong@c2b10 /lab/page_human_data/linyong2/gtex-dna-sra-download$ bash script-c4a-q0
+
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
