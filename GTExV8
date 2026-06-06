@@ -9377,6 +9377,10 @@ SAMN04596035.sorted.bam	chr3	36.1588	chr12	36.1807
  l1 <- lm(sra2$c4.tot.no.intron9.x ~ sra2$c4.tot.no.intron9.y)
  summary(l1)
 
+ t1 <- read.delim("gtex-dna-sra-download-125samp.2026.6-c4a-q20-1line-combin", header=F)
+ t2 <- read.delim("gtex-dna-sra-download-125samp.2026.6-chr-dep", header=F)
+ t6 <- read.delim("gtex-dna-sra-download-125samp.2026.6-c4a-q0-1line-combin")
+
 #############################################################
 ### script-gtexv8-tissue-sex-diff-age-bmi-covar
  f.mean <- as.data.frame( matrix(nrow=60, ncol=4))
