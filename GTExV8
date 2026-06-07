@@ -10155,6 +10155,34 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % ls -lh | grep -i 125samp
 -rw-r--r--@   1 linyongmao  staff   6.2K Jun  5 14:29 gtex-dna-sra-download-125samp.2026.6-chr-dep
 -rw-r--r--@   1 linyongmao  staff   131K Jun  5 14:28 gtex-dna-sra-download-125samp.2026.6-rpp30.depth
 
+#############################
+linyong@c2b10 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat script-bam-C4B-primer-depth
+#
+
+
+ls *.sorted.bam | head -1 | while read file
+do
+ 
+# samtools index "$file"
+ls -lh "$file"
+
+echo -n "file	gene	region	"
+samtools coverage -r chr6:29982057-30982057 -q 0   "$file" | head -1
+
+
+
+#c4b 6-bp (c4a-c4b-diff-6bp)
+echo -n "$file	C4B	c4a-c4b-diff-6bp-q0	"
+samtools coverage -r chr6:32028828-32028833 -q 0  -H "$file"
+echo -n "$file	C4B	c4a-c4b-diff-6bp-q20	"
+samtools coverage -r chr6:32028828-32028833 -q 20  -H "$file"
+
+
+done
+linyong@c2b10 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls
+
+linyong@c2b10 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat file-dirs| while read dir; do cd "$dir"; bash /lab/page_human_data/linyong2/gtex-dna-sra-download/script-bam-C4B-primer-depth; done > temp-400
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i temp-400 gtex-dna-sra-download-125samp.2026.6-c4b.6bp.depth
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
