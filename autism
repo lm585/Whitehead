@@ -8093,6 +8093,21 @@ df.cpm.gene <- merge(df.gene, chr, by.x="geneID", by.y="geneID")
  dim(df.cpm.gene)
 # [1] 15089    18
 
+###
+> head(df.cpm.gene, n=3)
+              geneID human_Microglia_RNA_polyA_P11 human_Microglia_RNA_polyA_P14 human_Microglia_RNA_polyA_P17_Temporal human_Microglia_RNA_polyA_P19
+1 ENSG00000000419.14                   -0.14388742                    -0.1641356                             -0.1834384                    -0.3645693
+2 ENSG00000000457.14                    0.02888145                    -0.6123547                             -0.3921889                    -0.6261819
+3 ENSG00000000460.17                    0.28130490                    -0.8779111                             -0.6813000                     0.5013287
+  human_Microglia_RNA_polyA_P21 human_Microglia_RNA_polyA_P23 human_Microglia_RNA_polyA_P31 human_Microglia_RNA_polyA_P41 human_Microglia_RNA_polyA_P5
+1                   -0.17068486                    -0.3671481                    -0.7021993                    -0.6571141                   0.06947158
+2                   -0.06000155                    -0.2961593                    -0.3918335                    -0.5747852                  -0.26586329
+3                   -0.35731572                     0.3506107                     0.3509065                    -0.2861899                  -0.50348587
+  human_Microglia_RNA_polyA_P7 human_Microglia_RNA_polyA_P80 human_Microglia_RNA_polyA_P83 human_Microglia_RNA_polyA_P8_Parietal     name   chr strand           type
+1                   0.18517193                     0.1799934                     0.2275094                            -0.4840116     DPM1 chr20      - protein_coding
+2                  -0.07627120                     0.6275327                     0.7502655                            -0.4619977    SCYL3  chr1      - protein_coding
+3                  -0.01278507                     1.3314796                     0.8200133                             0.4564700 C1orf112  chr1      + protein_coding
+
 linyongmao@Linyong-Mao-MBP16-2019 autism % cat human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt | grep -wi cd69
 ENSG00000110848.8	-5.69102632508949	5.04436168511368	43.5196320858829	1.14867157719969e-05	0.0143740409592388	CD69	chr12	-	protein_coding
 
