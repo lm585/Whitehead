@@ -10184,6 +10184,56 @@ linyong@c2b10 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls
 linyong@c2b10 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat file-dirs| while read dir; do cd "$dir"; bash /lab/page_human_data/linyong2/gtex-dna-sra-download/script-bam-C4B-primer-depth; done > temp-400
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % mv -i temp-400 gtex-dna-sra-download-125samp.2026.6-c4b.6bp.depth
 
+###########################################
+> t1
+             c4a.cn.0 c4a.cn.1 c4a.cn.2 c4a.cn.3 c4a.cn.4 c4a.cn.5 c4a.cn.6
+838.all.samp        5       54      302      361      100       14        2
+466.samp            3       32      171      204       51        4        1
+466.sample          3       32      171      204       51        4        1
+4                  NA       NA       NA       NA       NA       NA       NA
+
+ res <- matrix(NA, 1e6, 10)
+ res <- as.data.frame(res)
+ colnames(res) <- c("freq.1", "freq.2", "freq.3","freq.4", "fisher.P", "chisq.P", 7:10)
+ m=1
+
+ freq <- c(0.03818616, 0.60799523-0.0, 0.34307876 +0.0, 0.01073986)
+ sum(freq)
+# [1] 1
+for(i in seq(0.5, 0.7, 0.01))
+ for(j in seq(0.25, 0.45, 0.01))
+  for(k in seq(0.01, 0.07, 0.003))
+{
+ freq[1] = k
+ freq[2] = i
+ freq[3] = j
+ freq[4] = 1.0 - i - j - k
+ if(m < 10000 & freq[4] > 0.000001)
+ {
+ t1[2, ] <- 0
+ t1[2,1] <- freq[1] ^ 2
+ t1[2,2] <- freq[1] * freq[2] *2
+ t1[2,3] <- freq[1] * freq[3] *2 + freq[2] ^ 2
+ t1[2,4] <- freq[1] * freq[4] *2 + freq[2] * freq[3] *2
+ t1[2,5] <- freq[2] * freq[4] *2 + freq[3] * freq[3]
+ t1[2,6] <- freq[3] * freq[4] *2
+ t1[2,7] <- freq[4] * freq[4]
+ sum(t1[2,])
+ t1[2,]
+ t1[2,] <- round( 838 * t1[2,] )
+ sum(t1[2,])
+ t1
+ test <- fisher.test(t1[1:2,], simulate.p.value=T, B=1e5)
+ test2 <- chisq.test(t1[1:2,], simulate.p.value=T, B=1e5)
+ res[m,1:4] <- freq
+ res[m,5] <- test$p.value
+ res[m,6] <- test2$p.value
+ m <- m+1
+
+ }
+}
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
