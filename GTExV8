@@ -10233,6 +10233,34 @@ for(i in seq(0.5, 0.7, 0.01))
  }
 }
 
+###
+> t1
+             cyp21a1p.cn.0 cyp21a1p.cn.1 cyp21a1p.cn.2 cyp21a1p.cn.3 cyp21a1p.cn.4 cyp21a1p.cn.5 cyp21a1p.cn.6
+838.all.samp            19           191           351           223            47             6             1
+> t2 <- c(19+191/2, 191/2+351+223/2, 223/2 + 47+6/2, 6/2+1)
+> sum(t2)
+[1] 838
+> freq <- t2/838
+> freq
+[1] 0.13663484 0.66587112 0.19272076 0.00477327
+> sum(freq)
+[1] 1
+first round search
+> for(i in seq(0.5, 0.8, 0.02))
+   for(j in seq(0.05, 0.45, 0.02))
+    for(k in seq(0, 0.3, 0.02))
+>
+>
+> (res[ res$fisher.P > 0.4 & !is.na(res$freq.1),])
+     freq.1 freq.2 freq.3 freq.4  fisher.P   chisq.P  7  8  9 10
+1031   0.18   0.58   0.23   0.01 0.7003730 0.6980330 NA NA NA NA
+1188   0.18   0.60   0.19   0.03 0.4450555 0.4814252 NA NA NA NA
+1199   0.18   0.60   0.21   0.01 0.7796722 0.7783722 NA NA NA NA
+1208   0.16   0.60   0.23   0.01 0.5500845 0.5525645 NA NA NA NA
+1351   0.18   0.62   0.19   0.01 0.4008660 0.3999960 NA NA NA NA
+1360   0.16   0.62   0.21   0.01 0.6601834 0.6622834 NA NA NA NA
+
+second round search, finer search
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
