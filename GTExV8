@@ -10291,7 +10291,7 @@ f="GTEX-13S86-0003-SM-6WSCT"
 samtools mpileup  -r chr6:31927717-31945672  -Q 0  -q 0 -d 1000000 -f  /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa "$f".bam > temp.c2.pile
 cat temp.c2.pile | cut -f 1-4 > temp.c2.pile.2
 
-#C4A start - #9
+#C4A start - exon #9
 samtools mpileup  -r chr6:31982057-31984408 -Q 0  -q 0 -d 1000000 -f  /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa "$f".bam > temp.c4a.1.pile
 #C4A exon#10 - end
 samtools mpileup  -r chr6:31991192-32002681 -Q 0  -q 0 -d 1000000 -f  /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa "$f".bam > temp.c4a.2.pile
@@ -10303,7 +10303,7 @@ cat temp.c4a.1.pile temp.c4a.2.pile | cut -f 1-4 > temp.c4a.pile.2
  t2 <- read.delim("temp.c4a.pile.2", header=F)
  dim(t2)
 # [1] 13842     4
- dep=32.564
+ dep=   ###32.564
  mean(t1$V4) / dep * 2
 # [1] 2.23575
  mean(t2$V4) / dep * 2
