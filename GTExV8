@@ -10339,6 +10339,59 @@ cat temp.c4a.1.pile temp.c4a.2.pile | cut -f 1-4 > temp.c4a.pile.2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
     4.0    60.0    68.0    66.9    75.0   122.0
 
+###
+>  t12 <- t11[ t11$c4.tot.no.intron9.int == 4 & t11$c4a.int == 2 & t11$c4b.int == 2 & t11$cyp21.tot.int == 4 & t11$c4.tot.no.intron9 - 0.2 > 3.8 & t11$c4.tot.no.intron9 - 0.2 < 4.2,]
+> dim(t12)
+[1] 64 13
+> t12 <- ( t12[ t12$c4a > 1.8 & t12$c4a < 2.2,])
+> dim(t12)
+[1] 23 13
+> t13 <- c2.cn[ c2.cn$V1 %in% t12$V1,]
+> summary(t13$c2.CN)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  1.831   1.964   2.038   2.063   2.130   2.310
+> summary(t13$C2.CN)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  1.685   1.806   1.875   1.898   1.959   2.125
+> t13[ t13$c2.CN > 2.2,][3,]
+                          V1   V2      V3   V4      V5   V6      V7   V8      V9 V10   V11     V12 V13  V14     V15 V16  V17     V18 seq.dep gene
+281 GTEX-15UKP-0003-SM-6UH1I chr8 33.0431 chr2 33.0609 chrX 16.3592 chrY 14.3212  C3 chr19 38.9093 C4A chr6 30.1092 C4B chr6 30.1154  33.052   C2
+    X.rname startpos   endpos numreads covbases coverage meandepth meanbaseq meanmapq    c2.CN    C2.CN
+281    chr6 31927717 31945672     4764    17956      100   38.1683      28.9       58 2.309591 2.124748
+> t12[ t12$V1 == "GTEX-15UKP-0003-SM-6UH1I",]
+                          V1      c4a      c4b CYP21A1P  CYP21A2 c4.tot.no.intron9 c4.tot.no.intron9.int cyp21.tot cyp21.tot.int c4a.int c4b.int
+281 GTEX-15UKP-0003-SM-6UH1I 2.088356 2.270522  1.13504 2.685932          4.344359                     4    3.9943             4       2       2
+    cyp21a1p.int cyp21a2.int
+281            1           3
+> p1 <- read.delim("temp.c2.pile.2.GTEX-15UKP-0003-SM-6UH1I", header=F)
+ dim(p1)
+# [1] 17956     4
+ summary(p1$V4)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#    1.00   31.00   37.00   37.33   44.00   63.00
+ s <- sort( sample(1:dim(p1)[1], 1000))
+ p2 <- p1[s,]
+ dim(p2)
+# [1] 1000    4
+ p5 <- read.delim("temp.c4a.pile.2.GTEX-15UKP-0003-SM-6UH1I", header=F)
+ dim(p5)
+# [1] 13842     4
+ summary(p5$V4)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#    1.00   30.00   35.00   35.11   40.00   81.00
+ s <- sort( sample(1:dim(p5)[1], 1000))
+ p6 <- p5[s,]
+ dim(p6)
+ p6$gene <- "C4A"
+ p6$pos <- 1:1000
+ p2$gene <- "C2"
+ p2$pos <- 1:1000
+ p10 <- rbind(p2, p6)
+ dim(p10)
+# [1] 2000    5
+ dep=33.052
+> gplot(p10, aes(x=pos, y=V4, group=gene, color=gene)) + geom_point(shape=21, size=1) + geom_smooth(method="lm") + labs(x="relative pos", y="seq coverage")
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
