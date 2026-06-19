@@ -10309,6 +10309,35 @@ cat temp.c4a.1.pile temp.c4a.2.pile | cut -f 1-4 > temp.c4a.pile.2
  mean(t2$V4) / dep * 2
 # [1] 2.878996
 
+###
+> t12 <- t11[ t11$c4.tot.no.intron9.int == 8 & t11$c4a.int == 4 & t11$c4b.int == 4 & t11$cyp21.tot.int == 8 & t11$c4.tot.no.intron9 - 0.2 > 7.8 & t11$c4.tot.no.intron9 - 0.2 < 8.2,]
+> dim(t12)
+[1]  3 13
+> t13 <- c2.cn[ c2.cn$V1 %in% t12$V1,]
+> summary(t13$c2.CN)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  2.357   2.380   2.403   2.456   2.506   2.609
+> summary(t13$C2.CN)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  2.169   2.190   2.210   2.260   2.305   2.400
+> t13[1,]
+                          V1   V2      V3   V4      V5   V6      V7   V8      V9 V10   V11     V12 V13  V14     V15 V16  V17     V18  seq.dep gene
+194 GTEX-147F3-0002-SM-6WSBE chr6 33.5812 chr2 33.5851 chrX 31.9763 chrY 2.19269  C3 chr19 40.6274 C4A chr6 60.7484 C4B chr6 61.2577 33.58315   C2
+    X.rname startpos   endpos numreads covbases coverage meandepth meanbaseq meanmapq    c2.CN    C2.CN
+194    chr6 31927717 31945672     4882    17956      100   39.5854      29.2     58.1 2.357456 2.168783
+> t12[1,]
+                          V1      c4a     c4b CYP21A1P  CYP21A2 c4.tot.no.intron9 c4.tot.no.intron9.int cyp21.tot cyp21.tot.int c4a.int c4b.int
+194 GTEX-147F3-0002-SM-6WSBE 3.719535 3.68518 4.322377 3.226872          8.046486                     8   7.66404             8       4       4
+    cyp21a1p.int cyp21a2.int
+194            4           3
+> t1 <- read.delim("temp.c2.pile.2", header=F)
+ t2 <- read.delim("temp.c4a.pile.2", header=F)
+> summary(t1$V4)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+   2.00   32.00   40.00   38.61   46.00   62.00
+> summary(t2$V4)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+    4.0    60.0    68.0    66.9    75.0   122.0
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
