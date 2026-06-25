@@ -9874,6 +9874,9 @@ next run: cat ~/Thyroid.574samp.dnaseq.429inSRA.BioSample.txt | awk 'NR > 126' |
 
 Sun Jun 21 03:21:42 PM EDT 2026
 cat ~/Thyroid.574samp.dnaseq.429inSRA.BioSample.txt | awk 'NR > 126' | head -20
+
+Wed Jun 24 09:01:07 PM EDT 2026
+cat ~/Thyroid.574samp.dnaseq.429inSRA.BioSample.txt | awk 'NR > 206' | head -20
 ##############################################
 linyong@c1b6 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ ls | grep ^dir | while read ll
 do
