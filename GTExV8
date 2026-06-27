@@ -10267,6 +10267,25 @@ first round search
 
 second round search, finer search
 
+##########################
+initial freq calculation
+> d <- h1$counts
+> d
+C4B total.CN freq
+[1]   1  67 447 287  33   3   0
+ freq[1] <- d[1] + d[2]/2
+ freq[2] <- d[2]/2 + d[3] + d[4]/2
+ freq[3] <- d[4]/2 + d[5] + d[6]/2
+ freq[4] <- d[6]/2 + d[7]
+ sum(freq)
+# [1] 838
+ freq
+#      freq.1 freq.2 freq.3 freq.4
+# 4657   34.5    624    178    1.5
+ freq <- freq/838
+ sum(freq)
+# 1
+
 ###################################
 > t12 <- t11[ t11$c4.tot.no.intron9.int == 6 & t11$c4a.int == 3 & t11$c4b.int == 3 & t11$cyp21.tot.int == 6 & t11$c4.tot.no.intron9 - 0.2 > 5.8 & t11$c4.tot.no.intron9 - 0.2 < 6.2,]
 >
