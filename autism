@@ -8425,3 +8425,39 @@ for(i in 1:length(indi)) {
  r3 <- unique(r2[, c(1:3, 5:7,9,15:16)])
  dim(r3)
 
+###############################################
+> setwd("/Users/linyongmao/Documents/autism")
+ rm(list=ls())
+ ls()
+ load("my_workspace.mg.rm-age-other-variable.residue.RData")
+ head(t8.human.mg)
+ (info.2.human.mg)
+ identical(gsub("human_Microglia_RNA_polyA_", "", colnames(t8.human.mg)[2:14]), info.2.human.mg$Patient.ID)
+
+ r1 <- t8.human.mg[, 1:6]
+  colnames(r1) <- c("name", "logFC", "P", "chr", "geneID")
+  r1$P = 999
+
+for(i in 1:dim(r1)[1]) {
+ l1 <- t8.human.mg[ i, 2:14]
+ l2 <- lm(as.numeric(l1) ~ info.2.human.mg$Sex )
+ l3 <- summary(l2)
+ r1$name[i] <- t8.human.mg$name[i]
+ r1$logFC[i] <- l3$coefficients[2,1]
+ r1$P[i] <- l3$coefficients[2,4]
+ r1$chr[i] <- t8.human.mg$chr[i]
+ r1$geneID[i] <- t8.human.mg$geneID[i]
+ }
+
+ t9 <- read.delim("human_Microglia_rna-postnatal-MvF-diff2-1.interac.strand.name-type-chr.txt")
+ dim(t9)
+# [1] 15089    10
+  t10 <- t9[ t9$chr != "chrX" & t9$chr != "chrY",]
+ dim(t10)
+# [1] 14603    10
+
+ t11 <- merge(t10, r1, by.x="geneID", by.y="geneID")
+ dim(t11)
+# [1] 14603    15
+> plot(t11$logFC.x, t11$logFC.y, ylab="rm.age.agesexinterac.variations.MvF.noX.Y")
+
