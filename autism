@@ -8461,3 +8461,77 @@ for(i in 1:dim(r1)[1]) {
 # [1] 14603    15
 > plot(t11$logFC.x, t11$logFC.y, ylab="rm.age.agesexinterac.variations.MvF.noX.Y")
 
+##########################
+> print(dim(y))
+[1] 13477    20
+ # [1]  20116 genes -> 13477,    20
+ d = edgeR::cpm(y)
+ a <- log2(d+1)
+ a.df <- as.data.frame(a)
+resid2 <- a.df 
+ identical(colnames(y), l3$Individual)
+ l3$age1 <- (l3$Age_.days. - 266) / 365 
+for(i in 1:dim(a.df)[1] ) {
+ lm3 <- lm(as.numeric( a.df[i,]) ~ l3$Sex + l3$age1 )
+ s3 <- summary(lm3)
+ sid <- as.numeric(a.df[i, ]) - s3$coefficients[3,1] * l3$age1 - s3$coefficients[1,1]
+ resid2[i,] <- sid
+}
+ diff <- resid2
+ diff$geneID <- rownames(diff)
+ g <- read.delim("../autism/gencode.v42.primary_assembly.noPar.gene-chr-type-name")
+ df.cpm.gene <- merge(diff, g, by.x="geneID", by.y="name")
+ dim(diff)
+# [1] 13477    21
+ dim(df.cpm.gene)
+# [1] 13105    25
+ t8.snrna.human <- df.cpm.gene
+ info.2.snrna.human <- l3
+
+  r1 <- t8.snrna.human[, 1:6]
+  colnames(r1) <- c("name", "logFC", "P", "chr", "geneID")
+  r1$P = 999
+for(i in 1:dim(r1)[1]) {
+ l1 <- t8.snrna.human[i, 2:21]
+ l2 <- lm(as.numeric(l1) ~ info.2.snrna.human$Sex )
+ l3 <- summary(l2)
+ r1$name[i] <- t8.snrna.human$geneID[i]
+ r1$logFC[i] <- l3$coefficients[2,1]
+ r1$P[i] <- l3$coefficients[2,4]
+ r1$chr[i] <- t8.snrna.human$chr[i]
+ r1$geneID[i] <- t8.snrna.human$geneID.y[i]
+}
+ r1[r1$P < 0.0001,]
+ t9 <- read.delim("human-mg-postnatal-science2023-MvF-diff2-1.name-type-chr.txt")
+ identical(r1$name, t9$geneID)
+# [1] TRUE
+ colnames(r1) <- paste("r1.", colnames(r1), sep="")
+ t10 <- cbind(t9, r1)
+ t11 <- t10[ t10$chr != "chrX" & t10$chr != "chrY",]
+ plot(t11$r1.logFC ~ t11$logFC, ylab="rm-ageVariance-MvF-no.chrX.chrY.genes")
+ summary(lm(t11$r1.logFC ~ t11$logFC))
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) 0.054922   0.002102   26.13   <2e-16 ***
+# t11$logFC   0.991294   0.005392  183.85   <2e-16 ***
+
+
+ abline(h=0)
+ abline(v=0)
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "blue")
+ abline(v = seq(-100,100,1), lty = 5, lwd = 0.5, col = "blue")
+ abline(lm(t11$r1.logFC ~ t11$logFC))
+ abline(lm(t11$r1.logFC ~ t11$logFC), col="red")
+
+ t11$sign.logP <- 999
+ t11$r1.sign.logP <- 999
+ t11$sign.logP <- -log10(t11$PValue)
+ t11$r1.sign.logP <- -log10(t11$r1.P)
+
+ for(i in 1:dim(t11)[1]) {
+ if(t11$logFC[i] < 0)
+   t11$sign.logP[i] <- -t11$sign.logP[i]
+ if(t11$r1.logFC[i] < 0)
+   t11$r1.sign.logP[i] <- -t11$r1.sign.logP[i]
+}
+
