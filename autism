@@ -8535,3 +8535,6 @@ for(i in 1:dim(r1)[1]) {
    t11$r1.sign.logP[i] <- -t11$r1.sign.logP[i]
 }
 
+-rw-r--r--   1 linyongmao  staff   114M Jul  3 15:40 my_workspace.mg.rm-age-other-variable.residue.RData
+"info.2.human.mg"    "info.2.mouse.mg"   "info.2.snrna.human"
+"t8.human.mg"        "t8.mouse.mg"        "t8.snrna.human" 
