@@ -8538,3 +8538,66 @@ for(i in 1:dim(r1)[1]) {
 -rw-r--r--   1 linyongmao  staff   114M Jul  3 15:40 my_workspace.mg.rm-age-other-variable.residue.RData
 "info.2.human.mg"    "info.2.mouse.mg"   "info.2.snrna.human"
 "t8.human.mg"        "t8.mouse.mg"        "t8.snrna.human" 
+
+###########################################################
+setwd("/Users/linyongmao/Documents/autism")
+ rm(list=ls())
+ ls()
+ load("my_workspace.mg.rm-age-other-variable.residue.RData")
+ head(t8.human.mg)
+ (info.2.human.mg)
+ identical(gsub("human_Microglia_RNA_polyA_", "", colnames(t8.human.mg)[2:14]), info.2.human.mg$Patient.ID)
+ dim(t8.snrna.human)
+# [1] 13105    25
+ dim(t8.human.mg)
+# [1] 15089    18
+ dim(t8.mouse.mg)
+# [1] 12750    49
+ a1 <- merge(t8.human.mg, t8.snrna.human, by.x="geneID", by.y="geneID.y")
+ dim(a1)
+# [1] 10252    42
+ a2 <- merge(a1, t8.mouse.mg, by.x="name", by.y="Gene.Symbol")
+ dim(a2)
+# [1] 9233   90
+ sort(colnames(a2))
+ info.2 <- data.frame(id = info.2.human.mg$Patient.ID, sex= info.2.human.mg$Sex)
+ info.2$id <- paste("human_Microglia_RNA_polyA_", info.2$id, sep="")
+ info.2$batch <- "human"
+ info <- data.frame(id=info.2.snrna.human$Individual, sex=info.2.snrna.human$Sex, batch="snrna")
+ info$sex <- gsub("Male", "M", info$sex)
+ info$sex <- gsub("Female", "F", info$sex)
+ info.2 <- rbind(info.2, info)
+ info <- data.frame(id=info.2.mouse.mg$id, sex=info.2.mouse.mg$sex, batch="mouse")
+ info.2 <- rbind(info.2, info)
+ dim(info.2)
+# [1] 73  3
+ unique(info.2$sex)
+# [1] "F" "M"
+ unique(info.2$batch)
+# [1] "human" "snrna" "mouse"
+ r1 <- a2[, 1:6]
+ colnames(r1) <- c("name", "logFC", "P", "chr", "geneID")
+ r1$P = 999
+for(i in 1:dim(r1)[1]) {
+ l1 <- a2[i, c(3:15,20:39, 45:84 )]
+ l2 <- lm(as.numeric(l1) ~ info.2$sex + info.2$batch )
+ l3 <- summary(l2)
+ r1$name[i] <- a2$name[i]
+ r1$logFC[i] <- l3$coefficients[2,1]
+ r1$P[i] <- l3$coefficients[2,4]
+ r1$chr[i] <- a2$chr.x[i]
+ r1$geneID[i] <- a2$geneID.x[i]
+
+}
+ identical(info.2$id, colnames(l1))
+ r1[, 6] <- a2$type.x
+ r1$mouse.name <- a2$name.x
+ r1$mouse.chr <- a2$chr
+ r1$title <- a2$Gene.Title
+#        name              logFC            P  chr             geneID             NA mouse.name mouse.chr
+# 1905  DDX3Y   6.61847538895791 5.753196e-43 chrY ENSG00000067048.17 protein_coding      Ddx3y      chrY
+# 8755   XIST  -8.89214461809929 1.232333e-48 chrX ENSG00000229807.13         lncRNA       Xist      chrX
+
+#        name              logFC            P  chr             geneID             NA mouse.name mouse.chr
+# 2288 EIF2S3 -0.518598908155663 2.676385e-10 chrX ENSG00000130741.11 protein_coding    Eif2s3x      chrX
+# 2289 EIF2S3   3.12570076715751 6.687380e-11 chrX ENSG00000130741.11 protein_coding    Eif2s3y      chrY
