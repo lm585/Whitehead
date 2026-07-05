@@ -8601,3 +8601,22 @@ for(i in 1:dim(r1)[1]) {
 #        name              logFC            P  chr             geneID             NA mouse.name mouse.chr
 # 2288 EIF2S3 -0.518598908155663 2.676385e-10 chrX ENSG00000130741.11 protein_coding    Eif2s3x      chrX
 # 2289 EIF2S3   3.12570076715751 6.687380e-11 chrX ENSG00000130741.11 protein_coding    Eif2s3y      chrY
+
+> write.table(r1, "diff2-1.txt", quote=F, sep="\t")
+
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat diff2-1.txt | awk 'NR > 1' | cut -f 1 | sort | uniq | wc -l
+    9115
+linyongmao@Linyong-Mao-MBP16-2019 autism % cat diff2-1.txt | awk 'NR > 1' | cut -f 1 | sort | wc -l
+    9233
+linyongmao@Linyong-Mao-MBP16-2019 autism % mv -i diff2-1.txt human-mouse-snrna-3data.MvF-diff2-1.txt
+linyongmao@Linyong-Mao-MBP16-2019 autism %  cat human-mouse-snrna-3data.MvF-diff2-1.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $4 != "chrX" && $4 != "chrY" && $8 != "chrX" &&  $8 != "chrY" ' | wc
+    8919  130018 1460128
+cat human-mouse-snrna-3data.MvF-diff2-1.txt | awk 'BEGIN {FS = "\t"; OFS = "\t"} $4 != "chrX" && $4 != "chrY" && $8 != "chrX" &&  $8 != "chrY" ' > temp
+cut -f 4 temp | sort | uniq -c
+cut -f 8 temp | sort | uniq -c
+cat temp | awk 'BEGIN {FS = "\t"; OFS = "\t"} {print $1, $2, $3, $4, $3, $6, $7, $1}'  > temp2
+../microglia/make-rnk-genesymble temp2 human-mouse-snrna-3data.MvF-diff2-1.noXY.rnk
+wc -l temp2 human-mouse-snrna-3data.MvF-diff2-1.noXY.rnk
+    8919 temp2
+    8810 human-mouse-snrna-3data.MvF-diff2-1.noXY.rnk
+bash /Users/linyongmao/Documents/GSEA_4.1.0/gsea-cli.sh  GSEAPreranked -gmx    /Users/linyongmao/Documents/h.all.v7.4.symbols.gmt    -collapse No_Collapse -mode Max_probe -norm meandiv  -nperm 1000 -rnk human-mouse-snrna-3data.MvF-diff2-1.noXY.rnk  -scoring_scheme classic  -rpt_label  "human-mouse-snrna-3data.MvF-diff2-1.noXY-weight0-hallmark"  -create_svgs false -include_only_symbols true   -make_sets true -plot_top_x 1234567 -rnd_seed 1234 -set_max 500  -zip_report false -out  "/Users/linyongmao/gsea_home/output/microgliaSex"
