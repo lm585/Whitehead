@@ -212,6 +212,58 @@ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-m
  colnames(t10) <- c("mouse", "human", "snRNA")
  Heatmap(t10, name="NES", right_annotation=ca,  row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 8),  col = col_fun, clustering_distance_columns ="pearson")
 
+############################################3 individual data sets & merged dataset in a heatmap
+f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717816582258/gsea_report_for_na_pos_1717816582258.tsv")
+  f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/mouse-mg-rnaseq-Hanamsagar.40samp3ages.MvF-diff2-1.age-residPC1-residPC2-covar.name-type-chr.humanname.noXY-weight0-hallmark.GseaPreranked.1717816582258/gsea_report_for_na_neg_1717816582258.tsv")
+  t1 <- rbind(f1, f2)
+  t2 <- t1[, c(1,6, 8)]
+ head(t2)
+ t2.m <- t2
+
+f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/gsea_report_for_na_pos_1718816546930.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human_Microglia_rna-postnatal-MvF-diff2-1.noX.Y.interac.strand-weight0-hallmark.GseaPreranked.1718816546930/gsea_report_for_na_neg_1718816546930.tsv")
+t1 <- rbind(f1, f2)
+   t2 <- t1[, c(1,6, 8)]
+
+t8 <- merge(t2.m, t2, by.x="NAME", by.y="NAME")
+head(t8)
+f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/gsea_report_for_na_neg_1751317616145.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/gsea_report_for_na_pos_1751317616145.tsv")
+ t1 <- rbind(f1, f2)
+ t2 <- t1[, c(1,6, 8)]
+ t9 <- merge(t8, t2, by.x="NAME", by.y="NAME")
+ t9$sig.m = "No"
+ t9[ t9$FDR.q.val.x < 0.05,]$sig.m <- "Yes"
+ t9$sig.h = "No"
+ t9[ t9$FDR.q.val.y < 0.05,]$sig.h <- "Yes"
+ t9$sig.sn = "No"
+ t9[ t9$FDR.q.val < 0.05,]$sig.sn <- "Yes"
+ head(t9, n=11)
+
+ f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mouse-snrna-3data.MvF-diff2-1.noXY-weight0-hallmark.GseaPreranked.1783219224059/gsea_report_for_na_neg_1783219224059.tsv")
+ f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mouse-snrna-3data.MvF-diff2-1.noXY-weight0-hallmark.GseaPreranked.1783219224059/gsea_report_for_na_pos_1783219224059.tsv")
+  t1 <- rbind(f1, f2)
+  t2 <- t1[, c(1,6, 8)]
+ colnames(t2) <- paste(colnames(t2), ".3data", sep="")
+ t20 <- merge(t9, t2, by.x="NAME", by.y="NAME.3data")
+ dim(t20)
+# [1] 49 12
+ t20$sig.3 <- "No"
+ t20[ t20$FDR.q.val.3data < 0.05,]$sig.3 <- "Yes"
+
+# 27         HALLMARK_INTERFERON_GAMMA_RESPONSE -3.3057260 0.0000000000 -8.2630880 0.000000e+00 -3.7644136 0.0000000000   Yes   Yes    Yes -5.6440110    0.0000000000   Yes
+# 36         HALLMARK_OXIDATIVE_PHOSPHORYLATION -6.1208270 0.0000000000 -7.3809257 0.000000e+00  3.1450920 0.0000000000   Yes   Yes    Yes -3.8587804    0.0000000000   Yes
+# 30                   HALLMARK_MITOTIC_SPINDLE  4.7007720 0.0000000000  1.3818880 6.937810e-01  0.9944188 0.8887315400   Yes    No     No  2.9008808    0.0000000000   Yes
+
+ col_fun = colorRamp2(c(-4,0,4), c( "blue", "white",  "red"))
+ t9 <- t20
+ ca <- HeatmapAnnotation(  which="row", snRNA= t9$sig.sn, mouse=t9$sig.m,  merge3=t9$sig.3, human=t9$sig.h, col=list(mouse=c("Yes"="blue", "No"="gray85"), human=c("Yes"="blue", "No"="gray85"), snRNA=c("Yes"="blue", "No"="gray85"), merge3=c("Yes"="blue", "No"="gray85")) )
+
+ t10 <- t9[, c(2,4,6,11)]
+ rownames(t10) <- gsub("HALLMARK_", "", t9$NAME)
+ colnames(t10) <- c("mouse", "human", "snRNA", "merge3")
+ Heatmap(t10, name="NES", right_annotation=ca,  row_dend_width=unit(15, "mm"), row_names_gp = gpar(fontsize = 8),  col = col_fun, clustering_distance_columns ="pearson")
+
 #figure 203
 f1 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/gsea_report_for_na_neg_1751317616145.tsv")
  f2 <- read.delim("file:///Users/linyongmao/gsea_home/output/microgliaSex/human-mg-postnatal-science2023-MvF-diff2-1.age-covar.noX.Y.GseaPreranked.1751317616145/gsea_report_for_na_pos_1751317616145.tsv")
