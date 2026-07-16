@@ -46,6 +46,10 @@ linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat file-dirs
   bash /lab/page_human_data/linyong2/gtex-dna-sra-download/script-bam-C4A-primer-depth
  done > temp
 linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ mv -i temp  gtex-dna-sra-download-2026.7.14-rpp30.depth
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat gtex-dna-sra-download-125samp.2026.6-chr-dep >> gtex-dna-sra-download-2026.july-chr-dep
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat gtex-dna-sra-download-125samp.2026.6-rpp30.depth >> gtex-dna-sra-download-2026.7.14-rpp30.depth
+
+
 > t1 <- read.delim("gtex-dna-sra-download-2026.5-chr-dep", header=F)
 t1 <- read.delim("gtex-dna-sra-download-2026.july-chr-dep", header=F)
  dim(t1)
