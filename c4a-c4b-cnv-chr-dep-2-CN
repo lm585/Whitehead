@@ -159,3 +159,9 @@ for(i in unique(t13$V1)) {
 
   t13$c4a.6bp.relative.rpp30.pcr63bp <- t13$c4a.6bp.c4a.diff.6bp.q20.dep / t13$rpp30.pcr63bp.dep * 2
   summary(t13$c4a.6bp.relative.rpp30.pcr63bp)
+
+######
+linyong@c5b2 /lab/page_human_data/linyong2/gtex-dna-sra-download$ bash script-c4a-q0
+ls -lh temp-c4a-q0-1line-combin
+cat temp-c4a-q0-1line-combin | awk 'NF > 0' > gtex-dna-sra-download-99samp.2026.7.19-c4a-q0-1line-combin
+#SAMN04595641.sorted	C4A	start-exon#9	chr6	31982057	31984408	1032	2352	100	59.8397	36	0	C4A	exon#10-end	chr6	31991192	32002681	4853	11490	100	61.5748	36.4	6.31	C4B	start-exon#9	chr6	32014795	32017146	1024	2352	100	59.798536.4	0	C4B	exon#10-end	chr6	32023930	32035418	4829	11489	100	61.0817	36.6	6.34
