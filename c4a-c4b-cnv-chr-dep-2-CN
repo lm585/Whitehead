@@ -181,3 +181,19 @@ linyong@c5b2 /lab/page_human_data/linyong2/gtex-dna-sra-download$ bash script-c4
 ls -lh temp-c4a-q0-1line-combin
 cat temp-c4a-q0-1line-combin | awk 'NF > 0' > gtex-dna-sra-download-99samp.2026.7.19-c4a-q0-1line-combin
 #SAMN04595641.sorted	C4A	start-exon#9	chr6	31982057	31984408	1032	2352	100	59.8397	36	0	C4A	exon#10-end	chr6	31991192	32002681	4853	11490	100	61.5748	36.4	6.31	C4B	start-exon#9	chr6	32014795	32017146	1024	2352	100	59.798536.4	0	C4B	exon#10-end	chr6	32023930	32035418	4829	11489	100	61.0817	36.6	6.34
+
+######
+linyong@c5b2 /lab/page_human_data/linyong2/gtex-dna-sra-download$ bash ./script-c4a-q20
+linyong@c5b2 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls -lh temp-c4a-q20-1line-combin
+linyong@c5b2 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat temp-c4a-q20-1line-combin | awk '{print NF}' | uniq -c
+cat temp-c4a-q20-1line-combin | awk 'NF == 62' | wc
+cat temp-c4a-q20-1line-combin | awk 'NF == 62' > gtex-dna-sra-download-99samp.2026.7.19-c4a-q20-1line-combin
+#SAMN04595641.sorted.bam	temp-c4a-q20	C4A	chr6	31982057	32002681	775	3651	17.7018	5.56393	36.4	38.8	
+#C4B	chr6	32014795	32035418	809	3199	15.5111	5.83282	36.3	37.2	
+#cyp1.q20	chr6	32005636	32008909	1160	3274	100	48.9951	36.2	49.6	
+#cyp2.q2  chr6	32038415	32041644	1175	3230	100	52.6709	36.5	46.7	
+#cyp1.q0	chr6	32005636	32008909	1442	3274	100	61.029	36.2	40.2	
+#cyp2.q0	chr6	32038415	32041644	1404	3230	100	62.5789	36.5	39.3
+
+
+
