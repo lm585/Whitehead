@@ -49,6 +49,19 @@ linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat file-dirs
   bash /lab/page_human_data/linyong2/gtex-dna-sra-download/script-bam-C4A-primer-depth
  done > temp
 linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ mv -i temp  gtex-dna-sra-download-2026.7.14-rpp30.depth
+Sekar A, Nature. 2016, PCR region, rpp30 63-bp-region; rpp30 whole gene; c4a c4a-c4b-diff-6bp-q20
+#file	gene	region	#rname	startpos	endpos	numreads	covbases	coverage	meandepth	meanbaseq	meanmapq
+#SAMN04595641.sorted.bam	C4A	pcr-q0	chr6	31995963	31996104	130	142	100	67.0211	36.8	44
+#SAMN04595641.sorted.bam	C4A	pcr-q20	chr6	31995963	31996104	106	142	100	54.1549	37.2	53.6
+#SAMN04595641.sorted.bam	C4B	pcr-q0	chr6	32028761	32028847	118	87	100	81.5747	36.8	49.2
+#SAMN04595641.sorted.bam	C4B	pcr-q20	chr6	32028761	32028847	105	87	100	76.4483	36.9	55.2
+#SAMN04595641.sorted.bam	RPP30	pcr-q0	chr10	90872002	90872064	109	63	100	79.619	37.3	60
+#SAMN04595641.sorted.bam	RPP30	pcr-q20	chr10	90872002	90872064	109	63	100	79.619	37.3	60
+#SAMN04595641.sorted.bam	RPP30	gene-q0	chr10	90871974	90902191	8069	30217	99.9967	38.718	36.6	59.8
+#SAMN04595641.sorted.bam	RPP30	gene-q20	chr10	90871974	90902191	8049	30217	99.9967	38.6817	36.6	59.9
+#SAMN04595641.sorted.bam	C4A	c4a-c4b-diff-6bp-q0	chr6	31996090	31996095	82	6	100	78.6667	37.3	58.8
+#SAMN04595641.sorted.bam	C4A	c4a-c4b-diff-6bp-q20	chr6	31996090	31996095	82	6	100	78.6667	37.3	58.8
+
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat gtex-dna-sra-download-125samp.2026.6-chr-dep >> gtex-dna-sra-download-2026.july-chr-dep
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat gtex-dna-sra-download-125samp.2026.6-rpp30.depth >> gtex-dna-sra-download-2026.7.14-rpp30.depth
 
