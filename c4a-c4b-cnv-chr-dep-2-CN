@@ -195,5 +195,49 @@ cat temp-c4a-q20-1line-combin | awk 'NF == 62' > gtex-dna-sra-download-99samp.20
 #cyp1.q0	chr6	32005636	32008909	1442	3274	100	61.029	36.2	40.2	
 #cyp2.q0	chr6	32038415	32041644	1404	3230	100	62.5789	36.5	39.3
 
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cp -i gtex-dna-sra-download-2026.july-chr-dep gtex-dna-sra-download-2026.7.14-chr-dep
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat gtex-dna-sra-download-125samp.2026.6-c4a-q0-1line-combin | awk 'NR > 1' >> gtex-dna-sra-download-99samp.2026.7.19-c4a-q0-1line-combin
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat gtex-dna-sra-download-125samp.2026.6-c4a-q20-1line-combin >> gtex-dna-sra-download-99samp.2026.7.19-c4a-q20-1line-combin
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % ls -lh| grep sra | grep 2026.7
+-rw-r--r--    1 linyongmao  staff    11K Jul 20 14:37 gtex-dna-sra-download-2026.7.14-chr-dep
+-rw-r--r--    1 linyongmao  staff   234K Jul 15 12:42 gtex-dna-sra-download-2026.7.14-rpp30.depth
+-rw-r--r--    1 linyongmao  staff    66K Jul 20 14:40 gtex-dna-sra-download-99samp.2026.7.19-c4a-q0-1line-combin
+-rw-r--r--    1 linyongmao  staff    90K Jul 20 14:43 gtex-dna-sra-download-99samp.2026.7.19-c4a-q20-1line-combin
+t1 <- read.delim("gtex-dna-sra-download-99samp.2026.7.19-c4a-q20-1line-combin", header=F)
+ t2 <- read.delim("gtex-dna-sra-download-2026.7.14-chr-dep", header=F)
+ t3 <- merge(t1, t2, by.x="V1", by.y="V1")
+ dim(t3)
+#[1] 226  66
+t3$dep <- (t3$V3.y + t3$V5.y) / 2
+ t1 <- t3
+ t1$c4a <- t1$V10 / t1$dep
+ t1$c4b <- t1$V20 / t1$dep
+ t1$CYP21A1P <- t1$V30 / t1$dep * 2
+ t1$CYP21A2 <- t1$V40 / t1$dep * 2
+ t1$cyp21.tot <- (t1$V50 + t1$V60) / t1$dep *2
+ t1$c4a.cn <- t1$c4a  *  20.0916  + 0.2
+ t1$c4b.cn <- t1$c4b    *  19.2208  + 0.2
+ t1$cyp1.cn <- t1$CYP21A1P * 1.23306
+ t1$cyp2.cn <- t1$CYP21A2  * 1.08333
+ t1[1:6, c(1, 72:76)]
+ t5 <- t1[, c(1, 67,72:76)]
+  t6 <- read.delim("gtex-dna-sra-download-99samp.2026.7.19-c4a-q0-1line-combin")
+ t6$file <- paste(t6$file, ".bam", sep="")
+ t8 <- merge(t6, t5, by.x="file", by.y="V1")
+ dim(t8)
+ t8$c4.tot.no.intron9 <- (t8$meandepth * 2352 + t8$meandepth.1 * 11490 + t8$meandepth.2 *  2352 + t8$meandepth.3 * 11489) / (2352 + 11489.5) / t8$dep * 2
+ t9 <- t8[, c(1,46:52)]
+ t9$file <- gsub(".sorted.bam", "", t9$file)
+ s1 <- read.delim("SraRunTable.24455samp.GTEx.tab.txt")
+ s2 <-unique( data.frame(sample = s1$BioSample, id=s1$biospecimen_repository_sample_id))
+ dim(s2)
+#  [1] 14116     2
+ t10 <- merge(t9, s2, by.x="file", by.y="sample")
+ dim(t10)
+#[1] 230   9
+ sra <- t10
+ sra2 <- merge(sra, t11, by.x="id", by.y="V1")
+ dim(sra2) 
+#[1] 230  21
 
 
