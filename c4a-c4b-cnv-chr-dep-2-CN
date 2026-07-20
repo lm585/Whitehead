@@ -236,7 +236,8 @@ t3$dep <- (t3$V3.y + t3$V5.y) / 2
  dim(t10)
 #[1] 230   9
  sra <- t10
- sra2 <- merge(sra, t11, by.x="id", by.y="V1")
+###t11: temp-c4a-c4b-cyp21pa-cnv-expression
+sra2 <- merge(sra, t11, by.x="id", by.y="V1")
  dim(sra2) 
 #[1] 230  21
 
