@@ -39,6 +39,9 @@ linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ bash /lab/sol
 cat  /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin | awk 'NF < 3'
 cat  /lab/solexa_page/linyong/gtex-dna/dir-dna-sra/temp-c4a-chr-dep-combin | awk 'NF > 3' > gtex-dna-sra-download-2026.july-chr-dep
 99 gtex-dna-sra-download-2026.july-chr-dep
+#SAMN04595641.sorted.bam	chr18	41.5968	chr12	41.8295
+#SAMN04595733.sorted.bam	chr2	40.6796	chr21	41.195
+#SAMN04595831.sorted.bam	chr18	41.7942	chr1	41.8841
 
 linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat file-dirs | while read dir
  do
