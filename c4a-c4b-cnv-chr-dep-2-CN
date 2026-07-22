@@ -241,4 +241,36 @@ sra2 <- merge(sra, t11, by.x="id", by.y="V1")
  dim(sra2) 
 #[1] 230  21
 
+ for(i in unique(sra2$file)) {
+if(dim(sra2[ sra2$file == i,])[1] > 1)
+{
+ print(sra2[ sra2$file == i,])
+}
+}
+
+ sra3 <- sra2[1:length(unique(sra2$file)),]
+ dim(sra3)
+ j=1 
+for(i in unique(sra2$file)) {
+ sra3[j,] <- sra2[ sra2$file == i,][1,]
+ j <- j+1 
+}
+ dim(sra3)
+# 230 rows in sra2 -> 223 uniq samples
+
+> m1 <- data.frame(SRA.download.map = round(sra3$c4.tot.no.intron9.x), AnVIL=sra3$c4.tot.no.intron9.int)
+> t2[1, ] <- hist(m1$AnVIL, breaks=seq(1.5, 9.5, 1))$counts
+> t2[2, ] <- hist(m1$SRA.download.map, breaks=seq(1.5, 9.5, 1))$counts
+> t2[3,] <- hist(sra3$cyp21.tot.y, breaks=seq(1.5, 9.5, 1))$counts
+> t2[4,] <- hist(sra3$cyp21.tot.x, breaks=seq(1.5, 9.5, 1))$counts
+> rownames(t2) <- c("AnVIL.c4.tot.no.intron9", "SRA.bwa.c4.tot.no.intron9", "AnVIL.cyp21.tot", "SRA.bwa.cyp21.tot")
+> t2
+                          C4.tot.CN.2 C4.tot.CN.3 C4.tot.CN.4 C4.tot.CN.5 C4.tot.CN.6 C4.tot.CN.7 C4.tot.CN.8 C4.tot.CN.9
+AnVIL.c4.tot.no.intron9             1           7          41          62          84          20           6           2
+SRA.bwa.c4.tot.no.intron9           1           7          49          83          61          17           4           1
+AnVIL.cyp21.tot                     1           7          47          87          58          18           4           1
+SRA.bwa.cyp21.tot                   1           7          48          87          57          18           3           2
+> barplot(as.matrix(t2), beside=T, col=c("grey", "black", "blue", "green"))
+> legend(2, 70, rownames(t2), fill=c("grey", "black", "blue", "green"), cex=1, inset= 0.05)
+
 
