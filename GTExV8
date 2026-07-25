@@ -10289,6 +10289,75 @@ C4B total.CN freq
  freq <- freq/838
  sum(freq)
 # 1
+#############################
+cyp21a2 init freq[1] 0.002386635 0.689140811 0.302505967 0.005966587
+c4a freq             0.055       0.58        0.34        0.025 
+cyp21a1p freq        0.177       0.60        0.21        0.013 
+c4b freq             0.048       0.73        0.22        0.002 
+
+> barplot(as.matrix( t1[1:2,]), beside=T, col=c("blue", "red"))
+> legend(13, 300, c( "observed freq", "derived from allele freq"), fill=c( "blue", "red"), inset=0.05)
+
+> h1 <- hist(t11$cyp21a2.int, breaks=seq(-0.5, 6.5, 1))
+###allele-2-CN linked to allele-1-CN
+ allel2.to.a1 <- 35
+ res <- as.data.frame(matrix(,nrow=1000, ncol=2))
+ colnames(res) <- c("a2.2.a1", "p.val")
+ d <- h1$counts
+
+for(allel2.to.a1 in 0:250) {
+  freq[1] <- d[1] + d[2]/2
+  freq[2] <- d[2]/2 + d[3] + d[4]/2 - allel2.to.a1 / 2
+  freq[3] <- d[4]/2 + d[5] + d[6]/2 - allel2.to.a1 / 2
+  freq[4] <- d[6]/2 + d[7]
+ sum(freq)
+# [1] 803
+  freq <- freq/(838 - allel2.to.a1)
+ freq
+#          freq.1    freq.2    freq.3     freq.4
+# 3839 0.00249066 0.6973848 0.2938979 0.00622665
+ sum(freq)
+# [1] 1
+ t1[2, ] <- 0
+  t1[2,1] <- freq[1] ^ 2
+  t1[2,2] <- freq[1] * freq[2] *2
+  t1[2,3] <- freq[1] * freq[3] *2 + freq[2] ^ 2
+  t1[2,4] <- freq[1] * freq[4] *2 + freq[2] * freq[3] *2
+  t1[2,5] <- freq[2] * freq[4] *2 + freq[3] * freq[3]
+  t1[2,6] <- freq[3] * freq[4] *2
+  t1[2,7] <- freq[4] * freq[4]
+  sum(t1[2,])
+# [1] 1
+  t1[2,]
+ t1[2,] <- round( (838 - allel2.to.a1) * t1[2,] )
+ sum(t1[2,])
+# [1] 803
+  t1
+ t1[2,3:4]
+#   CYP21A2.CN.2 CYP21A2.CN.3
+# 2          392          329
+ t1[2,4]
+# [1] 329
+ t1[2,4] <- t1[2,4] + allel2.to.a1
+ sum(t1[1,])
+ sum(t1[2,])
+# fisher.test(t1[1:2,])
+# p-value = 0.01483
+ i <- allel2.to.a1 +1
+ res$a2.2.a1[i] <- allel2.to.a1
+ f <- fisher.test(t1[1:2,], simulate.p.value=T)
+ res$p.val[i] <- f$p.value
+}
+
+allel2.to.a1 <- 85
+p-value = 0.1994
+allel2.to.a1 <- 90
+p-value = 0.234
+>  allel2.to.a1 <- 200
+p-value = 0.519
+>  allel2.to.a1 <- 400
+p-value = 9.959e-07
+ 
 
 ###################################
 > t12 <- t11[ t11$c4.tot.no.intron9.int == 6 & t11$c4a.int == 3 & t11$c4b.int == 3 & t11$cyp21.tot.int == 6 & t11$c4.tot.no.intron9 - 0.2 > 5.8 & t11$c4.tot.no.intron9 - 0.2 < 6.2,]
