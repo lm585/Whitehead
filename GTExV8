@@ -10495,6 +10495,10 @@ cat temp.c4a.1.pile temp.c4a.2.pile | cut -f 1-4 > temp.c4a.pile.2
  p12 <- rbind(p10, p11)
 > gplot(p12, aes(x=pos, y=V4, group=gene, color=gene)) + geom_point(shape=21, size=1) + geom_smooth(method="lm") + labs(x="relative pos", y="seq coverage")
 
+#######################################
+linyong@fry24 /archive$ ls /archive/page_human_data/gtex-dna-sra-download-2026-june10/
+filelist.txt  lab/  metadata.txt
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
