@@ -9881,6 +9881,9 @@ cat ~/Thyroid.574samp.dnaseq.429inSRA.BioSample.txt | awk 'NR > 206' | head -20
 Thu Jul  9 04:18:43 PM EDT 2026
 linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat ~/Thyroid.574samp.dnaseq.429inSRA.BioSample.txt | awk 'NR > 226' | head -25
 
+Tue Aug  4 12:00:31 PM EDT 2026
+linyong@c5b2 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-7$ cat ~/Thyroid.574samp.dnaseq.429inSRA.BioSample.txt | awk 'NR > 251' | head -25
+
 ##############################################
 linyong@c1b6 /lab/page_human_data/linyong2/gtex-dna-sra-download/dir-1$ ls | grep ^dir | while read ll
 do
