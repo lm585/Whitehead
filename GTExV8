@@ -10561,6 +10561,16 @@ linyong@c2b12 /lab/page_human_data/linyong2/one-1000-genome-seq$ ls | grep NA118
 NA11832.final.cram
 NA11839.final.cram
 
+2026-08-07 13:46:56 (6.44 MB/s) - ‘NA11830.final.cram’ saved [16330404585]
+
+######
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/run/ERR323/ERR3239287 ... done.
+==> SIZE NA11831.final.cram ... done.
+  
+==> PASV ... done.    ==> RETR NA11831.final.cram ... 
+No such file ‘NA11831.final.cram’.
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
