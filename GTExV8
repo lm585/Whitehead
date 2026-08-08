@@ -10572,6 +10572,39 @@ Logging in as anonymous ... Logged in!
 ==> PASV ... done.    ==> RETR NA11831.final.cram ... 
 No such file ‘NA11831.final.cram’.
 
+#####################
+linyong@c3b12 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools view -q 0  --cram   -o NA07014.hg38.chr6.cram  NA07014.hg38.cram chr6
+name: copyA
+location: chr6:31980533-32013269
+
+name: copyB
+location: chr6:32013271-32046123
+
+is there a good method based on overlapping sequences to assemble Oxford Nanopore Technologies long reads to a 200-kbp haplotype
+linyong@c2b12 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat  c4.seq.bed
+chr6    31993070        31993120        c4-repeat-region        nov18   +
+chr6    31996060        31996120        c4a-exon26      nov18   +
+chr6    32006280        32006340        cyp21a1p-exon1  nov18   +
+chr6    32028800        32028860        c4b-exon26      nov18   +
+chr6    32039320        32039380        cyp21a2-exon3   nov18   +
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ homerTools extract c4.seq.bed  hg38  -fa
+
+        Extracting sequences from file: /lab/solexa_page/linyong/homer//data/genomes/hg38//genome.fa
+        Looking for peak sequences in a single file (/lab/solexa_page/linyong/homer//data/genomes/hg38//genome.fa)
+        Extracting 4 sequences from chr6
+linyong@c2b10 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ homerTools extract c4.seq.bed  hg38  -fa > c4.seq.fa
+linyong@c2b10 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ bwa bwasw  -f temp.sam -t 10    /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa   c4.seq.fa
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cp -i c4.seq.fa c4.seq.2.fa
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ vi c4.seq.2.fa   (5 sequences)
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat temp.sam | tail -n 20 | cut -f 1-6
+c4-repeat-region        0       chr6    31993071        0       50M
+c4a-exon26      0       chr6    31996061        25      60M
+cyp21a1p-uniq   0       chr6    32006201        177     100M
+c4b-exon26      0       chr6    32028801        25      60M
+cyp21a2-uniq    0       chr6    32038937        177     100M
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
