@@ -10604,6 +10604,19 @@ cyp21a1p-uniq   0       chr6    32006201        177     100M
 c4b-exon26      0       chr6    32028801        25      60M
 cyp21a2-uniq    0       chr6    32038937        177     100M
 
+#############################################################
+WHR1.gene.snp   GCATGGTCCGGAAGGCAAAGTACCGGGAACTGCTCCTATCAGAGCTCCTGGGCCGGCGGGC
+read-88fbe92a-ac6c-40e8-b95a-a96ba8dc419d
+Loaded 52252 letters in 1 sequences
+25999S37M
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ minimap2 -a -x map-ont -t 4  -o temp2.sam  /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  temp.leftsoft26kbpseq.fa
+linyong@c5b2 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools view -C -T  /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa -o NA07014.hg38.longread.softclip.inverse.cram temp2.sam
+samtools sort -@ 10 -o  NA07014.hg38.longread.softclip.inverse.sort.cram  NA07014.hg38.longread.softclip.inverse.cram
+samtools index  NA07014.hg38.longread.softclip.inverse.sort.cram
+
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ blat temp.longread.fa c4.seq.2.fa  output
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
