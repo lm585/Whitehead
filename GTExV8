@@ -10617,6 +10617,26 @@ samtools index  NA07014.hg38.longread.softclip.inverse.sort.cram
 
 linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ blat temp.longread.fa c4.seq.2.fa  output
 
+##########################
+linyong@c2b10 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools view -q 0   NA07014.hg38.chr6.cram chr6:31980533-32046123 | wc -l
+83
+linyong@c2b10 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools view -q 20   NA07014.hg38.chr6.cram chr6:31980533-32046123 | wc -l
+46
+linyong@c2b10 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools view    NA07014.hg38.chr6.cram chr6:31980533-32046123 | wc -l
+83
+
+##oxford long read
+linyong@c2b10 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools view -q 0   NA07014.hg38.chr6.cram chr6:31980533-32046123 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 || $2 == 16' |cut -f 1-6 | grep H | wc
+      0       0       0
+
+###temp , a fastq file
+linyong@c11b2 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ /home/linyong/C++/fastq2fa.longread.divide300pb temp out 60
+rm -f temp2.sam
+bwa mem -t 14 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa out > temp2.sam
+samtools view -b -S -o temp2.bam temp2.sam
+samtools sort -@ 10 -o  temp2.sort.bam temp2.bam
+samtools index temp2.sort.bam
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
