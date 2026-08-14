@@ -10637,6 +10637,28 @@ samtools view -b -S -o temp2.bam temp2.sam
 samtools sort -@ 10 -o  temp2.sort.bam temp2.bam
 samtools index temp2.sort.bam
 
+##################################
+linyong@c2b12 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat script-short-read-map2-longread 
+#
+samtools view -q 0   NA07014.hg38.chr6.cram chr6:31980533-32046123 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 || $2 == 16' > temp.fq
+
+cat temp.fq  |    while read ll
+do
+ echo "$ll" | awk ' BEGIN {FS = "\t"; OFS = "\t"} 
+{
+ print ">read-" $1;
+ print $10;
+}
+' > temp.longread.fa
+ echo '########################################################################################'
+ blat temp.longread.fa c4.seq.2.fa  output
+ cat output
+ echo
+ bwa index temp.longread.fa
+ bwa bwasw  -f temp.sam -t 1   temp.longread.fa   c4.seq.2.fa
+ cat temp.sam  |  awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 > 0' 
+done
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
