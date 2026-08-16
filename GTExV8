@@ -10659,6 +10659,16 @@ do
  cat temp.sam  |  awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 > 0' 
 done
 
+########################################
+linyong@c2b12 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ bwa bwasw  -f NA07014.hg38.longread.300bp.sam  -t 1 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa   templongread.300bp.fa &
+linyong@c2b12 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools view -b -o temp.bam NA07014.final.chr6.cram         chr6:21980533-33046123
+linyong@c2b12 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools mpileup -Q 0  -q 0 -d 1000000 -f /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa   temp.bam > NA07014.final.chr6.region.pile
+cat NA07014.final.chr6.region.pile | awk '$5 ~ /\+.*\+.*\+.*\+.*\+.*\+.*\+.*\+.*\+/' | head
+cat NA07014.final.chr6.region.pile | awk '$5 ~ /[acgtACGT].*[acgtACGT].*[acgtACGT].*[acgtACGT].*[acgtACGT].*[acgtACGT].*[acgtACGT].*[acgtACGT].*[acgtACGT].*/' >> temp
+ | awk '$2 > 31980533 && $2 < 32046123' >> temp
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat NA07014.final.chr6.region.pile | awk '$5 ~ /\*.*\*.*\*.*\*.*\*.*\*.*\*.*\*.*\*/'  | awk '$2 > 31980533 && $2 < 32046123' >> temp
+rm -f temp1
+cat temp | sort -t '     ' +0 -1 +1 -2n | uniq > temp1
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
