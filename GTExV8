@@ -10670,6 +10670,36 @@ linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat NA070
 rm -f temp1
 cat temp | sort -t '     ' +0 -1 +1 -2n | uniq > temp1
 
+###############################
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools mpileup -Q 0  -q 20 -d 1000000  -f /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa   -r chr6 -o NA07014.hg38.chr6.pile NA07014.hg38.chr6.cram
+
+#virus seq, human  endogenous retroviral (C4–HERV) sequence in intron 9.
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools coverage -q 0 -r chr6:32017422-32023788 ../NA07031.final.cram
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    32017422        32023788        1629    6367    100     37.2822 255     0
+chr6    31984684        31991050        1585    6367    100     36.5565 255     0
+(37.2822+36.5565) / 34.0151 * 2 = 4.341525
+> 4.341525 / 0.8877
+[1] 4.890757
+> 4.341525 / 0.9311
+[1] 4.6627
+> 4.341525 / 5.317463 = 0.8164655
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools coverage -q 0 -r chr6:32017422-32023788 ../NA07014.final.cram
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    32017422        32023788        2083    6367    100     47.9548 255     0
+chr6    31984684        31991050        2105    6367    100     48.2739 255     0
+(47.9548+48.2739) / ((35.1926 + 35.4608) / 2) * 2 = 5.44793
+> 5.44793 / 6.137= 0.8877188
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools coverage -q 0 -r chr6:32017422-32023788 ../NA07051.final.cram
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    32017422        32023788        1985    6367    100     45.5841 255     0
+chr6    31984684        31991050        2143    6367    100     49.1937 255     0
+(45.5841+49.1937) / 32.7446 * 2 = 5.7889
+5.7889 / 6.216708 = 0.9311
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
