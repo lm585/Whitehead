@@ -10699,6 +10699,58 @@ chr6    31984684        31991050        2143    6367    100     49.1937 255     
 (45.5841+49.1937) / 32.7446 * 2 = 5.7889
 5.7889 / 6.216708 = 0.9311
 
+#################################
+HERV breakpoints
+chr6:31984684-31991050 , c4a
+chr6:32017422-32023788 , c4b
+
+linyong@c5b6 /lab/solexa_page/linyong/gtex-dna-aug2024$ echo $f
+GTEX-15SHW-0004-SM-6UH2L.bam
+linyong@c5b6 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools view  -q 0 "$f" chr6:31982057-32002681 | awk '$9 > 5000 || $9 < -5000' | cut -f 1-9
+26 lines in total
+H02N2ALXX140917:7:1219:3831:37559       99      chr6    31984565        0       127M24S =       32023846        39432
+Left alignment 127M24S, MAPQ 0, C4A intron9 and spans HERV left-breakpoint, Right 24 soft;
+right read, 151M, MAPQ 0, to the right of HERV insertion, spans C4B.exon10
+Insert size = 39432
+First in pair
+Pair orientation = F1R2
+
+H02N2ALXX140917:7:1112:22528:30773      163     chr6    31984381        0       151M    =       32023790        39500
+left read to the left of HERV, right read spans c4b HERV right-breakpoint, 60S91M
+
+H02N2ALXX140917:7:1115:12895:41409      163     chr6    31984389        0       151M    =       32023790        39536
+left read to the left of HERV, right read spans c4b HERV right-breakpoint, 16S135M
+
+H02N2ALXX140917:7:2212:19361:55245      163     chr6    31984393        0       151M    =       31991052        6734
+left read to the left of HERV, right read spans c4a HERV right-breakpoint, 76S75M
+TTGCTCGTTCTGCTCATTCCTTCACTCCTCCAGTGGACATGTGTTGTTCAATGCCCTGTGCTGGGCCTCAGCATGT
+right read soft clipped 76-bp seq mapped to the left of HERV
+
+H02N2ALXX140917:7:2113:13261:20805      163     chr6    31984416        0       151M    =       32023801        39536
+left read to the left of HERV in c4a, right read  to the right of HERV in c4b, no soft clip, both reads 151M
+
+H02N2ALXX140917:7:2113:13494:21843      163     chr6    31984416        0       151M    =       31991063        6798
+left read to the left of HERV in c4a, right read  to the right of HERV in c4a, no soft clip, both reads 151M
+
+H02N2ALXX140917:7:1110:2867:56318       99      chr6    31984457        0       151M    =       31991086        6780
+left read to the left of HERV in c4a, right read  to the right of HERV in c4a, no soft clip, both reads 151M
+
+H02N2ALXX140917:7:1110:20427:57443      163     chr6    31984487        0       151M    =       32023858        39522
+left read to the left of HERV in c4a,  right read  to the right of HERV in c4b, no soft clip, both reads 151M
+
+H02N2ALXX140917:7:2118:29064:35696      99      chr6    31984519        0       151M    =       32023906        39538
+left read to the left of HERV in c4a,  right read  to the right of HERV in c4b, no soft clip, both reads 151M
+
+H02N2ALXX140917:7:1219:3831:37559       99      chr6    31984565        0       127M24S =       32023846        39432
+left read spans HERV left breakpoint in c4a, 127M24S,  right read  to the right of HERV in c4b, 151M
+
+H02N2ALXX140917:7:1122:7699:60818       2145    chr6    31991052        0       93S58M  =       31991218        -25963
+A SAM flag value of 2145 breaks down into the bitwise sum of 2048 (supplementary alignment),
+
+H02N2ALXX140917:7:2212:19361:55245      83      chr6    31991052        0       76S75M  =       31984393        -6734
+right read of a read pair
+
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
