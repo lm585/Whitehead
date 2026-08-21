@@ -10750,6 +10750,60 @@ A SAM flag value of 2145 breaks down into the bitwise sum of 2048 (supplementary
 H02N2ALXX140917:7:2212:19361:55245      83      chr6    31991052        0       76S75M  =       31984393        -6734
 right read of a read pair
 
+H02N2ALXX140917:7:2113:13494:21843	83	chr6	31991063	0	151M	=	31984416	-6798
+right read of a read pair
+
+H02N2ALXX140917:7:1110:2867:56318	147	chr6	31991086	0	151M	=	31984457	-6780
+right read of a read pair
+
+H02N2ALXX140917:7:1207:28557:18221	145	chr6	31991087	0	151M	=	32017195	25959
+right read to the right of HERV in c4a, left read to the left of HERV in c4b
+R2F1, both reads 151M, mapQ=0,
+SAM flag 145 means the alignment record is paired (0x1), maps to the reverse strand (0x10), and is the second read in the pair (0x80).
+
+H02N2ALXX140917:7:1214:25867:9519	145	chr6	31991127	0	151M	=	32017232	25956
+R2F1,  both reads 151M, mapQ=0,
+right read to the right of HERV in c4a, left read to the left of HERV in c4b
+
+H02N2ALXX140917:7:2113:6410:57214	145	chr6	31991131	0	151M	=	32017275	25995
+R2F1, both reads 151M, mapQ=0,
+right read to the right of HERV in c4a, left read to the left of HERV in c4b
+
+H02N2ALXX140917:7:2210:14601:18485	145	chr6	31991134	0	151M	=	32017217	25934
+R2F1,both reads 151M, mapQ=0,
+right read to the right of HERV in c4a, left read to the left of HERV in c4b
+
+H02N2ALXX140917:7:1122:7699:60818	145	chr6	31991218	0	151M	=	32017330	25963
+R2F1
+right read to the right of HERV in c4a, 
+left read 100M51S, span the left breakpoint of HERV in c4b, mapQ=0 
+left read supplement map 93S58M, spans the right breakpoint of HERV in c4a, mapQ=0, A SAM/BAM file alignment [FLAG] value of 2145 breaks down into the bitwise sum of 1 (read is paired), 32 (mate/read2 is reverse complemented), 64 (first segment/read1 in template), and 2048 (supplementary alignment). F1R2
+an F1R2 pair typically corresponds to SAM flag 99 (for Read 1) and flag 147 (for 
+the F2R1 orientation (where Read 2 maps to the forward strand and Read 1 maps to the reverse strand) corresponds to the SAM flag numbers 83 for Read 1 and 163 for Read 2
+
+H02N2ALXX140917:7:1122:16275:18819	2225	chr6	31993076	0	85S66M	=	32025872	32897
+supplementary alignment 
+
+H02N2ALXX140917:7:1122:16377:18397	3249	chr6	31993076	0	85S66M	=	31993134	-32581
+    read is PCR or optical duplicate (0x400)
+    supplementary alignment (0x800)
+
+H02N2ALXX140917:7:1122:16275:18819	163	chr6	31993126	0	59S92M	=	32025872	32897
+mapped to exon16, 2kbp from HERV, not detecting HERV deletion
+
+H02N2ALXX140917:7:1122:16367:18590	81	chr6	31993134	0	151M	=	32025864	32581
+R1F2, mapQ=0
+mapped to exon16, 2kbp from HERV, not detecting HERV deletion
+
+H02N2ALXX140917:7:1122:16377:18397	1105	chr6	31993134	0	151M	=	32025864	32581
+read is PCR or optical duplicate (0x400)
+
+H02N2ALXX140917:7:1122:16407:17992	1105	chr6	31993134	0	151M	=	32025864	32581
+    read is PCR or optical duplicate (0x400)
+
+H02N2ALXX140917:7:2124:17970:71190	2145	chr6	31994649	0	92S59M	=	32027566	-91911002
+ supplementary alignment (0x800)
+
 
 
 #############################################################
