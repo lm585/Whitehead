@@ -10820,6 +10820,27 @@ chr6    31982057        32002681        6202    20625   100     43.9104 28.8    
 linyong@fry24 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools view  -q 0 "$f" chr6:31982057-32002681 | wc
    6251  125526 3899706
 
+linyong@c5b6 /lab/solexa_page/linyong/gtex-dna-aug2024$ ls GTEX*.bam | wc
+    838     838   24014
+
+linyong@c5b2 /lab/page_human_data/linyong2/one-1000-genome-seq$ f="NA07031.final.cram"
+linyong@c5b2 /lab/page_human_data/linyong2/one-1000-genome-seq$ samtools view  -q 0 "$f" chr6:31982057-32002681 | awk '$9 > 5000 || $9 < -5000' | cut -f 1-9
+A00297:176:HVVWKDSXX:3:1215:6876:18192  81      chr6    31997567        6       150M    =       32030089        32374
+A00297:176:HVVWKDSXX:1:1242:31078:29700 81      chr6    32001046        0       150M    =       32032924        31730
+linyong@c5b2 /lab/page_human_data/linyong2/one-1000-genome-seq$ samtools coverage -r chr6:31982057-32002681 -q 0  "$f"
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    31982057        32002681        5891    20625   100     42.4762 255     4.48
+42.4762/44.257 = 0.9597
+
+linyong@c5b2 /lab/page_human_data/linyong2/one-1000-genome-seq$ samtools coverage -r chr6:31982057-32002681 -q 0 --ff 772 "$f"
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    31982057        32002681        6138    20625   100     44.257  255     4.63
+linyong@c5b2 /lab/page_human_data/linyong2/one-1000-genome-seq$ samtools coverage -r chr6:31982057-32002681 -q 0 --ff UNMAP,SECONDARY,QCFAIL  "$f"
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    31982057        32002681        6138    20625   100     44.257  255     4.63
+linyong@c5b2 /lab/page_human_data/linyong2/one-1000-genome-seq$ samtools view  -q 0 "$f" chr6:31982057-32002681 | wc
+   6148  123172 4618773
+
 
 
 #############################################################
