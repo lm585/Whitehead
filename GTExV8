@@ -10804,6 +10804,22 @@ H02N2ALXX140917:7:1122:16407:17992	1105	chr6	31993134	0	151M	=	32025864	32581
 H02N2ALXX140917:7:2124:17970:71190	2145	chr6	31994649	0	92S59M	=	32027566	-91911002
  supplementary alignment (0x800)
 
+#######################################
+linyong@c5b2 /lab/solexa_page/linyong/gtex-dna-aug2024$ f="GTEX-15SHW-0004-SM-6UH2L.bam"
+linyong@c5b2 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools coverage -r chr6:31982057-32002681 -q 0  "$f"
+NOT include duplicated reads in meandepth calc
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    31982057        32002681        5652    20625   100     40.0282 28.8    3.33
+linyong@c5b2 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools coverage -r chr6:31982057-32002681 -q 0 --ff 772 "$f"
+include duplicated reads in meandepth calc
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    31982057        32002681        6202    20625   100     43.9104 28.8    3.54
+linyong@c5b2 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools coverage -r chr6:31982057-32002681 -q 0 --ff UNMAP,SECONDARY,QCFAIL  "$f"
+#rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+chr6    31982057        32002681        6202    20625   100     43.9104 28.8    3.54
+linyong@fry24 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools view  -q 0 "$f" chr6:31982057-32002681 | wc
+   6251  125526 3899706
+
 
 
 #############################################################
