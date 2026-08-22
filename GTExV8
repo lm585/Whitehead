@@ -10841,6 +10841,36 @@ chr6    31982057        32002681        6138    20625   100     44.257  255     
 linyong@c5b2 /lab/page_human_data/linyong2/one-1000-genome-seq$ samtools view  -q 0 "$f" chr6:31982057-32002681 | wc
    6148  123172 4618773
 
+######################
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$  cat  script-longread300bo-2-long
+#
+
+samtools view -q 0   NA07014.hg38.chr6.cram chr6:31980533-32046123 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 || $2 == 16' | grep d9afff69-f1e0-4b87-a93a-5f93e61e4ca1 | awk '{
+print ">read-" $1;
+print $10 }' > temptarget.fa
+
+bwa index temptarget.fa
+
+samtools view -q 0   NA07014.hg38.chr6.cram chr6:31980533-32046123 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 || $2 == 16' | while read ll
+do
+ echo "$ll" | awk '{
+  print "aread-" $1;
+  print $10;
+  print "line3";
+  print "line4";
+   }'
+done  > tempquery.fq
+
+#divide each long read to 300-bp block
+#out is a fasta file for each long.read-300bp-block
+/home/linyong/C++/fastq2fa.longread.divide300pb tempquery.fq out 300
+
+blat temptarget.fa out output
+cat output
+
+echo '########################################################################################'
+bwa bwasw  -f temp.sam -t 1   temptarget.fa  out
+ cat temp.sam  |  awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 > 19'
 
 
 #############################################################
