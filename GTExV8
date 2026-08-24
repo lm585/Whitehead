@@ -10872,6 +10872,26 @@ echo '##########################################################################
 bwa bwasw  -f temp.sam -t 1   temptarget.fa  out
  cat temp.sam  |  awk 'BEGIN {FS = "\t"; OFS = "\t"} $5 > 19'
 
+################################
+rm -f tempquery.fq
+#or using samtools view -q 0 NA07014.hg38.cram chr6:28982057-36035418
+samtools view -q 0   NA07014.hg38.chr6.cram chr6:28982057-36035418 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 || $2 == 16' | while read ll
+do
+ echo "$ll" | awk '{
+  print "aread-" $1;
+  print $10;
+  print "line3";
+  print "line4";
+   }'
+done  > tempquery.fq
+
+linyong@c3b12 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ /home/linyong/C++/fastq2fa.longread.divide300pb tempquery.fq out 300
+linyong@c3b12 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ bwa bwasw  -f temp.sam -t 8 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa    out
+samtools view -b -S -o temp.bam temp.sam
+samtools sort -@ 4 -o  temp.sort.bam  temp.bam
+mv temp.sort.bam  temp.NA07014.hg38.sort.bam
+samtools index temp.NA07014.hg38.sort.bam
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
