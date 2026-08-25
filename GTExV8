@@ -10803,6 +10803,25 @@ H02N2ALXX140917:7:1122:16407:17992	1105	chr6	31993134	0	151M	=	32025864	32581
 
 H02N2ALXX140917:7:2124:17970:71190	2145	chr6	31994649	0	92S59M	=	32027566	-91911002
  supplementary alignment (0x800)
+#########
+linyong@c11b12 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools view  -q 0 "$f" chr6:31984650-31984650 | cut -f 1-9 | grep "[0-9][0-9]S"
+H02N2ALXX140917:7:1224:24538:39282      83      chr6    31984589        0       103M48S =       31984316        -376
+FR R(right soft clip)
+linyong@c11b12 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools view  -q 0 "$f" chr6:31991080-31991080 | cut -f 1-9 | grep "[0-9][0-9]S"
+H02N2ALXX140917:7:1208:23320:64281      99      chr6    31991055        0       15S136M =       31991299        395
+FR F(left soft clip)
+linyong@c11b12 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools view  -q 0 "$f" chr6:32017392-32017392 | cut -f 1-9 | grep "[0-9][0-9]S"
+H02N2ALXX140917:7:1208:11596:71542      147     chr6    32017303        0       127M24S =       32017018        -412
+FR R(right soft clip)
+linyong@c11b12 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools view  -q 0 "$f" chr6:32023758-32023758 | cut -f 1-9 | grep "[0-9][0-9]S"
+
+samtools view  -q 0 "$f" chr6:32016422-32024788 | awk '$9 > 5000 || $9 < -5000' | cut -f 1-9 | wc
+ 19   
+H02N2ALXX140917:7:2110:22365:56089      163     chr6    32017113        0       151M    =       32023790        6773
+H02N2ALXX140917:7:2110:22365:56089      83      chr6    32023790        0       55S96M  =       32017113        -6773
+H02N2ALXX140917:7:1110:2258:57267       99      chr6    32017195        0       151M    =       32023824        6780
+H02N2ALXX140917:7:1110:2258:57267       147     chr6    32023824        0       151M    =       32017195        -6780
+
 
 #######################################
 linyong@c5b2 /lab/solexa_page/linyong/gtex-dna-aug2024$ f="GTEX-15SHW-0004-SM-6UH2L.bam"
