@@ -10813,7 +10813,8 @@ FR F(left soft clip)
 linyong@c11b12 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools view  -q 0 "$f" chr6:32017392-32017392 | cut -f 1-9 | grep "[0-9][0-9]S"
 H02N2ALXX140917:7:1208:11596:71542      147     chr6    32017303        0       127M24S =       32017018        -412
 FR R(right soft clip)
-linyong@c11b12 /lab/solexa_page/linyong/gtex-dna-aug2024$ samtools view  -q 0 "$f" chr6:32023758-32023758 | cut -f 1-9 | grep "[0-9][0-9]S"
+
+$ samtools view  -q 0 "$f" chr6:32023818-32023818 | cut -f 1-9 | grep "[0-9][0-9]S"
 
 samtools view  -q 0 "$f" chr6:32016422-32024788 | awk '$9 > 5000 || $9 < -5000' | cut -f 1-9 | wc
  19   
@@ -10849,7 +10850,7 @@ samtools view  -q 0 "$f" chr6:32017392-32017392 | cut -f 1-9 | grep "[0-9][0-9]S
 echo
 
 echo "FR F(left soft clip)"
-samtools view  -q 0 "$f" chr6:32023758-32023758 | cut -f 1-9 | grep "[0-9][0-9]S"
+samtools view  -q 0 "$f" chr6:32023818-32023818 | cut -f 1-9 | grep "[0-9][0-9]S"
 echo
 
 
