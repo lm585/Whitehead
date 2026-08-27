@@ -10911,6 +10911,10 @@ samtools sort -@ 4 -o  temp.sort.bam  temp.bam
 mv temp.sort.bam  temp.NA07014.hg38.sort.bam
 samtools index temp.NA07014.hg38.sort.bam
 
+#########################
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ bash script-detect-herv ../NA07031.final.cram 
+
+No herv deletion detected, all c4 gene long form
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
