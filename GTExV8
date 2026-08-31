@@ -10947,6 +10947,66 @@ samtools index temp.NA07014.hg38.sort.bam
 linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ bash script-detect-herv ../NA07031.final.cram 
 
 No herv deletion detected, all c4 gene long form
+#####################################################
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq$ cat script-combine-chr-dep-1000genomes
+#
+ls *.cram | while read f
+do
+ grep -w "$f" chr-dep-178samps.utah.aug.2026 | grep -w chrom | wc -l
+ echo -n "$f    "
+ t1=`grep -w "$f" chr-dep-178samps.utah.aug.2026 | grep -w chrom | head -22 | sort -t ' ' +10 -11n | awk 'NR == 11 ' | cut -f 5,11`
+ t2=`grep -w "$f" chr-dep-178samps.utah.aug.2026 | grep -w chrom | head -22 | sort -t ' ' +10 -11n | awk 'NR == 12 ' | cut -f 5,11`
+ echo "$t1      $t2"
+done
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq$ bash script-combine-chr-dep-1000genomes | awk 'NF > 3' > chr-dep-178samps.combined
+
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq$ cat script-c4a-q0-1000genomes
+###
+rm /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin
+
+#### cat file-dirs | head -1023 | while read dir
+ls *.cram | while read f
+do
+  bf="$f"
+  ls -lh "$bf"
+  bash /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1/script-bam-C4A-start-exon9-q0-cram "$f" > /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0
+
+#
+#
+#file   gene    region  #rname  startpos        endpos  numreads        covbases        coverage        meandepth       meanbaseq       meanmapq
+#SAMN04596666.sorted.bam        C4A     upstream-2mbp.-1mbp     chr6    29982057        30982057        307136  999881  99.988  45.3586 37.7    59.1
+#SAMN04596666.sorted.bam        C4A     start-exon#9    chr6    31982057        31984408        1015    2352    100     60.6641 37.8    0
+
+  t1=`head -1 /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0 | cut -f 2-12`
+  echo "file    $t1     $t1     $t1     $t1" > /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0-1line
+
+  ll="$f"
+  t1=`echo "$ll" `
+  t2=`grep -w "$ll"  /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0 | grep -w "C4A     start-exon#9" | head -1 | cut -f 2-12`
+  t3=`grep -w "$ll"  /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0 | grep -w "C4A     exon#10-end" | head -1 | cut -f 2-12`
+  t4=`grep -w "$ll"  /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0 | grep -w "C4B     start-exon#9" | head -1 | cut -f 2-12`
+  t5=`grep -w "$ll"  /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0 | grep -w "C4B     exon#10-end" | head -1 | cut -f 2-12`
+  echo "$t1     $t2     $t3     $t4     $t5" >> /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0-1line
+  cat /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-start-exon9.q0-1line  >> /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin
+done
+
+head -1 /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin > /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-2
+awk 'NR % 2 == 0' /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin >> /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-2
+mv /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-2 /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin
+head -20 /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin
+
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq$
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq$ bash script-c4a-q0-1000genomes
+-rw-r--r-- 1 linyong page_hd 52K Aug 30 21:59 /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq$ wc -l /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin
+179 /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq$ cat /lab/page_human_data/linyong2/gtex-dna-sra-download/temp-c4a-q0-1line-combin | grep -i na07031
+NA07031.final.cram      C4A     start-exon#9    chr6    31982057        31984408        682     2352    100     40.4834 255     0       C4A     exon#10-end     chr6    31991192        32002681        3596    11490   100     46.3674 255     7.33    C4B     start-exon#9    chr6    32014795        32017146        690     2352    100     41.0502 255     0       C4B     exon#10-end     chr6    32023930        32035418        3567    11489   100     45.8922 255     6.05
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
