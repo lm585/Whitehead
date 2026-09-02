@@ -11057,6 +11057,33 @@ t3$dep <- (t3$V3.y + t3$V5.y) / 2
 
 t10 <- t9[ t9$cyp21.tot.int == t9$cyp21a1p.int + t9$cyp21a2.int,]
 
+ t9$c4.tot.int <- round( t9$c4.tot.no.intron9, digits=0)
+ t9$c4.tot.int.minus0.2 <- round( t9$c4.tot.no.intron9 - 0.2, digits=0)
+ dim(t9[ t9$c4.tot.int == t9$cyp21.tot.int,])
+# [1] 160  13
+#  160/178
+# [1] 0.8988764
+ dim(t9[ t9$c4.tot.int.minus0.2 == t9$cyp21.tot.int,])
+# [1] 148  13
+#  148/178
+# [1] 0.8314607
+ h1 <- hist(t9$c4.tot.no.intron9, breaks=seq(1, 7, 0.5/2/2))
+ t9$c4a.int <- round( t9$c4a.cn, digits=0)
+ t9$c4b.int <- round( t9$c4b.cn, digits=0)
+ dim(t9[ t9$c4.tot.int == t9$c4a.int + t9$c4b.int, ])
+# [1] 92 15
+ 92/178
+# [1] 0.5168539
+# 466 / 838 = 0.5560859
+ dim(t9[ t9$c4.tot.int == round( t9$c4a.cn - 0.2, digits=0) + round( t9$c4b.cn - 0.2, digits=0), ])
+# [1] 122  15
+ 122/178
+# [1] 0.6853933
+  t9$c4a.int <- round( t9$c4a.cn - 0.2, digits=0)
+  t9$c4b.int <- round( t9$c4b.cn - 0.2, digits=0)
+ dim(t9[ t9$c4.tot.int == t9$c4a.int + t9$c4b.int, ])
+# [1] 122  15
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
