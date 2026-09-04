@@ -11012,6 +11012,9 @@ linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq$ cat chr-dep-178
 -rw-r--r-- 1 linyong page_hd 7.9K Aug 29 22:49 chr-dep-178samps.combined
 -rw-r--r-- 1 linyong page_hd  70K Aug 31 11:35 utah.aug.2026-178samps.c4a-q20.cyp21
 -rw-r--r-- 1 linyong page_hd  52K Aug 31 11:39 utah.aug.2026-178samps.c4-q0
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % ls -lh chr-dep-178samps.utah.aug.2026
+-rw-r--r--@ 1 linyongmao  staff   972K Sep  4 13:53 chr-dep-178samps.utah.aug.2026
+
 > t1 <- read.delim("utah.aug.2026-178samps.c4a-q20.cyp21", header=F)
  t2 <- read.delim("chr-dep-178samps.combined", header=F)
  t3 <- merge(t1, t2, by.x="V1", by.y="V1")
