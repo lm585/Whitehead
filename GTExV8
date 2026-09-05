@@ -11086,6 +11086,37 @@ t10 <- t9[ t9$cyp21.tot.int == t9$cyp21a1p.int + t9$cyp21a2.int,]
   t9$c4b.int <- round( t9$c4b.cn - 0.2, digits=0)
  dim(t9[ t9$c4.tot.int == t9$c4a.int + t9$c4b.int, ])
 # [1] 122  15
+#######################################
+samtools view -q 0   NA06989.hg38.cram  chr6:28982057-36035418 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 || $2 == 16' | while read ll
+do
+ echo "$ll" | awk '{
+  print "aread-" $1;
+  print $10;
+  print "line3";
+  print "line4";
+   }'
+done  > tempquery.fq
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ /home/linyong/C++/fastq2fa.longread.divide300pb tempquery.fq out 300
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ bwa bwasw  -f temp.sam -t 8 /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa    out
+samtools view -b -S -o temp.bam temp.sam
+samtools sort -@ 4 -o  temp.sort.bam  temp.bam
+mv temp.sort.bam  NA06989.hg38.longread.to.300bp.bwasw.bam
+samtools index NA06989.hg38.longread.to.300bp.bwasw.bam
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools view -q 0  -b  -o NA06989.hg38.long.chr6.15mbp.bam   NA06989.hg38.cram  chr6:20982057-36035418
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$  samtools view -q 0  -b  -o NA06989.final.chr6.15mbp.bam    ../NA06989.final.cram chr6:20982057-36035418
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools view -q 10  NA06989.hg38.longread.to.300bp.bwasw.bam  chr6:31996090-31996090  | cut -f 1-9 | cut -f 1 | sed 's/-[0-9]*$//' | sort | uniq -c |wc
+     28      56    1400
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools view -q 10  NA06989.hg38.longread.to.300bp.bwasw.bam  chr6:31996082-31996100 |wc -l
+28
+
+      1 read-cff2508a-7c05-4e75-a261-6fb4ef3760f8       anchor-c4a-cyp21a1p-c4   53-kbp
+      1 read-d054f18e-a3d1-4c4c-8cf0-7c35b757edbb       c4a
+      1 read-d5c67215-d687-42cf-834f-9db822a2688b       c4a-then inverse repeat c4a
+      1 read-dcc274fc-5708-4bf7-b93e-f8e9dfebb13f       c4a-cyp21a1p-c4
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
