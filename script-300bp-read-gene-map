@@ -1,0 +1,68 @@
+#
+samtools view -q 15 NA06989.hg38.longread.to.300bp.bwasw.bam  chr6:31996082-31996100 | cut -f 1-9 > temp-c4a
+samtools view -q 15 NA06989.hg38.longread.to.300bp.bwasw.bam  chr6:32028820-32028838 | cut -f 1-9 > temp-c4b
+samtools view -q 15 NA06989.hg38.longread.to.300bp.bwasw.bam  chr6:32006136-32008409 | cut -f 1-9 > temp-cyp1
+samtools view -q 15 NA06989.hg38.longread.to.300bp.bwasw.bam  chr6:32009409-32012523 | cut -f 1-9 > temp-tnxa
+samtools view -q 15 NA06989.hg38.longread.to.300bp.bwasw.bam  chr6:31980033-31980033 | cut -f 1-9 > temp-start
+samtools view -q 15 NA06989.hg38.longread.to.300bp.bwasw.bam  chr6:32038915-32041144 | cut -f 1-9 > temp-cyp2
+samtools view -q 15 NA06989.hg38.longread.to.300bp.bwasw.bam  chr6:32042144-32045623 | cut -f 1-9 > temp-tnxb
+samtools view -q 15 NA06989.hg38.longread.to.300bp.bwasw.bam  chr6:32046623-32046623 | cut -f 1-9 > temp-end
+
+cut -f 1 temp-c4a temp-c4b temp-cyp1 temp-tnxa temp-start temp-cyp2 temp-tnxb temp-end |  sed 's/-[0-9]*$//' | sort | uniq | wc
+cut -f 1 temp-c4a temp-c4b temp-cyp1 temp-tnxa temp-start temp-cyp2 temp-tnxb temp-end |  sed 's/-[0-9]*$//' | sort | uniq > temp-reads
+
+cat temp-reads | while read ll
+do
+ c4a=`grep "$ll-[0-9]*	" temp-c4a | wc -l | awk '{print $1}' `
+ c4b=`grep "$ll-[0-9]*	" temp-c4b | wc -l | awk '{print $1}' `
+ cyp1=`grep "$ll-[0-9]*	" temp-cyp1 | wc -l | awk '{print $1}' `
+ tnxa=`grep "$ll-[0-9]*	" temp-tnxa | wc -l | awk '{print $1}' `
+ start=`grep "$ll-[0-9]*	" temp-start | wc -l | awk '{print $1}' `
+ cyp2=`grep "$ll-[0-9]*	" temp-cyp2 | wc -l | awk '{print $1}' `
+ tnxb=`grep "$ll-[0-9]*	" temp-tnxb | wc -l | awk '{print $1}' `
+ end=`grep "$ll-[0-9]*	" temp-end | wc -l | awk '{print $1}' `
+ echo "$ll	start	$start	c4a	$c4a	cyp1	$cyp1	tnxa	$tnxa	c4b	$c4b	cyp2	$cyp2	tnxb	$tnxb	end	$end"
+ echo -n "annotation $ll "
+
+ if [ $start -gt 0 ]
+ then
+   echo -n "start-"
+ fi
+
+ if [ $c4a -gt 0 ]
+ then
+   echo -n "c4a-"
+ fi
+
+ if [ $cyp1 -gt 0 ]
+ then
+   echo -n "cyp1-"
+ fi
+
+ if [ $tnxa -gt 0 ]
+ then
+   echo -n "tnxa-"
+ fi
+
+ if [ $c4b -gt 0 ]
+ then
+   echo -n "c4b-"
+ fi
+
+ if [ $cyp2 -gt 0 ]
+ then
+   echo -n "cyp2-"
+ fi
+
+ if [ $tnxb -gt 0 ]
+ then
+   echo -n "tnxb-"
+ fi
+
+ if [ $end -gt 0 ]
+ then
+   echo -n "end"
+ fi
+
+ echo
+done
