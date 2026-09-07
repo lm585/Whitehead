@@ -11128,6 +11128,54 @@ linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ samtools 
       1 read-d054f18e-a3d1-4c4c-8cf0-7c35b757edbb       c4a
       1 read-d5c67215-d687-42cf-834f-9db822a2688b       c4a-then inverse repeat c4a
       1 read-dcc274fc-5708-4bf7-b93e-f8e9dfebb13f       c4a-cyp21a1p-c4
+##################################################
+NA07014, long read
+
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ bash script-300bp-read-gene-map-NA07014 > out
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat out | awk 'NF < 11'  | awk '{print $3}' | sort | uniq -c
+      1 c4a-cyp1-
+      1 c4a-cyp1-tnxa-
+      2 c4a-cyp1-tnxa-c4b-
+      3 c4b-
+      2 c4b-cyp2-tnxb-end
+      5 cyp1-
+      2 cyp1-tnxa-
+      5 cyp1-tnxa-c4b-
+      1 cyp1-tnxa-c4b-cyp2-tnxb-end
+      1 cyp1-tnxa-cyp2-tnxb-end
+      2 cyp2-
+      1 cyp2-tnxb-end
+      1 end
+      6 start-
+      1 start-c4a-cyp1-
+      1 start-c4a-cyp1-tnxa-
+      1 tnxa-
+      2 tnxb-end
+C4AL-CYP21A1P-C4BL-CYP21A1P-C4BL-CYP21A2
+start-c4a-cyp1-tnxa-c4b-cyp1-tnxa-c4b-cyp2-tnxb-end
+C4AL-CYP21A1P-C4AL-CYP21A1P-C4BL-CYP21A2
+start-c4a-cyp1-tnxa-c4a-cyp1-tnxa-c4b-cyp2-tnxb-end
+
+NA07014, long read
+### does each long read config, such as cyp1-tnxa-c4b-, fits the haplotype
+cat out | awk 'NF < 11'  | awk '{print $3}' | sort | uniq | while read ll
+do
+ echo -n "$ll   "
+ echo "start-c4a-cyp1-tnxa-c4b-cyp1-tnxa-c4b-cyp2-tnxb-end" | grep $ll | wc -l
+done
+
+cat out | awk 'NF < 11'  | awk '{print $3}' | sort | uniq | while read ll
+do
+ echo -n "$ll   "
+ echo "start-c4a-cyp1-tnxa-c4a-cyp1-tnxa-c4b-cyp2-tnxb-end" | grep $ll | wc -l
+done
+
+####how many long reads contain c4a, c4b, cyp1, cyp2, tnxa, tnxb 
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ start 8  c4a   6  cyp1   20  tnxa  14  c4b   13    cyp2  7    tnxb    7  end   8  
+c4b should add 1 -> 14
+cyp1 : cyp2 ratio 3:1  , 2273 vs 2229bp
+tnxa : tnxb ratio 2:1  , 3114 vs 3479bp (1.117213)
+c4a : c4b ratio 1:2  , 18bp vs 18bp
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
