@@ -11177,6 +11177,24 @@ cyp1 : cyp2 ratio 3:1  , 2273 vs 2229bp
 tnxa : tnxb ratio 2:1  , 3114 vs 3479bp (1.117213)
 c4a : c4b ratio 1:2  , 18bp vs 18bp
 
+######
+cat NA06989.hg38.longread.to.300bp.gene.map | awk 'NF < 11'  | awk '{print $3}' | sort | uniq | while read ll
+do
+ echo -n "$ll   "
+ echo "start-c4a-cyp1-tnxa-c4b-cyp2-tnxb-end" | grep $ll | wc -l
+done
+
+cat NA06989.hg38.longread.to.300bp.gene.map | awk 'NF < 11'  | awk '{print $3}' | sort | uniq | while read ll
+do
+ echo -n "$ll   "
+ echo "start-c4a-cyp1-tnxa-c4a-cyp2-tnxa-c4b-cyp2-tnxb-end" | grep $ll | wc -l
+done
+
+annotation read-8a2adb30-7c45-49f7-bd5f-bfb244bd855a tnxa-tnxb-
+annotation read-dcc274fc-5708-4bf7-b93e-f8e9dfebb13f c4a-cyp1-tnxa-tnxb-
+chr6:32010681-32013256
+3 clusters phase
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
