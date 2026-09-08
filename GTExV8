@@ -11159,6 +11159,36 @@ linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat out |
       1 start-c4a-cyp1-tnxa-
       1 tnxa-
       2 tnxb-end
+
+NA07014.hg38.longread.300bp.sort.bam
+
+ read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1      3kbp-c4a-10kbp-cyp21a1p-22kbp-c4b-?bp-cyp21a1p-?bp-c4b-9kbp
+
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1       start   0       c4a     1       cyp1    7       tnxa    4       c4b     1       cyp2    0       tnxb    0       end     0
+annotation read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1 c4a-cyp1-tnxa-c4b-
+a better annot: c4a-cyp1-tnxa-c4b-cyp1-tnxa-c4b
+
+cyp21a1p two passes, sep by 110*300 = 33000-bp
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-44    0       chr6    32005908        47      3S21M5D22M1I64M1I81M1I106M      *       0       0
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-45    0       chr6    32006208        104     19M1D27M1D254M  *       0       0
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-153   0       chr6    32006046        133     41M1I160M1D22M1I3M1D39M1D30M3S  *       0       0
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-154   0       chr6    32006345        42      50M1I46M1D5M3D30M2I61M3D21M1D84M        *       0       0
+
+tnxa two passes
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-56    0       chr6    32009539        18      102M1D198M      *       0       0
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-60    0       chr6    32010738        54      10M1D33M1I55M1D7M1D99M2I93M     *       0       0
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-165   0       chr6    32009669        21      53M4I155M2D20M2I46M1D20M        *       0       0
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-169   0       chr6    32010882        97      70M2I23M1I131M1I72M     *       0       0
+
+c4b two passes,  sep by 108*300
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-120   0       chr6    32028824        12      30M1D8M2D79M1D183M      *       0       0
+mapQ < 15
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-121   0       chr6    32029128        27      222M2D9M1I17M1I50M      *       0       0
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-228   0       chr6    32028621        21      52M3D144M1I74M2I15M1D12M        *       0       0
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-229   0       chr6    32028922        4       101M1D4M1D85M1I24M7I78M *       0       0
+read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-230   0       chr6    32029216        23      300M    *       0       0
+
+
 C4AL-CYP21A1P-C4BL-CYP21A1P-C4BL-CYP21A2
 start-c4a-cyp1-tnxa-c4b-cyp1-tnxa-c4b-cyp2-tnxb-end
 C4AL-CYP21A1P-C4AL-CYP21A1P-C4BL-CYP21A2
