@@ -11187,6 +11187,27 @@ read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-121   0       chr6    32029128        
 read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-228   0       chr6    32028621        21      52M3D144M1I74M2I15M1D12M        *       0       0
 read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-229   0       chr6    32028922        4       101M1D4M1D85M1I24M7I78M *       0       0
 read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-230   0       chr6    32029216        23      300M    *       0       0
+###############another long read NA07014.hg38.longread.300bp.sort.bam
+read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181       start   0       c4a     0       cyp1    7       tnxa    2       c4b     1       cyp2    0       tnxb    0       end     0
+annotation read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181 cyp1-tnxa-c4b-
+a better annotation: cyp1-tnxa-c4b-cyp1-tnxa-c4(a or b)
+inference c4-cyp1-tnxa-c4b-cyp1-tnxa-c4-tnxb-end
+
+cyp1 two passes
+read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181-15    0       chr6    32006447        5
+read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181-124   0       chr6    32006710        13
+read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181-16    0       chr6    32006759        20
+read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181-125   0       chr6    32007015        35
+
+tnxa two passes
+read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181-25    0       chr6    32009482        21
+read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181-134   0       chr6    32009714        10
+
+c4b 
+read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181-88    0       chr6    32028581        25
+read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181-90    0       chr6    32029235        7
+read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181-91    0       chr6    32029492        5
+read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181-93    0       chr6    32030100        11
 
 
 C4AL-CYP21A1P-C4BL-CYP21A1P-C4BL-CYP21A2
