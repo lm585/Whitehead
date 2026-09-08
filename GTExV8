@@ -11191,7 +11191,7 @@ read-d9afff69-f1e0-4b87-a93a-5f93e61e4ca1-230   0       chr6    32029216        
 read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181       start   0       c4a     0       cyp1    7       tnxa    2       c4b     1       cyp2    0       tnxb    0       end     0
 annotation read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181 cyp1-tnxa-c4b-
 a better annotation: cyp1-tnxa-c4b-cyp1-tnxa-c4(a or b)
-inference c4-cyp1-tnxa-c4b-cyp1-tnxa-c4-tnxb-end
+inference c4-cyp1-tnxa-c4b-cyp1-tnxa-c4-cyp-tnxb-end
 
 cyp1 two passes
 read-e6b1b9f9-c847-46f4-a6f0-ba6258bc1181-15    0       chr6    32006447        5
