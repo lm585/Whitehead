@@ -11144,6 +11144,8 @@ linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat out |
       1 c4a-cyp1-
       1 c4a-cyp1-tnxa-
       2 c4a-cyp1-tnxa-c4b-
+    one c4a-cyp1-tnxa-c4b- annot should be start-c4a-cyp1-tnxa-c4b- for read-e269a647-026a-496c-8e18-4e29faa995a6
+
       3 c4b-
       2 c4b-cyp2-tnxb-end
       5 cyp1-
