@@ -11152,6 +11152,7 @@ linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat out |
       2 cyp1-tnxa-
       5 cyp1-tnxa-c4b-
     one cyp1-tnxa-c4b- annot    should be c4b-cyp1-tnxa-c4b(? low mapq=8) for the read-b2d170f7-8ad1-4258-88f6-2bfd52b5bc96
+    one cyp1-tnxa-c4b- annot    should be c4b-cyp1-tnxa- for read-1cd3559b-276b-4348-a005-001fc23441d1
 
       1 cyp1-tnxa-c4b-cyp2-tnxb-end
       1 cyp1-tnxa-cyp2-tnxb-end        annotation read-1b919384-e8b8-495c-bc58-ca9590e7849f cyp1-tnxa-c4b-cyp2-tnxb-end , read mapped to       chr6    32029127        with mapq=37 (exon 28), 32028820-32028838 region mapq 1 or 2
