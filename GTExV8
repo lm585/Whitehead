@@ -11311,6 +11311,23 @@ abline(v = seq(0.5,10000,1), lty = 5, lwd = 0.5, col = "grey")
 abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
 abline(v = seq(0.5,10000,1), lty = 5, lwd = 0.5, col = "grey")
 
+#############################
+chr6:31994074-31998493
+
+ layout(matrix(1:6, 2, 3, byrow=T) )
+for(i in seq(0.75, 1, 0.05))
+{
+ h1 <- hist(t1$cyp21.tot * i, breaks=seq(1, 7, 0.5/2/2), main=paste("i=", i))
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+}
+
+ layout(matrix(1:6, 2, 3, byrow=T) )
+for(i in seq(0.75, 1, 0.05))
+{
+ h1 <-hist(t13$cyp21.tot * i, breaks = seq(0,11, 0.5/2/2), main=paste("i=", i) )
+
+ abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+}
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
