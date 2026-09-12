@@ -11105,6 +11105,25 @@ t10 <- t9[ t9$cyp21.tot.int == t9$cyp21a1p.int + t9$cyp21a2.int,]
  t10$rpp30.cn <- t10$V10 / t10$dep * 2
  h1 <- hist(t10$rpp30.cn, breaks=seq(1, 3, 0.5/2/2))
 
+###########################
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat chr-dep-178samps.utah.aug.2026 | grep -w RPP30 | grep pcr-q20 > temp-rpp30-pcr63bpq20
+> t1 <- read.delim("temp-rpp30-pcr63bpq20", header=F)
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat chr-dep-178samps.utah.aug.2026 | grep -w c4a-c4b-diff-6bp-q20 > temp-c4a-c4b-diff-6bp-q20-178samp
+> t1 <- read.delim("temp-c4a-c4b-diff-6bp-q20-178samp", header=F)
+ colnames(t1) <- paste("c4a.6bp.q20.", colnames(t1), sep="")
+ c4a.6bp <- t1
+> head(t9)
+                file      dep cyp21.tot   c4a.cn   c4b.cn   cyp1.cn  cyp2.cn c4.tot.no.intron9
+1 NA06984.final.cram 34.26965  4.803545 3.133445 2.221895 2.3536107 2.378722          4.775262
+
+ t10 <- merge(t9, c4a.6bp, by.x="file", by.y="c4a.6bp.q20.V1")
+ dim(t10)
+# [1] 178  19
+ t10$c4a.6bp.q20 <- t10$c4a.6bp.q20.V10 / t10$dep * 2
+ summary(t10$c4a.6bp.q20)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   0.000   2.005   2.543   2.557   3.224   6.254
+
 #######################################
 samtools view -q 0   NA06989.hg38.cram  chr6:28982057-36035418 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 || $2 == 16' | while read ll
 do
