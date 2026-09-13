@@ -11124,6 +11124,21 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat chr-dep-178samps.utah.aug.202
 #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
 #   0.000   2.005   2.543   2.557   3.224   6.254
 
+###
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat utah.aug.2026-178samps.c4b-q20 | grep c4b-diff-6bp-q20 > temp1
+ t1 <- read.delim("temp1", header=F)
+  colnames(t1) <- paste("c4b.6bp.q20.", colnames(t1), sep="")
+  c4b.6bp <- t1
+ c4b.6bp[ c4b.6bp$c4b.6bp.q20.V12 < 55,]
+ t11 <- merge( t10, c4b.6bp, by.x="file", by.y="c4b.6bp.q20.V1")
+ dim(t11)
+# [1] 178  31
+  t11$c4b.6bp.q20 <- t11$c4b.6bp.q20.V10 / t11$dep * 2
+ summary(t11$c4b.6bp.q20)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   0.000   1.586   2.266   2.094   2.624   3.898
+
+
 #######################################
 samtools view -q 0   NA06989.hg38.cram  chr6:28982057-36035418 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 || $2 == 16' | while read ll
 do
