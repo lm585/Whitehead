@@ -11376,6 +11376,26 @@ for(i in seq(0.75, 1, 0.05))
  abline(v = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
 }
 
+##########################################
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq$ cat /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1/script-bam-cyp1-primer-depth-cram
+#
+
+
+file="$1"
+
+# samtools index "$file"
+ls -lh "$file"
+
+echo -n "file   gene    region  "
+samtools coverage -r chr6:29982057-30982057 -q 0   "$file" | head -1
+
+# CYP21A1P
+echo -n "$file  cyp1    cyp1-62bp-q0    "
+samtools coverage -r chr6:32006222-32006283  -q 0  -H "$file"
+echo -n "$file  cyp1    cyp1-62bp-q20   "
+samtools coverage -r chr6:32006222-32006283  -q 20  -H "$file"
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
