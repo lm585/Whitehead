@@ -11151,6 +11151,22 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat  utah.aug.2026-178samps.cyp1-
  t12$cyp1.62bp.cn <- t12$cyp1.62bp.meandepth / t12$dep * 2
  h1 <- hist(t12$cyp1.62bp.cn, breaks=seq(0, 4, 0.5/2/2))
 
+######################
+chr6:32006222-32006283, cyp1, GGCTTCCCCAATCCTCCAGGT
+chr6:32038952-32039013, cyp2, GGCATCCCCAATCC---AGGTCCC
+ system("cat utah.aug.2026-178samps.cyp2-q20 | grep -w file | head -1 > temp1")
+ system("cat  utah.aug.2026-178samps.cyp2-q20 | grep -w cyp2-62bp-q20 >> temp1")
+ t1 <- read.delim("temp1")
+ colnames(t1) <- paste("cyp2.62bp.", colnames(t1) , sep="")
+ t13 <- merge(t12, t1, by.x="file", by.y="cyp2.62bp.file")
+ dim(t13)
+# [1] 178  58
+  t13$cyp2.62bp.cn <- t13$cyp2.62bp.meandepth / t13$dep * 2
+ summary(t13$cyp2.62bp.cn )
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   1.499   2.055   2.313   2.330   2.520   4.196
+ h1 <- hist(t13$cyp2.62bp.cn, breaks=seq(0, 5, 0.5/2/2))
+plot((t13$cyp1.62bp.cn) + (t13$cyp2.62bp.cn), (t13$c4a.6bp.q20) + (t13$c4b.6bp.q20))
 
 #######################################
 samtools view -q 0   NA06989.hg38.cram  chr6:28982057-36035418 | awk 'BEGIN {FS = "\t"; OFS = "\t"} $2 == 0 || $2 == 16' | while read ll
