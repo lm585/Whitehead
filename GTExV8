@@ -11468,6 +11468,26 @@ samtools coverage --ff UNMAP,SECONDARY,QCFAIL  -r chr6:31996090-31996095  -q 0  
 echo -n "$file  C4A     c4a-c4b-diff-6bp-q20    "    
 samtools coverage --ff UNMAP,SECONDARY,QCFAIL  -r chr6:31996090-31996095  -q 20  -H "$file"
 
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat script-bam-C4B-primer-depth-cram
+#
+
+
+file="$1"
+
+# samtools index "$file"
+ls -lh "$file"
+
+echo -n "file   gene    region  "
+samtools coverage -r chr6:29982057-30982057 -q 0   "$file" | head -1
+
+
+#AGTGTT 6-bp locus in c4a, exon26
+#AGTGAT 6-bp locus in c5b
+#c4b 6-bp (c4a-c4b-diff-6bp)
+echo -n "$file  C4B     c4b-diff-6bp-q0 "
+samtools coverage -r chr6:32028828-32028833  -q 0  -H "$file"
+echo -n "$file  C4B     c4b-diff-6bp-q20        "
+samtools coverage -r chr6:32028828-32028833  -q 20  -H "$file"
 
 
 #############################################################
