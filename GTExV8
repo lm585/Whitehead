@@ -11422,6 +11422,27 @@ samtools coverage -r chr6:32006222-32006283  -q 0  -H "$file"
 echo -n "$file  cyp1    cyp1-62bp-q20   "
 samtools coverage -r chr6:32006222-32006283  -q 20  -H "$file"
 
+###
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat script-bam-cyp2-primer-depth-cram
+#
+
+
+file="$1"
+
+# samtools index "$file"
+ls -lh "$file"
+
+echo -n "file   gene    region  "
+samtools coverage -r chr6:29982057-30982057 -q 0   "$file" | head -1
+
+# CYP21A2
+echo -n "$file  cyp2    cyp2-62bp-q0    "
+samtools coverage -r chr6:32038952-32039013  -q 0  -H "$file"
+echo -n "$file  cyp2    cyp2-62bp-q20   "
+samtools coverage -r chr6:32038952-32039013  -q 20  -H "$file"
+
+
+
 ###########################################
 linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat script-bam-C4A-primer-depth-cram-DUP
 #
