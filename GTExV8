@@ -11510,6 +11510,58 @@ samtools coverage -r chr6:32028828-32028833  -q 0  -H "$file"
 echo -n "$file  C4B     c4b-diff-6bp-q20        "
 samtools coverage -r chr6:32028828-32028833  -q 20  -H "$file"
 
+#######################################
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq$ cat slurm-chr-dep-20260816
+#!/bin/bash
+# Configuration values for SLURM job submission.
+# One leading hash ahead of the word SBATCH is not a comment, but two are.
+#SBATCH --job-name="chr-depth" # friendly name for job.
+#SBATCH --time=21-00                    # run time for job
+#SBATCH --nodes=1                      # ensure cores are on one node
+#SBATCH --ntasks=1                     # run a single task
+#SBATCH --cpus-per-task=4              # number of cores/threads requested. sort bam according to read name
+#SBATCH --mem=200gb                      # memory requested.
+#SBATCH --partition=24                 # partition (queue) to use
+#SBATCH --output out-2026.8.21
+#SBATCH --mail-type=ALL               # send email on job start/finish.
+#SBATCH --mail-user=linyong@wi.mit.edu
+
+# This is the actual section for commands to run
+
+# Uncomment the last line to email output file to specified address.
+# Slurm doesn't do this automatically, regardless of the mail-type setting above.
+#/usr/bin/mail -s "$SLURM_JOB_NAME $SLURM_JOB_ID" your_username@wi.mit.edu < friendlyname-${SLURM_JOB_ID}.out
+
+rm chr-dep
+
+ls NA07014.final.cram  NA07031.final.cram  NA07051.final.cram | while read cram
+do
+
+ls -lh "$cram"
+samtools index "$cram"
+prev="header    geneID  geneName        header  "
+echo -n "$prev" >> chr-dep
+samtools coverage -r chr1:1-1000 -q 0   "$cram" | head -1 >> chr-dep
+
+for g in `echo chr1   chr2    chr3    chr4    chr5    chr6    chr7    chr8    chr9    chr10   chr11   chr12   chr13   chr14   chr15   chr16   chr17   chr18       chr19
+chr20   chr21   chr22   chrX    chrY    chrM`
+do
+  prev="$cram   geneID  geneName        chrom   "
+  echo "$prev   $g"
+  echo -n "$prev" >> chr-dep
+  samtools coverage -r "$g" -q 0 -H "$cram" >> chr-dep
+done
+
+#linyong@c3b12 /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1$ cat script-bam-C4A-primer-depth-cram
+
+
+ bash /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1/script-bam-C4A-primer-depth-cram "$cram" >> chr-dep
+ bash /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1/script-bam-C4A-start-exon9-q0-cram  "$cram" >> chr-dep
+ bash /lab/page_human_data/linyong2/one-1000-genome-seq/dir-1/script-c4a-q20   "$cram" >> chr-dep
+
+
+done
+linyong@fry24 /lab/page_human_data/linyong2/one-1000-genome-seq$
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
