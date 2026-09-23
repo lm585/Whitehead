@@ -11105,6 +11105,31 @@ t10 <- t9[ t9$cyp21.tot.int == t9$cyp21a1p.int + t9$cyp21a2.int,]
  t10$rpp30.cn <- t10$V10 / t10$dep * 2
  h1 <- hist(t10$rpp30.cn, breaks=seq(1, 3, 0.5/2/2))
 
+######
+> system("cat chr-dep-178samps.utah.aug.2026 | grep RPP30 | grep pcr-q20 > temp1")
+  t2 <- read.delim("temp1", header=F)
+  dim(t2)
+# [1] 178  12
+  t10 <- merge(t9, t2, by.x="file", by.y="V1")
+  t10$rpp30.pcr.q20.cn <- t10$V10 / t10$dep * 2
+ rp <- data.frame(t10$file, t10$rpp30.pcr.q20.cn, rpp30.pcr.q20.dep = t10$V10)
+ head(rp)
+#             t10.file t10.rpp30.pcr.q20.cn rpp30.pcr.q20.dep
+# 1 NA06984.final.cram             2.293668           39.3016
+# 2 NA06985.final.cram             2.444439           43.3333
+# 3 NA06986.final.cram             2.177972           35.3175
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat chr-dep-178samps.utah.aug.2026 | grep -w c4a-c4b-diff-6bp-q20 > temp-c4a-c4b-diff-6bp-q20-178samp
+> t1 <- read.delim("temp-c4a-c4b-diff-6bp-q20-178samp", header=F)
+ colnames(t1) <- paste("c4a.6bp.q20.", colnames(t1), sep="")
+ c4a.6bp <- t1
+ t12 <- merge(rp, t1, by.x="t10.file", by.y="c4a.6bp.q20.V1")
+ dim(t12)
+# [1] 178  14
+#  summary(t12$c4a.6bp.q20.V10 / t12$rpp30.pcr.q20.dep * 2)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   0.000   1.665   2.245   2.290   2.802   5.099
+
 ###########################
 linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat chr-dep-178samps.utah.aug.2026 | grep -w RPP30 | grep pcr-q20 > temp-rpp30-pcr63bpq20
 > t1 <- read.delim("temp-rpp30-pcr63bpq20", header=F)
