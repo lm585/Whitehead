@@ -11620,6 +11620,25 @@ cat gtex-dna-c4a-c4b.6bp-primer.dep  | grep -w  c4a-diff-6bp-q20 >> temp1
 #   0.000   2.004   2.650   2.729   3.368   8.924
  t12.copy <- t12
 
+# c4a-c4b-cnv-chr-dep-2-CN
+> t13.copy <- t13
+ t15 <- merge(t12.copy, t13.copy, by.x="V1", by.y="id")
+ dim(t15)
+# [1] 223  68
+ summary(lm(t15$c4a.6bp.cn.y ~ t15$c4a.6bp.cn.x))
+
+#                  Estimate Std. Error t value Pr(>|t|)
+# (Intercept)       0.03595    0.04028   0.892    0.373
+# t15$c4a.6bp.cn.x  0.98923    0.01326  74.616   <2e-16 ***
+# Residual standard error: 0.2158 on 221 degrees of freedom
+# Multiple R-squared:  0.9618,  Adjusted R-squared:  0.9616
+
+#subset to 125 samples
+ t1 <- read.delim("gtex-dna-sra-download-125samp.2026.6-chr-dep", header=F)
+ t16 <- t15[ t15$V1.y %in% t1$V1, ]
+ dim(t16)
+# [1] 125  68
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
