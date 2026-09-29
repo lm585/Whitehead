@@ -11656,7 +11656,35 @@ t1 <- read.delim("temp1")
 
  abline(lm(y1 ~ x1), col="blue")
 #  abline(lm(y ~ x), col="red")
-###
+######
+ dim(t13)
+# [1] 838  25
+ x <- t13$c4.tot.no.intron9 - 0.2
+ y <- t13$c4b.6bp.cn + t13$c4a.6bp.cn
+ summary(lm(y ~ x))
+# Multiple R-squared:  0.7907,  Adjusted R-squared:  0.7905
+ t13.copy <- t13
+ dim(t13.copy)
+# [1] 838  25
+# c4a-c4b-cnv-q20-corr-express-batch-multiVar-2
+ g7 <- merge(g6, t13.copy, by.x="V1", by.y="V1")
+ dim(g7)
+# [1] 574  73
+ dim(g6)
+# [1] 574  49
+ lm1 <- lm(log2(g7$ENSG00000244731.10+1) ~ log2(g7$c4a.cn) + g7$t.SMRIN + log10(g7$t.SMTSISCH + 1300) + g7$SEX.x + g7$age_value + g7$body_mass_index )
+ s1 <- summary(lm1)
+ lm1 <- lm(log2(g7$ENSG00000244731.10+1) ~ log2(g7$c4a.6bp.cn + 0.05) + g7$t.SMRIN + log10(g7$t.SMTSISCH + 1300) + g7$SEX.x + g7$age_value + g7$body_mass_index )
+ s2 <- summary(lm1)
+ s2$coefficients
+#                                Estimate  Std. Error    t value     Pr(>|t|)
+# (Intercept)                 11.46234763 1.773305638  6.4638308 2.202669e-10
+# log2(g7$c4a.6bp.cn + 0.05)   0.71563449 0.050422835 14.1926667 2.428071e-39
+# g7$t.SMRIN                   0.16551920 0.062577070  2.6450456 8.394437e-03
+# log10(g7$t.SMTSISCH + 1300) -2.42438881 0.480827333 -5.0421194 6.204441e-07
+# Multiple R-squared:  0.3003,  Adjusted R-squared:  0.2929
+
+######
 
 # c4a-c4b-cnv-chr-dep-2-CN
 > t13.copy <- t13
