@@ -11683,6 +11683,38 @@ t1 <- read.delim("temp1")
 # g7$t.SMRIN                   0.16551920 0.062577070  2.6450456 8.394437e-03
 # log10(g7$t.SMTSISCH + 1300) -2.42438881 0.480827333 -5.0421194 6.204441e-07
 # Multiple R-squared:  0.3003,  Adjusted R-squared:  0.2929
+######
+ g7 <- merge(g6, t13.copy, by.x="V1", by.y="V1")
+ dim(g7)
+# [1] 574  73
+
+ dim(g7[ round(g7$c4a.6bp.cn) == round(g7$c4a.x),])
+# [1] 316 (55.05226%)  52
+ g8 <- g7[ round(g7$c4a.6bp.cn) == round(g7$c4a.x),]
+
+g8$c4a.int <- round(g8$c4a.6bp.cn  , digits=0)
+  for(i in 1:dim(g8)[1]) {
+  if(g8$c4a.int[i] == 0) {
+     g8$c4a.int[i] = 0.05
+ }
+ }
+
+ lm1 <- lm(log2(g8$ENSG00000244731.10) ~ log2(g8$c4a.int) + g8$t.SMRIN + log10(g8$t.SMTSISCH + 1300) + g8$SEX.x + g8$age_value + g8$body_mass_index )
+ 
+ s3 <- summary(lm1)
+ sid <- log2(g8$ENSG00000244731.10) - s3$coefficients[3,1] * g8$t.SMRIN  - s3$coefficients[4,1] * log10(g8$t.SMTSISCH + 1300) - s3$coefficients[5,1] * g8$SEX.x - s3$coefficients[6,1] * g8$age_value - s3$coefficients[7,1] * g8$body_mass_index - s3$coefficients[1,1]
+  lm1 <- lm(sid ~ log2(g8$c4a.int))
+  summary(lm1)
+# log2(g8$c4a.int)  1.24879    0.06755   18.49   <2e-16 ***
+# Residual standard error: 0.9863 on 314 degrees of freedom
+# Multiple R-squared:  0.5212,  Adjusted R-squared:  0.5197
+ boxplot(sid ~ round(g8$c4a.int), ylab="residual C4A expression (log2(cpm))")
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+
+ b1 <-boxplot(2^sid / 1.2 ~ round(g8$c4a.int), ylab="residual C4A expression (CPM)")
+ abline(h = seq(-100,100,1), lty = 5, lwd = 0.5, col = "gray")
+ abline(h = seq(-100,100,5), lty = 5, lwd = 0.5, col = "blue")
+
 
 ######
 
