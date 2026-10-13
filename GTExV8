@@ -11819,6 +11819,16 @@ g9$simu.cn     8.019      1.024   7.834 2.61e-14 ***
  dim(t16)
 # [1] 125  68
 
+##############################
+> dim(t11[ t11$c4.tot.no.intron9.int == t11$c4a.int + t11$c4b.int & t11$cyp21.tot.int == t11$cyp21a1p.int + t11$cyp21a2.int &  t11$c4.tot.no.intron9.int == t11$cyp21.tot.int,])
+[1] 259  13
+
+6bp-primer
+6bp primer
+6bp.primer
+ summary(t12$c4a.6bp.cn)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   0.000   2.004   2.650   2.729   3.368   8.924
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
