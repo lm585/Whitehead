@@ -11830,6 +11830,31 @@ g9$simu.cn     8.019      1.024   7.834 2.61e-14 ***
 #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
 #   0.000   2.004   2.650   2.729   3.368   8.924
 
+#########
+  y <- t13$c4b.6bp.cn + t13$c4a.6bp.cn
+  x <- t13$cyp21.tot
+t13$c4.tot.no.intron9.int,
+
+ li <- list()
+ li[[1]] <- x
+ li[[2]] <- y
+names(li) <- c("c4.tot.no.intron9 - 0.2", "c4a.6bp.cn + c4b.6bp.cn")
+ boxplot(li, cex.lab=1.5)
+   abline(h = seq(0,10000,1), lty = 5, lwd = 0.5, col = "blue")
+   abline(h = seq(0.5,10000,1), lty = 5, lwd = 0.5, col = "grey")
+
+ h1 <- hist(t13$c4.tot.no.intron9.int, breaks=seq(1.5, 11.5, 1))
+ df <- data.frame(dens = h1$density, cn = h1$mids)
+ df
+ rownames(df) <- df$cn
+ df
+ df2 <- as.data.frame(t(df))[1,]
+ df2
+ barplot(as.matrix(df2), ylim=c(0, 0.3), xlab="total C4 CN (C4A + C4B)", ylab="freq")
+   abline(h = seq(0,10000,0.01), lty = 5, lwd = 0.5, col = "grey")
+ abline(h = seq(0,10000,0.05), lty = 5, lwd = 0.75, col = "blue")
+
+
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
                     geneID name SRR6366221 SRR6366222 SRR6366223 SRR6366226 SRR6366227 SRR6366228 SRR6366231 SRR6366232 SRR6366236 SRR6366237
