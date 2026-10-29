@@ -11854,6 +11854,15 @@ names(li) <- c("c4.tot.no.intron9 - 0.2", "c4a.6bp.cn + c4b.6bp.cn")
    abline(h = seq(0,10000,0.01), lty = 5, lwd = 0.5, col = "grey")
  abline(h = seq(0,10000,0.05), lty = 5, lwd = 0.75, col = "blue")
 
+########################################
+t14 <- t13.copy[ t13.copy$c4a.int == 1,]
+ t15 <- t14[ t14$c4.tot.no.intron9.int == t14$c4a.int + t14$c4b.int & t14$cyp21.tot.int == t14$cyp21a1p.int + t14$cyp21a2.int & t14$c4.tot.no.intron9.int == t14$cyp21.tot.int,]
+ dim(t15)
+ t16 <- t15[ round(t15$c4a.6bp.cn) == 1,]
+ dim(t16)
+# [1] 22 25
+ t17 <- t16[ t16$c4b.int == round(t16$c4b.6bp.cn),]
+ dim(t17)
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
