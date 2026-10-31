@@ -11870,6 +11870,48 @@ GTEX-RUSQ-0001-SM-5JK34
 GTEX-WZTO-0002-SM-5URDU
 GTEX-1CAMR-0004-SM-7J3B6
 ###
+###############
+linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat script-cram-c2-depth 
+###
+for g in `echo ZFX ZFY DDX3X DDX3Y`
+do
+  ll=`cat /lab/solexa_page/linyong/gencode.v42.primary_assembly.noPar.protein.xist.exons.gtf | grep "   gene    .*      .*      .*      .* gene_name \"$g\";" | head -1`
+###
+
+> t1 <- read.delim("sra-download-bwa-map-c2.q0.depth.2")
+ t1 <- read.delim("gtex-dna-sra-download-2026.july-chr-dep", header=F)
+  dim(t1)
+# [1] 224   5   
+  t1$seq.dep <- (t1$V3 + t1$V5) / 2 
+ head(t1)
+t2 <- read.delim("sra-download-bwa-map-c2.q0.depth.2")
+ t2$id <- paste(t2$header, ".bam", sep="")
+ t3 <- merge(t1, t2, by.x="V1", by.y="id")
+ dim(t3)
+# [1] 226  19  
+ t3$C2.CN <- t3$meandepth / t3$seq.dep * 2 
+ summary(t3$C2.CN)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#   1.635   2.081   2.169   2.174   2.264   2.813 
+for(i in unique(t3$V1)) {
+if(dim(t3[ t3$V1 == i,])[1] > 1)
+{
+ print(t3[ t3$V1 == i,])
+}
+}
+
+ t4 <- t3[1:length(unique(t3$V1)),]
+ dim(t4)
+ j=1 
+for(i in unique(t3$V1)) {
+ t4[j,] <- t3[ t3$V1 == i,][1,]
+ j <- j+1 
+}
+ dim(t4)
+ t3 <- t4
+ dim(t3)
+# [1] 223  20
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
