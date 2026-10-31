@@ -11863,6 +11863,13 @@ t14 <- t13.copy[ t13.copy$c4a.int == 1,]
 # [1] 22 25
  t17 <- t16[ t16$c4b.int == round(t16$c4b.6bp.cn),]
  dim(t17)
+###
+c4b 2CN; c4a CN varies from 1 to 4
+GTEX-1QP6S-0001-SM-DLIQM
+GTEX-RUSQ-0001-SM-5JK34
+GTEX-WZTO-0002-SM-5URDU
+GTEX-1CAMR-0004-SM-7J3B6
+###
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
