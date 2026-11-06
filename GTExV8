@@ -11912,6 +11912,23 @@ for(i in unique(t3$V1)) {
  dim(t3)
 # [1] 223  20
 
+##########################################
+linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat slurm-c2-depth | tail
+# Uncomment the last line to email output file to specified address.
+# Slurm doesn't do this automatically, regardless of the mail-type setting above.
+#/usr/bin/mail -s "$SLURM_JOB_NAME $SLURM_JOB_ID" your_username@wi.mit.edu < friendlyname-${SLURM_JOB_ID}.out
+
+t=1
+
+cat file-dir-224-bams | while read file
+do
+  bash script-cram-rpp30-depth   "$file"
+done > sra-download-bwa-map-rpp30.site1.q20.depth
+linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls -lh sra-download-bwa-map*
+-rw-r--r-- 1 linyong page_hd 168K Oct 30 23:45 sra-download-bwa-map-c2.q0.depth
+-rw-r--r-- 1 linyong page_hd  24K Oct 30 23:49 sra-download-bwa-map-c2.q0.depth.2
+-rw-r--r-- 1 linyong page_hd 328K Oct 31 14:36 sra-download-bwa-map-ddx3x.q0.depth
+-rw-r--r-- 1 linyong page_hd 218K Nov  5 13:43 sra-download-bwa-map-rpp30.site1.q20.depth
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
