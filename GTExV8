@@ -11937,6 +11937,30 @@ do
   f2=`echo "$file" | sed 's#.*/##' `
   samtools mpileup  -r chr10:90900615-90900738 -A -Q 0  -q 20 -d 1000000 -f  /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa "$file" > "$f2".pileup
 done 
+################################
+chr10   90900689
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  1.027   1.827   2.093   2.112   2.365   3.289
+[1] "rpp30 CN==2"
+[1] 0.838565
+
+linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat script-mpileup-2-cn
+#
+cat dir-rpp30-exon11-pileup-2/SAMN03877453.sorted.bam.pileup    | cut -f 2 | awk 'NR % 10 == 0' | head -300000 | while read pos
+do
+  ls dir-rpp30-exon11-pileup-2/*.bam.pileup | while read file
+  do
+    dep=`cat "$file" | grep "chr10	$pos	" | cut -f 4 | head -1`
+    echo "$file	chr10	$pos	$dep"
+  done > temp
+  echo -n "chr10	$pos	"
+  wc -l temp
+  cat temp | head
+  cat temp | sed 's#.*/##' | sed 's/.pileup	/	/' > temp1
+  Rscript R-script-mpileup-2-cn
+  echo
+done > out-220pm
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
