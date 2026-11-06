@@ -11929,6 +11929,14 @@ linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ ls -lh sra-do
 -rw-r--r-- 1 linyong page_hd  24K Oct 30 23:49 sra-download-bwa-map-c2.q0.depth.2
 -rw-r--r-- 1 linyong page_hd 328K Oct 31 14:36 sra-download-bwa-map-ddx3x.q0.depth
 -rw-r--r-- 1 linyong page_hd 218K Nov  5 13:43 sra-download-bwa-map-rpp30.site1.q20.depth
+#############################################
+linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ tail -n 6 slurm-rpp30-mpileup
+
+cat file-dir-224-bams | while read file
+do
+  f2=`echo "$file" | sed 's#.*/##' `
+  samtools mpileup  -r chr10:90900615-90900738 -A -Q 0  -q 20 -d 1000000 -f  /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa "$file" > "$f2".pileup
+done 
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
