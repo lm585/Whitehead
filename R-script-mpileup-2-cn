@@ -1,0 +1,35 @@
+#
+t1 <- read.delim("gtex-dna-sra-download-2026.july-chr-dep", header=F)
+ dim(t1)
+# [1] 52  5
+ t1$seq.dep <- (t1$V3 + t1$V5) / 2
+ t2 <- read.delim("temp1", header=F)
+ head(t2)
+t3 <- merge(t1, t2, by.x="V1", by.y="V1")
+ dim(t3)
+# [1] 52 17
+for(i in unique(t3$V1)) {
+if(dim(t3[ t3$V1 == i,])[1] > 1)
+{
+ print(t3[ t3$V1 == i,])
+}
+}
+ t4 <- t3[1:length(unique(t3$V1)),]
+ dim(t4)
+ j=1
+for(i in unique(t3$V1)) {
+ t4[j,] <- t3[ t3$V1 == i,][1,]
+ j <- j+1
+}
+ dim(t4)
+ t3 <- t4
+ t3$rpp30.cn <- t3$V4.y / t3$seq.dep * 2
+ summary(t3$rpp30.cn)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   1.154   1.839   2.047   2.101   2.285   3.247
+
+ x="rpp30 CN==2"
+ x
+ dim(t3[ round( t3$rpp30.cn) == 2, ])[1] / dim(t3)[1]
+# [1] 0.7623318
+
