@@ -11961,6 +11961,30 @@ do
   echo
 done > out-220pm
 
+###
+Bio-Rad ddPCR 62-bp amplicon
+chr10   90900615        90900738        +       1000    123     0       0       0       0       0       0       0
+90872064
+
+
+
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat out-220pm|grep ^chr10 | wc -l
+    3021
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat out-220pm|grep ^chr10 | grep "223 temp" |wc -l
+    3021
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat out-220pm | grep -w Median -A 1 | awk 'NR % 3 == 2 {print $3}' > temp-median
+> t1 <- read.delim("temp-median", header=F)
+ dim(t1)
+# [1] 3021    1
+ t2 <- data.frame(pos=seq(0, 0+3020*10,10), median=t1$V1)
+ summary(t2$median)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#  0.8857  1.7560  1.8946  1.8927  2.0570  2.5130
+ t2$coord <- seq(90871983,90902183, 10)
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat out-220pm | grep  "rpp30 CN==2" -A 1 | awk 'NR % 3 == 2 {print $2}' > temp-median
+>  summary(t2$median)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+0.02691 0.66816 0.72646 0.69071 0.75785 0.84305
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
