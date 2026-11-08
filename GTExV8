@@ -12015,6 +12015,27 @@ print sum / i;
 done
 
 rm temp-60pos-dep temp-60pos-dep-avg
+######
+linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ cat out-1025pm | grep "rpp30 CN==2" -A 1 | awk 'NR % 3 == 2 {print $2}' | sort | tail
+linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat out-1025pm | grep -w Median -A 1 | awk 'NR % 3 == 2 {print $4}' > temp-median
+ cat out-1025pm | grep  "rpp30 CN==2" -A 1 | awk 'NR % 3 == 2 {print $2}' > temp-median-2
+ wc -l temp-median*
+#     3015 temp-median
+#     3015 temp-median-2
+ paste temp-median temp-median-2 > temp
+ wc -l temp
+> t1 <- read.delim("temp", header=F)
+  dim(t1)
+# [1] 3015    2
+ t2 <- data.frame(pos=seq(0, 0+3014*10,10), mean=t1$V1, twoCN.perc =t1$V2)
+ t2$coord <- seq(90871983, 90902123, 10)
+ summary(t2$twoCN.perc)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+# 0.04933 0.69058 0.75336 0.71355 0.78475 0.87444
+ summary(t2$mean)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   1.052   1.780   1.917   1.914   2.078   2.491
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
