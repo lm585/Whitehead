@@ -12036,6 +12036,28 @@ linyongmao@Linyong-Mao-MBP16-2019 dir-GTExV8 % cat out-1025pm | grep -w Median -
 #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
 #   1.052   1.780   1.917   1.914   2.078   2.491
 
+#######################
+ da.f <- hist(round(t11.1kg$c4a.6bp.q20), breaks=seq(-0.5, 6.5,1))
+ db.f <- hist(round(t11.1kg$c4b.6bp.q20), breaks=seq(-0.5, 4.5,1))
+  res <- as.data.frame(matrix(nrow= length(da.f$mids) * length(db.f$mids), ncol=7))
+ colnames(res) <- c("observed", "or", "p", "C4A.cn", "C4B.cn", "F", "M")
+
+k = 0
+ for(i in 1:length(da.f$mids)) {
+ for(j in 1:length(db.f$mids)) {
+ k = k+1
+ res$C4A.cn[k] <- da.f$mids[i]
+ res$C4B.cn[k] <- db.f$mids[j]
+ f1 <- dim(t11.1kg[  round(t11.1kg$c4a.6bp.q20) == res$C4A.cn[k] & round(t11.1kg$c4b.6bp.q20) == res$C4B.cn[k],])[1]
+ res$F[k]  <- f1
+}
+}
+
+ r2 <- res[ res$F > 0 ,]
+ r2$A <- r2$F  
+ r2$donors <- r2$F
+> gplot(r2, aes(x=C4A.cn, y=C4B.cn, size=donors, label=donors)) + geom_point(col="black") + geom_text_repel(show.legend=F, data=r2 , size=2.2, max.overlaps=100, min.segment.length = 0.1, col="red") + labs(x="C4A CN", y="C4B CN") + scale_x_continuous(breaks=seq(0, 6, 1)) + scale_y_continuous(breaks=seq(0, 6, 1))
+
 
 #############################################################
 > t1 <- read.delim("../autism/mouse-mg-rnaseq-Thion.txt")
