@@ -12076,6 +12076,13 @@ k = 0
  boxplot(g7$ENSG00000244731.10 ,  xlab="all samples", ylab="C4A expr (CPM)" )
  abline(h = seq(0,10000,5), lty = 5, lwd = 0.5, col = "blue")
 
+######
+ g7$group="group"
+ g7$group <- paste(floor(g7$c4a.6bp.cn),     floor((g7$c4a.6bp.cn - floor(g7$c4a.6bp.cn))/0.25) + 1,  sep=".")
+ boxplot(g7$ENSG00000244731.10 ~ g7$group)
+ abline(h = seq(0,10000,10), lty = 5, lwd = 0.5, col = "grey")
+ abline(h = seq(0,10000,50), lty = 5, lwd = 0.75, col = "blue")
+######
 linyong@fry24 /lab/page_human_data/linyong2/gtex-dna-sra-download$ blat -tileSize=8 -stepSize=1 -minScore=14 -minMatch=1  c4a.pcr.primer.fa /lab/solexa_page/linyong/gencode/GRCh38.primary_assembly.genome.fa  output
 
 #############################################################
